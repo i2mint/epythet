@@ -7,13 +7,42 @@ import subprocess
 from io import StringIO
 import pandas as pd
 
-from ut.util.code.packages import get_module_name, read_requirements
+from epythet.packages import get_module_name, read_requirements
 
-from ut.pfile.iter import get_filepath_iterator
+# TODO: Get rid of ut dep. Perhaps use py2store?
+from ut.pfile.iter import get_filepath_iterator, recursive_file_walk_iterator_with_name_filter
 
 module_import_regex_tmpl = "(?<=from) {package_name}|(?<=[^\s]import) {package_name}"
 
 any_module_import_regex = re.compile(module_import_regex_tmpl.format(package_name='\w+'))
+
+
+# def recursive_file_walk_iterator_with_name_filter(root_folder, filt='', return_full_path=True):
+#     if isinstance(filt, str):
+#         filt = pattern_filter(filt)
+#     # if isinstance(pattern, basestring):
+#     #     pattern = re.compile(pattern)
+#     for name in iter_relative_files_and_folder(root_folder):
+#         full_path = os.path.join(root_folder, name)
+#         if os.path.isdir(full_path):
+#             for entry in recursive_file_walk_iterator_with_name_filter(full_path, filt, return_full_path):
+#                 yield entry
+#         else:
+#             if os.path.isfile(full_path):
+#                 if filt(name):
+#                     if return_full_path:
+#                         yield full_path
+#                     else:
+#                         yield name
+#
+# def get_filepath_iterator(root_folder,
+#                           pattern='',
+#                           return_full_path=True,
+#                           apply_pattern_to_full_path=False):
+#     if apply_pattern_to_full_path:
+#         return recursive_file_walk_iterator_with_name_filter(root_folder, pattern, return_full_path)
+#     else:
+#         return recursive_file_walk_iterator_with_filepath_filter(root_folder, pattern, return_full_path)
 
 
 def mk_single_package_import_regex(module_name):
