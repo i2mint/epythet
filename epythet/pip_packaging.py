@@ -15,7 +15,7 @@ import urllib.request
 DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE = 'https://pypi.python.org/pypi/{package}/json'
 
 
-def get_last_pypi_version_number(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE) -> str:
+def current_pypi_version(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE) -> str:
     """
     Return version of package on pypi.python.org using json.
 
@@ -37,12 +37,9 @@ def get_last_pypi_version_number(package: str, url_template=DLFT_PYPI_PACKAGE_JS
 
 
 def next_version_for_package(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE) -> str:
-    current_version = get_last_pypi_version_number(package, url_template)
+    current_version = current_pypi_version(package, url_template)
     if current_version is not None:
         return increment_version(current_version)
-
-
-get_last_pypi_version_number('py2store')
 
 
 def my_setup(**setup_kwargs):

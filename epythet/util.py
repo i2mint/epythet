@@ -1,3 +1,21 @@
+import re
+
+
+def mk_replacer_from_dict(from_to_dict):
+    """
+    >>> r = mk_replacer_from_dict({'is': 'are', 'life': 'butterflies'})
+    >>> r("There is no life in the void.")
+    'There are no butterflies in the void.'
+    """
+    p = re.compile('|'.join(map(r'({})'.format, map(re.escape, from_to_dict.keys()))))
+    f = lambda x: from_to_dict[x.group(0)]
+
+    def replacer(s):
+        return p.sub(f, s)
+
+    return replacer
+
+
 fc = dict(
     reset="\033[0m",  # alias for reset_all
     reset_all="\033[0m",
