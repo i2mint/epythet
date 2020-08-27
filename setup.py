@@ -1,26 +1,50 @@
-name = 'epythet'
-root_url = 'https://github.com/i2mint'
-# version = '0.0.1'
+import os
+from configparser import ConfigParser
+from setuptools import find_packages
+
+
+def my_setup(print_params=True, **setup_kwargs):
+    from setuptools import setup
+    if print_params:
+        import json
+        print("Setup params -------------------------------------------------------")
+        print(json.dumps(setup_kwargs, indent=2))
+        print("--------------------------------------------------------------------")
+    setup(**setup_kwargs)
+
+
+root_dir = os.path.dirname(__file__)
+
+config_file = os.path.join(root_dir, 'setup.cfg')
+
+c = ConfigParser()
+c.read_file(open(config_file, 'r'))
+name = c['metadata']['name']
+root_url = c['metadata']['root_url']
 
 more_setup_kwargs = dict(
+    c['metadata'],
     install_requires=[
 
     ],
-    description="Tools for documentation and packaging.",
-    keywords=['data', 'data access', 'data preperation', 'machine learning', 'artificial intelligence'],
-    author='Otosense',
-    license='Apache Software License',
-    # download_url='{root_url}/{name}/archive/v{version}.zip'),
+    keywords=['documentation', 'packaging', 'publishing'],
 )
 
-import os
-from pip_packaging import next_version_for_package
-from setuptools import setup
-
+# import os
 # name = os.path.split(os.path.dirname(__file__))[-1]
 
-# current_version = current_pypi_version(name)
-version = next_version_for_package(name)
+version = None  # edit if you want to specify the version here (should be a string)
+if version is None:
+    try:
+        from pip_packaging import next_version_for_package
+
+        version = next_version_for_package(name)  # when you want to make a new package
+    except Exception:
+        print(f"Got an error here so will try to get the version from setup.cfg...")
+        version = c['metadata'].get('version', None)
+        if version is None:
+            raise ValueError(f"Couldn't fetch the next version from PyPi (no API token?), "
+                             f"nor did I find a version in setup.cfg (metadata section).")
 
 
 def readme():
@@ -36,21 +60,11 @@ ujoin = lambda *args: '/'.join(args)
 if root_url.endswith('/'):
     root_url = root_url[:-1]
 
-
-def my_setup(print_params=True, **setup_kwargs):
-    from setuptools import setup
-    if print_params:
-        import json
-        print("Setup params -------------------------------------------------------")
-        print(json.dumps(setup_kwargs, indent=2))
-        print("--------------------------------------------------------------------")
-    setup(**setup_kwargs)
-
-
 dflt_kwargs = dict(
     name=f"{name}",
     version=f'{version}',
     url=f"{root_url}/{name}",
+    packages=find_packages(),
     include_package_data=True,
     platforms='any',
     long_description=readme(),
@@ -60,4 +74,12 @@ dflt_kwargs = dict(
 
 setup_kwargs = dict(dflt_kwargs, **more_setup_kwargs)
 
+##########################################################################################
+# Diagnose setup_kwargs
+_, containing_folder_name = os.path.split(os.path.dirname(__file__))[-1]
+if setup_kwargs['name'] != containing_folder_name:
+    print(f"!!!! containing_folder_name={containing_folder_name} but setup name is {setup_kwargs['name']}")
+
+##########################################################################################
+# Okay... set it up alright!
 my_setup(**setup_kwargs)
