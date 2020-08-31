@@ -39,8 +39,9 @@ if version is None:
         from pip_packaging import next_version_for_package
 
         version = next_version_for_package(name)  # when you want to make a new package
-    except Exception:
-        print(f"Got an error here so will try to get the version from setup.cfg...")
+    except Exception as e:
+        print(f"Got an error trying to get the new version of {name} so will try to get the version from setup.cfg...")
+        print(f"{e}")
         version = c['metadata'].get('version', None)
         if version is None:
             raise ValueError(f"Couldn't fetch the next version from PyPi (no API token?), "
@@ -76,7 +77,7 @@ setup_kwargs = dict(dflt_kwargs, **more_setup_kwargs)
 
 ##########################################################################################
 # Diagnose setup_kwargs
-_, containing_folder_name = os.path.split(os.path.dirname(__file__))[-1]
+_, containing_folder_name = os.path.split(os.path.dirname(__file__))
 if setup_kwargs['name'] != containing_folder_name:
     print(f"!!!! containing_folder_name={containing_folder_name} but setup name is {setup_kwargs['name']}")
 

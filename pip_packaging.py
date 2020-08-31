@@ -10,8 +10,6 @@ def increment_version(version_str):
     return '.'.join(map(str, version_nums))
 
 
-import urllib.request
-
 DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE = 'https://pypi.python.org/pypi/{package}/json'
 
 
@@ -27,6 +25,7 @@ def current_pypi_version(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_T
     :param package: Name of the package
     :return: A version (string
     """
+    import urllib.request
     req = urllib.request.Request(url_template.format(package=package))
     r = urllib.request.urlopen(req)
     if r.code == 200:
