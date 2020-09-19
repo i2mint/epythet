@@ -1,4 +1,52 @@
 import re
+from typing import Mapping, Union, Iterable, Generator
+
+
+# TODO: postprocess_ini_section_items and preprocess_ini_section_items: Add comma separated possibility?
+# TODO: Find out if configparse has an option to do this processing alreadys
+def postprocess_ini_section_items(items: Union[Mapping, Iterable]) -> Generator:
+    r"""Transform newline-separated string values into actual list of strings (assuming that intent)
+
+    >>> section_from_ini = {
+    ...     'name': 'aspyre',
+    ...     'keywords': '\n\tdocumentation\n\tpackaging\n\tpublishing'
+    ... }
+    >>> section_for_python = dict(postprocess_ini_section_items(section_from_ini))
+    >>> section_for_python
+    {'name': 'aspyre', 'keywords': ['documentation', 'packaging', 'publishing']}
+
+    """
+    splitter_re = re.compile('[\n\r\t]+')
+    if isinstance(items, Mapping):
+        items = items.items()
+    for k, v in items:
+        if v.startswith('\n'):
+            v = splitter_re.split(v[1:])
+            v = [vv.strip() for vv in v if vv.strip()]
+        yield k, v
+
+
+# TODO: Find out if configparse has an option to do this processing alreadys
+def preprocess_ini_section_items(items: Union[Mapping, Iterable]) -> Generator:
+    """Transform list values into newline-separated strings, in view of writing the value to a ini formatted section
+    >>> section = {
+    ...     'name': 'aspyre',
+    ...     'keywords': ['documentation', 'packaging', 'publishing']
+    ... }
+    >>> for_ini = dict(preprocess_ini_section_items(section))
+    >>> print('keywords =' + for_ini['keywords'])  # doctest: +NORMALIZE_WHITESPACE
+    keywords =
+        documentation
+        packaging
+        publishing
+
+    """
+    if isinstance(items, Mapping):
+        items = items.items()
+    for k, v in items:
+        if isinstance(v, list):
+            v = '\n\t' + '\n\t'.join(v)
+        yield k, v
 
 
 def mk_replacer_from_dict(from_to_dict):
