@@ -1,5 +1,8 @@
 from string import Formatter
 import json
+from typing import Union
+import urllib.request
+from urllib.error import HTTPError
 
 dflt_formatter = Formatter()
 
@@ -10,12 +13,14 @@ def increment_version(version_str):
     return '.'.join(map(str, version_nums))
 
 
-import urllib.request
-
 DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE = 'https://pypi.python.org/pypi/{package}/json'
 
 
-def current_pypi_version(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE) -> str:
+# TODO: Perhaps there's a safer way to analyze errors (and determine if the package exists or other HTTPError)
+def current_pypi_version(
+        package: str,
+        url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE
+) -> Union[str, None]:
     """
     Return version of package on pypi.python.org using json.
 
@@ -25,21 +30,35 @@ def current_pypi_version(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_T
     ```
 
     :param package: Name of the package
-    :return: A version (string
+    :return: A version (string) or None if there was an exception (usually means there
     """
+
     req = urllib.request.Request(url_template.format(package=package))
-    r = urllib.request.urlopen(req)
-    if r.code == 200:
-        t = json.loads(r.read())
-        releases = t.get('releases', [])
-        if releases:
-            return sorted(releases)[-1]
+    try:
+        r = urllib.request.urlopen(req)
+        if r.code == 200:
+            t = json.loads(r.read())
+            releases = t.get('releases', [])
+            if releases:
+                return sorted(releases)[-1]
+        else:
+            raise ValueError(f"response code was {r.code}")
+    except HTTPError:
+        return None  # to indicate (hopefully) that name doesn't exist
+    except Exception:
+        raise
 
 
-def next_version_for_package(package: str, url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE) -> str:
+def next_version_for_package(
+        package: str,
+        url_template=DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE,
+        version_if_current_version_none='0.0.1'
+) -> str:
     current_version = current_pypi_version(package, url_template)
     if current_version is not None:
         return increment_version(current_version)
+    else:
+        return version_if_current_version_none
 
 
 def my_setup(**setup_kwargs):

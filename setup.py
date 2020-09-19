@@ -13,27 +13,40 @@ def my_setup(print_params=True, **setup_kwargs):
     setup(**setup_kwargs)
 
 
+# read the config file (get a dict with it's contents)
 root_dir = os.path.dirname(__file__)
-
 config_file = os.path.join(root_dir, 'setup.cfg')
-
 c = ConfigParser()
 c.read_file(open(config_file, 'r'))
+
+# parse out name and root_url
 name = c['metadata']['name']
 root_url = c['metadata']['root_url']
+version = c['metadata'].get('version', None)
+# Note: if version is not in config, version will be None,
+#  resulting in bumping the version or making it be 0.0.1 if the package is not found (i.e. first deploy)
 
+
+# Transform newline separated lists into actual lists
+# TODO: Find out if configparse has an option to do this processing alreadys
+def process_items(items):
+    for k, v in items:
+        if v.startswith('\n'):
+            v = v.split('\n')
+        yield k, v
+
+
+meta_data_dict = {k: v for k, v in c['metadata'].items()}
+
+# make the setup_kwargs
 more_setup_kwargs = dict(
-    c['metadata'],
-    install_requires=[
-
-    ],
-    keywords=['documentation', 'packaging', 'publishing'],
+    meta_data_dict,
+    # You can add more key=val pairs here if they're missing in config file
 )
 
 # import os
 # name = os.path.split(os.path.dirname(__file__))[-1]
 
-version = None  # edit if you want to specify the version here (should be a string)
 if version is None:
     try:
         from pip_packaging import next_version_for_package
