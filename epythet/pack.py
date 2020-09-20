@@ -1,14 +1,14 @@
-from warnings import warn
-
-warn("Deprecated name: Use pack.py instead", DeprecationWarning)
-
 from string import Formatter
 import json
-from typing import Union
 import urllib.request
 from urllib.error import HTTPError
 import re
-from typing import Mapping, Iterable, Generator
+from typing import Union, Mapping, Iterable, Generator
+from configparser import ConfigParser
+import os
+
+DFLT_CONFIG_FILE = 'setup.cfg'
+DFLT_CONFIG_SECTION = 'metadata'
 
 
 # TODO: postprocess_ini_section_items and preprocess_ini_section_items: Add comma separated possibility?
@@ -56,6 +56,37 @@ def preprocess_ini_section_items(items: Union[Mapping, Iterable]) -> Generator:
         if isinstance(v, list):
             v = '\n\t' + '\n\t'.join(v)
         yield k, v
+
+
+def read_configs(
+        config_file=DFLT_CONFIG_FILE,
+        section=DFLT_CONFIG_SECTION,
+        postproc=postprocess_ini_section_items):
+    c = ConfigParser()
+    c.read_file(open(config_file, 'r'))
+    if section is None:
+        d = dict(c)
+        if postproc:
+            d = {k: dict(postproc(v)) for k, v in c}
+    else:
+        d = dict(c[section])
+        if postproc:
+            d = dict(postproc(d))
+    return d
+
+
+def write_configs(
+        configs,
+        config_file=DFLT_CONFIG_FILE,
+        section=DFLT_CONFIG_SECTION,
+        preproc=preprocess_ini_section_items
+):
+    c = ConfigParser()
+    if os.path.isfile(config_file):
+        c.read_file(open(config_file, 'r'))
+    c[section] = dict(preproc(configs))
+    with open(config_file, 'w') as fp:
+        c.write(fp)
 
 
 dflt_formatter = Formatter()

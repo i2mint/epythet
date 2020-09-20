@@ -1,6 +1,7 @@
 import os
 from configparser import ConfigParser
 from setuptools import find_packages
+from pack import read_configs
 
 
 def my_setup(print_params=True, **setup_kwargs):
@@ -16,30 +17,20 @@ def my_setup(print_params=True, **setup_kwargs):
 # read the config file (get a dict with it's contents)
 root_dir = os.path.dirname(__file__)
 config_file = os.path.join(root_dir, 'setup.cfg')
-c = ConfigParser()
-c.read_file(open(config_file, 'r'))
+configs = read_configs(config_file, section='metadata')
 
 # parse out name and root_url
-name = c['metadata']['name']
-root_url = c['metadata']['root_url']
-version = c['metadata'].get('version', None)
+name = configs['name']
+root_url = configs['root_url']
+version = configs.get('version', None)
+
 # Note: if version is not in config, version will be None,
 #  resulting in bumping the version or making it be 0.0.1 if the package is not found (i.e. first deploy)
 
-
-# Transform newline separated lists into actual lists
-# TODO: Find out if configparse has an option to do this processing alreadys
-def process_items(items):
-    for k, v in items:
-        if v.startswith('\n'):
-            v = v.split('\n')
-        yield k, v
-
-
-meta_data_dict = {k: v for k, v in c['metadata'].items()}
+meta_data_dict = {k: v for k, v in configs.items()}
 
 # make the setup_kwargs
-more_setup_kwargs = dict(
+setup_kwargs = dict(
     meta_data_dict,
     # You can add more key=val pairs here if they're missing in config file
 )
@@ -49,19 +40,19 @@ more_setup_kwargs = dict(
 
 if version is None:
     try:
-        from pip_packaging import next_version_for_package
+        from pack import next_version_for_package
 
         version = next_version_for_package(name)  # when you want to make a new package
     except Exception as e:
         print(f"Got an error trying to get the new version of {name} so will try to get the version from setup.cfg...")
         print(f"{e}")
-        version = c['metadata'].get('version', None)
+        version = configs.get('version', None)
         if version is None:
             raise ValueError(f"Couldn't fetch the next version from PyPi (no API token?), "
                              f"nor did I find a version in setup.cfg (metadata section).")
 
 
-def readme():
+def text_of_readme_md_file():
     try:
         with open('README.md') as f:
             return f.read()
@@ -81,12 +72,11 @@ dflt_kwargs = dict(
     packages=find_packages(),
     include_package_data=True,
     platforms='any',
-    long_description=readme(),
+    long_description=text_of_readme_md_file(),
     long_description_content_type="text/markdown",
-
 )
 
-setup_kwargs = dict(dflt_kwargs, **more_setup_kwargs)
+setup_kwargs = dict(dflt_kwargs, **setup_kwargs)
 
 ##########################################################################################
 # Diagnose setup_kwargs
