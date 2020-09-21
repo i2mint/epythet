@@ -32,6 +32,7 @@ def postprocess_ini_section_items(items: Union[Mapping, Iterable]) -> Generator:
         if v.startswith('\n'):
             v = splitter_re.split(v[1:])
             v = [vv.strip() for vv in v if vv.strip()]
+            v = [vv for vv in v if not vv.startswith('#')]  # remove commented lines
         yield k, v
 
 
