@@ -17,13 +17,6 @@ def gen_readme_text(name, text="There's a bit of an air of mystery around this p
 """
 
 
-# dflt_configs = {
-#     'description': "There's a bit of an air of mystery around this project...",
-#     'license': 'mit',
-#     'description-file': 'README.md',
-# }
-
-
 def populate_pkg_dir(pkg_dir,
                      description="There's a bit of an air of mystery around this project...",
                      root_url=None,
