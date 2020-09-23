@@ -2,6 +2,19 @@ import re
 from typing import Mapping, Union, Iterable, Generator
 
 
+def mk_conditional_logger(condition, func=print):
+    if condition:
+        return func
+    else:
+        def do_nothing(*args, **kwargs):
+            pass
+
+
+def clog(condition, func=print, *args, **kwargs):
+    if condition:
+        func(*args, **kwargs)
+
+
 def mk_replacer_from_dict(from_to_dict):
     """
     >>> r = mk_replacer_from_dict({'is': 'are', 'life': 'butterflies'})

@@ -11,3 +11,5 @@ pkg_join = lambda *paths: os.path.join(pkg_dir, *paths)
 
 pkg_path_names = ('.gitignore', 'deploy.py', 'pack.py', 'setup.py')
 pkg_paths = {pkg_join(name) for name in pkg_path_names}
+
+from epythet.populate import populate_pkg_dir
