@@ -10,6 +10,8 @@ def mk_conditional_logger(condition, func=print):
         def do_nothing(*args, **kwargs):
             pass
 
+        return do_nothing
+
 
 def clog(condition, func=print, *args, **kwargs):
     if condition:
@@ -124,11 +126,11 @@ def replace_import_names(
         raise TypeError(f"Don't know what to do with such a type of add_comment_at_the_end_of_lines_replaced: "
                         f"{add_comment_at_the_end_of_lines_replaced}")
 
-    _clog = partial(clog, condition=verbose)
+    _clog = mk_conditional_logger(condition=verbose, func=print)
 
     if target_store is None:
         target_store = {}  # use a dict to write results
-        clog("You didn't specify a target_store, so I'll write all of this in a dict and return it to you!")
+        _clog("You didn't specify a target_store, so I'll write all of this in a dict and return it to you!")
 
     if source_store == target_store:
         # TODO: Add confirmation (user input) to protect more. Make this an option (so total automatic is possible)
