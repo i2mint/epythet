@@ -27,6 +27,29 @@ def populate_pkg_dir(pkg_dir,
                      install_requires=None,
                      verbose=True,
                      **configs):
+    """Populate project directory root with useful packaging files, if they're missing.
+
+    >>> import os  # doctest: +SKIP
+    >>> name = 'epythet'  # doctest: +SKIP
+    >>> pkg_dir = f'/D/Dropbox/dev/p3/proj/i/{name}'  # doctest: +SKIP
+    >>> populate_pkg_dir(pkg_dir,  # doctest: +SKIP
+    ...                  description='Tools for packaging',
+    ...                  root_url=f'https://github.com/i2mint',
+    ...                  author='OtoSense')
+
+    :param pkg_dir:
+    :param description:
+    :param root_url:
+    :param author:
+    :param license:
+    :param description_file:
+    :param keywords:
+    :param install_requires:
+    :param verbose:
+    :param configs:
+    :return:
+
+    """
     _clog = mk_conditional_logger(condition=verbose, func=print)
     pkg_dir = os.path.abspath(os.path.expanduser(pkg_dir))
     assert os.path.isdir(pkg_dir), f"{pkg_dir} is not a directory"
