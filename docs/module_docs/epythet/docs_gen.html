@@ -54,6 +54,24 @@
 <span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
+<p>View by opening <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docsrc/_build/html/index.html</span></code></p>
+</div>
+<div class="section" id="github-pages">
+<h2>Github Pages<a class="headerlink" href="#github-pages" title="Permalink to this headline">¶</a></h2>
+<p>Go to your repo settings and set GitHub Pages site to build from the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> folder in the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.
+Github will tell you where it will be published.
+In this case, the site is published at <a class="reference external" href="https://i2mint.github.io/epythet/">https://i2mint.github.io/epythet/</a></p>
+<p>Compile docs for github</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">PROJECT_DIR</span><span class="o">/</span><span class="n">docsrc</span>
+<span class="n">make</span> <span class="n">github</span>
+</pre></div>
+</div>
+<p>Push generated <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docs</span></code> to <code class="docutils literal notranslate"><span class="pre">master</span></code> branch</p>
+</div>
+<div class="section" id="editing-and-customizing-docs">
+<h2>Editing and Customizing Docs<a class="headerlink" href="#editing-and-customizing-docs" title="Permalink to this headline">¶</a></h2>
+<p>You can add RST documentation directly in the source files.
+<a class="reference external" href="/epythet/docs_gen/__init__.py">This source file for example</a>.</p>
 </div>
 </div>
 
@@ -79,6 +97,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../epythet.html">epythet</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.docs_gen</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github-pages">Github Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#editing-and-customizing-docs">Editing and Customizing Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
