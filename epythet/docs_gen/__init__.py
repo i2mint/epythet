@@ -42,7 +42,7 @@ Editing and Customizing Docs
 ----------------------------
 
 You can add RST documentation directly in the source files.
-`This source file for example </epythet/docs_gen/__init__.py>`_.
+`This source file for example <https://github.com/i2mint/epythet/blob/master/epythet/docs_gen/__init__.py>`_.
 """
 
 from pathlib import Path
