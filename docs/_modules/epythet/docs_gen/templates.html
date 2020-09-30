@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>epythet.docs_gen.templates &#8212; epythet 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for epythet.docs_gen.templates</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+
+<div class="viewcode-block" id="ValueStrEnum"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.ValueStrEnum">[docs]</a><span class="k">class</span> <span class="nc">ValueStrEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<div class="viewcode-block" id="ValueStrEnum.has_value"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.ValueStrEnum.has_value">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">has_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check of value is one of the enum values</span>
+
+<span class="sd">        :param value: string or ValueStrEnum</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RstTitle</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RstTitle"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.RstTitle">[docs]</a><span class="k">class</span> <span class="nc">RstTitle</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;RST Title convention:</span>
+
+<span class="sd">    # # with overline, for parts</span>
+<span class="sd">    # * with overline, for chapters</span>
+<span class="sd">    # =, for sections</span>
+<span class="sd">    # -, for subsections</span>
+<span class="sd">    # ^, for subsubsections</span>
+<span class="sd">    # “, for paragraphs</span>
+
+<span class="sd">    Normally, there are no heading levels assigned to certain characters as the structure is determined from the</span>
+<span class="sd">    succession of headings. However, it is better to stick to the same convention</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">part</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span>
+    <span class="n">chapter</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="s1">&#39;=&#39;</span>
+    <span class="n">subsection</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+    <span class="n">subsubsection</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span>
+    <span class="n">paragraphs</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span>
+
+<div class="viewcode-block" id="RstTitle.has_overline"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.RstTitle.has_overline">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">has_overline</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check if title_type will generate a title with both over and underline</span>
+
+<span class="sd">        :param title_type: one from RstTitle enum</span>
+<span class="sd">        :return: boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">part</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">chapter</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RstTitle.make_title"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.RstTitle.make_title">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">make_title</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate RST title</span>
+
+<span class="sd">        :param text: title text</span>
+<span class="sd">        :param title_type: one from RstTitle enum</span>
+<span class="sd">        :return: rst title string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title_type</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span>
+        <span class="n">_title_line</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{text}</span><span class="se">\n</span><span class="si">{_title_line}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_overline</span><span class="p">(</span><span class="n">title_type</span><span class="p">):</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{_title_line}</span><span class="se">\n</span><span class="si">{_title}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">_title</span></div></div>
+
+
+<div class="viewcode-block" id="AutoDocs"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.AutoDocs">[docs]</a><span class="k">class</span> <span class="nc">AutoDocs</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate automodule rst and help with options&quot;&quot;&quot;</span>
+
+    <span class="n">members</span> <span class="o">=</span> <span class="s2">&quot;:members:&quot;</span>
+
+<div class="viewcode-block" id="AutoDocs.make_automodule"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.AutoDocs.make_automodule">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">make_automodule</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">import_ref</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate automodule rst with options included</span>
+
+<span class="sd">        :param import_ref: ref for this file is &quot;epythet.docs_gen.templates&quot;</span>
+<span class="sd">        :param options: list of autodoc options, such as AutoDocs.members</span>
+<span class="sd">        :return: rst string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">automod_doc</span> <span class="o">=</span> <span class="n">automodule_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">import_ref</span><span class="o">=</span><span class="n">import_ref</span><span class="p">)</span>
+        <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+                <span class="n">automod_doc</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{automod_doc}</span><span class="s2">   </span><span class="si">{op}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">automod_doc</span></div></div>
+
+
+<span class="n">master_file_t</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="si">{rst_title}</span><span class="s2"></span>
+
+<span class="s2">.. include:: ./table_of_contents.rst</span>
+
+
+<span class="s2">Indices and tables</span>
+<span class="s2">==================</span>
+
+<span class="s2">* :ref:`genindex`</span>
+<span class="s2">* :ref:`modindex`</span>
+<span class="s2">* :ref:`search`</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">master_file_title_t</span> <span class="o">=</span> <span class="s2">&quot;Welcome to </span><span class="si">{display_name}</span><span class="s2">&#39;s documentation!&quot;</span>
+
+<span class="n">table_of_contents_header</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">.. toctree::</span>
+<span class="s2">   :maxdepth: 2</span>
+<span class="s2">   :caption: Contents:</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">automodule_t</span> <span class="o">=</span> <span class="s2">&quot;.. automodule:: </span><span class="si">{import_ref}</span><span class="s2">&quot;</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">epythet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/modules.html">epythet.modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/packages.html">epythet.packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/populate.html">epythet.populate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/util.html">epythet.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Otosense.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

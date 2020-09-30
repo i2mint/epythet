@@ -1,0 +1,4 @@
+epythet.setup_config
+====================
+.. automodule:: epythet.setup_config
+   :members:

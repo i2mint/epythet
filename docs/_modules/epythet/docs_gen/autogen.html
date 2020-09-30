@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>epythet.docs_gen.autogen &#8212; epythet 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for epythet.docs_gen.autogen</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">epythet.docs_gen.templates</span> <span class="k">import</span> <span class="n">table_of_contents_header</span><span class="p">,</span> <span class="n">RstTitle</span><span class="p">,</span> <span class="n">AutoDocs</span>
+<span class="kn">from</span> <span class="nn">epythet.pack</span> <span class="k">import</span> <span class="n">read_configs</span><span class="p">,</span> <span class="n">DFLT_CONFIG_FILE</span>
+<span class="kn">from</span> <span class="nn">py2store.filesys</span> <span class="k">import</span> <span class="n">FileCollection</span>
+<span class="kn">from</span> <span class="nn">py2store.trans</span> <span class="k">import</span> <span class="n">filtered_iter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">ModuleType</span>
+
+<span class="n">path_sep</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+
+
+<div class="viewcode-block" id="gen_rst_docs_and_path"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/autogen.html#epythet.docs_gen.autogen.gen_rst_docs_and_path">[docs]</a><span class="k">def</span> <span class="nf">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">auto_options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AutoDocs</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">AutoDocs</span><span class="o">.</span><span class="n">members</span><span class="p">,)):</span>
+    <span class="sd">&quot;&quot;&quot;Generates autodocs rst and rst path relative to module file structure</span>
+<span class="sd">        TODO: use epythet.docs_gen.templates.AutoDocs</span>
+
+<span class="sd">    :param module: module or import name</span>
+<span class="sd">    :param auto_options: list of automodule options to include</span>
+<span class="sd">    :return: rst_doc, rst_path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="n">root_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="n">root_name_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">root_name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">init_path</span> <span class="o">=</span> <span class="n">path_sep</span> <span class="o">+</span> <span class="s1">&#39;__init__&#39;</span>
+    <span class="k">for</span> <span class="n">pyfile</span> <span class="ow">in</span> <span class="n">filtered_iter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">))(</span><span class="n">FileCollection</span><span class="p">(</span><span class="n">root_name</span><span class="p">)):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pyfile_contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pyfile_contents</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">pyfile</span><span class="p">[</span><span class="n">root_name_length</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">init_path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">module_ref</span> <span class="o">=</span> <span class="n">module_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_sep</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">rst_path</span> <span class="o">=</span> <span class="n">module_path</span> <span class="o">+</span> <span class="s1">&#39;.rst&#39;</span>
+
+        <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">.. auto&#39;</span> <span class="ow">in</span> <span class="n">pyfile_contents</span><span class="p">:</span>  <span class="c1"># use rst in .py file docstring</span>
+            <span class="n">rst_doc</span> <span class="o">=</span> <span class="n">AutoDocs</span><span class="o">.</span><span class="n">make_automodule</span><span class="p">(</span><span class="n">module_ref</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># generate auto_docs with title and auto_options</span>
+            <span class="n">rst_title</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="o">.</span><span class="n">make_title</span><span class="p">(</span><span class="n">module_ref</span><span class="p">,</span> <span class="n">RstTitle</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
+            <span class="n">rst_doc</span> <span class="o">=</span> <span class="n">rst_title</span> <span class="o">+</span> <span class="n">AutoDocs</span><span class="o">.</span><span class="n">make_automodule</span><span class="p">(</span><span class="n">module_ref</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">auto_options</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">rst_doc</span><span class="p">,</span> <span class="n">rst_path</span></div>
+
+
+<div class="viewcode-block" id="make_autodocs_for_modules_files"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/autogen.html#epythet.docs_gen.autogen.make_autodocs_for_modules_files">[docs]</a><span class="k">def</span> <span class="nf">make_autodocs_for_modules_files</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output_dirname</span><span class="o">=</span><span class="s1">&#39;module_docs&#39;</span><span class="p">,</span>
+                                    <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">docsrc_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create sphinx autodocs for module and table of contents</span>
+
+<span class="sd">    :param module: module or import name</span>
+<span class="sd">    :param output_dirname: directory name to be created under docsrc</span>
+<span class="sd">    :param skip_existing: existing docs will not be overwritten if True</span>
+<span class="sd">    :param docsrc_dir: path to sphinx docs source file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">docsrc_dir</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="n">docsrc_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
+    <span class="n">base_path</span> <span class="o">=</span> <span class="n">docsrc_dir</span> <span class="o">/</span> <span class="n">output_dirname</span>
+    <span class="n">table_of_contents_rst_path</span> <span class="o">=</span> <span class="n">docsrc_dir</span> <span class="o">/</span> <span class="s1">&#39;table_of_contents.rst&#39;</span>
+    <span class="n">table_of_contents_rst_doc</span> <span class="o">=</span> <span class="n">table_of_contents_header</span>
+    <span class="n">toc_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="n">toc_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;   </span><span class="si">{output_dirname}</span><span class="s2">/</span><span class="si">{path[:-len(&#39;.rst&#39;)]}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">rst_full_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="n">skip_existing</span> <span class="ow">and</span> <span class="n">rst_full_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">rst_full_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">rst_full_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">toc_files</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">table_of_contents_rst_doc</span> <span class="o">+=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">toc_files</span><span class="p">)</span>
+    <span class="n">table_of_contents_rst_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">table_of_contents_rst_doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="make_autodocs"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/autogen.html#epythet.docs_gen.autogen.make_autodocs">[docs]</a><span class="k">def</span> <span class="nf">make_autodocs</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">output_dirname</span><span class="o">=</span><span class="s1">&#39;module_docs&#39;</span><span class="p">,</span> <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">docsrc_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create sphinx autodocs and table of contents for module defined by setup.cfg</span>
+
+<span class="sd">    :param project_dir: Path to root project directory containing setup.cfg</span>
+<span class="sd">    :param output_dirname: directory name to be created under docsrc</span>
+<span class="sd">    :param skip_existing: existing docs will not be overwritten if True</span>
+<span class="sd">    :param docsrc_dir: path to sphinx docs source file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">DFLT_CONFIG_FILE</span><span class="p">)</span>
+    <span class="n">make_autodocs_for_modules_files</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">output_dirname</span><span class="o">=</span><span class="n">output_dirname</span><span class="p">,</span>
+                                    <span class="n">skip_existing</span><span class="o">=</span><span class="n">skip_existing</span><span class="p">,</span> <span class="n">docsrc_dir</span><span class="o">=</span><span class="n">docsrc_dir</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">argh</span>
+
+    <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_command</span><span class="p">(</span><span class="n">make_autodocs</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">epythet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/modules.html">epythet.modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/packages.html">epythet.packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/populate.html">epythet.populate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/util.html">epythet.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Otosense.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

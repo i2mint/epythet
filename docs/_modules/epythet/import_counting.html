@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>epythet.import_counting &#8212; epythet 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for epythet.import_counting</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">unique</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">epythet.packages</span> <span class="k">import</span> <span class="n">get_module_name</span><span class="p">,</span> <span class="n">read_requirements</span>
+
+<span class="c1"># TODO: Get rid of ut dep. Perhaps use py2store?</span>
+<span class="kn">from</span> <span class="nn">ut.pfile.iter</span> <span class="k">import</span> <span class="n">get_filepath_iterator</span><span class="p">,</span> <span class="n">recursive_file_walk_iterator_with_name_filter</span>
+
+<span class="n">module_import_regex_tmpl</span> <span class="o">=</span> <span class="s2">&quot;(?&lt;=from) </span><span class="si">{package_name}</span><span class="s2">|(?&lt;=[^\s]import) </span><span class="si">{package_name}</span><span class="s2">&quot;</span>
+
+<span class="n">any_module_import_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">module_import_regex_tmpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_name</span><span class="o">=</span><span class="s1">&#39;\w+&#39;</span><span class="p">))</span>
+
+
+<span class="c1"># def recursive_file_walk_iterator_with_name_filter(root_folder, filt=&#39;&#39;, return_full_path=True):</span>
+<span class="c1">#     if isinstance(filt, str):</span>
+<span class="c1">#         filt = pattern_filter(filt)</span>
+<span class="c1">#     # if isinstance(pattern, basestring):</span>
+<span class="c1">#     #     pattern = re.compile(pattern)</span>
+<span class="c1">#     for name in iter_relative_files_and_folder(root_folder):</span>
+<span class="c1">#         full_path = os.path.join(root_folder, name)</span>
+<span class="c1">#         if os.path.isdir(full_path):</span>
+<span class="c1">#             for entry in recursive_file_walk_iterator_with_name_filter(full_path, filt, return_full_path):</span>
+<span class="c1">#                 yield entry</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             if os.path.isfile(full_path):</span>
+<span class="c1">#                 if filt(name):</span>
+<span class="c1">#                     if return_full_path:</span>
+<span class="c1">#                         yield full_path</span>
+<span class="c1">#                     else:</span>
+<span class="c1">#                         yield name</span>
+<span class="c1">#</span>
+<span class="c1"># def get_filepath_iterator(root_folder,</span>
+<span class="c1">#                           pattern=&#39;&#39;,</span>
+<span class="c1">#                           return_full_path=True,</span>
+<span class="c1">#                           apply_pattern_to_full_path=False):</span>
+<span class="c1">#     if apply_pattern_to_full_path:</span>
+<span class="c1">#         return recursive_file_walk_iterator_with_name_filter(root_folder, pattern, return_full_path)</span>
+<span class="c1">#     else:</span>
+<span class="c1">#         return recursive_file_walk_iterator_with_filepath_filter(root_folder, pattern, return_full_path)</span>
+
+
+<span class="k">def</span> <span class="nf">mk_single_package_import_regex</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">module_import_regex_tmpl</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">mk_multiple_package_import_regex</span><span class="p">(</span><span class="n">module_names</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">module_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">module_names</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">mk_single_package_import_regex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pattern</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">module_names</span><span class="p">]))</span>
+
+
+<div class="viewcode-block" id="imports_in_module"><a class="viewcode-back" href="../../module_docs/epythet/import_counting.html#epythet.import_counting.imports_in_module">[docs]</a><span class="k">def</span> <span class="nf">imports_in_module</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of strings showing what is imported in a module.</span>
+<span class="sd">    :param module: An actual module object the file of the module (as given by inspect.getfile(module)</span>
+<span class="sd">    :return: A list of strings showing the imported objects (modules, functions, variables, classes...)</span>
+
+<span class="sd">    &gt;&gt;&gt; print(&#39;\\n&#39;.join(imports_in_module(__file__)))</span>
+<span class="sd">    StringIO.StringIO</span>
+<span class="sd">    collections.Counter</span>
+<span class="sd">    inspect</span>
+<span class="sd">    numpy.unique</span>
+<span class="sd">    os</span>
+<span class="sd">    pandas</span>
+<span class="sd">    re</span>
+<span class="sd">    subprocess</span>
+<span class="sd">    ut.pfile.iter.get_filepath_iterator</span>
+<span class="sd">    ut.util.code.packages.get_module_name</span>
+<span class="sd">    ut.util.code.packages.read_requirements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfile</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">):</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">module</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># remove the &#39;c&#39; of &#39;.pyc&#39;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;sfood-imports&#39;</span><span class="p">,</span> <span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="n">module</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="base_modules_used_in_module"><a class="viewcode-back" href="../../module_docs/epythet/import_counting.html#epythet.import_counting.base_modules_used_in_module">[docs]</a><span class="k">def</span> <span class="nf">base_modules_used_in_module</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of strings showing what base modules that are imported in a module.</span>
+<span class="sd">    :param module: An actual module object the file of the module (as given by inspect.getfile(module)</span>
+<span class="sd">    :return: A list of strings showing the imported base modules (i.e. the X of import X.Y.Z or from X.Y import Z).</span>
+<span class="sd">    &gt;&gt;&gt; base_modules_used_in_module(__file__)</span>
+<span class="sd">    [&#39;StringIO&#39;, &#39;collections&#39;, &#39;inspect&#39;, &#39;numpy&#39;, &#39;os&#39;, &#39;pandas&#39;, &#39;re&#39;, &#39;subprocess&#39;, &#39;ut&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">unique</span><span class="p">([</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\w+&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">imports_in_module</span><span class="p">(</span><span class="n">module</span><span class="p">)]))</span></div>
+
+
+<div class="viewcode-block" id="base_module_imports_in_module_recursive"><a class="viewcode-back" href="../../module_docs/epythet/import_counting.html#epythet.import_counting.base_module_imports_in_module_recursive">[docs]</a><span class="k">def</span> <span class="nf">base_module_imports_in_module_recursive</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of strings showing what base modules that are imported in a module, recursively.</span>
+<span class="sd">    It&#39;s the recursive version of the base_modules_used_in_module function.</span>
+<span class="sd">    Recursive in the sense that if module is a package module (i.e. containing a __init__.py and further submodules),</span>
+<span class="sd">    the base_modules_used_in_module function will be applied to all .py files under the mother folder.</span>
+<span class="sd">    Function returns a count (Counter object) of the number of modules where each base module was found.</span>
+<span class="sd">    :param module: An actual module object the file of the module (as given by inspect.getfile(module)</span>
+<span class="sd">    :param module_names: Modules to filter for.</span>
+<span class="sd">        None: Will grab all modules</span>
+<span class="sd">        A list or tuple: Of modules to grab</span>
+<span class="sd">        If not will assume module_names is a regex to apply to find module names</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if module_names is None:</span>
+    <span class="c1">#     module_names = any_module_import_regex</span>
+    <span class="c1"># elif isinstance(module_names, (tuple, list)):</span>
+    <span class="c1">#     module_names = mk_multiple_package_import_regex(module_names)</span>
+
+    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismodule</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsourcefile</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="n">get_filepath_iterator</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;.py$&#39;</span><span class="p">)</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>  <span class="c1"># to skip the seed module itself, and not get into an infinite loop</span>
+        <span class="k">for</span> <span class="n">_module</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base_module_imports_in_module_recursive</span><span class="p">(</span><span class="n">_module</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;sfood-imports&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;You don&#39;t have sfood-imports installed (snakefood), so I can&#39;t do my job&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Error with module </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_module</span><span class="p">,</span> <span class="n">e</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">c</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;module file not found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">base_modules_used_in_module</span><span class="p">(</span><span class="n">module</span><span class="p">))</span></div>
+    <span class="c1"># with open(module) as fp:</span>
+    <span class="c1">#     module_contents = fp.read()</span>
+    <span class="c1"># return Counter(map(lambda x: x[1:], unique(module_names.findall(module_contents))))</span>
+
+
+<span class="k">def</span> <span class="nf">requirements_packages_in_module</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">requirements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">requirements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">requirements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pip_licenses_df</span><span class="p">(</span><span class="n">include_module_name</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s1">&#39;package_name&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">requirements</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">requirements</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">requirements</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">requirements</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^[^=]+&#39;</span><span class="p">)</span>
+    <span class="n">module_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">requirements</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xx</span><span class="p">:</span>
+                <span class="n">module_name</span> <span class="o">=</span> <span class="n">get_module_name</span><span class="p">(</span><span class="n">xx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">module_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Error with </span><span class="si">{}</span><span class="se">\n</span><span class="s2">  </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">e</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">base_module_imports_in_module_recursive</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">module_names</span><span class="o">=</span><span class="n">requirements</span><span class="p">)</span>
+
+
+<span class="n">word_or_letter_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\w&#39;</span><span class="p">)</span>
+<span class="n">at_least_two_spaces_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="pip_licenses_df"><a class="viewcode-back" href="../../module_docs/epythet/import_counting.html#epythet.import_counting.pip_licenses_df">[docs]</a><span class="k">def</span> <span class="nf">pip_licenses_df</span><span class="p">(</span><span class="n">package_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_module_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_module_search_error</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a dataframe of pip packages and licences</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pip_licenses_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;pip-licenses&#39;</span><span class="p">])</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span>
+                 <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">word_or_letter_p</span><span class="o">.</span><span class="n">search</span><span class="p">,</span>
+                             <span class="n">pip_licenses_output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)))))</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">at_least_two_spaces_p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="s1">&#39;package_name&#39;</span><span class="p">,</span> <span class="s1">&#39;Version&#39;</span><span class="p">:</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;License&#39;</span><span class="p">:</span> <span class="s1">&#39;license&#39;</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">include_module_name</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;module&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_module_name</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">on_error</span><span class="o">=</span><span class="n">on_module_search_error</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;package_name&#39;</span><span class="p">]]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="s1">&#39;package_name&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;license&#39;</span><span class="p">]]</span>  <span class="c1"># reorder</span>
+    <span class="k">if</span> <span class="n">package_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;package_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">package_names</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">epythet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/modules.html">epythet.modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/packages.html">epythet.packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/populate.html">epythet.populate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/util.html">epythet.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Otosense.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

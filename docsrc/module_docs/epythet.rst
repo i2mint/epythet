@@ -1,0 +1,4 @@
+epythet
+=======
+.. automodule:: epythet
+   :members:

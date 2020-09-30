@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>epythet.util &#8212; epythet 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for epythet.util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+
+
+<span class="k">def</span> <span class="nf">mk_conditional_logger</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">func</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">do_nothing</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">do_nothing</span>
+
+
+<span class="k">def</span> <span class="nf">clog</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="mk_replacer_from_dict"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.mk_replacer_from_dict">[docs]</a><span class="k">def</span> <span class="nf">mk_replacer_from_dict</span><span class="p">(</span><span class="n">from_to_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a function that does multiple replacements (in a single pass).</span>
+
+<span class="sd">    &gt;&gt;&gt; r = mk_replacer_from_dict({&#39;is&#39;: &#39;are&#39;, &#39;life&#39;: &#39;butterflies&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; r(&quot;There is no life in the void.&quot;)</span>
+<span class="sd">    &#39;There are no butterflies in the void.&#39;</span>
+
+<span class="sd">    :param from_to_dict: A dict of {to_find: to_replace_by,...} pairs</span>
+<span class="sd">    :return: A replacer function that you can apply to strings to carry out the replacements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">,</span> <span class="n">from_to_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">from_to_dict</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">replacer</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">replacer</span></div>
+
+
+<div class="viewcode-block" id="mk_import_root_replacer"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.mk_import_root_replacer">[docs]</a><span class="k">def</span> <span class="nf">mk_import_root_replacer</span><span class="p">(</span><span class="n">from_to_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a function that does multiple import name replacements.</span>
+
+<span class="sd">    For a use case, see replace_import_names. This is just a helper function.</span>
+
+<span class="sd">    &gt;&gt;&gt; replace = mk_import_root_replacer({&#39;foo&#39;: &#39;FOO&#39;, &#39;bar&#39;: &#39;BAR&#39;})</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; assert replace(&#39;from foo import BLAH&#39;) == &#39;from FOO import BLAH&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assert replace(&#39;from foo.bar import BLAH&#39;) == &#39;from FOO.bar import BLAH&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assert replace(&#39;import bar&#39;) == &#39;import BAR&#39;</span>
+
+<span class="sd">    Partial matches are not replaced (that&#39;s a good thing!):</span>
+
+<span class="sd">    &gt;&gt;&gt; assert replace(&#39;import barmitzvah as oy&#39;) == &#39;import barmitzvah as oy&#39;</span>
+<span class="sd">    &gt;&gt;&gt; assert replace(&#39;from foobar import hello&#39;) == &#39;from foobar import hello&#39;</span>
+
+<span class="sd">    Yes, and it works with dotpaths:</span>
+
+<span class="sd">    &gt;&gt;&gt; replace = mk_import_root_replacer({&#39;where.it.was&#39;: &#39;where.it.is.now&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; replace(&#39;import where.it.was as here&#39;)</span>
+<span class="sd">    &#39;import where.it.is.now as here&#39;</span>
+
+<span class="sd">    :param from_to_dict: A dict of {to_find: to_replace_by,...} pairs</span>
+<span class="sd">    :return: A replacer function that you can apply to strings to carry out the replacements</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">f</span><span class="s2">&quot;(?&lt;=from\ )</span><span class="si">{old}</span><span class="s2">(?=[\.\ ])&quot;</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{new}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">f</span><span class="s2">&quot;(?&lt;=import\ )</span><span class="si">{old}</span><span class="s2">(?=[\.\s])&quot;</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{new}</span><span class="s2">&quot;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">from_to_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">from_to_dict</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">replacer</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">ss</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ss</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">replacer</span></div>
+
+
+<div class="viewcode-block" id="replace_import_names"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.replace_import_names">[docs]</a><span class="k">def</span> <span class="nf">replace_import_names</span><span class="p">(</span>
+        <span class="n">source_store</span><span class="p">,</span>
+        <span class="n">from_to_dict</span><span class="p">,</span>
+        <span class="n">target_store</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dryrun</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">replacer_factory</span><span class="o">=</span><span class="n">mk_import_root_replacer</span><span class="p">,</span>
+        <span class="n">add_comment_at_the_end_of_lines_replaced</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replace import names.</span>
+
+<span class="sd">    Use case: You&#39;ve renamed something or moved some modules (remember UNIX? Same as move!) and have to go through</span>
+<span class="sd">    all your files and notebooks and replace those names.</span>
+<span class="sd">    Now, if you have a nice IDE, we suggest you use refactoring instead -- as long as you have any uses in the scope.</span>
+<span class="sd">    But sometimes it&#39;s not enough. You might have text/html documments, or jupyter notebooks, etc.</span>
+<span class="sd">    So you can use this instead.</span>
+
+<span class="sd">    Be warned though:</span>
+<span class="sd">    - You should look at the pattern that is used to match, and make sure it won&#39;t create havoc.</span>
+<span class="sd">    - Backup your documents so you can revert!</span>
+<span class="sd">    - Print matches before you actually apply them all in bulk.</span>
+<span class="sd">    - Use at your own risk!</span>
+
+<span class="sd">    For examples, see the mk_import_root_replacer helper function.</span>
+
+<span class="sd">    :param source_store:</span>
+<span class="sd">    :param from_to_dict: A dict of {to_find: to_replace_by,...} pairs</span>
+<span class="sd">    :param target_store: The store</span>
+<span class="sd">    :param dryrun:</span>
+<span class="sd">    :param verbose:</span>
+<span class="sd">    :param replacer_factory: makes the replacer = replacer_factory(from_to_dict)</span>
+<span class="sd">    :param add_comment_at_the_end_of_lines_replaced: True/False or an actual string to add at the end of replaced lines</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">add_comment_at_the_end_of_lines_replaced</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">add_comment_at_the_end_of_lines_replaced</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;# line_was_edited_by_epythet&quot;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">add_comment_at_the_end_of_lines_replaced</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">add_comment_at_the_end_of_lines_replaced</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;# &#39;</span> <span class="o">+</span> <span class="n">suffix</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Don&#39;t know what to do with such a type of add_comment_at_the_end_of_lines_replaced: &quot;</span>
+                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{add_comment_at_the_end_of_lines_replaced}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">_clog</span> <span class="o">=</span> <span class="n">mk_conditional_logger</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">target_store</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># use a dict to write results</span>
+        <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;You didn&#39;t specify a target_store, so I&#39;ll write all of this in a dict and return it to you!&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">source_store</span> <span class="o">==</span> <span class="n">target_store</span><span class="p">:</span>
+        <span class="c1"># TODO: Add confirmation (user input) to protect more. Make this an option (so total automatic is possible)</span>
+        <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;I just wanted you to be aware that you are using the same store for source and target.&quot;</span>
+              <span class="s2">&quot;This means I&#39;m about to overwrite your files!!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dryrun</span><span class="p">:</span>
+            <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;... Right now, dryrun=True, so I&#39;m just pretending!&quot;</span><span class="p">)</span>
+
+    <span class="n">replacer</span> <span class="o">=</span> <span class="n">replacer_factory</span><span class="p">(</span><span class="n">from_to_dict</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dryrun</span><span class="p">:</span>
+        <span class="n">replace_prompt</span> <span class="o">=</span> <span class="s1">&#39;will replace&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">replace_prompt</span> <span class="o">=</span> <span class="s1">&#39;   replacing&#39;</span>
+    <span class="n">with____prompt</span> <span class="o">=</span> <span class="s1">&#39;        with&#39;</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">source_store</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="n">lines_replaced</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+            <span class="k">nonlocal</span> <span class="n">lines_replaced</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># TODO: Double traversal. Find online splitter</span>
+                <span class="n">new_line</span> <span class="o">=</span> <span class="n">replacer</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="n">suffix</span>
+                <span class="k">yield</span> <span class="n">new_line</span>
+                <span class="k">if</span> <span class="n">new_line</span> <span class="o">!=</span> <span class="n">line</span><span class="p">:</span>  <span class="c1"># TODO: Double traversal... could have replacer return a &quot;replaced_something&quot; flag</span>
+                    <span class="n">lines_replaced</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">clog</span><span class="p">(</span><span class="n">verbose</span> <span class="ow">or</span> <span class="n">dryrun</span><span class="p">,</span> <span class="nb">print</span><span class="p">,</span>
+                         <span class="n">f</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">:</span><span class="si">{i}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{replace_prompt}</span><span class="se">\t</span><span class="si">{line}</span><span class="se">\n</span><span class="si">{with____prompt}</span><span class="se">\t</span><span class="si">{new_line}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">new_v</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dryrun</span> <span class="ow">and</span> <span class="n">lines_replaced</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">target_store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_v</span>
+
+    <span class="k">return</span> <span class="n">target_store</span></div>
+
+
+<span class="n">fc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">reset</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>  <span class="c1"># alias for reset_all</span>
+    <span class="n">reset_all</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">,</span>
+
+    <span class="n">bold</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[1m&quot;</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[2m&quot;</span><span class="p">,</span>
+    <span class="n">underlined</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[4m&quot;</span><span class="p">,</span>
+    <span class="n">blink</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[5m&quot;</span><span class="p">,</span>
+    <span class="n">reverse</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[7m&quot;</span><span class="p">,</span>
+    <span class="n">hidden</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[8m&quot;</span><span class="p">,</span>
+    <span class="n">reset_bold</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[21m&quot;</span><span class="p">,</span>
+    <span class="n">reset_dim</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[22m&quot;</span><span class="p">,</span>
+    <span class="n">reset_underlined</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[24m&quot;</span><span class="p">,</span>
+    <span class="n">reset_blink</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[25m&quot;</span><span class="p">,</span>
+    <span class="n">reset_reverse</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[27m&quot;</span><span class="p">,</span>
+    <span class="n">reset_hidden</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[28m&quot;</span><span class="p">,</span>
+
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[39m&quot;</span><span class="p">,</span>
+
+    <span class="n">black</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[30m&quot;</span><span class="p">,</span>
+    <span class="n">red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[31m&quot;</span><span class="p">,</span>
+    <span class="n">green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m&quot;</span><span class="p">,</span>
+    <span class="n">yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m&quot;</span><span class="p">,</span>
+    <span class="n">blue</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[34m&quot;</span><span class="p">,</span>
+    <span class="n">magenta</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[35m&quot;</span><span class="p">,</span>
+    <span class="n">cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[36m&quot;</span><span class="p">,</span>
+    <span class="n">gray</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[37m&quot;</span><span class="p">,</span>
+
+    <span class="n">dark_gray</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[90m&quot;</span><span class="p">,</span>
+    <span class="n">dark_red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[91m&quot;</span><span class="p">,</span>
+    <span class="n">dark_green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[92m&quot;</span><span class="p">,</span>
+    <span class="n">dark_yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[93m&quot;</span><span class="p">,</span>
+    <span class="n">dark_blue</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[94m&quot;</span><span class="p">,</span>
+    <span class="n">dark_magenta</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[95m&quot;</span><span class="p">,</span>
+    <span class="n">dark_cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[96m&quot;</span><span class="p">,</span>
+
+    <span class="n">white</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[97m&quot;</span><span class="p">,</span>
+
+    <span class="n">background_default</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[49m&quot;</span><span class="p">,</span>
+
+    <span class="n">background_black</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[40m&quot;</span><span class="p">,</span>
+    <span class="n">background_red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[41m&quot;</span><span class="p">,</span>
+    <span class="n">background_green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[42m&quot;</span><span class="p">,</span>
+    <span class="n">background_yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[43m&quot;</span><span class="p">,</span>
+    <span class="n">background_blue</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[44m&quot;</span><span class="p">,</span>
+    <span class="n">background_magenta</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[45m&quot;</span><span class="p">,</span>
+    <span class="n">background_cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[46m&quot;</span><span class="p">,</span>
+    <span class="n">background_gray</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[47m&quot;</span><span class="p">,</span>
+
+    <span class="n">background_dark_gray</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[100m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_red</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[101m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_green</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[102m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_yellow</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[103m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_blue</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[104m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_magenta</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[105m&quot;</span><span class="p">,</span>
+    <span class="n">background_dark_cyan</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[106m&quot;</span><span class="p">,</span>
+
+    <span class="n">background_white</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[107m&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">py2store.sources</span> <span class="k">import</span> <span class="n">DictAttr</span>
+
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">DictAttr</span><span class="p">(</span><span class="o">**</span><span class="n">fc</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="k">pass</span>  <span class="c1"># DictAttr is convenient, but not necessary</span>
+
+
+<div class="viewcode-block" id="highlight"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.highlight">[docs]</a><span class="k">def</span> <span class="nf">highlight</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">effect</span><span class="o">=</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;reverse&#39;</span><span class="p">],</span> <span class="n">beg_mark</span><span class="o">=</span><span class="s1">&#39;[[&#39;</span><span class="p">,</span> <span class="n">end_mark</span><span class="o">=</span><span class="s1">&#39;]]&#39;</span><span class="p">,</span> <span class="n">end_effect</span><span class="o">=</span><span class="n">fc</span><span class="p">[</span><span class="s1">&#39;reset_all&#39;</span><span class="p">]):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Interprets a string&#39;s highlight markers to be able to make highlights in the string.</span>
+
+<span class="sd">    This is meant for very simple situations. A more powerful and fast function could be made by</span>
+<span class="sd">    using regular expressions and a map to map &quot;codes&quot; to &quot;effects&quot;.</span>
+
+<span class="sd">    Try this:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(highlight(&quot;This is [[the section]] that is [[highlighted]].&quot;))  # doctest:+SKIP</span>
+
+<span class="sd">    Above, &quot;reverse&quot; is used as the default effect.</span>
+<span class="sd">    But You can change that to bold blue ink on yellow background. That&#39;s three effects:</span>
+<span class="sd">    1 (for bold), 34, for the blue foreground (ink), and 43 for the &quot;yellow&quot; (more like brown)</span>
+<span class="sd">    background (paper).</span>
+
+<span class="sd">    &gt;&gt;&gt; my_string = &quot;This is [[the section]] that is [[highlighted]].&quot;</span>
+<span class="sd">    &gt;&gt;&gt; print(highlight(my_string, &quot;\033[1;34;43m&quot;))  # doctest:+SKIP</span>
+
+<span class="sd">    \033[whaaaa?!? Yeah... well, either you do it that has-no-life-outside-unicode way.</span>
+<span class="sd">    If so, Ansi help you!</span>
+<span class="sd">    See [this wiki section](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters).</span>
+<span class="sd">    or [this tutorial](https://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#rich-text).</span>
+
+<span class="sd">    If not, we&#39;ve prepared a map between human language and effect codes in the form of the</span>
+<span class="sd">    `fc` variable of this module. It&#39;s a dict (and if you have ``py2store``, it&#39;s a mapping containing</span>
+<span class="sd">    that dict and allowing you access through attributes too).</span>
+
+<span class="sd">    &gt;&gt;&gt; from epythet.util import fc</span>
+<span class="sd">    &gt;&gt;&gt; list(fc)[20:25]</span>
+<span class="sd">    [&#39;magenta&#39;, &#39;cyan&#39;, &#39;gray&#39;, &#39;dark_gray&#39;, &#39;dark_red&#39;]</span>
+
+<span class="sd">    :param string: String with highlight formatting</span>
+<span class="sd">    :param effect: The effect to use for the highlighting (some unicode like &quot;\033[21m&quot;)</span>
+<span class="sd">    :param beg_mark: String that marks the beginning of the highlight</span>
+<span class="sd">    :param end_mark: String that marks the end of the highlight</span>
+<span class="sd">    :param end_effect: The unicode to use to reset the effect</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">beg_mark</span><span class="p">,</span> <span class="n">effect</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">end_mark</span><span class="p">,</span> <span class="n">end_effect</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">epythet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/modules.html">epythet.modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/packages.html">epythet.packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/populate.html">epythet.populate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/util.html">epythet.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Otosense.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
