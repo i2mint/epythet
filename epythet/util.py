@@ -1,6 +1,20 @@
 import re
 from itertools import chain
+import pkgutil
 from functools import partial
+import os
+
+standard_lib_dir = os.path.dirname(os.__file__)
+
+
+def is_standard_lib_path(path):
+    return path.startswith(standard_lib_dir)
+
+
+def standard_lib_module_names(is_standard_lib_path=is_standard_lib_path,
+                              name_filt=lambda name: not name.startswith('_')):
+    return filter(name_filt, (module_info.name for module_info in pkgutil.iter_modules()
+                              if is_standard_lib_path(module_info.module_finder.path)))
 
 
 def mk_conditional_logger(condition, func=print):
