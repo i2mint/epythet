@@ -1,11 +1,11 @@
 import os
 import shutil
-from functools import partial
+# from functools import partial
 
 from epythet import pkg_path_names, root_dir
 from epythet import pkg_join as epythet_join
 from epythet.util import mk_conditional_logger
-from epythet.pack import write_configs
+# from epythet.pack_util import write_configs
 
 path_sep = os.path.sep
 
@@ -29,6 +29,7 @@ def populate_pkg_dir(pkg_dir,
                      **configs):
     """Populate project directory root with useful packaging files, if they're missing.
 
+    >>> from epythet.populate import populate_pkg_dir
     >>> import os  # doctest: +SKIP
     >>> name = 'epythet'  # doctest: +SKIP
     >>> pkg_dir = f'/D/Dropbox/dev/p3/proj/i/{name}'  # doctest: +SKIP
@@ -106,7 +107,7 @@ def populate_pkg_dir(pkg_dir,
             fp.write(content)
 
     if not os.path.isfile(pjoin('setup.cfg')):
-        from epythet.pack import write_configs
+        from epythet.pack_util import write_configs
         _clog("... making a 'setup.cfg'")
         write_configs(configs, pjoin('setup.cfg'))
 

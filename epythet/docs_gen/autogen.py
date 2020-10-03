@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from epythet.docs_gen.templates import table_of_contents_header, RstTitle, AutoDocs
-from epythet.pack import read_configs, DFLT_CONFIG_FILE
+from epythet.pack_util import read_configs, DFLT_CONFIG_FILE
 from py2store.filesys import FileCollection
 from py2store.trans import filtered_iter
 from typing import Union, List

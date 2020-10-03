@@ -3,7 +3,7 @@ from pathlib import Path
 
 from epythet.docs_gen import _STATIC_FILES
 from epythet.docs_gen.templates import master_file_t, master_file_title_t, RstTitle
-from epythet.pack import read_configs, DFLT_CONFIG_FILE
+from epythet.pack_util import read_configs, DFLT_CONFIG_FILE
 
 
 def make_master_file(docsrc_dir, title: str):
