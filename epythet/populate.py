@@ -132,6 +132,24 @@ def populate_pkg_dir(pkg_dir,
     return name
 
 
+def update_pack_and_setup_py(target_pkg_dir):
+    """Just copy over setup.py and pack.py (moving the original to be prefixed by '_'"""
+    if target_pkg_dir.endswith(path_sep):
+        target_pkg_dir = target_pkg_dir[:-1]  # remove the slash suffix (or basename will be empty)
+    name = os.path.basename(target_pkg_dir)
+    contents = os.listdir(target_pkg_dir)
+    assert {'pack.py', 'setup.py', name}.issubset(contents), \
+        f"{target_pkg_dir} needs to have all three: {', '.join({'pack.py', 'setup.py', name})}"
+
+    pjoin = lambda *p: os.path.join(target_pkg_dir, *p)
+
+    resources = {'pack.py', 'setup.py'}
+    for resource_name in resources:
+        print(f'... copying {resource_name} from {epythet_join("")} to {target_pkg_dir}')
+        shutil.move(src=pjoin(resource_name), dst=pjoin('_' + resource_name))
+        shutil.copy(src=epythet_join(resource_name), dst=pjoin(resource_name))
+
+
 if __name__ == '__main__':
     import argh  # TODO: replace by argparse, or require argh in epythet?
 
