@@ -5,6 +5,7 @@ import shutil
 from epythet import pkg_path_names, root_dir
 from epythet import pkg_join as epythet_join
 from epythet.util import mk_conditional_logger
+
 # from epythet.pack_util import write_configs
 
 path_sep = os.path.sep
@@ -26,6 +27,7 @@ def populate_pkg_dir(pkg_dir,
                      keywords=None,
                      install_requires=None,
                      verbose=True,
+                     overwrite=(),
                      **configs):
     """Populate project directory root with useful packaging files, if they're missing.
 
@@ -51,6 +53,10 @@ def populate_pkg_dir(pkg_dir,
     :return:
 
     """
+    if isinstance(overwrite, str):
+        overwrite = {overwrite}
+    else:
+        overwrite = set(overwrite)
     _clog = mk_conditional_logger(condition=verbose, func=print)
     pkg_dir = os.path.abspath(os.path.expanduser(pkg_dir))
     assert os.path.isdir(pkg_dir), f"{pkg_dir} is not a directory"
@@ -95,8 +101,11 @@ def populate_pkg_dir(pkg_dir,
         _clog(f'... copying {resource_name} from {root_dir} to {pkg_dir}')
         shutil.copy(epythet_join(resource_name), pjoin(resource_name))
 
+    def should_update(resource_name):
+        return (resource_name in overwrite) or (not os.path.isfile(pjoin(resource_name)))
+
     for resource_name in pkg_path_names:
-        if not os.path.isfile(pjoin(resource_name)):
+        if should_update(resource_name):
             copy_from_resource(resource_name)
 
     def save_txt_to_pkg(resource_name, content):
@@ -106,17 +115,17 @@ def populate_pkg_dir(pkg_dir,
         with open(pjoin(resource_name), 'wt') as fp:
             fp.write(content)
 
-    if not os.path.isfile(pjoin('setup.cfg')):
+    if should_update('setup.cfg'):
         from epythet.pack_util import write_configs
         _clog("... making a 'setup.cfg'")
         write_configs(configs, pjoin('setup.cfg'))
 
-    if not os.path.isfile(pjoin('LICENSE')):
+    if should_update('LICENSE'):
         from epythet.licensing import license_body
         _license_body = license_body(configs['license'])
         save_txt_to_pkg('LICENSE', _license_body)
 
-    if not os.path.isfile(pjoin('README.md')):
+    if should_update('README.md'):
         readme_text = gen_readme_text(name, configs.get('description'))
         save_txt_to_pkg('README.md', readme_text)
 
