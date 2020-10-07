@@ -439,10 +439,9 @@ def read_and_resolve_setup_configs(
     return configs
 
 
-if __name__ == '__main__':
-    import argh  # pip install argh
-
-    funcs = [
+argh_kwargs = {
+    'namespace': 'pack',
+    'functions': [
         current_configs,
         increment_configs_version,
         current_configs_version,
@@ -453,5 +452,13 @@ if __name__ == '__main__':
         run_setup,
         current_pypi_version,
         validate_pkg_dir
-    ]
-    argh.dispatch_commands(funcs)
+    ],
+    'namespace_kwargs': {
+        'title': 'Package Configurations',
+        'description': 'Utils to package and publish.'
+    }
+}
+
+if __name__ == '__main__':
+    import argh  # pip install argh
+    argh.dispatch_commands(argh_kwargs.get('functions', None))
