@@ -27,6 +27,7 @@ import subprocess
 from setuptools import find_packages
 import json
 import re
+import sys
 from pprint import pprint
 from typing import Union, Mapping, Iterable, Generator
 from configparser import ConfigParser
@@ -151,7 +152,7 @@ def run_setup(pkg_dir):
     pkg_dir = _get_pkg_dir(pkg_dir)
     original_dir = os.getcwd()
     os.chdir(pkg_dir)
-    setup_output = subprocess.run('python setup.py sdist bdist_wheel'.split(' '))
+    setup_output = subprocess.run(f'{sys.executable} setup.py sdist bdist_wheel'.split(' '))
     os.chdir(original_dir)
     # print(f"{setup_output}\n")
 
@@ -163,7 +164,7 @@ def twine_upload_dist(pkg_dir):
     original_dir = os.getcwd()
     os.chdir(pkg_dir)
     # TODO: dist/*? How to publish just last on
-    upload_output = subprocess.run('python -m twine upload dist/*'.split(' '))
+    subprocess.run(f'{sys.executable} -m twine upload dist/*'.split(' '))
     os.chdir(original_dir)
     # print(f"{upload_output.decode()}\n")
 
