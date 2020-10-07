@@ -13,3 +13,18 @@ pkg_path_names = ('.gitignore', 'pack.py', 'setup.py')
 pkg_paths = {pkg_join(name) for name in pkg_path_names}
 
 from epythet.populate import populate_pkg_dir
+
+def main():
+    import argh  # pip install argh
+
+    from epythet.pack import argh_kwargs as pack_kw
+    from epythet.docs_gen import argh_kwargs as docs_gen_kw
+
+    parser = argh.ArghParser()
+    parser.add_commands(**pack_kw)
+    parser.add_commands(**docs_gen_kw)
+    parser.dispatch()
+
+
+if __name__ == "__main__":
+    main()
