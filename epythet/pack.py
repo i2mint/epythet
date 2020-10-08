@@ -49,7 +49,7 @@ def get_name_from_configs(pkg_dir, assert_exists=True):
 
 def go(pkg_dir, version=None, verbose=True):
     """Update version, package and deploy:
-    Runs in a sequence: update_setup_cfg, run_setup, twine_upload_dist
+    Runs in a sequence: increment_configs_version, update_setup_cfg, run_setup, twine_upload_dist
 
     :param version: The desired version (if not given, will increment the current version
     :param verbose: Whether to print stuff or not
@@ -57,6 +57,7 @@ def go(pkg_dir, version=None, verbose=True):
     """
 
     increment_configs_version(pkg_dir, version)
+    update_setup_cfg(pkg_dir, verbose=verbose)
     run_setup(pkg_dir)
     twine_upload_dist(pkg_dir)
 
@@ -116,6 +117,7 @@ def update_setup_cfg(pkg_dir, new_deploy=False, version=None, verbose=True):
     """
     pkg_dir = _get_pkg_dir(pkg_dir)
     configs = read_and_resolve_setup_configs(pkg_dir=_get_pkg_dir(pkg_dir), new_deploy=new_deploy, version=version)
+    pprint("\n{configs}\n")
     clog(verbose, pprint(configs))
     write_configs(pkg_dir=pkg_dir, configs=configs)
 
@@ -430,8 +432,9 @@ def read_and_resolve_setup_configs(
         packages=find_packages(),
         include_package_data=True,
         platforms='any',
-        long_description=text_of_readme_md_file(),
-        long_description_content_type="text/markdown",
+        # long_description=text_of_readme_md_file(),
+        # long_description_content_type="text/markdown",
+        description_file='README.md'
     )
 
     configs = dict(dflt_kwargs, **setup_kwargs)
@@ -447,6 +450,7 @@ argh_kwargs = {
         current_configs_version,
         twine_upload_dist,
         read_and_resolve_setup_configs,
+        update_setup_cfg,
         go,
         get_name_from_configs,
         run_setup,
@@ -461,4 +465,5 @@ argh_kwargs = {
 
 if __name__ == '__main__':
     import argh  # pip install argh
+
     argh.dispatch_commands(argh_kwargs.get('functions', None))
