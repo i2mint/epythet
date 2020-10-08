@@ -1,3 +1,15 @@
+"""
+Console Scripts
+---------------
+
+To see available commands
+::
+
+    epythet --help
+
+
+"""
+
 import os
 
 root_dir = os.path.dirname(__file__)

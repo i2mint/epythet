@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.populate &#8212; epythet 0.0.1 documentation</title>
+    <title>epythet.populate &#8212; epythet 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -38,9 +38,10 @@
 <span id="epythet-populate"></span><h1>epythet.populate<a class="headerlink" href="#module-epythet.populate" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="epythet.populate.populate_pkg_dir">
-<code class="sig-prename descclassname">epythet.populate.</code><code class="sig-name descname">populate_pkg_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">&quot;There's a bit of an air of mystery around this project...&quot;</span></em>, <em class="sig-param"><span class="n">root_url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">author</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">license</span><span class="o">=</span><span class="default_value">'mit'</span></em>, <em class="sig-param"><span class="n">description_file</span><span class="o">=</span><span class="default_value">'README.md'</span></em>, <em class="sig-param"><span class="n">keywords</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">install_requires</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">configs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/populate.html#populate_pkg_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.populate.populate_pkg_dir" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.populate.</code><code class="sig-name descname">populate_pkg_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">&quot;There's a bit of an air of mystery around this project...&quot;</span></em>, <em class="sig-param"><span class="n">root_url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">author</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">license</span><span class="o">=</span><span class="default_value">'mit'</span></em>, <em class="sig-param"><span class="n">description_file</span><span class="o">=</span><span class="default_value">'README.md'</span></em>, <em class="sig-param"><span class="n">keywords</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">install_requires</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">configs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/populate.html#populate_pkg_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.populate.populate_pkg_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Populate project directory root with useful packaging files, if they’re missing.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">epythet.populate</span> <span class="k">import</span> <span class="n">populate_pkg_dir</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;epythet&#39;</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;/D/Dropbox/dev/p3/proj/i/</span><span class="si">{name}</span><span class="s1">&#39;</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">populate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span>  
@@ -68,6 +69,12 @@
 <dd class="field-even"><p></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.populate.update_pack_and_setup_py">
+<code class="sig-prename descclassname">epythet.populate.</code><code class="sig-name descname">update_pack_and_setup_py</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_pkg_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/populate.html#update_pack_and_setup_py"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.populate.update_pack_and_setup_py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just copy over setup.py and pack.py (moving the original to be prefixed by ‘_’</p>
 </dd></dl>
 
 </div>

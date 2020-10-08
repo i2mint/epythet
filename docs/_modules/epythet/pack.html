@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.pack &#8212; epythet 0.0.1 documentation</title>
+    <title>epythet.pack &#8212; epythet 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -33,18 +33,178 @@
           <div class="body" role="main">
             
   <h1>Source code for epythet.pack</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">string</span> <span class="k">import</span> <span class="n">Formatter</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utils to package and publish.</span>
+
+
+
+<span class="sd">The typical sequence of the methodic and paranoid could be something like this:</span>
+
+<span class="sd">```</span>
+<span class="sd">python pack.py current-configs  # see what you got</span>
+<span class="sd">python pack.py increment-configs-version  # update (increment the version and write that in setup.cfg</span>
+<span class="sd">python pack.py current-configs-version  # see that it worked</span>
+<span class="sd">python pack.py current-configs  # ... if you really want to see the whole configs again (you&#39;re really paranoid)</span>
+<span class="sd">python pack.py run-setup  # see that it worked</span>
+<span class="sd">python pack.py twine-upload-dist  # publish</span>
+<span class="sd"># and then go check things work...</span>
+<span class="sd">```</span>
+
+
+<span class="sd">If you&#39;re crazy (or know what you&#39;re doing) just do</span>
+
+<span class="sd">```</span>
+<span class="sd">python pack.py go</span>
+<span class="sd">```</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">setuptools</span> <span class="k">import</span> <span class="n">find_packages</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">urllib.request</span>
-<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="k">import</span> <span class="n">HTTPError</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="k">import</span> <span class="n">pprint</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Generator</span>
 <span class="kn">from</span> <span class="nn">configparser</span> <span class="k">import</span> <span class="n">ConfigParser</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="n">DFLT_CONFIG_FILE</span> <span class="o">=</span> <span class="s1">&#39;setup.cfg&#39;</span>
-<span class="n">DFLT_CONFIG_SECTION</span> <span class="o">=</span> <span class="s1">&#39;metadata&#39;</span>
+<span class="n">CONFIG_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;setup.cfg&#39;</span>
+<span class="n">CONFIG_SECTION</span> <span class="o">=</span> <span class="s1">&#39;metadata&#39;</span>
 
+<span class="n">pjoin</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_name_from_configs"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.get_name_from_configs">[docs]</a><span class="k">def</span> <span class="nf">get_name_from_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">assert_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get name from local setup.cfg (metadata section)&quot;&quot;&quot;</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">assert_exists</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;No name was foun in configs&quot;</span></div>
+
+
+<div class="viewcode-block" id="go"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.go">[docs]</a><span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update version, package and deploy:</span>
+<span class="sd">    Runs in a sequence: update_setup_cfg, run_setup, twine_upload_dist</span>
+
+<span class="sd">    :param version: The desired version (if not given, will increment the current version</span>
+<span class="sd">    :param verbose: Whether to print stuff or not</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">increment_configs_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+    <span class="n">run_setup</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">twine_upload_dist</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">clog</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="n">Path</span> <span class="o">=</span> <span class="nb">str</span>
+
+
+<span class="c1"># def update_version(version):</span>
+<span class="c1">#     &quot;&quot;&quot;Updates version (writes to setup.cfg)&quot;&quot;&quot;</span>
+<span class="c1">#     pass</span>
+<span class="k">def</span> <span class="nf">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span> <span class="o">=</span> <span class="n">validate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+        <span class="n">validate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pkg_dir</span>
+
+
+<span class="k">def</span> <span class="nf">_get_pkg_dir_and_name</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pkg_dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
+        <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">pkg_dir</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pkg_dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span>
+
+
+<div class="viewcode-block" id="validate_pkg_dir"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.validate_pkg_dir">[docs]</a><span class="k">def</span> <span class="nf">validate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Asserts that the pkg_dir is actually one (has a pkg_name/__init__.py file)&quot;&quot;&quot;</span>
+    <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span> <span class="o">=</span> <span class="n">_get_pkg_dir_and_name</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;Directory </span><span class="si">{pkg_dir}</span><span class="s2"> wasn&#39;t found&quot;</span>
+    <span class="k">assert</span> <span class="n">pkg_dirname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;pkg_dir=</span><span class="si">{pkg_dir}</span><span class="s2"> doesn&#39;t itself contain a dir named </span><span class="si">{pkg_dirname}</span><span class="s2">&quot;</span>
+    <span class="k">assert</span> <span class="s1">&#39;__init__.py&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span><span class="p">)),</span> \
+        <span class="n">f</span><span class="s2">&quot;pkg_dir=</span><span class="si">{pkg_dir}</span><span class="s2"> contains a dir named </span><span class="si">{pkg_dirname}</span><span class="s2">, &quot;</span> \
+        <span class="n">f</span><span class="s2">&quot;but that dir isn&#39;t a package (does not have a __init__.py&quot;</span>
+
+    <span class="k">return</span> <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span></div>
+
+
+<span class="k">def</span> <span class="nf">current_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">))</span>
+    <span class="n">pprint</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">current_configs_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">)[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+
+
+<span class="c1"># TODO: Both setup and twine are python. Change to use python objects directly.</span>
+<div class="viewcode-block" id="update_setup_cfg"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.update_setup_cfg">[docs]</a><span class="k">def</span> <span class="nf">update_setup_cfg</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">new_deploy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update setup.cfg (at this point, just updates the version).</span>
+<span class="sd">    If version is not given, will ask pypi (via http request) what the current version is, and increment that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_and_resolve_setup_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">),</span> <span class="n">new_deploy</span><span class="o">=</span><span class="n">new_deploy</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">clog</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">pprint</span><span class="p">(</span><span class="n">configs</span><span class="p">))</span>
+    <span class="n">write_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_version"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.set_version">[docs]</a><span class="k">def</span> <span class="nf">set_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update setup.cfg (at this point, just updates the version).</span>
+<span class="sd">    If version is not given, will ask pypi (via http request) what the current version is, and increment that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;version should be a string&quot;</span>
+    <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">write_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="increment_configs_version"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.increment_configs_version">[docs]</a><span class="k">def</span> <span class="nf">increment_configs_version</span><span class="p">(</span>
+        <span class="n">pkg_dir</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Update setup.cfg (at this point, just updates the version).</span>
+<span class="sd">    If version is not given, will ask pypi (via http request) what the current version is, and increment that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">_get_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">,</span> <span class="n">new_deploy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">increment_version</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">write_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">configs</span><span class="o">=</span><span class="n">configs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="run_setup"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.run_setup">[docs]</a><span class="k">def</span> <span class="nf">run_setup</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run ``python setup.py sdist bdist_wheel``&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------- setup_output ---------------------------&#39;</span><span class="p">)</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">original_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">setup_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{sys.executable}</span><span class="s1"> setup.py sdist bdist_wheel&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">original_dir</span><span class="p">)</span></div>
+    <span class="c1"># print(f&quot;{setup_output}\n&quot;)</span>
+
+
+<div class="viewcode-block" id="twine_upload_dist"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.twine_upload_dist">[docs]</a><span class="k">def</span> <span class="nf">twine_upload_dist</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Publish to pypi. Runs ``python -m twine upload dist/*``&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;--------------------------- upload_output ---------------------------&#39;</span><span class="p">)</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">original_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="c1"># TODO: dist/*? How to publish just last on</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{sys.executable}</span><span class="s1"> -m twine upload dist/*&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">original_dir</span><span class="p">)</span></div>
+    <span class="c1"># print(f&quot;{upload_output.decode()}\n&quot;)</span>
+
+
+<span class="c1"># TODO: A lot of work done here to read setup.cfg. setup function apparently does it for you. How to use that?</span>
 
 <span class="c1"># TODO: postprocess_ini_section_items and preprocess_ini_section_items: Add comma separated possibility?</span>
 <span class="c1"># TODO: Find out if configparse has an option to do this processing alreadys</span>
@@ -71,7 +231,7 @@
         <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span></div>
 
 
-<span class="c1"># TODO: Find out if configparse has an option to do this processing alreadys</span>
+<span class="c1"># TODO: Find out if configparse has an option to do this processing already</span>
 <div class="viewcode-block" id="preprocess_ini_section_items"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.preprocess_ini_section_items">[docs]</a><span class="k">def</span> <span class="nf">preprocess_ini_section_items</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Transform list values into newline-separated strings, in view of writing the value to a ini formatted section</span>
 <span class="sd">    &gt;&gt;&gt; section = {</span>
@@ -95,38 +255,40 @@
 
 
 <span class="k">def</span> <span class="nf">read_configs</span><span class="p">(</span>
-        <span class="n">config_file</span><span class="o">=</span><span class="n">DFLT_CONFIG_FILE</span><span class="p">,</span>
-        <span class="n">section</span><span class="o">=</span><span class="n">DFLT_CONFIG_SECTION</span><span class="p">,</span>
-        <span class="n">postproc</span><span class="o">=</span><span class="n">postprocess_ini_section_items</span><span class="p">):</span>
+        <span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">postproc</span><span class="o">=</span><span class="n">postprocess_ini_section_items</span>
+<span class="p">):</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">config_filepath</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">CONFIG_FILE_NAME</span><span class="p">)</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">postproc</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">postproc</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">section</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">postproc</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">postproc</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
+    <span class="c1"># if CONFIG_SECTION is None:</span>
+    <span class="c1">#     d = dict(c)</span>
+    <span class="c1">#     if postproc:</span>
+    <span class="c1">#         d = {k: dict(postproc(v)) for k, v in c}</span>
+    <span class="c1"># else:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">CONFIG_SECTION</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">postproc</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">postproc</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">d</span>
 
 
 <span class="k">def</span> <span class="nf">write_configs</span><span class="p">(</span>
+        <span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">configs</span><span class="p">,</span>
-        <span class="n">config_file</span><span class="o">=</span><span class="n">DFLT_CONFIG_FILE</span><span class="p">,</span>
-        <span class="n">section</span><span class="o">=</span><span class="n">DFLT_CONFIG_SECTION</span><span class="p">,</span>
         <span class="n">preproc</span><span class="o">=</span><span class="n">preprocess_ini_section_items</span>
 <span class="p">):</span>
+    <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">_get_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">config_filepath</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">CONFIG_FILE_NAME</span><span class="p">)</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
-    <span class="n">c</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">preproc</span><span class="p">(</span><span class="n">configs</span><span class="p">))</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">):</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">CONFIG_SECTION</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">preproc</span><span class="p">(</span><span class="n">configs</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">c</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
 
 
-<span class="n">dflt_formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
-
+<span class="c1"># dflt_formatter = Formatter()</span>
 
 <span class="k">def</span> <span class="nf">increment_version</span><span class="p">(</span><span class="n">version_str</span><span class="p">):</span>
     <span class="n">version_nums</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)))</span>
@@ -134,194 +296,207 @@
     <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">version_nums</span><span class="p">))</span>
 
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">requests</span>
+
+    <span class="n">requests_is_installed</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="n">requests_is_installed</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="http_get_json"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.http_get_json">[docs]</a><span class="k">def</span> <span class="nf">http_get_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">use_requests</span><span class="o">=</span><span class="n">requests_is_installed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Make ah http request to url and get json, and return as python dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">use_requests</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;response code was </span><span class="si">{r.status_code}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">urllib.request</span>
+        <span class="kn">from</span> <span class="nn">urllib.error</span> <span class="k">import</span> <span class="n">HTTPError</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;response code was </span><span class="si">{r.code}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">HTTPError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># to indicate (hopefully) that name doesn&#39;t exist</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span></div>
+
+
 <span class="n">DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE</span> <span class="o">=</span> <span class="s1">&#39;https://pypi.python.org/pypi/</span><span class="si">{package}</span><span class="s1">/json&#39;</span>
 
 
 <span class="c1"># TODO: Perhaps there&#39;s a safer way to analyze errors (and determine if the package exists or other HTTPError)</span>
 <div class="viewcode-block" id="current_pypi_version"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.current_pypi_version">[docs]</a><span class="k">def</span> <span class="nf">current_pypi_version</span><span class="p">(</span>
-        <span class="n">package</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">url_template</span><span class="o">=</span><span class="n">DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE</span>
+        <span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url_template</span><span class="o">=</span><span class="n">DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE</span><span class="p">,</span>
+        <span class="n">use_requests</span><span class="o">=</span><span class="n">requests_is_installed</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return version of package on pypi.python.org using json.</span>
 
 <span class="sd">    ```</span>
-<span class="sd">    &gt; get_version(&#39;py2store&#39;)</span>
+<span class="sd">    &gt; current_pypi_version(&#39;py2store&#39;)</span>
 <span class="sd">    &#39;0.0.7&#39;</span>
 <span class="sd">    ```</span>
 
 <span class="sd">    :param package: Name of the package</span>
 <span class="sd">    :return: A version (string) or None if there was an exception (usually means there</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">req</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="n">package</span><span class="p">))</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="n">t</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-            <span class="n">releases</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;releases&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="k">if</span> <span class="n">releases</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">releases</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;response code was </span><span class="si">{r.code}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">HTTPError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># to indicate (hopefully) that name doesn&#39;t exist</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span></div>
+    <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span> <span class="o">=</span> <span class="n">validate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">get_name_from_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">pkg_dirname</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;pkg_dirname (</span><span class="si">{pkg_dirname}</span><span class="s2">) and name (</span><span class="si">{name}</span><span class="s2">) were not the same&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">url_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">http_get_json</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">use_requests</span><span class="o">=</span><span class="n">use_requests</span><span class="p">)</span>
+    <span class="n">releases</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;releases&#39;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">releases</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">releases</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
 <span class="k">def</span> <span class="nf">next_version_for_package</span><span class="p">(</span>
-        <span class="n">package</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">url_template</span><span class="o">=</span><span class="n">DLFT_PYPI_PACKAGE_JSON_URL_TEMPLATE</span><span class="p">,</span>
-        <span class="n">version_if_current_version_none</span><span class="o">=</span><span class="s1">&#39;0.0.1&#39;</span>
+        <span class="n">version_if_current_version_none</span><span class="o">=</span><span class="s1">&#39;0.0.1&#39;</span><span class="p">,</span>
+        <span class="n">use_requests</span><span class="o">=</span><span class="n">requests_is_installed</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">current_version</span> <span class="o">=</span> <span class="n">current_pypi_version</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">url_template</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">get_name_from_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="o">=</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="n">current_version</span> <span class="o">=</span> <span class="n">current_pypi_version</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">url_template</span><span class="p">,</span> <span class="n">use_requests</span><span class="o">=</span><span class="n">use_requests</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">current_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">increment_version</span><span class="p">(</span><span class="n">current_version</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">version_if_current_version_none</span>
 
 
-<span class="k">def</span> <span class="nf">my_setup</span><span class="p">(</span><span class="o">**</span><span class="n">setup_kwargs</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">setuptools</span> <span class="k">import</span> <span class="n">setup</span>
-    <span class="kn">import</span> <span class="nn">json</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setup params -------------------------------------------------------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">setup_kwargs</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------------------------------------------------------------------&quot;</span><span class="p">)</span>
-    <span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">setup_kwargs</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="ujoin"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.ujoin">[docs]</a><span class="k">def</span> <span class="nf">ujoin</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Join strings with the url seperator (/).</span>
-
-<span class="sd">    Note that will add a / where it&#39;s missing (as in between &#39;https://pypi.org&#39; and &#39;project/&#39;),</span>
-<span class="sd">    and only use one if two consecutive tokens use respectively end and start with a /</span>
-<span class="sd">    (as in &#39;project/&#39; and &#39;/pipoke/&#39;).</span>
-
-<span class="sd">    &gt;&gt;&gt; ujoin(&#39;https://pypi.org&#39;, &#39;project/&#39;, &#39;/pipoke/&#39;)</span>
-<span class="sd">    &#39;https://pypi.org/project/pipoke/&#39;</span>
-
-<span class="sd">    Extremal cases</span>
-<span class="sd">    &gt;&gt;&gt; ujoin(&#39;https://pypi.org&#39;)</span>
-<span class="sd">    &#39;https://pypi.org&#39;</span>
-<span class="sd">    &gt;&gt;&gt; ujoin(&#39;https://pypi.org/&#39;)</span>
-<span class="sd">    &#39;https://pypi.org/&#39;</span>
-<span class="sd">    &gt;&gt;&gt; ujoin(&#39;&#39;)</span>
-<span class="sd">    &#39;&#39;</span>
-<span class="sd">    &gt;&gt;&gt; ujoin()</span>
-<span class="sd">    &#39;&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">return</span> <span class="p">((</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="s1">&#39;/&#39;</span>  <span class="c1"># prepend slash if first arg starts with it</span>
-            <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">):(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">))]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-            <span class="o">+</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>  <span class="c1"># append slash if last arg ends with it</span></div>
-
-
-<span class="c1">########### Partial and incremental formatting #########################################################################</span>
-<div class="viewcode-block" id="PartialFormatter"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.PartialFormatter">[docs]</a><span class="k">class</span> <span class="nc">PartialFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A string formatter that won&#39;t complain if the fields are only partially formatted.</span>
-<span class="sd">    But note that you will lose the spec part of your template (e.g. in {foo:1.2f}, you&#39;ll loose the 1.2f</span>
-<span class="sd">    if not foo is given -- but {foo} will remain).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+                 <span class="n">version</span><span class="p">,</span>
+                 <span class="n">configs</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">new_deploy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;{&#39;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
-
-    <span class="k">def</span> <span class="nf">format_fields_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span></div>
-
-
-<span class="n">partial_formatter</span> <span class="o">=</span> <span class="n">PartialFormatter</span><span class="p">()</span>
-
-
-<span class="c1"># TODO: For those who love algorithmic optimization, there&#39;s some wasted to cut out here below.</span>
-
-<span class="k">def</span> <span class="nf">_unformatted</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">partial_formatter</span><span class="o">.</span><span class="n">format_fields_set</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">k</span>
+            <span class="k">if</span> <span class="n">new_deploy</span><span class="p">:</span>
+                <span class="n">version</span> <span class="o">=</span> <span class="n">next_version_for_package</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>  <span class="c1"># when you want to make a new package</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">version</span> <span class="o">=</span> <span class="n">current_pypi_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>  <span class="c1"># when you want to make a new package</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Got an error trying to get the new version of </span><span class="si">{name}</span><span class="s2"> so will try to get the version from setup.cfg...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Couldn&#39;t fetch the next version from PyPi (no API token?), &quot;</span>
+                                 <span class="n">f</span><span class="s2">&quot;nor did I find a version in setup.cfg (metadata section).&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">version</span>
 
 
-<span class="k">def</span> <span class="nf">_fields_to_format</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">yield from</span> <span class="n">partial_formatter</span><span class="o">.</span><span class="n">format_fields_set</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<div class="viewcode-block" id="read_and_resolve_setup_configs"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.read_and_resolve_setup_configs">[docs]</a><span class="k">def</span> <span class="nf">read_and_resolve_setup_configs</span><span class="p">(</span>
+        <span class="n">pkg_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">new_deploy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">assert_names</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;make setup params and call setup</span>
 
-
-<div class="viewcode-block" id="format_str_vals_of_dict"><a class="viewcode-back" href="../../module_docs/epythet/pack.html#epythet.pack.format_str_vals_of_dict">[docs]</a><span class="k">def</span> <span class="nf">format_str_vals_of_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_formatting_loops</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    :param d:</span>
-<span class="sd">    :param max_formatting_loops:</span>
-<span class="sd">    :param kwargs:</span>
-<span class="sd">    :return:</span>
-
-<span class="sd">    &gt;&gt;&gt; d = {</span>
-<span class="sd">    ...     &#39;filepath&#39;: &#39;{root}/{file}.{ext}&#39;,</span>
-<span class="sd">    ...     &#39;ext&#39;: &#39;txt&#39;</span>
-<span class="sd">    ... }</span>
-<span class="sd">    &gt;&gt;&gt; format_str_vals_of_dict(d, root=&#39;ROOT&#39;, file=&#39;FILE&#39;)</span>
-<span class="sd">    {&#39;filepath&#39;: &#39;ROOT/FILE.txt&#39;, &#39;ext&#39;: &#39;txt&#39;}</span>
-
-<span class="sd">    Note that if the input mapping `d` and the kwargs have a conflict, the mapping version is used!</span>
-
-<span class="sd">    &gt;&gt;&gt; format_str_vals_of_dict(d, root=&#39;ROOT&#39;, file=&#39;FILE&#39;, ext=&#39;will_not_be_used&#39;)</span>
-<span class="sd">    {&#39;filepath&#39;: &#39;ROOT/FILE.txt&#39;, &#39;ext&#39;: &#39;txt&#39;}</span>
-
-<span class="sd">    But if you want to override an input mapping, you can -- the usual way:</span>
-<span class="sd">    &gt;&gt;&gt; format_str_vals_of_dict(dict(d, ext=&#39;will_be_used&#39;), root=&#39;ROOT&#39;, file=&#39;FILE&#39;)</span>
-<span class="sd">    {&#39;filepath&#39;: &#39;ROOT/FILE.will_be_used&#39;, &#39;ext&#39;: &#39;will_be_used&#39;}</span>
-
-<span class="sd">    If you don&#39;t provide enough fields to satisfy all the format fields in the values of `d`,</span>
-<span class="sd">    you&#39;ll be told to bugger off.</span>
-
-<span class="sd">    &gt;&gt;&gt; format_str_vals_of_dict(d, root=&#39;ROOT&#39;)</span>
-<span class="sd">    Traceback (most recent call last):</span>
-<span class="sd">    ...</span>
-<span class="sd">    ValueError: I won&#39;t be able to complete that. You&#39;ll need to provide the values for:</span>
-<span class="sd">      file</span>
-
-<span class="sd">    And it&#39;s recursive...</span>
-<span class="sd">    &gt;&gt;&gt; d = {</span>
-<span class="sd">    ...     &#39;filepath&#39;: &#39;{root}/{filename}&#39;,</span>
-<span class="sd">    ...     &#39;filename&#39;: &#39;{file}.{ext}&#39;</span>
-<span class="sd">    ... }</span>
-<span class="sd">    &gt;&gt;&gt; my_configs = {&#39;root&#39;: &#39;ROOT&#39;, &#39;file&#39;: &#39;FILE&#39;, &#39;ext&#39;: &#39;EXT&#39;}</span>
-<span class="sd">    &gt;&gt;&gt; format_str_vals_of_dict(d, **my_configs)</span>
-<span class="sd">    {&#39;filepath&#39;: &#39;ROOT/FILE.EXT&#39;, &#39;filename&#39;: &#39;FILE.EXT&#39;}</span>
-
-<span class="sd">    # TODO: Could make the above work if filename is give, but not file nor ext! At least as an option.</span>
-
+<span class="sd">    :param pkg_dir: Directory where the pkg is (which is also where the setup.cfg is)</span>
+<span class="sd">    :param new_deploy: whether this setup for a new deployment (publishing to pypi) or not</span>
+<span class="sd">    :param version: The version number to set this up as.</span>
+<span class="sd">                    If not given will look at setup.cfg[metadata] for one,</span>
+<span class="sd">                    and if not found there will use the current version (requesting pypi.org)</span>
+<span class="sd">                    and bump it if the new_deploy flag is on</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>  <span class="c1"># make a shallow copy</span>
-    <span class="c1"># The defaults (kwargs) cannot overlap with any keys of d, so:</span>
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">)}</span>
+    <span class="c1"># read the config file (get a dict with it&#39;s contents)</span>
+    <span class="n">pkg_dir</span><span class="p">,</span> <span class="n">pkg_dirname</span> <span class="o">=</span> <span class="n">_get_pkg_dir_and_name</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">assert_names</span><span class="p">:</span>
+        <span class="n">validate_pkg_dir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
 
-    <span class="n">provided_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">missing_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_fields_to_format</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="o">-</span> <span class="n">provided_fields</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">missing_fields</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I won&#39;t be able to complete that. You&#39;ll need to provide the values for:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                         <span class="n">f</span><span class="s2">&quot;  {&#39;, &#39;.join(missing_fields)}&quot;</span><span class="p">)</span>
+    <span class="c1"># parse out name and root_url</span>
+    <span class="k">assert</span> <span class="s1">&#39;root_url&#39;</span> <span class="ow">in</span> <span class="n">configs</span> <span class="ow">or</span> <span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">,</span> <span class="s2">&quot;configs didn&#39;t have a root_url or url&quot;</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_formatting_loops</span><span class="p">):</span>
-        <span class="n">unformatted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_unformatted</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">pkg_dirname</span>
+    <span class="k">if</span> <span class="n">assert_names</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">name</span> <span class="o">==</span> <span class="n">pkg_dirname</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;config name (</span><span class="si">{name}</span><span class="s2">) and pkg_dirname (</span><span class="si">{pkg_dirname}</span><span class="s2">) are not equal!&quot;</span>
 
-        <span class="k">if</span> <span class="n">unformatted</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">unformatted</span><span class="p">:</span>
-                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">partial_formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">break</span>
+    <span class="k">if</span> <span class="s1">&#39;root_url&#39;</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
+        <span class="n">root_url</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;root_url&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">root_url</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>  <span class="c1"># yes, it&#39;s a url so it&#39;s always forward slash, not the systems&#39; slash os.sep</span>
+            <span class="n">root_url</span> <span class="o">=</span> <span class="n">root_url</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{root_url}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;There are still some unformatted fields, &quot;</span>
-                         <span class="n">f</span><span class="s2">&quot;but I reached my max </span><span class="si">{max_formatting_loops}</span><span class="s2"> allowed loops. &quot;</span> <span class="o">+</span>
-                         <span class="n">f</span><span class="s2">&quot;Those fields are: {set(_fields_to_format(d)) - (set(d) | set(kwargs))}&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;configs didn&#39;t have a root_url or url. It should have at least one of these!&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">d</span></div>
+    <span class="c1"># Note: if version is not in config, version will be None,</span>
+    <span class="c1">#  resulting in bumping the version or making it be 0.0.1 if the package is not found (i.e. first deploy)</span>
+
+    <span class="n">meta_data_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">configs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="c1"># make the setup_kwargs</span>
+    <span class="n">setup_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">meta_data_dict</span><span class="p">,</span>
+        <span class="c1"># You can add more key=val pairs here if they&#39;re missing in config file</span>
+    <span class="p">)</span>
+
+    <span class="n">version</span> <span class="o">=</span> <span class="n">_get_version</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">configs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_deploy</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">text_of_readme_md_file</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;README.md&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">dflt_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{version}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+        <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span>
+        <span class="n">include_package_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">platforms</span><span class="o">=</span><span class="s1">&#39;any&#39;</span><span class="p">,</span>
+        <span class="n">long_description</span><span class="o">=</span><span class="n">text_of_readme_md_file</span><span class="p">(),</span>
+        <span class="n">long_description_content_type</span><span class="o">=</span><span class="s2">&quot;text/markdown&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">configs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dflt_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">setup_kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">configs</span></div>
+
+
+<span class="n">argh_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;namespace&#39;</span><span class="p">:</span> <span class="s1">&#39;pack&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;functions&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="n">current_configs</span><span class="p">,</span>
+        <span class="n">increment_configs_version</span><span class="p">,</span>
+        <span class="n">current_configs_version</span><span class="p">,</span>
+        <span class="n">twine_upload_dist</span><span class="p">,</span>
+        <span class="n">read_and_resolve_setup_configs</span><span class="p">,</span>
+        <span class="n">go</span><span class="p">,</span>
+        <span class="n">get_name_from_configs</span><span class="p">,</span>
+        <span class="n">run_setup</span><span class="p">,</span>
+        <span class="n">current_pypi_version</span><span class="p">,</span>
+        <span class="n">validate_pkg_dir</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;namespace_kwargs&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="s1">&#39;Package Configurations&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Utils to package and publish.&#39;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">argh</span>  <span class="c1"># pip install argh</span>
+    <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_commands</span><span class="p">(</span><span class="n">argh_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;functions&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 </pre></div>
 
           </div>
