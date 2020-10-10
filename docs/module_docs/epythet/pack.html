@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.pack &#8212; epythet 0.0.1 documentation</title>
+    <title>epythet.pack &#8212; epythet 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -36,20 +36,27 @@
             
   <div class="section" id="module-epythet.pack">
 <span id="epythet-pack"></span><h1>epythet.pack<a class="headerlink" href="#module-epythet.pack" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="epythet.pack.PartialFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">PartialFormatter</code><a class="reference internal" href="../../_modules/epythet/pack.html#PartialFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.PartialFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>A string formatter that won’t complain if the fields are only partially formatted.
-But note that you will lose the spec part of your template (e.g. in {foo:1.2f}, you’ll loose the 1.2f
-if not foo is given – but {foo} will remain).</p>
-</dd></dl>
-
+<p>Utils to package and publish.</p>
+<p>The typical sequence of the methodic and paranoid could be something like this:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">current-configs</span>&#160; <span class="pre">#</span> <span class="pre">see</span> <span class="pre">what</span> <span class="pre">you</span> <span class="pre">got</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">increment-configs-version</span>&#160; <span class="pre">#</span> <span class="pre">update</span> <span class="pre">(increment</span> <span class="pre">the</span> <span class="pre">version</span> <span class="pre">and</span> <span class="pre">write</span> <span class="pre">that</span> <span class="pre">in</span> <span class="pre">setup.cfg</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">current-configs-version</span>&#160; <span class="pre">#</span> <span class="pre">see</span> <span class="pre">that</span> <span class="pre">it</span> <span class="pre">worked</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">current-configs</span>&#160; <span class="pre">#</span> <span class="pre">...</span> <span class="pre">if</span> <span class="pre">you</span> <span class="pre">really</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">see</span> <span class="pre">the</span> <span class="pre">whole</span> <span class="pre">configs</span> <span class="pre">again</span> <span class="pre">(you're</span> <span class="pre">really</span> <span class="pre">paranoid)</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">run-setup</span>&#160; <span class="pre">#</span> <span class="pre">see</span> <span class="pre">that</span> <span class="pre">it</span> <span class="pre">worked</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">twine-upload-dist</span>&#160; <span class="pre">#</span> <span class="pre">publish</span>
+<span class="pre">#</span> <span class="pre">and</span> <span class="pre">then</span> <span class="pre">go</span> <span class="pre">check</span> <span class="pre">things</span> <span class="pre">work...</span>
+<span class="pre">`</span></code></p>
+<p>If you’re crazy (or know what you’re doing) just do</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">python</span> <span class="pre">pack.py</span> <span class="pre">go</span>
+<span class="pre">`</span></code></p>
 <dl class="py function">
 <dt id="epythet.pack.current_pypi_version">
-<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">current_pypi_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">package</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">url_template</span><span class="o">=</span><span class="default_value">'https://pypi.python.org/pypi/{package}/json'</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../_modules/epythet/pack.html#current_pypi_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.current_pypi_version" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">current_pypi_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>None<span class="p">, </span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">url_template</span><span class="o">=</span><span class="default_value">'https://pypi.python.org/pypi/{package}/json'</span></em>, <em class="sig-param"><span class="n">use_requests</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../_modules/epythet/pack.html#current_pypi_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.current_pypi_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return version of package on pypi.python.org using json.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">&gt;</span> <span class="pre">get_version('py2store')</span>
+<span class="pre">&gt;</span> <span class="pre">current_pypi_version('py2store')</span>
 <span class="pre">'0.0.7'</span>
 <span class="pre">`</span></code></p>
 <dl class="field-list simple">
@@ -63,54 +70,37 @@ if not foo is given – but {foo} will remain).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pack.format_str_vals_of_dict">
-<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">format_str_vals_of_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">max_formatting_loops</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#format_str_vals_of_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.format_str_vals_of_dict" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt id="epythet.pack.get_name_from_configs">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">get_name_from_configs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">assert_exists</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#get_name_from_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.get_name_from_configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get name from local setup.cfg (metadata section)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.go">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">go</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.go" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update version, package and deploy:
+Runs in a sequence: update_setup_cfg, run_setup, twine_upload_dist</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>d</strong> – </p></li>
-<li><p><strong>max_formatting_loops</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>version</strong> – The desired version (if not given, will increment the current version</p></li>
+<li><p><strong>verbose</strong> – Whether to print stuff or not</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{root}</span><span class="s1">/</span><span class="si">{file}</span><span class="s1">.</span><span class="si">{ext}</span><span class="s1">&#39;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s1">&#39;ext&#39;</span><span class="p">:</span> <span class="s1">&#39;txt&#39;</span>
-<span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">format_str_vals_of_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;ROOT&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">)</span>
-<span class="go">{&#39;filepath&#39;: &#39;ROOT/FILE.txt&#39;, &#39;ext&#39;: &#39;txt&#39;}</span>
-</pre></div>
-</div>
-<p>Note that if the input mapping <cite>d</cite> and the kwargs have a conflict, the mapping version is used!</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_str_vals_of_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;ROOT&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;will_not_be_used&#39;</span><span class="p">)</span>
-<span class="go">{&#39;filepath&#39;: &#39;ROOT/FILE.txt&#39;, &#39;ext&#39;: &#39;txt&#39;}</span>
-</pre></div>
-</div>
-<p>But if you want to override an input mapping, you can – the usual way:
-&gt;&gt;&gt; format_str_vals_of_dict(dict(d, ext=’will_be_used’), root=’ROOT’, file=’FILE’)
-{‘filepath’: ‘ROOT/FILE.will_be_used’, ‘ext’: ‘will_be_used’}</p>
-<p>If you don’t provide enough fields to satisfy all the format fields in the values of <cite>d</cite>,
-you’ll be told to bugger off.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_str_vals_of_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="s1">&#39;ROOT&#39;</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-<span class="c">...</span>
-<span class="gr">ValueError</span>: <span class="n">I won&#39;t be able to complete that. You&#39;ll need to provide the values for:</span>
-<span class="go">  file</span>
-</pre></div>
-</div>
-<p>And it’s recursive…
-&gt;&gt;&gt; d = {
-…     ‘filepath’: ‘{root}/{filename}’,
-…     ‘filename’: ‘{file}.{ext}’
-… }
-&gt;&gt;&gt; my_configs = {‘root’: ‘ROOT’, ‘file’: ‘FILE’, ‘ext’: ‘EXT’}
-&gt;&gt;&gt; format_str_vals_of_dict(d, <a href="#id1"><span class="problematic" id="id2">**</span></a>my_configs)
-{‘filepath’: ‘ROOT/FILE.EXT’, ‘filename’: ‘FILE.EXT’}</p>
-<p># TODO: Could make the above work if filename is give, but not file nor ext! At least as an option.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.http_get_json">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">http_get_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">use_requests</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>dict<span class="p">]</span><a class="reference internal" href="../../_modules/epythet/pack.html#http_get_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.http_get_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make ah http request to url and get json, and return as python dict</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.increment_configs_version">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">increment_configs_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#increment_configs_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.increment_configs_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update setup.cfg (at this point, just updates the version).
+If version is not given, will ask pypi (via http request) what the current version is, and increment that.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -147,25 +137,53 @@ publishing</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pack.ujoin">
-<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">ujoin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#ujoin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.ujoin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Join strings with the url seperator (/).</p>
-<p>Note that will add a / where it’s missing (as in between ‘<a class="reference external" href="https://pypi.org">https://pypi.org</a>’ and ‘project/’),
-and only use one if two consecutive tokens use respectively end and start with a /
-(as in ‘project/’ and ‘/pipoke/’).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ujoin</span><span class="p">(</span><span class="s1">&#39;https://pypi.org&#39;</span><span class="p">,</span> <span class="s1">&#39;project/&#39;</span><span class="p">,</span> <span class="s1">&#39;/pipoke/&#39;</span><span class="p">)</span>
-<span class="go">&#39;https://pypi.org/project/pipoke/&#39;</span>
-</pre></div>
-</div>
-<p>Extremal cases
-&gt;&gt;&gt; ujoin(‘<a class="reference external" href="https://pypi.org">https://pypi.org</a>’)
-‘<a class="reference external" href="https://pypi.org">https://pypi.org</a>’
-&gt;&gt;&gt; ujoin(‘<a class="reference external" href="https://pypi.org/">https://pypi.org/</a>’)
-‘<a class="reference external" href="https://pypi.org/">https://pypi.org/</a>’
-&gt;&gt;&gt; ujoin(‘’)
-‘’
-&gt;&gt;&gt; ujoin()
-‘’</p>
+<dt id="epythet.pack.read_and_resolve_setup_configs">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">read_and_resolve_setup_configs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">new_deploy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">assert_names</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#read_and_resolve_setup_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.read_and_resolve_setup_configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>make setup params and call setup</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pkg_dir</strong> – Directory where the pkg is (which is also where the setup.cfg is)</p></li>
+<li><p><strong>new_deploy</strong> – whether this setup for a new deployment (publishing to pypi) or not</p></li>
+<li><p><strong>version</strong> – The version number to set this up as.
+If not given will look at setup.cfg[metadata] for one,
+and if not found there will use the current version (requesting pypi.org)
+and bump it if the new_deploy flag is on</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.run_setup">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">run_setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#run_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.run_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">sdist</span> <span class="pre">bdist_wheel</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.set_version">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">set_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">version</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#set_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.set_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update setup.cfg (at this point, just updates the version).
+If version is not given, will ask pypi (via http request) what the current version is, and increment that.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.twine_upload_dist">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">twine_upload_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#twine_upload_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.twine_upload_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish to pypi. Runs <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">twine</span> <span class="pre">upload</span> <span class="pre">dist/*</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.update_setup_cfg">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">update_setup_cfg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em>, <em class="sig-param"><span class="n">new_deploy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#update_setup_cfg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.update_setup_cfg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update setup.cfg (at this point, just updates the version).
+If version is not given, will ask pypi (via http request) what the current version is, and increment that.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.pack.validate_pkg_dir">
+<code class="sig-prename descclassname">epythet.pack.</code><code class="sig-name descname">validate_pkg_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack.html#validate_pkg_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack.validate_pkg_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asserts that the pkg_dir is actually one (has a pkg_name/__init__.py file)</p>
 </dd></dl>
 
 </div>

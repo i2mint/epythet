@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def text_of_readme_md_file():
@@ -10,7 +10,6 @@ def text_of_readme_md_file():
 
 
 setup(
-    packages=find_packages(),
     long_description=text_of_readme_md_file(),
     long_description_content_type="text/markdown"
 )  # Note: Everything should be in the local setup.cfg

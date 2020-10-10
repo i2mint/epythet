@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.populate &#8212; epythet 0.0.1 documentation</title>
+    <title>epythet.populate &#8212; epythet 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -35,12 +35,13 @@
   <h1>Source code for epythet.populate</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="c1"># from functools import partial</span>
 
 <span class="kn">from</span> <span class="nn">epythet</span> <span class="k">import</span> <span class="n">pkg_path_names</span><span class="p">,</span> <span class="n">root_dir</span>
 <span class="kn">from</span> <span class="nn">epythet</span> <span class="k">import</span> <span class="n">pkg_join</span> <span class="k">as</span> <span class="n">epythet_join</span>
 <span class="kn">from</span> <span class="nn">epythet.util</span> <span class="k">import</span> <span class="n">mk_conditional_logger</span>
-<span class="kn">from</span> <span class="nn">epythet.pack</span> <span class="k">import</span> <span class="n">write_configs</span>
+
+<span class="c1"># from epythet.pack_util import write_configs</span>
 
 <span class="n">path_sep</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
 
@@ -61,9 +62,11 @@
                      <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">install_requires</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">overwrite</span><span class="o">=</span><span class="p">(),</span>
                      <span class="o">**</span><span class="n">configs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Populate project directory root with useful packaging files, if they&#39;re missing.</span>
 
+<span class="sd">    &gt;&gt;&gt; from epythet.populate import populate_pkg_dir</span>
 <span class="sd">    &gt;&gt;&gt; import os  # doctest: +SKIP</span>
 <span class="sd">    &gt;&gt;&gt; name = &#39;epythet&#39;  # doctest: +SKIP</span>
 <span class="sd">    &gt;&gt;&gt; pkg_dir = f&#39;/D/Dropbox/dev/p3/proj/i/{name}&#39;  # doctest: +SKIP</span>
@@ -85,6 +88,10 @@
 <span class="sd">    :return:</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">overwrite</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">overwrite</span> <span class="o">=</span> <span class="p">{</span><span class="n">overwrite</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">overwrite</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
     <span class="n">_clog</span> <span class="o">=</span> <span class="n">mk_conditional_logger</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
     <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">))</span>
     <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{pkg_dir}</span><span class="s2"> is not a directory&quot;</span>
@@ -129,8 +136,11 @@
         <span class="n">_clog</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;... copying </span><span class="si">{resource_name}</span><span class="s1"> from </span><span class="si">{root_dir}</span><span class="s1"> to </span><span class="si">{pkg_dir}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">epythet_join</span><span class="p">(</span><span class="n">resource_name</span><span class="p">),</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">))</span>
 
+    <span class="k">def</span> <span class="nf">should_update</span><span class="p">(</span><span class="n">resource_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">resource_name</span> <span class="ow">in</span> <span class="n">overwrite</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)))</span>
+
     <span class="k">for</span> <span class="n">resource_name</span> <span class="ow">in</span> <span class="n">pkg_path_names</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">should_update</span><span class="p">(</span><span class="n">resource_name</span><span class="p">):</span>
             <span class="n">copy_from_resource</span><span class="p">(</span><span class="n">resource_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_txt_to_pkg</span><span class="p">(</span><span class="n">resource_name</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
@@ -140,21 +150,39 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">),</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="s1">&#39;setup.cfg&#39;</span><span class="p">)):</span>
-        <span class="kn">from</span> <span class="nn">epythet.pack</span> <span class="k">import</span> <span class="n">write_configs</span>
+    <span class="k">if</span> <span class="n">should_update</span><span class="p">(</span><span class="s1">&#39;setup.cfg&#39;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">epythet.pack_util</span> <span class="k">import</span> <span class="n">write_configs</span>
         <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;... making a &#39;setup.cfg&#39;&quot;</span><span class="p">)</span>
         <span class="n">write_configs</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">pjoin</span><span class="p">(</span><span class="s1">&#39;setup.cfg&#39;</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="s1">&#39;LICENSE&#39;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">should_update</span><span class="p">(</span><span class="s1">&#39;LICENSE&#39;</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">epythet.licensing</span> <span class="k">import</span> <span class="n">license_body</span>
         <span class="n">_license_body</span> <span class="o">=</span> <span class="n">license_body</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">])</span>
         <span class="n">save_txt_to_pkg</span><span class="p">(</span><span class="s1">&#39;LICENSE&#39;</span><span class="p">,</span> <span class="n">_license_body</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="s1">&#39;README.md&#39;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">should_update</span><span class="p">(</span><span class="s1">&#39;README.md&#39;</span><span class="p">):</span>
         <span class="n">readme_text</span> <span class="o">=</span> <span class="n">gen_readme_text</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">))</span>
         <span class="n">save_txt_to_pkg</span><span class="p">(</span><span class="s1">&#39;README.md&#39;</span><span class="p">,</span> <span class="n">readme_text</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="update_pack_and_setup_py"><a class="viewcode-back" href="../../module_docs/epythet/populate.html#epythet.populate.update_pack_and_setup_py">[docs]</a><span class="k">def</span> <span class="nf">update_pack_and_setup_py</span><span class="p">(</span><span class="n">target_pkg_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Just copy over setup.py and pack.py (moving the original to be prefixed by &#39;_&#39;&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">target_pkg_dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">path_sep</span><span class="p">):</span>
+        <span class="n">target_pkg_dir</span> <span class="o">=</span> <span class="n">target_pkg_dir</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># remove the slash suffix (or basename will be empty)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">target_pkg_dir</span><span class="p">)</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">target_pkg_dir</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">{</span><span class="s1">&#39;pack.py&#39;</span><span class="p">,</span> <span class="s1">&#39;setup.py&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">}</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">contents</span><span class="p">),</span> \
+        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_pkg_dir}</span><span class="s2"> needs to have all three: {&#39;, &#39;.join({&#39;pack.py&#39;, &#39;setup.py&#39;, name})}&quot;</span>
+
+    <span class="n">pjoin</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">p</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_pkg_dir</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="n">resources</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pack.py&#39;</span><span class="p">,</span> <span class="s1">&#39;setup.py&#39;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">resource_name</span> <span class="ow">in</span> <span class="n">resources</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;... copying </span><span class="si">{resource_name}</span><span class="s1"> from {epythet_join(&quot;&quot;)} to </span><span class="si">{target_pkg_dir}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">),</span> <span class="n">dst</span><span class="o">=</span><span class="n">pjoin</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">resource_name</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">epythet_join</span><span class="p">(</span><span class="n">resource_name</span><span class="p">),</span> <span class="n">dst</span><span class="o">=</span><span class="n">pjoin</span><span class="p">(</span><span class="n">resource_name</span><span class="p">))</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

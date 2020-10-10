@@ -1,3 +1,15 @@
+"""
+Console Scripts
+---------------
+
+To see available commands
+::
+
+    epythet --help
+
+
+"""
+
 import os
 import json
 

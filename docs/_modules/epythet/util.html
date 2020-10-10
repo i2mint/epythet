@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.util &#8212; epythet 0.0.1 documentation</title>
+    <title>epythet.util &#8212; epythet 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -35,7 +35,21 @@
   <h1>Source code for epythet.util</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">standard_lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_standard_lib_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">standard_lib_dir</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">standard_lib_module_names</span><span class="p">(</span><span class="n">is_standard_lib_path</span><span class="o">=</span><span class="n">is_standard_lib_path</span><span class="p">,</span>
+                              <span class="n">name_filt</span><span class="o">=</span><span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="n">name_filt</span><span class="p">,</span> <span class="p">(</span><span class="n">module_info</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">module_info</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">()</span>
+                              <span class="k">if</span> <span class="n">is_standard_lib_path</span><span class="p">(</span><span class="n">module_info</span><span class="o">.</span><span class="n">module_finder</span><span class="o">.</span><span class="n">path</span><span class="p">)))</span>
 
 
 <span class="k">def</span> <span class="nf">mk_conditional_logger</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">):</span>
