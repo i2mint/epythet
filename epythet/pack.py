@@ -44,7 +44,8 @@ def get_name_from_configs(pkg_dir, assert_exists=True):
     configs = read_configs(pkg_dir=pkg_dir)
     name = configs.get('name', None)
     if assert_exists:
-        assert name is not None, "No name was foun in configs"
+        assert name is not None, "No name was found in configs"
+    return name
 
 
 def go(pkg_dir, version=None, verbose=True):

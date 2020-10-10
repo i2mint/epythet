@@ -1,14 +1,27 @@
 import os
 import shutil
+import json
 # from functools import partial
-
-from epythet import pkg_path_names, root_dir
+from typing import List, Optional
+from epythet import pkg_path_names, root_dir, epythet_configs, epythet_configs_file
 from epythet import pkg_join as epythet_join
 from epythet.util import mk_conditional_logger
 
 # from epythet.pack_util import write_configs
 
 path_sep = os.path.sep
+
+populate_dflts = epythet_configs.get(
+    'populate_dflts',
+    {'description': "There's a bit of an air of mystery around this project...",
+     'root_url': None,
+     'author': None,
+     'license': 'mit',
+     'description_file': 'README.md',
+     'keywords': None,
+     'install_requires': None,
+     'verbose': True}
+)
 
 
 def gen_readme_text(name, text="There's a bit of an air of mystery around this project..."):
@@ -18,16 +31,18 @@ def gen_readme_text(name, text="There's a bit of an air of mystery around this p
 """
 
 
+# TODO: Add a `defaults_from` in **configs that allows one to have several named defaults in epythet_configs_file
 def populate_pkg_dir(pkg_dir,
-                     description="There's a bit of an air of mystery around this project...",
-                     root_url=None,
-                     author=None,
-                     license='mit',
-                     description_file='README.md',
-                     keywords=None,
-                     install_requires=None,
-                     verbose=True,
-                     overwrite=(),
+                     description: str = populate_dflts['description'],
+                     root_url: Optional[str] = populate_dflts['root_url'],
+                     author: Optional[str] = populate_dflts['author'],
+                     license: str = populate_dflts['license'],
+                     description_file: str = populate_dflts['description_file'],
+                     keywords: Optional[List] = populate_dflts['keywords'],
+                     install_requires: Optional[List] = populate_dflts['install_requires'],
+                     verbose: bool = populate_dflts['verbose'],
+                     overwrite: List = (),
+                     defaults_from: Optional[str] = None,
                      **configs):
     """Populate project directory root with useful packaging files, if they're missing.
 
@@ -49,14 +64,32 @@ def populate_pkg_dir(pkg_dir,
     :param keywords:
     :param install_requires:
     :param verbose:
+    :param default_from: Name of field to look up in epythet_configs to get defaults from,
+        or 'user_input' to get it from user input.
     :param configs:
     :return:
 
     """
+    # TODO: Test this defaults_from thing!
+    if defaults_from is not None:
+        if defaults_from == 'user_input':
+            args_defaults = dict()  # ... and then fill with user input
+            raise NotImplementedError("Not immplemented yet")  # TODO: Implement
+        else:
+            try:
+                epythet_configs = json.load(open(epythet_configs_file))
+                args_defaults = epythet_configs[defaults_from]
+            except KeyError:
+                raise KeyError(f"{epythet_configs_file} json didn't have a {defaults_from} field")
+        _locals = locals()
+        for k, v in args_defaults.items():
+            _locals[k] = v
+
     if isinstance(overwrite, str):
         overwrite = {overwrite}
     else:
         overwrite = set(overwrite)
+
     _clog = mk_conditional_logger(condition=verbose, func=print)
     pkg_dir = os.path.abspath(os.path.expanduser(pkg_dir))
     assert os.path.isdir(pkg_dir), f"{pkg_dir} is not a directory"
