@@ -106,7 +106,7 @@ def replace_import_names(
     Use case: You've renamed something or moved some modules (remember UNIX? Same as move!) and have to go through
     all your files and notebooks and replace those names.
     Now, if you have a nice IDE, we suggest you use refactoring instead -- as long as you have any uses in the scope.
-    But sometimes it's not enough. You might have text/html documments, or jupyter notebooks, etc.
+    But sometimes it's not enough. You might have text/html documents, or jupyter notebooks, etc.
     So you can use this instead.
 
     Be warned though:
@@ -146,12 +146,12 @@ def replace_import_names(
         target_store = {}  # use a dict to write results
         _clog("You didn't specify a target_store, so I'll write all of this in a dict and return it to you!")
 
-    if source_store == target_store:
+    if source_store == target_store:  # TODO: R: stores are not set up with __eq__, so no predictable
         # TODO: Add confirmation (user input) to protect more. Make this an option (so total automatic is possible)
-        _clog("I just wanted you to be aware that you are using the same store for source and target."
+        _clog("I just wanted you to be aware that you are using the same store for source and target. "
               "This means I'm about to overwrite your files!!")
-        if dryrun:
-            _clog("... Right now, dryrun=True, so I'm just pretending!")
+    if dryrun:
+        _clog("... Right now, dryrun=True, so I'm just pretending!")
 
     replacer = replacer_factory(from_to_dict)
 
@@ -177,10 +177,44 @@ def replace_import_names(
 
         new_v = '\n'.join(gen())
 
-        if not dryrun and lines_replaced > 0:
+        if not dryrun:
             target_store[k] = new_v
 
     return target_store
+
+
+def _get_rootdir_and_name(x):
+    from inspect import ismodule
+    if ismodule(x):
+        x = x.__path__._path[0]  # TODO: See if there's a better way to do this
+    else:
+        assert os.path.isdir(x), f"Should be a directory: {x}"
+
+    if not x.endswith(os.path.sep):
+        x = x + os.path.sep
+
+    name = os.path.basename(x[:-1])
+    return x, name
+
+
+def copy_project_with_different_import_names(src, targ, dryrun=True, verbose=True):
+    """Copy project py files to another (or the same) folder, replacing import names for that project"""
+    from py2store import QuickTextStore
+
+    src_dir, src_name = _get_rootdir_and_name(src)
+    targ_dir, targ_name = _get_rootdir_and_name(targ)
+    source_store = QuickTextStore(src_dir + '{}.py')
+    target_store = QuickTextStore(targ_dir + '{}.py')
+    from_to_dict = {src_name: targ_name}
+
+    return replace_import_names(
+        source_store=source_store,
+        from_to_dict=from_to_dict,
+        target_store=target_store,
+        dryrun=dryrun,
+        verbose=verbose,
+        replacer_factory=mk_import_root_replacer,
+        add_comment_at_the_end_of_lines_replaced=False)
 
 
 fc = dict(
