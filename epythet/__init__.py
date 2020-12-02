@@ -27,10 +27,6 @@ licenses_json_path = rjoin(data_dir, 'github_licenses.json')
 pkg_dir = os.path.dirname(root_dir)
 pkg_join = lambda *paths: os.path.join(pkg_dir, *paths)
 
-# TODO: Change to use ini format? (Or yaml or toml?)
-epythet_configs_file = pkg_join('epythet_configs.json')
-epythet_configs = json.load(open(epythet_configs_file))
-
 pkg_path_names = ('.gitignore', 'setup.py')
 pkg_paths = {pkg_join(name) for name in pkg_path_names}
 
