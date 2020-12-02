@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.util &#8212; epythet 0.0.8 documentation</title>
+    <title>epythet.util &#8212; epythet 0.0.13 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -35,6 +35,12 @@
             
   <div class="section" id="module-epythet.util">
 <span id="epythet-util"></span><h1>epythet.util<a class="headerlink" href="#module-epythet.util" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="epythet.util.copy_project_with_different_import_names">
+<code class="sig-prename descclassname">epythet.util.</code><code class="sig-name descname">copy_project_with_different_import_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em>, <em class="sig-param"><span class="n">targ</span></em>, <em class="sig-param"><span class="n">dryrun</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/util.html#copy_project_with_different_import_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.util.copy_project_with_different_import_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy project py files to another (or the same) folder, replacing import names for that project</p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="epythet.util.highlight">
 <code class="sig-prename descclassname">epythet.util.</code><code class="sig-name descname">highlight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">string</span></em>, <em class="sig-param"><span class="n">effect</span><span class="o">=</span><span class="default_value">'\x1b[7m'</span></em>, <em class="sig-param"><span class="n">beg_mark</span><span class="o">=</span><span class="default_value">'[['</span></em>, <em class="sig-param"><span class="n">end_mark</span><span class="o">=</span><span class="default_value">']]'</span></em>, <em class="sig-param"><span class="n">end_effect</span><span class="o">=</span><span class="default_value">'\x1b[0m'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/util.html#highlight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.util.highlight" title="Permalink to this definition">¶</a></dt>
@@ -140,7 +146,7 @@ that dict and allowing you access through attributes too).</p>
 <p>Use case: You’ve renamed something or moved some modules (remember UNIX? Same as move!) and have to go through
 all your files and notebooks and replace those names.
 Now, if you have a nice IDE, we suggest you use refactoring instead – as long as you have any uses in the scope.
-But sometimes it’s not enough. You might have text/html documments, or jupyter notebooks, etc.
+But sometimes it’s not enough. You might have text/html documents, or jupyter notebooks, etc.
 So you can use this instead.</p>
 <p>Be warned though:
 - You should look at the pattern that is used to match, and make sure it won’t create havoc.
