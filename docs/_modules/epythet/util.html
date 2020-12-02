@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.util &#8212; epythet 0.0.8 documentation</title>
+    <title>epythet.util &#8212; epythet 0.0.13 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -141,7 +141,7 @@
 <span class="sd">    Use case: You&#39;ve renamed something or moved some modules (remember UNIX? Same as move!) and have to go through</span>
 <span class="sd">    all your files and notebooks and replace those names.</span>
 <span class="sd">    Now, if you have a nice IDE, we suggest you use refactoring instead -- as long as you have any uses in the scope.</span>
-<span class="sd">    But sometimes it&#39;s not enough. You might have text/html documments, or jupyter notebooks, etc.</span>
+<span class="sd">    But sometimes it&#39;s not enough. You might have text/html documents, or jupyter notebooks, etc.</span>
 <span class="sd">    So you can use this instead.</span>
 
 <span class="sd">    Be warned though:</span>
@@ -181,12 +181,12 @@
         <span class="n">target_store</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># use a dict to write results</span>
         <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;You didn&#39;t specify a target_store, so I&#39;ll write all of this in a dict and return it to you!&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">source_store</span> <span class="o">==</span> <span class="n">target_store</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">source_store</span> <span class="o">==</span> <span class="n">target_store</span><span class="p">:</span>  <span class="c1"># TODO: R: stores are not set up with __eq__, so no predictable</span>
         <span class="c1"># TODO: Add confirmation (user input) to protect more. Make this an option (so total automatic is possible)</span>
-        <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;I just wanted you to be aware that you are using the same store for source and target.&quot;</span>
+        <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;I just wanted you to be aware that you are using the same store for source and target. &quot;</span>
               <span class="s2">&quot;This means I&#39;m about to overwrite your files!!&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dryrun</span><span class="p">:</span>
-            <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;... Right now, dryrun=True, so I&#39;m just pretending!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dryrun</span><span class="p">:</span>
+        <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;... Right now, dryrun=True, so I&#39;m just pretending!&quot;</span><span class="p">)</span>
 
     <span class="n">replacer</span> <span class="o">=</span> <span class="n">replacer_factory</span><span class="p">(</span><span class="n">from_to_dict</span><span class="p">)</span>
 
@@ -212,10 +212,44 @@
 
         <span class="n">new_v</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dryrun</span> <span class="ow">and</span> <span class="n">lines_replaced</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dryrun</span><span class="p">:</span>
             <span class="n">target_store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_v</span>
 
     <span class="k">return</span> <span class="n">target_store</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_rootdir_and_name</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">ismodule</span>
+    <span class="k">if</span> <span class="n">ismodule</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">__path__</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># TODO: See if there&#39;s a better way to do this</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;Should be a directory: </span><span class="si">{x}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">name</span>
+
+
+<div class="viewcode-block" id="copy_project_with_different_import_names"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.copy_project_with_different_import_names">[docs]</a><span class="k">def</span> <span class="nf">copy_project_with_different_import_names</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">dryrun</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Copy project py files to another (or the same) folder, replacing import names for that project&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">py2store</span> <span class="k">import</span> <span class="n">QuickTextStore</span>
+
+    <span class="n">src_dir</span><span class="p">,</span> <span class="n">src_name</span> <span class="o">=</span> <span class="n">_get_rootdir_and_name</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">targ_dir</span><span class="p">,</span> <span class="n">targ_name</span> <span class="o">=</span> <span class="n">_get_rootdir_and_name</span><span class="p">(</span><span class="n">targ</span><span class="p">)</span>
+    <span class="n">source_store</span> <span class="o">=</span> <span class="n">QuickTextStore</span><span class="p">(</span><span class="n">src_dir</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="p">)</span>
+    <span class="n">target_store</span> <span class="o">=</span> <span class="n">QuickTextStore</span><span class="p">(</span><span class="n">targ_dir</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.py&#39;</span><span class="p">)</span>
+    <span class="n">from_to_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">src_name</span><span class="p">:</span> <span class="n">targ_name</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">replace_import_names</span><span class="p">(</span>
+        <span class="n">source_store</span><span class="o">=</span><span class="n">source_store</span><span class="p">,</span>
+        <span class="n">from_to_dict</span><span class="o">=</span><span class="n">from_to_dict</span><span class="p">,</span>
+        <span class="n">target_store</span><span class="o">=</span><span class="n">target_store</span><span class="p">,</span>
+        <span class="n">dryrun</span><span class="o">=</span><span class="n">dryrun</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="n">replacer_factory</span><span class="o">=</span><span class="n">mk_import_root_replacer</span><span class="p">,</span>
+        <span class="n">add_comment_at_the_end_of_lines_replaced</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <span class="n">fc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
@@ -349,6 +383,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/call_make.html">epythet.docs_gen.call_make</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
@@ -357,6 +392,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack_util.html">epythet.pack_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/packages.html">epythet.packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>

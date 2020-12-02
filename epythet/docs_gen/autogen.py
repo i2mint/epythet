@@ -4,7 +4,7 @@ from pathlib import Path
 from epythet.docs_gen.templates import table_of_contents_header, RstTitle, AutoDocs
 from epythet.pack_util import read_configs, DFLT_CONFIG_FILE
 from py2store.filesys import FileCollection
-from py2store.trans import filtered_iter
+from py2store.trans import filt_iter
 from typing import Union, List
 from types import ModuleType
 
@@ -25,7 +25,7 @@ def gen_rst_docs_and_path(module: Union[ModuleType, str], auto_options: List[Aut
     root_name_length = len(root_name) + 1
     module_name = module.__name__
     init_path = path_sep + '__init__'
-    for pyfile in filtered_iter(lambda x: x.endswith('.py'))(FileCollection(root_name)):
+    for pyfile in filt_iter(FileCollection(root_name), filt=lambda x: x.endswith('.py')):
         with open(pyfile) as f:
             pyfile_contents = f.read()
         if len(pyfile_contents) == 0:

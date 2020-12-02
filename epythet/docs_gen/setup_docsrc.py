@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 
+from epythet import py_version
 from epythet.docs_gen import _STATIC_FILES
 from epythet.docs_gen.templates import master_file_t, master_file_title_t, RstTitle
 from epythet.pack_util import read_configs, DFLT_CONFIG_FILE
@@ -29,7 +30,11 @@ def make_docsrc(project_dir):
     docsrc_dst = Path(project_dir).absolute() / 'docsrc'
     docsrc_static_dir = docsrc_dst / '_static'
     docsrc_static_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(str(docsrc_src), str(docsrc_dst))
+    if py_version >= 8:
+        shutil.copytree(str(docsrc_src), str(docsrc_dst), dirs_exist_ok=True)
+    else:
+        # docsrc_static_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(str(docsrc_src), str(docsrc_dst))
 
     # make master file
     config = read_configs(Path(project_dir) / DFLT_CONFIG_FILE)

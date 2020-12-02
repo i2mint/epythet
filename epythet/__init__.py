@@ -12,9 +12,13 @@ To see available commands
 
 import os
 import json
+import sys
+
+py_version = sys.version_info.minor
 
 root_dir = os.path.dirname(__file__)
 root_dir_name = os.path.basename(root_dir)
+
 rjoin = lambda *paths: os.path.join(root_dir, *paths)
 
 data_dir = rjoin('data')
@@ -30,6 +34,9 @@ epythet_configs = json.load(open(epythet_configs_file))
 pkg_path_names = ('.gitignore', 'setup.py')
 pkg_paths = {pkg_join(name) for name in pkg_path_names}
 
+import sys
+
+py_version = sys.version_info.minor
 from epythet.populate import populate_pkg_dir
 
 

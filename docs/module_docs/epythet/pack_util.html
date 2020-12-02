@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.pip_packaging &#8212; epythet 0.0.13 documentation</title>
+    <title>epythet.pack_util &#8212; epythet 0.0.13 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -16,8 +16,8 @@
     <script src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="epythet.pip_requirements" href="pip_requirements.html" />
-    <link rel="prev" title="epythet.packages" href="packages.html" />
+    <link rel="next" title="epythet.packages" href="packages.html" />
+    <link rel="prev" title="epythet.pack" href="pack.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -34,19 +34,19 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-epythet.pip_packaging">
-<span id="epythet-pip-packaging"></span><h1>epythet.pip_packaging<a class="headerlink" href="#module-epythet.pip_packaging" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-epythet.pack_util">
+<span id="epythet-pack-util"></span><h1>epythet.pack_util<a class="headerlink" href="#module-epythet.pack_util" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="epythet.pip_packaging.PartialFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">PartialFormatter</code><a class="reference internal" href="../../_modules/epythet/pip_packaging.html#PartialFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.PartialFormatter" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.PartialFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">PartialFormatter</code><a class="reference internal" href="../../_modules/epythet/pack_util.html#PartialFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.PartialFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string formatter that won’t complain if the fields are only partially formatted.
 But note that you will lose the spec part of your template (e.g. in {foo:1.2f}, you’ll loose the 1.2f
 if not foo is given – but {foo} will remain).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pip_packaging.current_pypi_version">
-<code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">current_pypi_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">package</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">url_template</span><span class="o">=</span><span class="default_value">'https://pypi.python.org/pypi/{package}/json'</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../_modules/epythet/pip_packaging.html#current_pypi_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.current_pypi_version" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.current_pypi_version">
+<code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">current_pypi_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">package</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">url_template</span><span class="o">=</span><span class="default_value">'https://pypi.python.org/pypi/{package}/json'</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="reference internal" href="../../_modules/epythet/pack_util.html#current_pypi_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.current_pypi_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return version of package on pypi.python.org using json.</p>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
 <span class="pre">&gt;</span> <span class="pre">get_version('py2store')</span>
@@ -63,8 +63,8 @@ if not foo is given – but {foo} will remain).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pip_packaging.format_str_vals_of_dict">
-<code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">format_str_vals_of_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">max_formatting_loops</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pip_packaging.html#format_str_vals_of_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.format_str_vals_of_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.format_str_vals_of_dict">
+<code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">format_str_vals_of_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">max_formatting_loops</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack_util.html#format_str_vals_of_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.format_str_vals_of_dict" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -114,26 +114,26 @@ you’ll be told to bugger off.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pip_packaging.postprocess_ini_section_items">
-<code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">postprocess_ini_section_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Mapping<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Generator<a class="reference internal" href="../../_modules/epythet/pip_packaging.html#postprocess_ini_section_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.postprocess_ini_section_items" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.postprocess_ini_section_items">
+<code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">postprocess_ini_section_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Mapping<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Generator<a class="reference internal" href="../../_modules/epythet/pack_util.html#postprocess_ini_section_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.postprocess_ini_section_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform newline-separated string values into actual list of strings (assuming that intent)</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">section_from_ini</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;aspyre&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;epythet&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="s1">&#39;keywords&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">documentation</span><span class="se">\n\t</span><span class="s1">packaging</span><span class="se">\n\t</span><span class="s1">publishing&#39;</span>
 <span class="gp">... </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">section_for_python</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">postprocess_ini_section_items</span><span class="p">(</span><span class="n">section_from_ini</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">section_for_python</span>
-<span class="go">{&#39;name&#39;: &#39;aspyre&#39;, &#39;keywords&#39;: [&#39;documentation&#39;, &#39;packaging&#39;, &#39;publishing&#39;]}</span>
+<span class="go">{&#39;name&#39;: &#39;epythet&#39;, &#39;keywords&#39;: [&#39;documentation&#39;, &#39;packaging&#39;, &#39;publishing&#39;]}</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pip_packaging.preprocess_ini_section_items">
-<code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">preprocess_ini_section_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Mapping<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Generator<a class="reference internal" href="../../_modules/epythet/pip_packaging.html#preprocess_ini_section_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.preprocess_ini_section_items" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.preprocess_ini_section_items">
+<code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">preprocess_ini_section_items</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Mapping<span class="p">, </span>Iterable<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Generator<a class="reference internal" href="../../_modules/epythet/pack_util.html#preprocess_ini_section_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.preprocess_ini_section_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform list values into newline-separated strings, in view of writing the value to a ini formatted section
 &gt;&gt;&gt; section = {
-…     ‘name’: ‘aspyre’,
+…     ‘name’: ‘epythet’,
 …     ‘keywords’: [‘documentation’, ‘packaging’, ‘publishing’]
 … }
 &gt;&gt;&gt; for_ini = dict(preprocess_ini_section_items(section))
@@ -147,8 +147,8 @@ publishing</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="epythet.pip_packaging.ujoin">
-<code class="sig-prename descclassname">epythet.pip_packaging.</code><code class="sig-name descname">ujoin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pip_packaging.html#ujoin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pip_packaging.ujoin" title="Permalink to this definition">¶</a></dt>
+<dt id="epythet.pack_util.ujoin">
+<code class="sig-prename descclassname">epythet.pack_util.</code><code class="sig-name descname">ujoin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/pack_util.html#ujoin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.pack_util.ujoin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join strings with the url seperator (/).</p>
 <p>Note that will add a / where it’s missing (as in between ‘<a class="reference external" href="https://pypi.org">https://pypi.org</a>’ and ‘project/’),
 and only use one if two consecutive tokens use respectively end and start with a /
@@ -193,6 +193,7 @@ and only use one if two consecutive tokens use respectively end and start with a
 <li class="toctree-l1"><a class="reference internal" href="docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs_gen/call_make.html">epythet.docs_gen.call_make</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/templates.html">epythet.docs_gen.templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doctest_utils.html">epythet.doctest_utils</a></li>
@@ -201,8 +202,9 @@ and only use one if two consecutive tokens use respectively end and start with a
 <li class="toctree-l1"><a class="reference internal" href="licensing.html">epythet.licensing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pack.html">epythet.pack</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.pack_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packages.html">epythet.packages</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pip_packaging.html">epythet.pip_packaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pip_requirements.html">epythet.pip_requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="populate.html">epythet.populate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="util.html">epythet.util</a></li>
@@ -212,8 +214,8 @@ and only use one if two consecutive tokens use respectively end and start with a
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="packages.html" title="previous chapter">epythet.packages</a></li>
-      <li>Next: <a href="pip_requirements.html" title="next chapter">epythet.pip_requirements</a></li>
+      <li>Previous: <a href="pack.html" title="previous chapter">epythet.pack</a></li>
+      <li>Next: <a href="packages.html" title="next chapter">epythet.packages</a></li>
   </ul></li>
 </ul>
 </div>
@@ -247,7 +249,7 @@ and only use one if two consecutive tokens use respectively end and start with a
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/module_docs/epythet/pip_packaging.rst.txt"
+      <a href="../../_sources/module_docs/epythet/pack_util.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

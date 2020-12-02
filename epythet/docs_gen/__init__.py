@@ -50,6 +50,7 @@ _STATIC_FILES = Path(__file__).absolute().parent / '_static'
 
 from epythet.docs_gen.autogen import make_autodocs
 from epythet.docs_gen.setup_docsrc import make_docsrc
+from epythet.docs_gen.call_make import make
 
 
 argh_kwargs = {
@@ -57,6 +58,7 @@ argh_kwargs = {
     'functions': [
         make_docsrc,
         make_autodocs,
+        make,
     ],
     'namespace_kwargs': {
         'title': 'Documentation Generator',
