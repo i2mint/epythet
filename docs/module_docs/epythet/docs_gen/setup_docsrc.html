@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen.setup_docsrc &#8212; epythet 0.0.13 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen.setup_docsrc &#8212; epythet 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="epythet.docs_gen.templates" href="templates.html" />
-    <link rel="prev" title="epythet.docs_gen.autogen" href="autogen.html" />
+    <link rel="prev" title="epythet.docs_gen.call_make" href="call_make.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -38,7 +38,7 @@
 <span id="epythet-docs-gen-setup-docsrc"></span><h1>epythet.docs_gen.setup_docsrc<a class="headerlink" href="#module-epythet.docs_gen.setup_docsrc" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="epythet.docs_gen.setup_docsrc.make_docsrc">
-<code class="sig-prename descclassname">epythet.docs_gen.setup_docsrc.</code><code class="sig-name descname">make_docsrc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/docs_gen/setup_docsrc.html#make_docsrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.docs_gen.setup_docsrc.make_docsrc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.docs_gen.setup_docsrc.</code><code class="sig-name descname">make_docsrc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/docs_gen/setup_docsrc.html#make_docsrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.docs_gen.setup_docsrc.make_docsrc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make source folder for documentation based on setup.cfg metadata</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -86,14 +86,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="call_make.html">epythet.docs_gen.call_make</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.docs_gen.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">epythet.docs_gen.templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doctest_utils.html">epythet.doctest_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../findimports.html">epythet.findimports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../import_counting.html">epythet.import_counting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html">epythet.main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pack_util.html">epythet.pack_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../packages.html">epythet.packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pip_packaging.html">epythet.pip_packaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pip_requirements.html">epythet.pip_requirements</a></li>
@@ -105,7 +108,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="autogen.html" title="previous chapter">epythet.docs_gen.autogen</a></li>
+      <li>Previous: <a href="call_make.html" title="previous chapter">epythet.docs_gen.call_make</a></li>
       <li>Next: <a href="templates.html" title="next chapter">epythet.docs_gen.templates</a></li>
   </ul></li>
 </ul>
@@ -133,10 +136,12 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Otosense.
+      &copy;
+2020
+Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

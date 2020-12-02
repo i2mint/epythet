@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen.setup_docsrc &#8212; epythet 0.0.13 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen.setup_docsrc &#8212; epythet 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -34,11 +34,12 @@
             
   <h1>Source code for epythet.docs_gen.setup_docsrc</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">epythet.docs_gen</span> <span class="k">import</span> <span class="n">_STATIC_FILES</span>
-<span class="kn">from</span> <span class="nn">epythet.docs_gen.templates</span> <span class="k">import</span> <span class="n">master_file_t</span><span class="p">,</span> <span class="n">master_file_title_t</span><span class="p">,</span> <span class="n">RstTitle</span>
-<span class="kn">from</span> <span class="nn">epythet.pack_util</span> <span class="k">import</span> <span class="n">read_configs</span><span class="p">,</span> <span class="n">DFLT_CONFIG_FILE</span>
+<span class="kn">from</span> <span class="nn">epythet</span> <span class="kn">import</span> <span class="n">py_version</span>
+<span class="kn">from</span> <span class="nn">epythet.docs_gen</span> <span class="kn">import</span> <span class="n">_STATIC_FILES</span>
+<span class="kn">from</span> <span class="nn">epythet.docs_gen.templates</span> <span class="kn">import</span> <span class="n">master_file_t</span><span class="p">,</span> <span class="n">master_file_title_t</span><span class="p">,</span> <span class="n">RstTitle</span>
+<span class="kn">from</span> <span class="nn">epythet.pack_util</span> <span class="kn">import</span> <span class="n">read_configs</span><span class="p">,</span> <span class="n">DFLT_CONFIG_FILE</span>
 
 
 <div class="viewcode-block" id="make_master_file"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/setup_docsrc.html#epythet.docs_gen.setup_docsrc.make_master_file">[docs]</a><span class="k">def</span> <span class="nf">make_master_file</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -52,23 +53,31 @@
     <span class="n">master_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">master_contents</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="make_docsrc"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/setup_docsrc.html#epythet.docs_gen.setup_docsrc.make_docsrc">[docs]</a><span class="k">def</span> <span class="nf">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">):</span>
+<div class="viewcode-block" id="make_docsrc"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/setup_docsrc.html#epythet.docs_gen.setup_docsrc.make_docsrc">[docs]</a><span class="k">def</span> <span class="nf">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Make source folder for documentation based on setup.cfg metadata</span>
 
 <span class="sd">    :param project_dir: Path to root project directory containing setup.cfg</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># copy _static/docsrc files to project_dir/docsrc</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making and populating a docsrc directory (for documentation)&quot;</span><span class="p">)</span>
     <span class="n">docsrc_src</span> <span class="o">=</span> <span class="n">_STATIC_FILES</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">docsrc_src</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Epythet module missing files in: </span><span class="si">{docsrc_src}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epythet module missing files in: </span><span class="si">{</span><span class="n">docsrc_src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">docsrc_dst</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
     <span class="n">docsrc_static_dir</span> <span class="o">=</span> <span class="n">docsrc_dst</span> <span class="o">/</span> <span class="s1">&#39;_static&#39;</span>
     <span class="n">docsrc_static_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc_src</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docsrc_dst</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">py_version</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc_src</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docsrc_dst</span><span class="p">),</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># docsrc_static_dir.mkdir(parents=True, exist_ok=True)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc_src</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docsrc_dst</span><span class="p">))</span>
 
     <span class="c1"># make master file</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">read_configs</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">DFLT_CONFIG_FILE</span><span class="p">)</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="n">master_file_title_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;display_name&#39;</span><span class="p">])</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">master_file_title_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;display_name&#39;</span><span class="p">,</span>
+                                                               <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
+                                                                          <span class="s1">&#39;untitled&#39;</span><span class="p">)))</span>
     <span class="n">make_master_file</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="o">=</span><span class="n">docsrc_dst</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span></div>
 
 
@@ -107,6 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/main.html">epythet.main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pack.html">epythet.pack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/pack_util.html">epythet.pack_util</a></li>
@@ -122,8 +132,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
-  <li><a href="../docs_gen.html">epythet.docs_gen</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -151,10 +159,12 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Otosense.
+      &copy;
+2020
+Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

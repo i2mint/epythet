@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen &#8212; epythet 0.0.13 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen &#8212; epythet 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -40,12 +40,12 @@
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
 <p>Setup Sphinx docsrc</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.setup_docsrc</span> <span class="k">import</span> <span class="n">make_docsrc</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
 <span class="n">make_docsrc</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Generate module docs</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.autogen</span> <span class="k">import</span> <span class="n">make_autodocs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
 <span class="n">make_autodocs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -103,14 +103,17 @@ In this case, the site is published at <a class="reference external" href="https
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs_gen/call_make.html">epythet.docs_gen.call_make</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs_gen/templates.html">epythet.docs_gen.templates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doctest_utils.html">epythet.doctest_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="findimports.html">epythet.findimports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import_counting.html">epythet.import_counting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">epythet.main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pack_util.html">epythet.pack_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packages.html">epythet.packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pip_packaging.html">epythet.pip_packaging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pip_requirements.html">epythet.pip_requirements</a></li>
@@ -150,10 +153,12 @@ In this case, the site is published at <a class="reference external" href="https
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Otosense.
+      &copy;
+2020
+Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
