@@ -1,10 +1,15 @@
-
-
-from ut.pfile.to import string as file_to_string
 import pandas as pd
 from numpy import array
 import os
-from warnings import warn
+
+
+def file_to_string(filename):
+    """
+    returns the string contents of a pfile
+    """
+    with open(file_to_string, 'r') as fd:
+        s = fd.read()
+    return s
 
 
 def requirement_file_to_df(filepath):
@@ -131,7 +136,6 @@ def get_requirements_to_update_second_requirements_when_behind_first(
 
 def updated_requirements_2_with_requirements_1_that_are_ahead(
         requirements_filepath_1, requirements_filepath_2):
-
     r1 = requirement_file_to_df(requirements_filepath_1).set_index('pkg')['version']
     r2 = requirement_file_to_df(requirements_filepath_2).set_index('pkg')['version']
 

@@ -18,12 +18,14 @@ def make_master_file(docsrc_dir, title: str):
     master_file.write_text(master_contents)
 
 
-def make_docsrc(project_dir):
+def make_docsrc(project_dir, verbose: bool = True):
     """Make source folder for documentation based on setup.cfg metadata
 
     :param project_dir: Path to root project directory containing setup.cfg
     """
     # copy _static/docsrc files to project_dir/docsrc
+    if verbose:
+        print("Making and populating a docsrc directory (for documentation)")
     docsrc_src = _STATIC_FILES / 'docsrc'
     if not docsrc_src.is_dir():
         raise RuntimeError(f"Epythet module missing files in: {docsrc_src}")
@@ -38,7 +40,9 @@ def make_docsrc(project_dir):
 
     # make master file
     config = read_configs(Path(project_dir) / DFLT_CONFIG_FILE)
-    title = master_file_title_t.format(display_name=config['display_name'])
+    title = master_file_title_t.format(display_name=config.get('display_name',
+                                                               config.get('name',
+                                                                          'untitled')))
     make_master_file(docsrc_dir=docsrc_dst, title=title)
 
 

@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.packages &#8212; epythet 0.0.13 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.packages &#8212; epythet 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -90,8 +90,8 @@
 <span class="sd">```</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">get_distribution</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">,</span> <span class="n">RequirementParseError</span>
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">get_distribution</span><span class="p">,</span> <span class="n">DistributionNotFound</span><span class="p">,</span> <span class="n">RequirementParseError</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 
 
 <span class="k">def</span> <span class="nf">read_requirements</span><span class="p">(</span><span class="n">requirements_file</span><span class="p">):</span>
@@ -115,7 +115,7 @@
             <span class="k">return</span> <span class="n">on_error</span>  <span class="c1"># just the value specified by on_error</span>
 
 
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">ModuleType</span><span class="p">,</span> <span class="n">FunctionType</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span><span class="p">,</span> <span class="n">FunctionType</span>
 
 <span class="n">take_everything</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">True</span>
 
@@ -129,7 +129,7 @@
 
 
 <span class="k">def</span> <span class="nf">obj_module_depth_counts</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">obj_filt</span><span class="o">=</span><span class="n">take_everything</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
     <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -196,14 +196,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--------- </span><span class="si">{module.__name__}</span><span class="s2"> ---------&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{len(list(top_level_objs(module)))} objects can be imported from top level </span><span class="si">{module.__name__}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--------- </span><span class="si">{</span><span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> ---------&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">top_level_objs</span><span class="p">(</span><span class="n">module</span><span class="p">)))</span><span class="si">}</span><span class="s2"> objects can be imported from top level </span><span class="si">{</span><span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ModuleType</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">,</span> <span class="nb">type</span><span class="p">]:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;  {len(list(top_level_objs(module, lambda x: isinstance(x, kind))))} </span><span class="si">{kind.__name__}</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">top_level_objs</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kind</span><span class="p">))))</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">kind</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;depth</span><span class="se">\t</span><span class="s2">count&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;depth</span><span class="se">\t</span><span class="s2">count&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">depth</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">obj_module_depth_counts</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">obj_filt</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{depth}</span><span class="se">\t</span><span class="si">{count}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">depth</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 </pre></div>
 
@@ -236,6 +236,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/main.html">epythet.main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/modules.html">epythet.modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack.html">epythet.pack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack_util.html">epythet.pack_util</a></li>
@@ -278,10 +279,12 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Otosense.
+      &copy;
+2020
+Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

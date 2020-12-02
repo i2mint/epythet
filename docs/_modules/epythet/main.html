@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>epythet.main &#8212; epythet 0.0.19 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for epythet.main</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
+<span class="kn">from</span> <span class="nn">epythet.docs_gen.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
+
+
+<span class="k">def</span> <span class="nf">make_html</span><span class="p">(</span><span class="n">project_dir</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="go"><a class="viewcode-back" href="../../module_docs/epythet/main.html#epythet.main.go">[docs]</a><span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">output_dirname</span><span class="o">=</span><span class="s1">&#39;module_docs&#39;</span><span class="p">,</span> <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">docsrc_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create sphinx autodocs and table of contents for module defined by setup.cfg</span>
+
+<span class="sd">    :param project_dir: Path to root project directory containing setup.cfg</span>
+<span class="sd">    :param output_dirname: directory name to be created under docsrc</span>
+<span class="sd">    :param skip_existing: existing docs will not be overwritten if True</span>
+<span class="sd">    :param docsrc_dir: path to sphinx docs source file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">make_autodocs</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">output_dirname</span><span class="p">,</span> <span class="n">skip_existing</span><span class="p">,</span> <span class="n">docsrc_dir</span><span class="p">)</span>
+    <span class="n">make_html</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">argh</span>
+
+    <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_commands</span><span class="p">([</span><span class="n">make_docsrc</span><span class="p">,</span> <span class="n">make_autodocs</span><span class="p">,</span> <span class="n">go</span><span class="p">])</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">epythet</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/_static/docsrc/conf.html">epythet.docs_gen._static.docsrc.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/autogen.html">epythet.docs_gen.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/call_make.html">epythet.docs_gen.call_make</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/docs_gen/templates.html">epythet.docs_gen.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/doctest_utils.html">epythet.doctest_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/findimports.html">epythet.findimports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/import_counting.html">epythet.import_counting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/licensing.html">epythet.licensing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/main.html">epythet.main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/modules.html">epythet.modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack.html">epythet.pack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pack_util.html">epythet.pack_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/packages.html">epythet.packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_packaging.html">epythet.pip_packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/pip_requirements.html">epythet.pip_requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/populate.html">epythet.populate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/epythet/util.html">epythet.util</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;
+2020
+Otosense.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

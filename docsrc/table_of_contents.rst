@@ -13,6 +13,7 @@
    module_docs/epythet/findimports
    module_docs/epythet/import_counting
    module_docs/epythet/licensing
+   module_docs/epythet/main
    module_docs/epythet/modules
    module_docs/epythet/pack
    module_docs/epythet/pack_util
