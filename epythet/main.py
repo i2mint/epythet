@@ -2,7 +2,7 @@ from epythet.docs_gen.setup_docsrc import make_docsrc
 from epythet.docs_gen.autogen import make_autodocs
 
 
-def make_html():
+def make_html(project_dir):
     pass
 
 
@@ -22,4 +22,4 @@ def go(project_dir, output_dirname='module_docs', skip_existing=True, docsrc_dir
 if __name__ == "__main__":
     import argh
 
-    argh.dispatch_commands([make_docsrc, make_autodocs])
+    argh.dispatch_commands([make_docsrc, make_autodocs, go])
