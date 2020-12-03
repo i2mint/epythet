@@ -5,3 +5,4 @@ argh==0.26.2
 py2store==0.0.10
 numpy==1.19.4
 pandas==1.1.4
+snakefood==1.4
