@@ -51,7 +51,7 @@ def imports_in_module(module):
         if module.endswith('c'):
             module = module[:-1]  # remove the 'c' of '.pyc'
     t = subprocess.check_output(['sfood-imports', '-u', module])
-    return [x for x in t.split('\n') if len(x) > 0]
+    return [x for x in t.decode().split('\n') if len(x) > 0]
 
 
 def base_modules_used_in_module(module):
