@@ -91,25 +91,25 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           $SCRIPTS_DIR/update_setup_cfg.py
 
-      - name: Generate Documentation
-        run: |
-          $SCRIPTS_DIR/generate_documentation.py
+      # - name: Generate Documentation
+      #   run: |
+      #     $SCRIPTS_DIR/generate_documentation.py
 
       - name: Package
         run: |
           python setup.py sdist
 
-      # - name: Publish
-      #   run: |
-      #     twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-      #     epythet docs_gen make $PROJECT_NAME github
+      - name: Publish
+        run: |
+          twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
+#          epythet docs_gen make $PROJECT_NAME github
 
       - name: Push Changes
         run: |
           git commit -a -m "**CI** Formatted code + Updated version number and documentation. [skip ci]"
-#          git push
+          git push
 
       - name: Tag Repository
         run: |
           git tag $VERSION
-#          git push origin $VERSION
+          git push origin $VERSION
