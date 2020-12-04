@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>epythet.import_counting &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -33,19 +33,19 @@
           <div class="body" role="main">
             
   <h1>Source code for epythet.import_counting</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">unique</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">unique</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">epythet.packages</span> <span class="kn">import</span> <span class="n">get_module_name</span><span class="p">,</span> <span class="n">read_requirements</span>
+<span class="kn">from</span> <span class="nn">epythet.packages</span> <span class="k">import</span> <span class="n">get_module_name</span><span class="p">,</span> <span class="n">read_requirements</span>
 
 <span class="c1"># TODO: Get rid of the need of those old filepath iterators. Perhaps use py2store?</span>
-<span class="kn">from</span> <span class="nn">epythet.util</span> <span class="kn">import</span> <span class="n">get_filepath_iterator</span>
+<span class="kn">from</span> <span class="nn">epythet.util</span> <span class="k">import</span> <span class="n">get_filepath_iterator</span>
 
 <span class="n">module_import_regex_tmpl</span> <span class="o">=</span> <span class="s2">&quot;(?&lt;=from) </span><span class="si">{package_name}</span><span class="s2">|(?&lt;=[^\s]import) </span><span class="si">{package_name}</span><span class="s2">&quot;</span>
 
@@ -271,7 +271,7 @@
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

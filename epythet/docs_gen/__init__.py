@@ -2,24 +2,47 @@
 
 Quickstart
 ----------
+As easy as 1, 2, 3
 
-Setup Sphinx docsrc
-::
+1. Setup Sphinx docsrc
+======================
+One time setup to create docsrc folder with Sphinx docs config and makefile.  Commit docsrc into your git repo.
+
+Python::
 
     from epythet.docs_gen.setup_docsrc import make_docsrc
     make_docsrc(PROJECT_DIR)
 
-Generate module docs
-::
+Command Line::
+
+    epythet docs_gen make-docsrc PROJECT_DIR
+
+2. Generate module docs
+=======================
+Generate rst docs for all .py modules in your package.  Use make_autodocs each time there is a new .py file added.
+These rst files generated in the docsrc folder should also be commited into your git repo.
+
+Python::
 
     from epythet.docs_gen.autogen import make_autodocs
     make_autodocs(PROJECT_DIR)
 
-Compile docs
-::
+Command Line::
 
-    cd PROJECT_DIR/docsrc
-    make html
+    epythet docs_gen make-autodocs PROJECT_DIR
+
+3. Compile docs
+===============
+Compile generated rst docs with Sphinx makefile.  Use this each time you make changes to your .py files or .rst files.
+
+Python::
+
+    from epythet.docs_gen.call_make import make
+    make_autodocs(PROJECT_DIR, 'html')
+
+Command Line::
+
+    epythet docs_gen make PROJECT_DIR html
 
 View by opening ``PROJECT_DIR/docsrc/_build/html/index.html``
 
