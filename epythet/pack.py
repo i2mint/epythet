@@ -39,12 +39,12 @@ argh_kwargs = {
         get_name_from_configs,
         run_setup,
         current_pypi_version,
-        validate_pkg_dir
+        validate_pkg_dir,
     ],
     'namespace_kwargs': {
         'title': 'Package Configurations',
-        'description': 'Utils to package and publish.'
-    }
+        'description': 'Utils to package and publish.',
+    },
 }
 
 if __name__ == '__main__':

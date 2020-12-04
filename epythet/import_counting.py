@@ -12,19 +12,29 @@ from epythet.packages import get_module_name, read_requirements
 # TODO: Get rid of the need of those old filepath iterators. Perhaps use py2store?
 from epythet.util import get_filepath_iterator
 
-module_import_regex_tmpl = "(?<=from) {package_name}|(?<=[^\s]import) {package_name}"
+module_import_regex_tmpl = (
+    '(?<=from) {package_name}|(?<=[^\s]import) {package_name}'
+)
 
-any_module_import_regex = re.compile(module_import_regex_tmpl.format(package_name='\w+'))
+any_module_import_regex = re.compile(
+    module_import_regex_tmpl.format(package_name='\w+')
+)
 
 
 def mk_single_package_import_regex(module_name):
-    return re.compile(module_import_regex_tmpl.format(package_name=module_name))
+    return re.compile(
+        module_import_regex_tmpl.format(package_name=module_name)
+    )
 
 
 def mk_multiple_package_import_regex(module_names):
     if isinstance(module_names, str):
         module_names = [module_names]
-    return re.compile('|'.join([mk_single_package_import_regex(x).pattern for x in module_names]))
+    return re.compile(
+        '|'.join(
+            [mk_single_package_import_regex(x).pattern for x in module_names]
+        )
+    )
 
 
 def imports_in_module(module):
@@ -62,7 +72,14 @@ def base_modules_used_in_module(module):
     >>> base_modules_used_in_module(__file__)
     ['collections', 'epythet', 'inspect', 'io', 'numpy', 'os', 'pandas', 're', 'subprocess']
     """
-    return list(unique([re.compile('\w+').findall(x)[0] for x in imports_in_module(module)]))
+    return list(
+        unique(
+            [
+                re.compile('\w+').findall(x)[0]
+                for x in imports_in_module(module)
+            ]
+        )
+    )
 
 
 def base_module_imports_in_module_recursive(module):
@@ -92,18 +109,22 @@ def base_module_imports_in_module_recursive(module):
     if os.path.isdir(module):
         c = Counter()
         it = get_filepath_iterator(module, pattern='.py$')
-        next(it)  # to skip the seed module itself, and not get into an infinite loop
+        next(
+            it
+        )  # to skip the seed module itself, and not get into an infinite loop
         for _module in it:
             try:
                 c.update(base_module_imports_in_module_recursive(_module))
             except Exception as e:
                 if 'sfood-imports' in e.args[1]:
-                    raise RuntimeError("You don't have sfood-imports installed (snakefood), so I can't do my job")
+                    raise RuntimeError(
+                        "You don't have sfood-imports installed (snakefood), so I can't do my job"
+                    )
                 else:
-                    print(("Error with module {}: {}".format(_module, e)))
+                    print(('Error with module {}: {}'.format(_module, e)))
         return c
     elif not os.path.isfile(module):
-        raise ValueError("module file not found: {}".format(module))
+        raise ValueError('module file not found: {}'.format(module))
 
     return Counter(base_modules_used_in_module(module))
     # with open(module) as fp:
@@ -113,7 +134,9 @@ def base_module_imports_in_module_recursive(module):
 
 def requirements_packages_in_module(module, requirements=None):
     if requirements is None:
-        requirements = list(pip_licenses_df(include_module_name=False)['package_name'])
+        requirements = list(
+            pip_licenses_df(include_module_name=False)['package_name']
+        )
     elif isinstance(requirements, str) and os.path.isfile(requirements):
         with open(requirements) as fp:
             requirements = fp.read().splitlines()
@@ -127,32 +150,52 @@ def requirements_packages_in_module(module, requirements=None):
                 module_name = get_module_name(xx[0])
                 module_names.append(module_name)
         except Exception as e:
-            print(("Error with {}\n  {}".format(x, e)))
+            print(('Error with {}\n  {}'.format(x, e)))
 
-    return base_module_imports_in_module_recursive(module, module_names=requirements)
+    return base_module_imports_in_module_recursive(
+        module, module_names=requirements
+    )
 
 
 word_or_letter_p = re.compile('\w')
 at_least_two_spaces_p = re.compile('\s{2,}')
 
 
-def pip_licenses_df(package_names=None, include_module_name=True, on_module_search_error=None):
+def pip_licenses_df(
+    package_names=None, include_module_name=True, on_module_search_error=None
+):
     """
     Get a dataframe of pip packages and licences
     :return:
     """
     pip_licenses_output = subprocess.check_output(['pip-licenses'])
 
-    t = list(map(str.strip,
-                 list(filter(word_or_letter_p.search,
-                             pip_licenses_output.split('\n')))))
+    t = list(
+        map(
+            str.strip,
+            list(
+                filter(
+                    word_or_letter_p.search, pip_licenses_output.split('\n')
+                )
+            ),
+        )
+    )
     t = [at_least_two_spaces_p.sub('\t', x) for x in t]
     t = '\n'.join(t)
 
     df = pd.read_csv(StringIO(t), sep='\t')
-    df = df.rename(columns={'Name': 'package_name', 'Version': 'version', 'License': 'license'})
+    df = df.rename(
+        columns={
+            'Name': 'package_name',
+            'Version': 'version',
+            'License': 'license',
+        }
+    )
     if include_module_name:
-        df['module'] = [get_module_name(x, on_error=on_module_search_error) for x in df['package_name']]
+        df['module'] = [
+            get_module_name(x, on_error=on_module_search_error)
+            for x in df['package_name']
+        ]
         df = df[['module', 'package_name', 'version', 'license']]  # reorder
     if package_names is not None:
         df = df[df['package_name'].isin(package_names)]

@@ -13,7 +13,9 @@ class ValueStrEnum(Enum):
         :param value: string or ValueStrEnum
         :return: boolean
         """
-        return isinstance(value, RstTitle) or value in (item.value for item in cls)
+        return isinstance(value, RstTitle) or value in (
+            item.value for item in cls
+        )
 
 
 class RstTitle(ValueStrEnum):
@@ -29,6 +31,7 @@ class RstTitle(ValueStrEnum):
     Normally, there are no heading levels assigned to certain characters as the structure is determined from the
     succession of headings. However, it is better to stick to the same convention
     """
+
     part = '#'
     chapter = '*'
     section = '='
@@ -46,7 +49,9 @@ class RstTitle(ValueStrEnum):
         return RstTitle(title_type) in (cls.part, cls.chapter)
 
     @classmethod
-    def make_title(cls, text: str, title_type: Union[str, ValueStrEnum]) -> str:
+    def make_title(
+        cls, text: str, title_type: Union[str, ValueStrEnum]
+    ) -> str:
         """Generate RST title
 
         :param text: title text
@@ -55,19 +60,21 @@ class RstTitle(ValueStrEnum):
         """
         title_type = RstTitle(title_type)
         _title_line = str(title_type) * len(text)
-        _title = f"{text}\n{_title_line}\n"
+        _title = f'{text}\n{_title_line}\n'
         if cls.has_overline(title_type):
-            _title = f"{_title_line}\n{_title}"
+            _title = f'{_title_line}\n{_title}'
         return _title
 
 
 class AutoDocs(ValueStrEnum):
     """Generate automodule rst and help with options"""
 
-    members = ":members:"
+    members = ':members:'
 
     @classmethod
-    def make_automodule(cls, import_ref: str, options: List[Union[str, ValueStrEnum]] = None):
+    def make_automodule(
+        cls, import_ref: str, options: List[Union[str, ValueStrEnum]] = None
+    ):
         """Generate automodule rst with options included
 
         :param import_ref: ref for this file is "epythet.docs_gen.templates"
@@ -78,11 +85,11 @@ class AutoDocs(ValueStrEnum):
         automod_doc += '\n'
         if options:
             for op in options:
-                automod_doc = f"{automod_doc}   {op}\n"
+                automod_doc = f'{automod_doc}   {op}\n'
         return automod_doc
 
 
-master_file_t = """\
+master_file_t = '''\
 {rst_title}
 
 .. include:: ./table_of_contents.rst
@@ -94,15 +101,15 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-"""
+'''
 
 master_file_title_t = "Welcome to {display_name}'s documentation!"
 
-table_of_contents_header = """\
+table_of_contents_header = '''\
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-"""
+'''
 
-automodule_t = ".. automodule:: {import_ref}"
+automodule_t = '.. automodule:: {import_ref}'

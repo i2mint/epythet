@@ -18,13 +18,19 @@ def requirement_file_to_df(filepath):
     return pd.DataFrame([{'pkg': x[0], 'version': x[1]} for x in t])
 
 
-def requirements_comparison_df_only_when_different(requirements_filepath_1, requirements_filepath_2):
-    c = requirements_comparison_df(requirements_filepath_1, requirements_filepath_2)
+def requirements_comparison_df_only_when_different(
+    requirements_filepath_1, requirements_filepath_2
+):
+    c = requirements_comparison_df(
+        requirements_filepath_1, requirements_filepath_2
+    )
     c = c[c['version_x'] != c['version_y']]
     return c
 
 
-def requirements_comparison_df(requirements_filepath_1, requirements_filepath_2):
+def requirements_comparison_df(
+    requirements_filepath_1, requirements_filepath_2
+):
     r1 = requirement_file_to_df(requirements_filepath_1)
     r2 = requirement_file_to_df(requirements_filepath_2)
     c = r1.merge(r2, how='outer', on='pkg')
@@ -47,8 +53,12 @@ def version_str_to_num(version_str):
         return None
 
 
-def requirements_comparison_objects(requirements_filepath_1, requirements_filepath_2):
-    c = requirements_comparison_df_only_when_different(requirements_filepath_1, requirements_filepath_2)
+def requirements_comparison_objects(
+    requirements_filepath_1, requirements_filepath_2
+):
+    c = requirements_comparison_df_only_when_different(
+        requirements_filepath_1, requirements_filepath_2
+    )
 
     c, missing_1, missing_2 = rm_empty_version_entries(c)
 
@@ -61,7 +71,13 @@ def requirements_comparison_objects(requirements_filepath_1, requirements_filepa
             v1_num.append(v1)
             v2_num.append(v2)
         else:
-            print(("!!! Couldn't get the version NUMBER for {}\n".format(dict(row))))
+            print(
+                (
+                    "!!! Couldn't get the version NUMBER for {}\n".format(
+                        dict(row)
+                    )
+                )
+            )
     v1_num = array(v1_num)
     v2_num = array(v2_num)
 
@@ -104,40 +120,74 @@ def file_unique_identifiers(f1, f2):
     return cand1, cand2
 
 
-def print_requirements_comparison(requirements_filepath_1, requirements_filepath_2):
-    missing_1, missing_2, v1_greater_than_v2_df, v2_greater_than_v1_df = \
-        requirements_comparison_objects(requirements_filepath_1, requirements_filepath_2)
+def print_requirements_comparison(
+    requirements_filepath_1, requirements_filepath_2
+):
+    (
+        missing_1,
+        missing_2,
+        v1_greater_than_v2_df,
+        v2_greater_than_v1_df,
+    ) = requirements_comparison_objects(
+        requirements_filepath_1, requirements_filepath_2
+    )
 
-    name1, name2 = file_unique_identifiers(requirements_filepath_1, requirements_filepath_2)
+    name1, name2 = file_unique_identifiers(
+        requirements_filepath_1, requirements_filepath_2
+    )
 
-    print(("\n-------- Missing in {}:".format(name1)))
+    print(('\n-------- Missing in {}:'.format(name1)))
     print(missing_1)
 
-    print(("\n-------- Missing in {}:".format(name2)))
+    print(('\n-------- Missing in {}:'.format(name2)))
     print(missing_2)
 
-    print(("\n-------- {} in advance of {}:".format(name1, name2)))
-    print((v1_greater_than_v2_df.rename(columns={'version_x': name1, 'version_y': name2})))
+    print(('\n-------- {} in advance of {}:'.format(name1, name2)))
+    print(
+        (
+            v1_greater_than_v2_df.rename(
+                columns={'version_x': name1, 'version_y': name2}
+            )
+        )
+    )
 
-    print(("\n-------- {} in advance of {}:".format(name2, name1)))
-    print((v2_greater_than_v1_df.rename(columns={'version_x': name1, 'version_y': name2})))
+    print(('\n-------- {} in advance of {}:'.format(name2, name1)))
+    print(
+        (
+            v2_greater_than_v1_df.rename(
+                columns={'version_x': name1, 'version_y': name2}
+            )
+        )
+    )
 
 
 def get_requirements_to_update_second_requirements_when_behind_first(
-        requirements_filepath_1, requirements_filepath_2):
-    missing_1, missing_2, v1_greater_than_v2_df, v2_greater_than_v1_df = \
-        requirements_comparison_objects(requirements_filepath_1, requirements_filepath_2)
+    requirements_filepath_1, requirements_filepath_2
+):
+    (
+        missing_1,
+        missing_2,
+        v1_greater_than_v2_df,
+        v2_greater_than_v1_df,
+    ) = requirements_comparison_objects(
+        requirements_filepath_1, requirements_filepath_2
+    )
     s = ''
     for i, row in v1_greater_than_v2_df.iterrows():
-        s += row['pkg'] + '==' + row['version_x'] + "\n"
+        s += row['pkg'] + '==' + row['version_x'] + '\n'
 
     return s
 
 
 def updated_requirements_2_with_requirements_1_that_are_ahead(
-        requirements_filepath_1, requirements_filepath_2):
-    r1 = requirement_file_to_df(requirements_filepath_1).set_index('pkg')['version']
-    r2 = requirement_file_to_df(requirements_filepath_2).set_index('pkg')['version']
+    requirements_filepath_1, requirements_filepath_2
+):
+    r1 = requirement_file_to_df(requirements_filepath_1).set_index('pkg')[
+        'version'
+    ]
+    r2 = requirement_file_to_df(requirements_filepath_2).set_index('pkg')[
+        'version'
+    ]
 
     s = ''
     for pkg, v2_str in r2.items():
@@ -145,9 +195,9 @@ def updated_requirements_2_with_requirements_1_that_are_ahead(
         v1_str = r1.get(pkg)
         v1 = version_str_to_num(v1_str)
         if v1 and v1 > v2:
-            s += pkg + '==' + v1_str + "\n"
+            s += pkg + '==' + v1_str + '\n'
         else:
-            s += pkg + '==' + v2_str + "\n"
+            s += pkg + '==' + v2_str + '\n'
     return s
     #
     #

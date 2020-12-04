@@ -2,8 +2,10 @@ import re
 
 assert_re = re.compile('^assert\ ')
 # assertion_re = re.compile('^assert\ |\ ==\ .+$')
-assertion_capture_re = re.compile('(^>>>\ assert\ )(?P<statement>.+)(\ ==\ )(?P<val>.+$)')
-assertion_as_doctest_templ = ">>> {statement}\n{val}\n"
+assertion_capture_re = re.compile(
+    '(^>>>\ assert\ )(?P<statement>.+)(\ ==\ )(?P<val>.+$)'
+)
+assertion_as_doctest_templ = '>>> {statement}\n{val}\n'
 space_re = re.compile('\s')
 
 
