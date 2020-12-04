@@ -91,9 +91,9 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           $SCRIPTS_DIR/update_setup_cfg.py
 
-      - name: Generate Documentation
-        run: |
-          $SCRIPTS_DIR/generate_documentation.py
+      # - name: Generate Documentation
+      #   run: |
+      #     $SCRIPTS_DIR/generate_documentation.py
 
       - name: Package
         run: |
@@ -102,7 +102,7 @@ jobs:
       - name: Publish
         run: |
           twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-          epythet docs_gen make $PROJECT_NAME github
+#          epythet docs_gen make $PROJECT_NAME github
 
       - name: Push Changes
         run: |
