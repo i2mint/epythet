@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen.autogen &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen.autogen &#8212; epythet 0.0.21 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -34,14 +34,14 @@
             
   <h1>Source code for epythet.docs_gen.autogen</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">epythet.docs_gen.templates</span> <span class="k">import</span> <span class="n">table_of_contents_header</span><span class="p">,</span> <span class="n">RstTitle</span><span class="p">,</span> <span class="n">AutoDocs</span>
-<span class="kn">from</span> <span class="nn">epythet.pack_util</span> <span class="k">import</span> <span class="n">read_configs</span><span class="p">,</span> <span class="n">DFLT_CONFIG_FILE</span>
-<span class="kn">from</span> <span class="nn">py2store.filesys</span> <span class="k">import</span> <span class="n">FileCollection</span>
-<span class="kn">from</span> <span class="nn">py2store.trans</span> <span class="k">import</span> <span class="n">filt_iter</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="k">import</span> <span class="n">ModuleType</span>
+<span class="kn">from</span> <span class="nn">epythet.docs_gen.templates</span> <span class="kn">import</span> <span class="n">table_of_contents_header</span><span class="p">,</span> <span class="n">RstTitle</span><span class="p">,</span> <span class="n">AutoDocs</span>
+<span class="kn">from</span> <span class="nn">epythet.pack_util</span> <span class="kn">import</span> <span class="n">read_configs</span><span class="p">,</span> <span class="n">DFLT_CONFIG_FILE</span>
+<span class="kn">from</span> <span class="nn">py2store.filesys</span> <span class="kn">import</span> <span class="n">FileCollection</span>
+<span class="kn">from</span> <span class="nn">py2store.trans</span> <span class="kn">import</span> <span class="n">filt_iter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
 
 <span class="n">path_sep</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
 
@@ -96,7 +96,7 @@
     <span class="n">table_of_contents_rst_doc</span> <span class="o">=</span> <span class="n">table_of_contents_header</span>
     <span class="n">toc_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
-        <span class="n">toc_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;   </span><span class="si">{output_dirname}</span><span class="s2">/</span><span class="si">{path[:-len(&#39;.rst&#39;)]}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">toc_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">output_dirname</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">path</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;.rst&#39;</span><span class="p">)]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">rst_full_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">path</span>
         <span class="k">if</span> <span class="n">skip_existing</span> <span class="ow">and</span> <span class="n">rst_full_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">continue</span>
@@ -171,8 +171,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
-  <li><a href="../docs_gen.html">epythet.docs_gen</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -205,7 +203,7 @@
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

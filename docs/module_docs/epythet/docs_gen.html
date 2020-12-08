@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen &#8212; epythet 0.0.21 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -44,7 +44,7 @@
 <h3>1. Setup Sphinx docsrc<a class="headerlink" href="#setup-sphinx-docsrc" title="Permalink to this headline">¶</a></h3>
 <p>One time setup to create docsrc folder with Sphinx docs config and makefile.  Commit docsrc into your git repo.</p>
 <p>Python:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.setup_docsrc</span> <span class="k">import</span> <span class="n">make_docsrc</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
 <span class="n">make_docsrc</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -58,7 +58,7 @@
 <p>Generate rst docs for all .py modules in your package.  Use make_autodocs each time there is a new .py file added.
 These rst files generated in the docsrc folder should also be commited into your git repo.</p>
 <p>Python:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.autogen</span> <span class="k">import</span> <span class="n">make_autodocs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
 <span class="n">make_autodocs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -71,7 +71,7 @@ These rst files generated in the docsrc folder should also be commited into your
 <h3>3. Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h3>
 <p>Compile generated rst docs with Sphinx makefile.  Use this each time you make changes to your .py files or .rst files.</p>
 <p>Python:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.call_make</span> <span class="k">import</span> <span class="n">make</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.docs_gen.call_make</span> <span class="kn">import</span> <span class="n">make</span>
 <span class="n">make_autodocs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -184,7 +184,7 @@ In this case, the site is published at <a class="reference external" href="https
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

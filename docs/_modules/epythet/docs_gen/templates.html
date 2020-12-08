@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen.templates &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <title>epythet.docs_gen.templates &#8212; epythet 0.0.21 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -33,12 +33,12 @@
           <div class="body" role="main">
             
   <h1>Source code for epythet.docs_gen.templates</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="ValueStrEnum"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.ValueStrEnum">[docs]</a><span class="k">class</span> <span class="nc">ValueStrEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
 <div class="viewcode-block" id="ValueStrEnum.has_value"><a class="viewcode-back" href="../../../module_docs/epythet/docs_gen/templates.html#epythet.docs_gen.templates.ValueStrEnum.has_value">[docs]</a>    <span class="nd">@classmethod</span>
@@ -90,9 +90,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">title_type</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span>
         <span class="n">_title_line</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">_title</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{text}</span><span class="se">\n</span><span class="si">{_title_line}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_overline</span><span class="p">(</span><span class="n">title_type</span><span class="p">):</span>
-            <span class="n">_title</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{_title_line}</span><span class="se">\n</span><span class="si">{_title}</span><span class="s2">&quot;</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">_title</span></div></div>
 
 
@@ -113,7 +113,7 @@
         <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">automod_doc</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{automod_doc}</span><span class="s2">   </span><span class="si">{op}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">automod_doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">automod_doc</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">automod_doc</span></div></div>
 
 
@@ -188,8 +188,6 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
-  <li><a href="../docs_gen.html">epythet.docs_gen</a><ul>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -222,7 +220,7 @@
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

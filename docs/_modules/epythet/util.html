@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.util &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.util &#8212; epythet 0.0.21 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -34,9 +34,9 @@
             
   <h1>Source code for epythet.util</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">import</span> <span class="nn">pkgutil</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="n">standard_lib_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
@@ -114,7 +114,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">t</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
-        <span class="p">[(</span><span class="n">f</span><span class="s2">&quot;(?&lt;=from\ )</span><span class="si">{old}</span><span class="s2">(?=[\.\ ])&quot;</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{new}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">f</span><span class="s2">&quot;(?&lt;=import\ )</span><span class="si">{old}</span><span class="s2">(?=[\.\s])&quot;</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{new}</span><span class="s2">&quot;</span><span class="p">)]</span>
+        <span class="p">[(</span><span class="sa">f</span><span class="s2">&quot;(?&lt;=from\ )</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">(?=[\.\ ])&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(?&lt;=import\ )</span><span class="si">{</span><span class="n">old</span><span class="si">}</span><span class="s2">(?=[\.\s])&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">from_to_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
 
     <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
@@ -172,8 +172,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
             <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;# &#39;</span> <span class="o">+</span> <span class="n">suffix</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Don&#39;t know what to do with such a type of add_comment_at_the_end_of_lines_replaced: &quot;</span>
-                        <span class="n">f</span><span class="s2">&quot;</span><span class="si">{add_comment_at_the_end_of_lines_replaced}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Don&#39;t know what to do with such a type of add_comment_at_the_end_of_lines_replaced: &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">add_comment_at_the_end_of_lines_replaced</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">_clog</span> <span class="o">=</span> <span class="n">mk_conditional_logger</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
 
@@ -208,7 +208,7 @@
                 <span class="k">if</span> <span class="n">new_line</span> <span class="o">!=</span> <span class="n">line</span><span class="p">:</span>  <span class="c1"># TODO: Double traversal... could have replacer return a &quot;replaced_something&quot; flag</span>
                     <span class="n">lines_replaced</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">clog</span><span class="p">(</span><span class="n">verbose</span> <span class="ow">or</span> <span class="n">dryrun</span><span class="p">,</span> <span class="nb">print</span><span class="p">,</span>
-                         <span class="n">f</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">:</span><span class="si">{i}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{replace_prompt}</span><span class="se">\t</span><span class="si">{line}</span><span class="se">\n</span><span class="si">{with____prompt}</span><span class="se">\t</span><span class="si">{new_line}</span><span class="s2">&quot;</span><span class="p">)</span>
+                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">replace_prompt</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">with____prompt</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">new_line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">new_v</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span>
 
@@ -219,11 +219,11 @@
 
 
 <span class="k">def</span> <span class="nf">_get_rootdir_and_name</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">inspect</span> <span class="k">import</span> <span class="n">ismodule</span>
+    <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">ismodule</span>
     <span class="k">if</span> <span class="n">ismodule</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">__path__</span><span class="o">.</span><span class="n">_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># TODO: See if there&#39;s a better way to do this</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;Should be a directory: </span><span class="si">{x}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Should be a directory: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span>
@@ -234,7 +234,7 @@
 
 <div class="viewcode-block" id="copy_project_with_different_import_names"><a class="viewcode-back" href="../../module_docs/epythet/util.html#epythet.util.copy_project_with_different_import_names">[docs]</a><span class="k">def</span> <span class="nf">copy_project_with_different_import_names</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">targ</span><span class="p">,</span> <span class="n">dryrun</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Copy project py files to another (or the same) folder, replacing import names for that project&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">py2store</span> <span class="k">import</span> <span class="n">QuickTextStore</span>
+    <span class="kn">from</span> <span class="nn">py2store</span> <span class="kn">import</span> <span class="n">QuickTextStore</span>
 
     <span class="n">src_dir</span><span class="p">,</span> <span class="n">src_name</span> <span class="o">=</span> <span class="n">_get_rootdir_and_name</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
     <span class="n">targ_dir</span><span class="p">,</span> <span class="n">targ_name</span> <span class="o">=</span> <span class="n">_get_rootdir_and_name</span><span class="p">(</span><span class="n">targ</span><span class="p">)</span>
@@ -313,10 +313,10 @@
 <span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">py2store.sources</span> <span class="k">import</span> <span class="n">DictAttr</span>
+    <span class="kn">from</span> <span class="nn">py2store.sources</span> <span class="kn">import</span> <span class="n">DictAttr</span>
 
     <span class="n">fc</span> <span class="o">=</span> <span class="n">DictAttr</span><span class="p">(</span><span class="o">**</span><span class="n">fc</span><span class="p">)</span>
-<span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="k">pass</span>  <span class="c1"># DictAttr is convenient, but not necessary</span>
 
 
@@ -367,7 +367,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">iglob</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">iglob</span>
 
 <span class="n">file_sep</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span>
 
@@ -515,7 +515,7 @@
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

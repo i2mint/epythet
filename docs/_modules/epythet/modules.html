@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.modules &#8212; epythet 0.0.20 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.modules &#8212; epythet 0.0.21 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -37,10 +37,10 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">importlib.util</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="k">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
 
 <div class="viewcode-block" id="ModuleSpecKind"><a class="viewcode-back" href="../../module_docs/epythet/modules.html#epythet.modules.ModuleSpecKind">[docs]</a><span class="k">class</span> <span class="nc">ModuleSpecKind</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -62,7 +62,7 @@
         <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">dotpath</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span> <span class="n">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">return</span> <span class="kc">False</span></div>
 
@@ -79,7 +79,7 @@
                 <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_spec</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">FOLDERPATH</span>
     <span class="c1"># if you got so far and no match was found...</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Couldn&#39;t figure out the module specification kind: </span><span class="si">{module_spec}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t figure out the module specification kind: </span><span class="si">{</span><span class="n">module_spec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="n">loaded_module_from_dotpath</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span>
@@ -257,7 +257,7 @@
 Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
