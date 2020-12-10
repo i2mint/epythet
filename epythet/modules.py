@@ -13,12 +13,15 @@ class ModuleSpecKind(Enum):
     DOTPATH = 2  # a dot-separated string path to the module (e.g. sklearn.decomposition.pca
     PATH = 3  # a list-like of the names of the path to the module (e.g. ('sklearn', 'decomposition', 'pca')
     FILEPATH = 4  # path to the .py of the module
-    FOLDERPATH = 5  # path to the folder containing the __init__.py of the module
+    FOLDERPATH = (
+        5  # path to the folder containing the __init__.py of the module
+    )
 
 
-LOADED, DOTPATH, PATH, FILEPATH, FOLDERPATH = \
-    map(lambda a: getattr(ModuleSpecKind, a),
-        ['LOADED', 'DOTPATH', 'PATH', 'FILEPATH', 'FOLDERPATH'])
+LOADED, DOTPATH, PATH, FILEPATH, FOLDERPATH = map(
+    lambda a: getattr(ModuleSpecKind, a),
+    ['LOADED', 'DOTPATH', 'PATH', 'FILEPATH', 'FOLDERPATH'],
+)
 
 
 def is_module_dotpath(dotpath):
@@ -40,11 +43,14 @@ def module_spec_kind(module_spec):
             return DOTPATH
         elif os.path.isfile(module_spec):
             return FILEPATH
-        elif os.path.isdir(module_spec) \
-                and os.path.isfile(os.path.join(module_spec, '__init__.py')):
+        elif os.path.isdir(module_spec) and os.path.isfile(
+            os.path.join(module_spec, '__init__.py')
+        ):
             return FOLDERPATH
     # if you got so far and no match was found...
-    raise TypeError(f"Couldn't figure out the module specification kind: {module_spec}")
+    raise TypeError(
+        f"Couldn't figure out the module specification kind: {module_spec}"
+    )
 
 
 loaded_module_from_dotpath = importlib.import_module
@@ -61,23 +67,19 @@ def loaded_module_from_dotpath_and_filepath(dotpath, filepath):
 
 # TODO: Complete list
 coercion_func = {
-    FOLDERPATH: {
-        FILEPATH: lambda x: os.path.join(x, '__init__.py')
-    },
+    FOLDERPATH: {FILEPATH: lambda x: os.path.join(x, '__init__.py')},
     # TODO: How do we do FILEPATH to PATH or DOTPATH? With sys.path?
-    PATH: {
-        DOTPATH: lambda x: '.'.join(x),
-    },
-    DOTPATH: {
-        LOADED: lambda x: importlib.import_module(x)
-    }
+    PATH: {DOTPATH: lambda x: '.'.join(x),},
+    DOTPATH: {LOADED: lambda x: importlib.import_module(x)},
 }
 
 
-def coerce_module_spec(module_spec,
-                       target: ModuleSpecKind = ModuleSpecKind.DOTPATH,
-                       source_kind: ModuleSpecKind = None):
-    raise NotImplementedError("Not finished")
+def coerce_module_spec(
+    module_spec,
+    target: ModuleSpecKind = ModuleSpecKind.DOTPATH,
+    source_kind: ModuleSpecKind = None,
+):
+    raise NotImplementedError('Not finished')
     source_kind = source_kind or module_spec_kind(module_spec)
     if source_kind == ModuleSpecKind.FOLDERPATH:
         if target == ModuleSpecKind.FILEPATH:
@@ -115,6 +117,7 @@ def get_imported_module_paths(module, recursive_levels=0):
 
         if recursive_levels > 0:
             yield from get_imported_module_paths
+
 
 #
 # @dataclass

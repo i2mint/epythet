@@ -3,7 +3,9 @@ import json
 
 
 def license_body(license=None, search_name_and_spdx_id=True, refresh=False):
-    _license_info = license_info(license, search_name_and_spdx_id, refresh=refresh)
+    _license_info = license_info(
+        license, search_name_and_spdx_id, refresh=refresh
+    )
     if _license_info is not None:
         return _license_info['body']
 
@@ -15,7 +17,9 @@ def license_info(license=None, search_name_and_spdx_id=True, refresh=False):
             for ll in licenses.values():
                 if license in {ll['name'], ll['spdx_id']}:
                     return ll
-        print("That's not a valid license key. Here is a list of valid license keys:")
+        print(
+            "That's not a valid license key. Here is a list of valid license keys:"
+        )
         print('\t', *licenses, sep='\n\t')
     else:
         return licenses[license]

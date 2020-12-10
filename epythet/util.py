@@ -11,16 +11,25 @@ def is_standard_lib_path(path):
     return path.startswith(standard_lib_dir)
 
 
-def standard_lib_module_names(is_standard_lib_path=is_standard_lib_path,
-                              name_filt=lambda name: not name.startswith('_')):
-    return filter(name_filt, (module_info.name for module_info in pkgutil.iter_modules()
-                              if is_standard_lib_path(module_info.module_finder.path)))
+def standard_lib_module_names(
+    is_standard_lib_path=is_standard_lib_path,
+    name_filt=lambda name: not name.startswith('_'),
+):
+    return filter(
+        name_filt,
+        (
+            module_info.name
+            for module_info in pkgutil.iter_modules()
+            if is_standard_lib_path(module_info.module_finder.path)
+        ),
+    )
 
 
 def mk_conditional_logger(condition, func=print):
     if condition:
         return func
     else:
+
         def do_nothing(*args, **kwargs):
             pass
 
@@ -43,7 +52,9 @@ def mk_replacer_from_dict(from_to_dict):
     :return: A replacer function that you can apply to strings to carry out the replacements
     """
 
-    p = re.compile('|'.join(map(r'({})'.format, map(re.escape, from_to_dict.keys()))))
+    p = re.compile(
+        '|'.join(map(r'({})'.format, map(re.escape, from_to_dict.keys())))
+    )
     f = lambda x: from_to_dict[x.group(0)]
 
     def replacer(s):
@@ -78,9 +89,15 @@ def mk_import_root_replacer(from_to_dict):
     :return: A replacer function that you can apply to strings to carry out the replacements
 
     """
-    t = dict(chain.from_iterable(
-        [(f"(?<=from\ ){old}(?=[\.\ ])", f"{new}"), (f"(?<=import\ ){old}(?=[\.\s])", f"{new}")]
-        for old, new in from_to_dict.items()))
+    t = dict(
+        chain.from_iterable(
+            [
+                (f'(?<=from\ ){old}(?=[\.\ ])', f'{new}'),
+                (f'(?<=import\ ){old}(?=[\.\s])', f'{new}'),
+            ]
+            for old, new in from_to_dict.items()
+        )
+    )
 
     p = re.compile('|'.join(map(r'({})'.format, t.keys())))
     f = lambda x: from_to_dict[x.group(0)]
@@ -93,13 +110,13 @@ def mk_import_root_replacer(from_to_dict):
 
 
 def replace_import_names(
-        source_store,
-        from_to_dict,
-        target_store=None,
-        dryrun=True,
-        verbose=True,
-        replacer_factory=mk_import_root_replacer,
-        add_comment_at_the_end_of_lines_replaced=False,
+    source_store,
+    from_to_dict,
+    target_store=None,
+    dryrun=True,
+    verbose=True,
+    replacer_factory=mk_import_root_replacer,
+    add_comment_at_the_end_of_lines_replaced=False,
 ):
     """Replace import names.
 
@@ -127,29 +144,37 @@ def replace_import_names(
     :return:
     """
 
-    suffix = ""
+    suffix = ''
     if add_comment_at_the_end_of_lines_replaced is False:
-        suffix = ""
+        suffix = ''
     elif add_comment_at_the_end_of_lines_replaced is True:
-        suffix = "# line_was_edited_by_epythet"
+        suffix = '# line_was_edited_by_epythet'
     elif isinstance(add_comment_at_the_end_of_lines_replaced, str):
         suffix = add_comment_at_the_end_of_lines_replaced
         if not suffix.startswith('#'):
             suffix = '# ' + suffix
     else:
-        raise TypeError(f"Don't know what to do with such a type of add_comment_at_the_end_of_lines_replaced: "
-                        f"{add_comment_at_the_end_of_lines_replaced}")
+        raise TypeError(
+            f"Don't know what to do with such a type of add_comment_at_the_end_of_lines_replaced: "
+            f'{add_comment_at_the_end_of_lines_replaced}'
+        )
 
     _clog = mk_conditional_logger(condition=verbose, func=print)
 
     if target_store is None:
         target_store = {}  # use a dict to write results
-        _clog("You didn't specify a target_store, so I'll write all of this in a dict and return it to you!")
+        _clog(
+            "You didn't specify a target_store, so I'll write all of this in a dict and return it to you!"
+        )
 
-    if source_store == target_store:  # TODO: R: stores are not set up with __eq__, so no predictable
+    if (
+        source_store == target_store
+    ):  # TODO: R: stores are not set up with __eq__, so no predictable
         # TODO: Add confirmation (user input) to protect more. Make this an option (so total automatic is possible)
-        _clog("I just wanted you to be aware that you are using the same store for source and target. "
-              "This means I'm about to overwrite your files!!")
+        _clog(
+            'I just wanted you to be aware that you are using the same store for source and target. '
+            "This means I'm about to overwrite your files!!"
+        )
     if dryrun:
         _clog("... Right now, dryrun=True, so I'm just pretending!")
 
@@ -167,13 +192,20 @@ def replace_import_names(
 
         def gen():
             nonlocal lines_replaced
-            for i, line in enumerate(v.split('\n'), 1):  # TODO: Double traversal. Find online splitter
+            for i, line in enumerate(
+                v.split('\n'), 1
+            ):  # TODO: Double traversal. Find online splitter
                 new_line = replacer(line) + suffix
                 yield new_line
-                if new_line != line:  # TODO: Double traversal... could have replacer return a "replaced_something" flag
+                if (
+                    new_line != line
+                ):  # TODO: Double traversal... could have replacer return a "replaced_something" flag
                     lines_replaced += 1
-                    clog(verbose or dryrun, print,
-                         f"{k}:{i}:\n{replace_prompt}\t{line}\n{with____prompt}\t{new_line}")
+                    clog(
+                        verbose or dryrun,
+                        print,
+                        f'{k}:{i}:\n{replace_prompt}\t{line}\n{with____prompt}\t{new_line}',
+                    )
 
         new_v = '\n'.join(gen())
 
@@ -185,10 +217,11 @@ def replace_import_names(
 
 def _get_rootdir_and_name(x):
     from inspect import ismodule
+
     if ismodule(x):
         x = x.__path__._path[0]  # TODO: See if there's a better way to do this
     else:
-        assert os.path.isdir(x), f"Should be a directory: {x}"
+        assert os.path.isdir(x), f'Should be a directory: {x}'
 
     if not x.endswith(os.path.sep):
         x = x + os.path.sep
@@ -197,7 +230,9 @@ def _get_rootdir_and_name(x):
     return x, name
 
 
-def copy_project_with_different_import_names(src, targ, dryrun=True, verbose=True):
+def copy_project_with_different_import_names(
+    src, targ, dryrun=True, verbose=True
+):
     """Copy project py files to another (or the same) folder, replacing import names for that project"""
     from py2store import QuickTextStore
 
@@ -214,67 +249,59 @@ def copy_project_with_different_import_names(src, targ, dryrun=True, verbose=Tru
         dryrun=dryrun,
         verbose=verbose,
         replacer_factory=mk_import_root_replacer,
-        add_comment_at_the_end_of_lines_replaced=False)
+        add_comment_at_the_end_of_lines_replaced=False,
+    )
 
 
 fc = dict(
-    reset="\033[0m",  # alias for reset_all
-    reset_all="\033[0m",
-
-    bold="\033[1m",
-    dim="\033[2m",
-    underlined="\033[4m",
-    blink="\033[5m",
-    reverse="\033[7m",
-    hidden="\033[8m",
-    reset_bold="\033[21m",
-    reset_dim="\033[22m",
-    reset_underlined="\033[24m",
-    reset_blink="\033[25m",
-    reset_reverse="\033[27m",
-    reset_hidden="\033[28m",
-
-    default="\033[39m",
-
-    black="\033[30m",
-    red="\033[31m",
-    green="\033[32m",
-    yellow="\033[33m",
-    blue="\033[34m",
-    magenta="\033[35m",
-    cyan="\033[36m",
-    gray="\033[37m",
-
-    dark_gray="\033[90m",
-    dark_red="\033[91m",
-    dark_green="\033[92m",
-    dark_yellow="\033[93m",
-    dark_blue="\033[94m",
-    dark_magenta="\033[95m",
-    dark_cyan="\033[96m",
-
-    white="\033[97m",
-
-    background_default="\033[49m",
-
-    background_black="\033[40m",
-    background_red="\033[41m",
-    background_green="\033[42m",
-    background_yellow="\033[43m",
-    background_blue="\033[44m",
-    background_magenta="\033[45m",
-    background_cyan="\033[46m",
-    background_gray="\033[47m",
-
-    background_dark_gray="\033[100m",
-    background_dark_red="\033[101m",
-    background_dark_green="\033[102m",
-    background_dark_yellow="\033[103m",
-    background_dark_blue="\033[104m",
-    background_dark_magenta="\033[105m",
-    background_dark_cyan="\033[106m",
-
-    background_white="\033[107m",
+    reset='\033[0m',  # alias for reset_all
+    reset_all='\033[0m',
+    bold='\033[1m',
+    dim='\033[2m',
+    underlined='\033[4m',
+    blink='\033[5m',
+    reverse='\033[7m',
+    hidden='\033[8m',
+    reset_bold='\033[21m',
+    reset_dim='\033[22m',
+    reset_underlined='\033[24m',
+    reset_blink='\033[25m',
+    reset_reverse='\033[27m',
+    reset_hidden='\033[28m',
+    default='\033[39m',
+    black='\033[30m',
+    red='\033[31m',
+    green='\033[32m',
+    yellow='\033[33m',
+    blue='\033[34m',
+    magenta='\033[35m',
+    cyan='\033[36m',
+    gray='\033[37m',
+    dark_gray='\033[90m',
+    dark_red='\033[91m',
+    dark_green='\033[92m',
+    dark_yellow='\033[93m',
+    dark_blue='\033[94m',
+    dark_magenta='\033[95m',
+    dark_cyan='\033[96m',
+    white='\033[97m',
+    background_default='\033[49m',
+    background_black='\033[40m',
+    background_red='\033[41m',
+    background_green='\033[42m',
+    background_yellow='\033[43m',
+    background_blue='\033[44m',
+    background_magenta='\033[45m',
+    background_cyan='\033[46m',
+    background_gray='\033[47m',
+    background_dark_gray='\033[100m',
+    background_dark_red='\033[101m',
+    background_dark_green='\033[102m',
+    background_dark_yellow='\033[103m',
+    background_dark_blue='\033[104m',
+    background_dark_magenta='\033[105m',
+    background_dark_cyan='\033[106m',
+    background_white='\033[107m',
 )
 
 try:
@@ -285,7 +312,13 @@ except ModuleNotFoundError:
     pass  # DictAttr is convenient, but not necessary
 
 
-def highlight(string, effect=fc['reverse'], beg_mark='[[', end_mark=']]', end_effect=fc['reset_all']):
+def highlight(
+    string,
+    effect=fc['reverse'],
+    beg_mark='[[',
+    end_mark=']]',
+    end_effect=fc['reset_all'],
+):
     r"""Interprets a string's highlight markers to be able to make highlights in the string.
 
     This is meant for very simple situations. A more powerful and fast function could be made by
@@ -342,14 +375,20 @@ class FilePatterns(object):
     WAV_EXTENSION = '.wav$'
 
 
-def get_filepath_iterator(root_folder,
-                          pattern='',
-                          return_full_path=True,
-                          apply_pattern_to_full_path=False):
+def get_filepath_iterator(
+    root_folder,
+    pattern='',
+    return_full_path=True,
+    apply_pattern_to_full_path=False,
+):
     if apply_pattern_to_full_path:
-        return recursive_file_walk_iterator_with_name_filter(root_folder, pattern, return_full_path)
+        return recursive_file_walk_iterator_with_name_filter(
+            root_folder, pattern, return_full_path
+        )
     else:
-        return recursive_file_walk_iterator_with_filepath_filter(root_folder, pattern, return_full_path)
+        return recursive_file_walk_iterator_with_filepath_filter(
+            root_folder, pattern, return_full_path
+        )
 
 
 def iter_relative_files_and_folder(root_folder):
@@ -367,7 +406,9 @@ def pattern_filter(pattern):
     return _pattern_filter
 
 
-def recursive_file_walk_iterator_with_name_filter(root_folder, filt='', return_full_path=True):
+def recursive_file_walk_iterator_with_name_filter(
+    root_folder, filt='', return_full_path=True
+):
     if isinstance(filt, str):
         filt = pattern_filter(filt)
     # if isinstance(pattern, basestring):
@@ -375,7 +416,9 @@ def recursive_file_walk_iterator_with_name_filter(root_folder, filt='', return_f
     for name in iter_relative_files_and_folder(root_folder):
         full_path = os.path.join(root_folder, name)
         if os.path.isdir(full_path):
-            for entry in recursive_file_walk_iterator_with_name_filter(full_path, filt, return_full_path):
+            for entry in recursive_file_walk_iterator_with_name_filter(
+                full_path, filt, return_full_path
+            ):
                 yield entry
         else:
             if os.path.isfile(full_path):
@@ -386,13 +429,17 @@ def recursive_file_walk_iterator_with_name_filter(root_folder, filt='', return_f
                         yield name
 
 
-def recursive_file_walk_iterator_with_filepath_filter(root_folder, filt='', return_full_path=True):
+def recursive_file_walk_iterator_with_filepath_filter(
+    root_folder, filt='', return_full_path=True
+):
     if isinstance(filt, str):
         filt = pattern_filter(filt)
     for name in iter_relative_files_and_folder(root_folder):
         full_path = os.path.join(root_folder, name)
         if os.path.isdir(full_path):
-            for entry in recursive_file_walk_iterator_with_filepath_filter(full_path, filt, return_full_path):
+            for entry in recursive_file_walk_iterator_with_filepath_filter(
+                full_path, filt, return_full_path
+            ):
                 yield entry
         else:
             if os.path.isfile(full_path):

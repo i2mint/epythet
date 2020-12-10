@@ -93,9 +93,9 @@ def pattern_filter(pattern):
     return _pattern_filter
 
 
-def recursive_file_walk_iterator_with_filepath_filter(root_folder,
-                                                      filt: Union[str, Callable] = None,
-                                                      return_full_path=True):
+def recursive_file_walk_iterator_with_filepath_filter(
+    root_folder, filt: Union[str, Callable] = None, return_full_path=True
+):
     if not callable(filt):
         if filt is None:
             filt = lambda x: x
@@ -104,7 +104,9 @@ def recursive_file_walk_iterator_with_filepath_filter(root_folder,
     for name in iter_relative_files_and_folder(root_folder):
         full_path = os.path.join(root_folder, name)
         if os.path.isdir(full_path):
-            for entry in recursive_file_walk_iterator_with_filepath_filter(full_path, filt, return_full_path):
+            for entry in recursive_file_walk_iterator_with_filepath_filter(
+                full_path, filt, return_full_path
+            ):
                 yield entry
         else:
             if os.path.isfile(full_path):
@@ -117,13 +119,17 @@ def recursive_file_walk_iterator_with_filepath_filter(root_folder,
 
 def re_find_imports(rootdir: str, pathfilt=lambda x: x.endswith('.py')):
     """Generator of import objects taken from files under rootdir"""
-    for f in recursive_file_walk_iterator_with_filepath_filter(rootdir, filt=pathfilt):
+    for f in recursive_file_walk_iterator_with_filepath_filter(
+        rootdir, filt=pathfilt
+    ):
         yield from find_imports(f)
 
 
-def count_imports(rootdir: str,
-                  pathfilt=lambda x: x.endswith('.py'),
-                  import_obj_func=lambda x: x.name.split('.')[0]):
+def count_imports(
+    rootdir: str,
+    pathfilt=lambda x: x.endswith('.py'),
+    import_obj_func=lambda x: x.name.split('.')[0],
+):
     """Counter of imports gathered from files under rootdir.
 
     :param rootdir: Root directory
@@ -131,7 +137,9 @@ def count_imports(rootdir: str,
     :param import_obj_func: Is applied to import object to extract the actual data item that should be counted.
     :return: A collections.Counter instance
     """
-    return Counter(import_obj_func(x) for x in re_find_imports(rootdir, pathfilt))
+    return Counter(
+        import_obj_func(x) for x in re_find_imports(rootdir, pathfilt)
+    )
 
 
 from py2store import Collection, KvReader, lazyprop, wrap_kvs
@@ -146,7 +154,9 @@ class ModulesColl(Collection):
 
     @lazyprop
     def _modules(self):
-        return {module: module.modname for module in self._source.listModules()}
+        return {
+            module: module.modname for module in self._source.listModules()
+        }
 
     @lazyprop
     def _modobj_of_modname(self):
@@ -180,7 +190,12 @@ def modname_to_modobj(self, modname):
     return self.store._modobj_of_modname[modname]
 
 
-@wrap_kvs(name='ModuleImports', key_of_id=modobj_to_modname, id_of_key=modname_to_modobj, __module__=__name__)
+@wrap_kvs(
+    name='ModuleImports',
+    key_of_id=modobj_to_modname,
+    id_of_key=modname_to_modobj,
+    __module__=__name__,
+)
 class ModuleImports(ModuleImportsBase):
     @staticmethod
     def _key_to_val(k):
@@ -233,7 +248,10 @@ class ImportInfo(object):
 
     def __repr__(self):
         return '%s(%r, %r, %r, %r)' % (
-            self.__class__.__name__, self.name, self.filename, self.lineno,
+            self.__class__.__name__,
+            self.name,
+            self.filename,
+            self.lineno,
             self.level,
         )
 
@@ -266,16 +284,17 @@ class ImportFinder(ast.NodeVisitor):
         self.filename = filename
 
     def processImport(self, name, imported_as, full_name, level, node):
-        lineno = adjust_lineno(self.filename,
-                               self.lineno_offset + node.lineno,
-                               name)
+        lineno = adjust_lineno(
+            self.filename, self.lineno_offset + node.lineno, name
+        )
         info = ImportInfo(full_name, self.filename, lineno, level)
         self.imports.append(info)
 
     def visit_Import(self, node):
         for alias in node.names:
-            self.processImport(alias.name, alias.asname, alias.name, None,
-                               node)
+            self.processImport(
+                alias.name, alias.asname, alias.name, None, node
+            )
 
     def visit_ImportFrom(self, node):
         if node.module == '__future__':
@@ -307,8 +326,12 @@ class ImportFinder(ast.NodeVisitor):
         try:
             examples = dtparser.get_examples(docstring)
         except Exception:
-            print("{filename}:{lineno}: error while parsing doctest".format(
-                filename=self.filename, lineno=lineno), file=sys.stderr)
+            print(
+                '{filename}:{lineno}: error while parsing doctest'.format(
+                    filename=self.filename, lineno=lineno
+                ),
+                file=sys.stderr,
+            )
             raise
         for example in examples:
             try:
@@ -317,8 +340,12 @@ class ImportFinder(ast.NodeVisitor):
                     source = source.encode('UTF-8')
                 node = ast.parse(source, filename='<docstring>')
             except SyntaxError:
-                print("{filename}:{lineno}: syntax error in doctest".format(
-                    filename=self.filename, lineno=lineno), file=sys.stderr)
+                print(
+                    '{filename}:{lineno}: syntax error in doctest'.format(
+                        filename=self.filename, lineno=lineno
+                    ),
+                    file=sys.stderr,
+                )
             else:
                 self.lineno_offset += lineno + example.lineno
                 self.visit(node)
@@ -348,7 +375,8 @@ class Scope(object):
 
     def addImport(self, name, filename, level, lineno):
         self.unused_names[name] = self.imports[name] = ImportInfo(
-            name, filename, lineno, level)
+            name, filename, lineno, level
+        )
 
     def useName(self, name):
         if name in self.unused_names:
@@ -396,23 +424,34 @@ class ImportFinderAndNameTracker(ImportFinder):
 
     def processImport(self, name, imported_as, full_name, level, node):
         ImportFinder.processImport(
-            self, name, imported_as, full_name, level, node)
+            self, name, imported_as, full_name, level, node
+        )
         if not imported_as:
             imported_as = name
-        if imported_as != "*":
+        if imported_as != '*':
             lineno = self.lineno_offset + node.lineno
-            if (self.warn_about_duplicates and
-                    self.scope.haveImport(imported_as)):
+            if self.warn_about_duplicates and self.scope.haveImport(
+                imported_as
+            ):
                 where = self.scope.whereImported(imported_as).lineno
                 line = linecache.getline(self.filename, lineno)
                 if '#' not in line:
-                    print("{filename}:{lineno}: {name} imported again".format(
-                        filename=self.filename, lineno=lineno,
-                        name=imported_as), file=sys.stderr)
+                    print(
+                        '{filename}:{lineno}: {name} imported again'.format(
+                            filename=self.filename,
+                            lineno=lineno,
+                            name=imported_as,
+                        ),
+                        file=sys.stderr,
+                    )
                     if self.verbose:
-                        print("{filename}:{lineno}:   (location of previous"
-                              " import)".format(filename=self.filename,
-                                                lineno=where), file=sys.stderr)
+                        print(
+                            '{filename}:{lineno}:   (location of previous'
+                            ' import)'.format(
+                                filename=self.filename, lineno=where
+                            ),
+                            file=sys.stderr,
+                        )
             else:
                 self.scope.addImport(imported_as, self.filename, level, lineno)
 
@@ -428,7 +467,7 @@ class ImportFinderAndNameTracker(ImportFinder):
         if isinstance(parent, ast.Name):
             full_name.append(parent.id)
             full_name.reverse()
-            name = ""
+            name = ''
             for part in full_name:
                 if name:
                     name = '%s.%s' % (name, part)
@@ -450,8 +489,9 @@ def find_imports(filename):
     return visitor.imports
 
 
-def find_imports_and_track_names(filename, warn_about_duplicates=False,
-                                 verbose=False):
+def find_imports_and_track_names(
+    filename, warn_about_duplicates=False, verbose=False
+):
     """Find all imported names in a given file.
 
     Returns ``(imports, unused)``.  Both are lists of ImportInfo objects.
@@ -501,7 +541,7 @@ class ModuleCycle(object):
     def __init__(self, modnames):
         self.modnames = modnames
         self.modname = modnames[0]
-        self.label = "\n".join(modnames)
+        self.label = '\n'.join(modnames)
         self.imports = set()
 
 
@@ -573,24 +613,28 @@ class ModuleGraph(object):
         module = Module(modname, filename)
         self.modules[modname] = module
         if self.trackUnusedNames:
-            module.imported_names, module.unused_names = (
-                find_imports_and_track_names(filename,
-                                             self.warn_about_duplicates,
-                                             self.verbose)
+            (
+                module.imported_names,
+                module.unused_names,
+            ) = find_imports_and_track_names(
+                filename, self.warn_about_duplicates, self.verbose
             )
         else:
             module.imported_names = find_imports(filename)
             module.unused_names = None
         dir = os.path.dirname(filename)
         module.imports = set(
-            [self.findModuleOfName(imp.name, imp.level, filename, dir)
-             for imp in module.imported_names])
+            [
+                self.findModuleOfName(imp.name, imp.level, filename, dir)
+                for imp in module.imported_names
+            ]
+        )
 
     def filenameToModname(self, filename):
         """Convert a filename to a module name."""
         for ext in reversed(self._exts):
             if filename.endswith(ext):
-                filename = filename[:-len(ext)]
+                filename = filename[: -len(ext)]
                 break
         else:
             self.warn(filename, '%s: unknown file name extension', filename)
@@ -600,11 +644,11 @@ class ModuleGraph(object):
         while elements:
             modname.append(elements.pop())
             if not os.path.exists(
-                    os.path.sep.join(elements + ['__init__.py'])
+                os.path.sep.join(elements + ['__init__.py'])
             ):
                 break
         modname.reverse()
-        modname = ".".join(modname)
+        modname = '.'.join(modname)
         return modname
 
     def findModuleOfName(self, dotted_name, level, filename, extrapath=None):
@@ -672,7 +716,7 @@ class ModuleGraph(object):
                 try:
                     zf = zipfile.ZipFile(dir)
                 except zipfile.BadZipfile:
-                    self.warn(dir, "%s: not a directory or zip file", dir)
+                    self.warn(dir, '%s: not a directory or zip file', dir)
                     continue
                 names = zf.namelist()
                 for ext in self._exts:
@@ -696,7 +740,7 @@ class ModuleGraph(object):
         """Is ``dotted_name`` the name of a package?"""
         candidate = self.isModule(dotted_name + '.__init__', extrapath)
         if candidate:
-            candidate = candidate[:-len(".__init__")]
+            candidate = candidate[: -len('.__init__')]
         return candidate
 
     def packageOf(self, dotted_name, packagelevel=None):
@@ -843,27 +887,32 @@ class ModuleGraph(object):
     def printImportedNames(self):
         """Produce a report of imported names."""
         for module in self.listModules():
-            print("%s:" % module.modname)
-            print("  %s" % "\n  ".join(
-                imp.name for imp in module.imported_names))
+            print('%s:' % module.modname)
+            print(
+                '  %s' % '\n  '.join(imp.name for imp in module.imported_names)
+            )
 
     def printImports(self):
         """Produce a report of dependencies."""
         for module in self.listModules():
-            print("%s:" % module.label)
+            print('%s:' % module.label)
             if self.external_dependencies:
                 imports = list(module.imports)
             else:
-                imports = [modname for modname in module.imports
-                           if modname in self.modules]
+                imports = [
+                    modname
+                    for modname in module.imports
+                    if modname in self.modules
+                ]
             imports.sort()
-            print("  %s" % "\n  ".join(imports))
+            print('  %s' % '\n  '.join(imports))
 
     def printUnusedImports(self):
         """Produce a report of unused imports."""
         for module in self.listModules():
-            names = [(unused.lineno, unused.name)
-                     for unused in module.unused_names]
+            names = [
+                (unused.lineno, unused.name) for unused in module.unused_names
+            ]
             names.sort()
             for lineno, name in names:
                 if not self.all_unused:
@@ -871,34 +920,37 @@ class ModuleGraph(object):
                     if '#' in line:
                         # assume there's a comment explaining why it's not used
                         continue
-                print("%s:%s: %s not used" % (module.filename, lineno, name))
+                print('%s:%s: %s not used' % (module.filename, lineno, name))
 
     def printDot(self):
         """Produce a dependency graph in dot format."""
-        print("digraph ModuleDependencies {")
-        print("  node[shape=box];")
+        print('digraph ModuleDependencies {')
+        print('  node[shape=box];')
         allNames = set()
         nameDict = {}
         for n, module in enumerate(self.listModules()):
-            module._dot_name = "mod%d" % n
+            module._dot_name = 'mod%d' % n
             nameDict[module.modname] = module._dot_name
-            print("  %s[label=\"%s\"];" % (module._dot_name,
-                                           quote(module.label)))
+            print(
+                '  %s[label="%s"];' % (module._dot_name, quote(module.label))
+            )
             allNames |= module.imports
-        print("  node[style=dotted];")
+        print('  node[style=dotted];')
         if self.external_dependencies:
             myNames = set(self.modules)
             extNames = list(allNames - myNames)
             extNames.sort()
             for n, name in enumerate(extNames):
-                nameDict[name] = id = "extmod%d" % n
-                print("  %s[label=\"%s\"];" % (id, name))
+                nameDict[name] = id = 'extmod%d' % n
+                print('  %s[label="%s"];' % (id, name))
         for modname, module in sorted(self.modules.items()):
             for other in sorted(module.imports):
                 if other in nameDict:
-                    print("  %s -> %s;" % (nameDict[module.modname],
-                                           nameDict[other]))
-        print("}")
+                    print(
+                        '  %s -> %s;'
+                        % (nameDict[module.modname], nameDict[other])
+                    )
+        print('}')
 
 
 def quote(s):
@@ -906,56 +958,110 @@ def quote(s):
 
     This function is probably incomplete.
     """
-    return s.replace("\\", "\\\\").replace('"', '\\"').replace('\n', '\\n')
+    return s.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
 
 
 def main(argv=None):
     progname = os.path.basename(argv[0]) if argv else None
     description = __doc__.strip().split('\n\n')[0]
-    parser = optparse.OptionParser('%prog [options] [filename|dirname ...]',
-                                   prog=progname, description=description)
-    parser.add_option('-i', '--imports', action='store_const',
-                      dest='action', const='printImports',
-                      default='printImports',
-                      help='print dependency graph (default action)')
-    parser.add_option('-d', '--dot', action='store_const',
-                      dest='action', const='printDot',
-                      help='print dependency graph in dot (graphviz) format')
-    parser.add_option('-n', '--names', action='store_const',
-                      dest='action', const='printImportedNames',
-                      help='print dependency graph with all imported names')
-    parser.add_option('-u', '--unused', action='store_const',
-                      dest='action', const='printUnusedImports',
-                      help='print unused imports')
-    parser.add_option('-a', '--all', action='store_true',
-                      dest='all_unused',
-                      help="don't ignore unused imports when there's a comment"
-                           " on the same line (only affects -u)")
-    parser.add_option('--duplicate', action='store_true',
-                      dest='warn_about_duplicates',
-                      help='warn about duplicate imports')
-    parser.add_option('-v', '--verbose', action='store_true',
-                      help='print more information (currently only affects'
-                           ' --duplicate)')
-    parser.add_option('-N', '--noext', action='store_true',
-                      help='omit external dependencies')
-    parser.add_option('-p', '--packages', action='store_true',
-                      dest='condense_to_packages',
-                      help='convert the module graph to a package graph')
-    parser.add_option('-l', '--level', type='int',
-                      dest='packagelevel',
-                      help='collapse subpackages to the topmost Nth levels')
-    parser.add_option('-c', '--collapse', action='store_true',
-                      dest='collapse_cycles',
-                      help='collapse dependency cycles')
-    parser.add_option('-T', '--tests', action='store_true',
-                      dest='collapse_tests',
-                      help="collapse packages named 'tests' and 'ftests'"
-                           " with parent packages")
-    parser.add_option('-w', '--write-cache', metavar='FILE',
-                      help="write a pickle cache of parsed imports; provide"
-                           " the cache filename as the only non-option"
-                           " argument to load it back")
+    parser = optparse.OptionParser(
+        '%prog [options] [filename|dirname ...]',
+        prog=progname,
+        description=description,
+    )
+    parser.add_option(
+        '-i',
+        '--imports',
+        action='store_const',
+        dest='action',
+        const='printImports',
+        default='printImports',
+        help='print dependency graph (default action)',
+    )
+    parser.add_option(
+        '-d',
+        '--dot',
+        action='store_const',
+        dest='action',
+        const='printDot',
+        help='print dependency graph in dot (graphviz) format',
+    )
+    parser.add_option(
+        '-n',
+        '--names',
+        action='store_const',
+        dest='action',
+        const='printImportedNames',
+        help='print dependency graph with all imported names',
+    )
+    parser.add_option(
+        '-u',
+        '--unused',
+        action='store_const',
+        dest='action',
+        const='printUnusedImports',
+        help='print unused imports',
+    )
+    parser.add_option(
+        '-a',
+        '--all',
+        action='store_true',
+        dest='all_unused',
+        help="don't ignore unused imports when there's a comment"
+        ' on the same line (only affects -u)',
+    )
+    parser.add_option(
+        '--duplicate',
+        action='store_true',
+        dest='warn_about_duplicates',
+        help='warn about duplicate imports',
+    )
+    parser.add_option(
+        '-v',
+        '--verbose',
+        action='store_true',
+        help='print more information (currently only affects' ' --duplicate)',
+    )
+    parser.add_option(
+        '-N', '--noext', action='store_true', help='omit external dependencies'
+    )
+    parser.add_option(
+        '-p',
+        '--packages',
+        action='store_true',
+        dest='condense_to_packages',
+        help='convert the module graph to a package graph',
+    )
+    parser.add_option(
+        '-l',
+        '--level',
+        type='int',
+        dest='packagelevel',
+        help='collapse subpackages to the topmost Nth levels',
+    )
+    parser.add_option(
+        '-c',
+        '--collapse',
+        action='store_true',
+        dest='collapse_cycles',
+        help='collapse dependency cycles',
+    )
+    parser.add_option(
+        '-T',
+        '--tests',
+        action='store_true',
+        dest='collapse_tests',
+        help="collapse packages named 'tests' and 'ftests'"
+        ' with parent packages',
+    )
+    parser.add_option(
+        '-w',
+        '--write-cache',
+        metavar='FILE',
+        help='write a pickle cache of parsed imports; provide'
+        ' the cache filename as the only non-option'
+        ' argument to load it back',
+    )
     try:
         opts, args = parser.parse_args(args=argv[1:] if argv else None)
     except SystemExit as e:
@@ -967,7 +1073,7 @@ def main(argv=None):
     g.all_unused = opts.all_unused
     g.warn_about_duplicates = opts.warn_about_duplicates
     g.verbose = opts.verbose
-    g.trackUnusedNames = (opts.action == 'printUnusedImports')
+    g.trackUnusedNames = opts.action == 'printUnusedImports'
     for fn in args:
         g.parsePathname(fn)
     if opts.write_cache:

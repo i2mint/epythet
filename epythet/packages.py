@@ -55,7 +55,11 @@ depth	count
 ```
 """
 
-from pkg_resources import get_distribution, DistributionNotFound, RequirementParseError
+from pkg_resources import (
+    get_distribution,
+    DistributionNotFound,
+    RequirementParseError,
+)
 from importlib import import_module
 
 
@@ -95,13 +99,16 @@ def top_level_objs(module, obj_filt=take_everything):
 
 def obj_module_depth_counts(module, obj_filt=take_everything):
     from collections import Counter
+
     def depth(obj):
         if not hasattr(obj, '__module__'):
             return 0
         else:
             return len(obj.__module__.split('.'))
 
-    return sorted(Counter(depth(obj) for obj in top_level_objs(module, obj_filt)).items())
+    return sorted(
+        Counter(depth(obj) for obj in top_level_objs(module, obj_filt)).items()
+    )
 
 
 def print_top_level_diagnosis(module, obj_filt=take_everything):
@@ -161,12 +168,16 @@ def print_top_level_diagnosis(module, obj_filt=take_everything):
     """
     if isinstance(module, str):
         module = import_module(module)
-    print(f"\n--------- {module.__name__} ---------")
-    print(f"{len(list(top_level_objs(module)))} objects can be imported from top level {module.__name__}:")
+    print(f'\n--------- {module.__name__} ---------')
+    print(
+        f'{len(list(top_level_objs(module)))} objects can be imported from top level {module.__name__}:'
+    )
     for kind in [ModuleType, FunctionType, type]:
-        print(f"  {len(list(top_level_objs(module, lambda x: isinstance(x, kind))))} {kind.__name__}s")
-    print("")
-    print(f"depth\tcount")
+        print(
+            f'  {len(list(top_level_objs(module, lambda x: isinstance(x, kind))))} {kind.__name__}s'
+        )
+    print('')
+    print(f'depth\tcount')
     for depth, count in obj_module_depth_counts(module, obj_filt):
         print(f'{depth}\t{count}')
-    print("")
+    print('')

@@ -6,7 +6,12 @@ def make_html(project_dir):
     pass
 
 
-def go(project_dir, output_dirname='module_docs', skip_existing=True, docsrc_dir=None):
+def go(
+    project_dir,
+    output_dirname='module_docs',
+    skip_existing=True,
+    docsrc_dir=None,
+):
     """Create sphinx autodocs and table of contents for module defined by setup.cfg
 
     :param project_dir: Path to root project directory containing setup.cfg
@@ -19,7 +24,7 @@ def go(project_dir, output_dirname='module_docs', skip_existing=True, docsrc_dir
     make_html(project_dir)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import argh
 
     argh.dispatch_commands([make_docsrc, make_autodocs, go])

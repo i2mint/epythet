@@ -19,7 +19,9 @@ sys.path.insert(0, os.path.abspath('..'))
 from configparser import ConfigParser
 from pathlib import Path
 
-config_file = Path(__file__).absolute().parent.parent / 'setup.cfg'  # same folder as setup.py
+config_file = (
+    Path(__file__).absolute().parent.parent / 'setup.cfg'
+)  # same folder as setup.py
 config = ConfigParser()
 config.read_file(open(config_file, 'r'))
 
