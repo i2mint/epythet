@@ -20,8 +20,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Initialize Resource Directory
-        run: |
-          echo "RESOURCE_DIR=$(mktemp -d)" >> $GITHUB_ENV
+        run: echo "RESOURCE_DIR=$(mktemp -d)" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
@@ -41,7 +40,6 @@ jobs:
         run: pytest --doctest-modules -v --ignore=$PROJECT_NAME/docs_gen/_static
   publish:
     name: Publish
-    # if: "!contains(github.event.head_commit.message, '[skip ci]')"
     if: "!contains(github.event.head_commit.message, '[skip ci]') && github.ref == 'refs/heads/master'"
     needs: validation
     runs-on: ubuntu-latest
@@ -72,8 +70,7 @@ jobs:
           pip -q install semver axblack twine epythet
 
       - name: Initialize Resource Directory
-        run: |
-          echo "RESOURCE_DIR=$(mktemp -d)" >> $GITHUB_ENV
+        run: echo "RESOURCE_DIR=$(mktemp -d)" >> $GITHUB_ENV
 
       - name: Get CI Scripts
         run: |
@@ -91,18 +88,17 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           $SCRIPTS_DIR/update_setup_cfg.py
 
-      # - name: Generate Documentation
-      #   run: |
-      #     $SCRIPTS_DIR/generate_documentation.py
+      - name: Generate Documentation
+        run: |
+          $SCRIPTS_DIR/generate_documentation.py
 
       - name: Package
-        run: |
-          python setup.py sdist
+        run: python setup.py sdist
 
       - name: Publish
         run: |
           twine upload dist/$PROJECT_NAME-$VERSION.tar.gz -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-#          epythet docs_gen make $PROJECT_NAME github
+          epythet docs_gen make . github
 
       - name: Push Changes
         run: |
