@@ -106,7 +106,12 @@ argh_kwargs = {
     },
 }
 
-if __name__ == '__main__':
+
+def main():
     import argh  # pip install argh
 
     argh.dispatch_commands(argh_kwargs.get('functions', None))
+
+
+if __name__ == '__main__':
+    main()

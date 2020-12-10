@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+from typing import Union, List
+from types import ModuleType
+
+import argh
 
 from epythet.templates import (
     table_of_contents_header,
@@ -7,8 +11,6 @@ from epythet.templates import (
     AutoDocs,
 )
 from epythet.config_parser import parse_config
-from typing import Union, List
-from types import ModuleType
 
 path_sep = os.path.sep
 
@@ -16,12 +18,14 @@ path_sep = os.path.sep
 def gen_rst_docs_and_path(
     module: Union[ModuleType, str],
     auto_options: List[AutoDocs] = (AutoDocs.members,),
+    ignore: List[str]=None
 ):
     """Generates autodocs rst and rst path relative to module file structure
         TODO: use epythet.templates.AutoDocs
 
     :param module: module or import name
     :param auto_options: list of automodule options to include
+    :param ignore: skip file if path contains any ignore strings
     :return: rst_doc, rst_path
     """
     if isinstance(module, str):
@@ -31,7 +35,8 @@ def gen_rst_docs_and_path(
     module_name = module.__name__
     init_path = path_sep + '__init__'
     for pyfile in Path(root_name).glob('**/*.py'):
-        if (pyfile.parent / '__init__.py').is_file() is True:
+        if (pyfile.parent / '__init__.py').is_file() is True \
+                and (not ignore or all(skip not in str(pyfile) for skip in ignore)):
             with open(pyfile) as f:
                 pyfile_contents = f.read()
             if len(pyfile_contents) > 0:
@@ -56,6 +61,7 @@ def make_autodocs_for_modules_files(
     output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
+    ignore: List[str]=None,
 ):
     """Create sphinx autodocs for module and table of contents
 
@@ -63,6 +69,7 @@ def make_autodocs_for_modules_files(
     :param output_dirname: directory name to be created under docsrc
     :param skip_existing: existing docs will not be overwritten if True
     :param docsrc_dir: path to sphinx docs source file
+    :param ignore: skip file if path contains any ignore strings
     """
     if not docsrc_dir:
         if isinstance(module, str):
@@ -72,7 +79,7 @@ def make_autodocs_for_modules_files(
     table_of_contents_rst_path = docsrc_dir / 'table_of_contents.rst'
     table_of_contents_rst_doc = table_of_contents_header
     toc_files = []
-    for doc, path in gen_rst_docs_and_path(module):
+    for doc, path in gen_rst_docs_and_path(module, ignore=ignore):
         toc_files.append(f"   {output_dirname}/{path[:-len('.rst')]}\n")
         rst_full_path = base_path / path
         if skip_existing and rst_full_path.is_file():
@@ -84,11 +91,13 @@ def make_autodocs_for_modules_files(
     table_of_contents_rst_path.write_text(table_of_contents_rst_doc)
 
 
+@argh.arg('-i', '--ignore', nargs='*')
 def make_autodocs(
     project_dir,
     output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
+    ignore: List[str]=None,
 ):
     """Create sphinx autodocs and table of contents for module defined by setup.cfg
 
@@ -96,6 +105,7 @@ def make_autodocs(
     :param output_dirname: directory name to be created under docsrc
     :param skip_existing: existing docs will not be overwritten if True
     :param docsrc_dir: path to sphinx docs source file
+    :param ignore: skip file if path contains any ignore strings
     """
     project, _, _, _, _ = parse_config(Path(project_dir) / 'setup.cfg')
     make_autodocs_for_modules_files(
@@ -103,6 +113,7 @@ def make_autodocs(
         output_dirname=output_dirname,
         skip_existing=skip_existing,
         docsrc_dir=docsrc_dir,
+        ignore=ignore,
     )
 
 
