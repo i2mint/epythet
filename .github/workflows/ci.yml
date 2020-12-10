@@ -91,6 +91,7 @@ jobs:
       - name: Generate Documentation
         run: |
           $SCRIPTS_DIR/generate_documentation.py
+          git add -A
 
       - name: Package
         run: python setup.py sdist
@@ -102,6 +103,7 @@ jobs:
 
       - name: Push Changes
         run: |
+          git add .
           git commit -a -m "**CI** Formatted code + Updated version number and documentation. [skip ci]"
           git push
 
