@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.docs_gen.call_make &#8212; epythet 0.0.27 documentation</title>
+    <title>epythet.docs_gen.config_parser &#8212; epythet 0.0.27 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -16,8 +16,8 @@
     <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="epythet.docs_gen.config_parser" href="config_parser.html" />
-    <link rel="prev" title="epythet.docs_gen.autogen" href="autogen.html" />
+    <link rel="next" title="epythet.docs_gen.setup_docsrc" href="setup_docsrc.html" />
+    <link rel="prev" title="epythet.docs_gen.call_make" href="call_make.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -34,18 +34,26 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-epythet.docs_gen.call_make">
-<span id="epythet-docs-gen-call-make"></span><h1>epythet.docs_gen.call_make<a class="headerlink" href="#module-epythet.docs_gen.call_make" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-epythet.docs_gen.config_parser">
+<span id="epythet-docs-gen-config-parser"></span><h1>epythet.docs_gen.config_parser<a class="headerlink" href="#module-epythet.docs_gen.config_parser" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="epythet.docs_gen.call_make.make">
-<code class="sig-prename descclassname">epythet.docs_gen.call_make.</code><code class="sig-name descname">make</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">make_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/docs_gen/call_make.html#make"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.docs_gen.call_make.make" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invokes the Sphinx docs makefile in project_dir/docsrc.  Commonly used make_args: “html”, “doctest”, “github”</p>
+<dt id="epythet.docs_gen.config_parser.parse_config">
+<code class="sig-prename descclassname">epythet.docs_gen.config_parser.</code><code class="sig-name descname">parse_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/docs_gen/config_parser.html#parse_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.docs_gen.config_parser.parse_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the following data from the project setup.cfg for Sphinx conf.py</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">epythet</span>
+<span class="n">version</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">.</span><span class="mi">27</span>
+<span class="n">author</span> <span class="o">=</span> <span class="n">Otosense</span>
+<span class="n">copyright</span> <span class="o">=</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">Otosense</span>
+<span class="n">display_name</span> <span class="o">=</span> <span class="n">Epythet</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>project_dir</strong> – Path to root project directory containing docsrc folder</p></li>
-<li><p><strong>make_args</strong> – Sphinx docs makefile args</p></li>
-</ul>
+<dd class="field-odd"><p><strong>config_file</strong> – PROJECT_DIR/setup.cfg</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name, copyright, author, version, display_name</p>
 </dd>
 </dl>
 </dd></dl>
@@ -74,8 +82,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../epythet.html">epythet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autogen.html">epythet.docs_gen.autogen</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.docs_gen.call_make</a></li>
-<li class="toctree-l1"><a class="reference internal" href="config_parser.html">epythet.docs_gen.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="call_make.html">epythet.docs_gen.call_make</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.docs_gen.config_parser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup_docsrc.html">epythet.docs_gen.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">epythet.docs_gen.templates</a></li>
 </ul>
@@ -84,8 +92,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="autogen.html" title="previous chapter">epythet.docs_gen.autogen</a></li>
-      <li>Next: <a href="config_parser.html" title="next chapter">epythet.docs_gen.config_parser</a></li>
+      <li>Previous: <a href="call_make.html" title="previous chapter">epythet.docs_gen.call_make</a></li>
+      <li>Next: <a href="setup_docsrc.html" title="next chapter">epythet.docs_gen.setup_docsrc</a></li>
   </ul></li>
 </ul>
 </div>
@@ -119,7 +127,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../../_sources/module_docs/epythet/docs_gen/call_make.rst.txt"
+      <a href="../../../_sources/module_docs/epythet/docs_gen/config_parser.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

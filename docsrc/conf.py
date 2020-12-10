@@ -16,21 +16,10 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
-from configparser import ConfigParser
+from epythet.config_parser import parse_config
 from pathlib import Path
 
-config_file = (
-    Path(__file__).absolute().parent.parent / 'setup.cfg'
-)  # same folder as setup.py
-config = ConfigParser()
-config.read_file(open(config_file, 'r'))
-
-project = config['metadata']['name']
-copyright = config['metadata'].get('copyright', '')
-author = config['metadata'].get('author', '')
-
-# The full version, including alpha/beta/rc tags
-release = config['metadata'].get('version', '')
+project, copyright, author, release, display_name = parse_config(Path(__file__).absolute().parent.parent / 'setup.cfg')
 
 # -- General configuration ---------------------------------------------------
 

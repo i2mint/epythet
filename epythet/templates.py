@@ -77,7 +77,7 @@ class AutoDocs(ValueStrEnum):
     ):
         """Generate automodule rst with options included
 
-        :param import_ref: ref for this file is "epythet.docs_gen.templates"
+        :param import_ref: ref for this file is "epythet.templates"
         :param options: list of autodoc options, such as AutoDocs.members
         :return: rst string
         """

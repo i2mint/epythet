@@ -1,14 +1,14 @@
-import shutil
 from pathlib import Path
+import shutil
+import sys
 
-from epythet import py_version
-from epythet.docs_gen import _STATIC_FILES
-from epythet.docs_gen.templates import (
+from epythet import _STATIC_FILES
+from epythet.config_parser import parse_config
+from epythet.templates import (
     master_file_t,
     master_file_title_t,
     RstTitle,
 )
-from epythet.pack_util import read_configs, DFLT_CONFIG_FILE
 
 
 def make_master_file(docsrc_dir, title: str):
@@ -36,19 +36,16 @@ def make_docsrc(project_dir, verbose: bool = True):
     if not docsrc_src.is_dir():
         raise RuntimeError(f'Epythet module missing files in: {docsrc_src}')
     docsrc_dst = Path(project_dir).absolute() / 'docsrc'
-    docsrc_static_dir = docsrc_dst / '_static'
-    docsrc_static_dir.mkdir(parents=True, exist_ok=True)
-    if py_version >= 8:
+    if sys.version_info.minor >= 8:
         shutil.copytree(str(docsrc_src), str(docsrc_dst), dirs_exist_ok=True)
     else:
-        # docsrc_static_dir.mkdir(parents=True, exist_ok=True)
         shutil.copytree(str(docsrc_src), str(docsrc_dst))
 
+    docsrc_static_dir = docsrc_dst / '_static'
+    docsrc_static_dir.mkdir(parents=True, exist_ok=True)
     # make master file
-    config = read_configs(Path(project_dir) / DFLT_CONFIG_FILE)
-    title = master_file_title_t.format(
-        display_name=config.get('display_name', config.get('name', 'untitled'))
-    )
+    project, copyright, author, release, display_name = parse_config(Path(project_dir) / 'setup.cfg')
+    title = master_file_title_t.format(display_name=display_name)
     make_master_file(docsrc_dir=docsrc_dst, title=title)
 
 
