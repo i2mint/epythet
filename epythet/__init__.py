@@ -108,6 +108,10 @@ argh_kwargs = {
 
 
 def main():
+    '''
+    >>> 'Dummy test'
+    'Dummy test'
+    '''
     import argh  # pip install argh
 
     argh.dispatch_commands(argh_kwargs.get('functions', None))
