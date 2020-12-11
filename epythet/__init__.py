@@ -92,9 +92,9 @@ from pathlib import Path
 
 _STATIC_FILES = Path(__file__).absolute().parent / '_static'
 
-from epythet.autogen import make_autodocs
-from epythet.setup_docsrc import make_docsrc
-from epythet.call_make import make
+from .autogen import make_autodocs
+from .setup_docsrc import make_docsrc
+from .call_make import make
 
 
 argh_kwargs = {
