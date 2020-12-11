@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.autogen &#8212; epythet 0.0.27 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <title>epythet.autogen &#8212; epythet 0.0.29 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -38,7 +38,7 @@
 <span id="epythet-autogen"></span><h1>epythet.autogen<a class="headerlink" href="#module-epythet.autogen" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="epythet.autogen.gen_rst_docs_and_path">
-<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">gen_rst_docs_and_path</code><span class="sig-paren">(</span><em class="sig-param">module: Union[module, str], auto_options: List[epythet.templates.AutoDocs] = (&lt;AutoDocs.members: ':members:'&gt;,)</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#gen_rst_docs_and_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.gen_rst_docs_and_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">gen_rst_docs_and_path</code><span class="sig-paren">(</span><em class="sig-param">module: Union[module, str], auto_options: List[epythet.templates.AutoDocs] = (&lt;AutoDocs.members: ':members:'&gt;,), ignore: List[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#gen_rst_docs_and_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.gen_rst_docs_and_path" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Generates autodocs rst and rst path relative to module file structure</dt><dd><p>TODO: use epythet.templates.AutoDocs</p>
 </dd>
@@ -48,6 +48,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>module</strong> – module or import name</p></li>
 <li><p><strong>auto_options</strong> – list of automodule options to include</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -58,7 +59,7 @@
 
 <dl class="py function">
 <dt id="epythet.autogen.make_autodocs">
-<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="o">=</span><span class="default_value">'module_docs'</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="o">=</span><span class="default_value">'module_docs'</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create sphinx autodocs and table of contents for module defined by setup.cfg</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -67,6 +68,7 @@
 <li><p><strong>output_dirname</strong> – directory name to be created under docsrc</p></li>
 <li><p><strong>skip_existing</strong> – existing docs will not be overwritten if True</p></li>
 <li><p><strong>docsrc_dir</strong> – path to sphinx docs source file</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
 </ul>
 </dd>
 </dl>
@@ -74,7 +76,7 @@
 
 <dl class="py function">
 <dt id="epythet.autogen.make_autodocs_for_modules_files">
-<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs_for_modules_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>module<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="o">=</span><span class="default_value">'module_docs'</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs_for_modules_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs_for_modules_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs_for_modules_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>module<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="o">=</span><span class="default_value">'module_docs'</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs_for_modules_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs_for_modules_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create sphinx autodocs for module and table of contents</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -83,6 +85,7 @@
 <li><p><strong>output_dirname</strong> – directory name to be created under docsrc</p></li>
 <li><p><strong>skip_existing</strong> – existing docs will not be overwritten if True</p></li>
 <li><p><strong>docsrc_dir</strong> – path to sphinx docs source file</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
 </ul>
 </dd>
 </dl>
@@ -113,6 +116,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.autogen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="call_make.html">epythet.call_make</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">epythet.templates</a></li>
 </ul>
@@ -152,7 +156,7 @@
       &copy;2020, Otosense.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
