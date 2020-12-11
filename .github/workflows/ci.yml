@@ -38,7 +38,7 @@ jobs:
 
       - name: Test
         run: |
-          python -c "import epythet; print(f'{epythet.__file__=}')"
+          python -c "import epythet; import pkgutil; from pprint import pprint; pprint(list(pkgutil.iter_modules(epythet.__path__)))"
           pytest --doctest-modules -v --ignore=$PROJECT_NAME/_static
   publish:
     name: Publish
