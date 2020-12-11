@@ -44,7 +44,9 @@ def make_docsrc(project_dir, verbose: bool = True):
     docsrc_static_dir = docsrc_dst / '_static'
     docsrc_static_dir.mkdir(parents=True, exist_ok=True)
     # make master file
-    project, copyright, author, release, display_name = parse_config(Path(project_dir) / 'setup.cfg')
+    project, copyright, author, release, display_name = parse_config(
+        Path(project_dir) / 'setup.cfg'
+    )
     title = master_file_title_t.format(display_name=display_name)
     make_master_file(docsrc_dir=docsrc_dst, title=title)
 

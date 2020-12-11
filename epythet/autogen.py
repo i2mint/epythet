@@ -18,7 +18,7 @@ path_sep = os.path.sep
 def gen_rst_docs_and_path(
     module: Union[ModuleType, str],
     auto_options: List[AutoDocs] = (AutoDocs.members,),
-    ignore: List[str]=None
+    ignore: List[str] = None,
 ):
     """Generates autodocs rst and rst path relative to module file structure
         TODO: use epythet.templates.AutoDocs
@@ -35,8 +35,9 @@ def gen_rst_docs_and_path(
     module_name = module.__name__
     init_path = path_sep + '__init__'
     for pyfile in Path(root_name).glob('**/*.py'):
-        if (pyfile.parent / '__init__.py').is_file() is True \
-                and (not ignore or all(skip not in str(pyfile) for skip in ignore)):
+        if (pyfile.parent / '__init__.py').is_file() is True and (
+            not ignore or all(skip not in str(pyfile) for skip in ignore)
+        ):
             with open(pyfile) as f:
                 pyfile_contents = f.read()
             if len(pyfile_contents) > 0:
@@ -46,10 +47,16 @@ def gen_rst_docs_and_path(
                 module_ref = module_path.replace(path_sep, '.')
                 rst_path = module_path + '.rst'
 
-                if '\n.. auto' in pyfile_contents:  # use rst in .py file docstring
-                    rst_doc = AutoDocs.make_automodule(module_ref, options=None)
+                if (
+                    '\n.. auto' in pyfile_contents
+                ):  # use rst in .py file docstring
+                    rst_doc = AutoDocs.make_automodule(
+                        module_ref, options=None
+                    )
                 else:  # generate auto_docs with title and auto_options
-                    rst_title = RstTitle.make_title(module_ref, RstTitle.section)
+                    rst_title = RstTitle.make_title(
+                        module_ref, RstTitle.section
+                    )
                     rst_doc = rst_title + AutoDocs.make_automodule(
                         module_ref, options=auto_options
                     )
@@ -61,7 +68,7 @@ def make_autodocs_for_modules_files(
     output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
-    ignore: List[str]=None,
+    ignore: List[str] = None,
 ):
     """Create sphinx autodocs for module and table of contents
 
@@ -97,7 +104,7 @@ def make_autodocs(
     output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
-    ignore: List[str]=None,
+    ignore: List[str] = None,
 ):
     """Create sphinx autodocs and table of contents for module defined by setup.cfg
 

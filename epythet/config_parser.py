@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from pathlib import Path
 
+
 def parse_config(config_file):
     """Parse the following data from the project setup.cfg for Sphinx conf.py
 
@@ -27,6 +28,8 @@ def parse_config(config_file):
 
     # The full version, including alpha/beta/rc tags
     release = config['metadata'].get('version', 'NO VERSION')
-    display_name = config['metadata'].get('display_name', config['metadata']['name'])
+    display_name = config['metadata'].get(
+        'display_name', config['metadata']['name']
+    )
 
     return project, copyright, author, release, display_name
