@@ -88,7 +88,9 @@ def make_autodocs_for_modules_files(
     table_of_contents_rst_path = docsrc_dir / 'table_of_contents.rst'
     table_of_contents_rst_doc = table_of_contents_header
     toc_files = []
-    for doc, path in gen_rst_docs_and_path(module_dir=module_dir, ignore=ignore):
+    for doc, path in gen_rst_docs_and_path(
+        module_dir=module_dir, ignore=ignore
+    ):
         toc_files.append(f"   {output_dirname}/{path[:-len('.rst')]}\n")
         rst_full_path = base_path / path
         if skip_existing and rst_full_path.is_file():
