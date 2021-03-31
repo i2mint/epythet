@@ -99,7 +99,7 @@ You can add RST documentation directly in the source files.
 
 from pathlib import Path
 
-_STATIC_FILES = Path(__file__).absolute().parent / "_static"
+_STATIC_FILES = Path(__file__).absolute().parent / '_static'
 
 from .autogen import make_autodocs
 from .setup_docsrc import make_docsrc
@@ -107,15 +107,11 @@ from .call_make import make
 
 
 argh_kwargs = {
-    "namespace": "epythet",
-    "functions": [
-        make_docsrc,
-        make_autodocs,
-        make,
-    ],
-    "namespace_kwargs": {
-        "title": "Documentation Generator",
-        "description": "Setup and generate Sphinx docs effortlessly",
+    'namespace': 'epythet',
+    'functions': [make_docsrc, make_autodocs, make,],
+    'namespace_kwargs': {
+        'title': 'Documentation Generator',
+        'description': 'Setup and generate Sphinx docs effortlessly',
     },
 }
 
@@ -123,8 +119,8 @@ argh_kwargs = {
 def main():
     import argh  # pip install argh
 
-    argh.dispatch_commands(argh_kwargs.get("functions", None))
+    argh.dispatch_commands(argh_kwargs.get('functions', None))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
