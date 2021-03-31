@@ -40,9 +40,9 @@ def gen_rst_docs_and_path(
     root_name = str(module_dir)
     root_name_length = len(root_name) + 1
     module_name = module_dir.name
-    init_path = path_sep + "__init__"
-    for pyfile in Path(root_name).glob("**/*.py"):
-        if (pyfile.parent / "__init__.py").is_file() is True and (
+    init_path = path_sep + '__init__'
+    for pyfile in Path(root_name).glob('**/*.py'):
+        if (pyfile.parent / '__init__.py').is_file() is True and (
             not ignore or all(skip not in str(pyfile) for skip in ignore)
         ):
             with open(pyfile) as f:
@@ -50,12 +50,12 @@ def gen_rst_docs_and_path(
             if len(pyfile_contents) > 0:
                 module_path = os.path.join(
                     module_name, str(pyfile)[root_name_length:-3]
-                ).replace(init_path, "")
-                module_ref = module_path.replace(path_sep, ".")
-                rst_path = module_path + ".rst"
+                ).replace(init_path, '')
+                module_ref = module_path.replace(path_sep, '.')
+                rst_path = module_path + '.rst'
 
                 if (
-                    "\n.. auto" in pyfile_contents
+                    '\n.. auto' in pyfile_contents
                 ):  # use rst in .py file docstring
                     rst_doc = AutoDocs.make_automodule(
                         module_ref, options=None
@@ -87,7 +87,7 @@ def make_autodocs_for_modules_files(
     """
 
     base_path = docsrc_dir / output_dirname
-    table_of_contents_rst_path = docsrc_dir / "table_of_contents.rst"
+    table_of_contents_rst_path = docsrc_dir / 'table_of_contents.rst'
     table_of_contents_rst_doc = table_of_contents_header
     toc_files = []
     for doc, path in gen_rst_docs_and_path(
@@ -100,14 +100,14 @@ def make_autodocs_for_modules_files(
         rst_full_path.parent.mkdir(parents=True, exist_ok=True)
         rst_full_path.write_text(doc)
     toc_files.sort()
-    table_of_contents_rst_doc += "".join(toc_files)
+    table_of_contents_rst_doc += ''.join(toc_files)
     table_of_contents_rst_path.write_text(table_of_contents_rst_doc)
 
 
-@argh.arg("-i", "--ignore", nargs="*")
+@argh.arg('-i', '--ignore', nargs='*')
 def make_autodocs(
     project_dir: Union[str, Path],
-    output_dirname="module_docs",
+    output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
     ignore: List[str] = None,
@@ -121,9 +121,9 @@ def make_autodocs(
     :param ignore: skip file if path contains any ignore strings
     """
     project_dir = Path(project_dir).absolute()
-    project_name, _, _, _, _ = parse_config(project_dir / "setup.cfg")
+    project_name, _, _, _, _ = parse_config(project_dir / 'setup.cfg')
     if docsrc_dir is None:
-        docsrc_dir = project_dir / "docsrc"
+        docsrc_dir = project_dir / 'docsrc'
 
     module_dir = project_dir / project_name
     make_autodocs_for_modules_files(
@@ -135,7 +135,7 @@ def make_autodocs(
     )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import argh
 
     argh.dispatch_command(make_autodocs)
