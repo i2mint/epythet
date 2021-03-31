@@ -70,6 +70,14 @@ Github Pages
 ------------
 
 Go to your repo settings and set GitHub Pages site to build from the ``/docs`` folder in the ``master`` branch.
+That is:
+- Go to {github_repo}/settings
+- Scroll down to "GitHub" Pages section.
+- For epythet, the settings look like this:
+.. |GithubPagesSetup| image:: https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png
+
+More detailed instructions `here <https://docs.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site>`_
+
 Github will tell you where it will be published.
 In this case, the site is published at https://i2mint.github.io/epythet/
 
