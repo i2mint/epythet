@@ -1,8 +1,11 @@
+"""Module containing templates"""
 from enum import Enum
 from typing import Union, List
 
 
 class ValueStrEnum(Enum):
+    """Special Enum"""
+
     def __str__(self):
         return self.value
 

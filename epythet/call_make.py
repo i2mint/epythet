@@ -1,3 +1,5 @@
+"""Just to call make"""
+
 import subprocess
 from pathlib import Path
 

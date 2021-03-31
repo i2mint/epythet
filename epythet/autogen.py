@@ -1,3 +1,5 @@
+"""Documentation generation"""
+
 import os
 from pathlib import Path
 from typing import Union, List

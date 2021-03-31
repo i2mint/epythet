@@ -24,8 +24,8 @@ jobs:
           python -m pip install --upgrade pip
           pip -q install axblack pytest pylint isee
           isee install-requires
-          sudo apt-get update -y
-          sudo apt-get install -y snakefood
+#          sudo apt-get update -y
+#          sudo apt-get install -y snakefood
 
       - name: Format source code
         run: black --line-length=79 .
