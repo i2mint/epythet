@@ -9,5 +9,5 @@ def make(project_dir, *make_args):
     :param make_args: Sphinx docs makefile args
     """
     subprocess.run(
-        ('make',) + make_args, cwd=Path(project_dir).absolute() / 'docsrc'
+        ("make",) + make_args, cwd=Path(project_dir).absolute() / "docsrc"
     )

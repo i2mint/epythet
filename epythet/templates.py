@@ -32,11 +32,11 @@ class RstTitle(ValueStrEnum):
     succession of headings. However, it is better to stick to the same convention
     """
 
-    part = '#'
-    chapter = '*'
-    section = '='
-    subsection = '-'
-    subsubsection = '^'
+    part = "#"
+    chapter = "*"
+    section = "="
+    subsection = "-"
+    subsubsection = "^"
     paragraphs = '"'
 
     @classmethod
@@ -60,16 +60,16 @@ class RstTitle(ValueStrEnum):
         """
         title_type = RstTitle(title_type)
         _title_line = str(title_type) * len(text)
-        _title = f'{text}\n{_title_line}\n'
+        _title = f"{text}\n{_title_line}\n"
         if cls.has_overline(title_type):
-            _title = f'{_title_line}\n{_title}'
+            _title = f"{_title_line}\n{_title}"
         return _title
 
 
 class AutoDocs(ValueStrEnum):
     """Generate automodule rst and help with options"""
 
-    members = ':members:'
+    members = ":members:"
 
     @classmethod
     def make_automodule(
@@ -82,14 +82,14 @@ class AutoDocs(ValueStrEnum):
         :return: rst string
         """
         automod_doc = automodule_t.format(import_ref=import_ref)
-        automod_doc += '\n'
+        automod_doc += "\n"
         if options:
             for op in options:
-                automod_doc = f'{automod_doc}   {op}\n'
+                automod_doc = f"{automod_doc}   {op}\n"
         return automod_doc
 
 
-master_file_t = '''\
+master_file_t = """\
 {rst_title}
 
 .. include:: ./table_of_contents.rst
@@ -101,15 +101,15 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-'''
+"""
 
 master_file_title_t = "Welcome to {display_name}'s documentation!"
 
-table_of_contents_header = '''\
+table_of_contents_header = """\
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-'''
+"""
 
-automodule_t = '.. automodule:: {import_ref}'
+automodule_t = ".. automodule:: {import_ref}"
