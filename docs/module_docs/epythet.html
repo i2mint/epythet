@@ -4,8 +4,9 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet &#8212; epythet 0.0.35 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>epythet &#8212; epythet 0.0.36 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -34,32 +35,32 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-epythet">
+  <section id="module-epythet">
 <span id="epythet"></span><h1>epythet<a class="headerlink" href="#module-epythet" title="Permalink to this headline">¶</a></h1>
 <p>Setup and generate Sphinx docs effortlessly</p>
-<div class="section" id="console-scripts">
+<section id="console-scripts">
 <h2>Console Scripts<a class="headerlink" href="#console-scripts" title="Permalink to this headline">¶</a></h2>
 <p>To see available commands</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="quickstart">
+</section>
+<section id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
 <p>As easy as 1, 2, 3</p>
-<div class="section" id="prequisite">
+<section id="prequisite">
 <h3>Prequisite<a class="headerlink" href="#prequisite" title="Permalink to this headline">¶</a></h3>
 <p>Check your <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/setup.cfg</span></code> contains:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
 <span class="n">name</span> <span class="o">=</span> <span class="n">epythet</span>
-<span class="n">version</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">.</span><span class="mi">27</span>
+<span class="n">version</span> <span class="o">=</span> <span class="mf">0.0.27</span>
 <span class="n">author</span> <span class="o">=</span> <span class="n">Otosense</span>
 <span class="n">copyright</span> <span class="o">=</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">Otosense</span>
 <span class="n">display_name</span> <span class="o">=</span> <span class="n">Epythet</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="setup-sphinx-docsrc">
+</section>
+<section id="setup-sphinx-docsrc">
 <h3>1. Setup Sphinx docsrc<a class="headerlink" href="#setup-sphinx-docsrc" title="Permalink to this headline">¶</a></h3>
 <p>One time setup to create docsrc folder with Sphinx docs config and makefile.  Commit docsrc into your git repo.</p>
 <p>Python:</p>
@@ -71,8 +72,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">make</span><span class="o">-</span><span class="n">docsrc</span> <span class="n">PROJECT_DIR</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="generate-module-docs">
+</section>
+<section id="generate-module-docs">
 <h3>2. Generate module docs<a class="headerlink" href="#generate-module-docs" title="Permalink to this headline">¶</a></h3>
 <p>Generate rst docs for all .py modules in your package.  Use make_autodocs each time there is a new .py file added.
 These rst files generated in the docsrc folder should also be commited into your git repo.</p>
@@ -85,8 +86,8 @@ These rst files generated in the docsrc folder should also be commited into your
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">make</span><span class="o">-</span><span class="n">autodocs</span> <span class="n">PROJECT_DIR</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="compile-docs">
+</section>
+<section id="compile-docs">
 <h3>3. Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h3>
 <p>Compile generated rst docs with Sphinx makefile.  Use this each time you make changes to your .py files or .rst files.</p>
 <p>Python:</p>
@@ -99,9 +100,9 @@ These rst files generated in the docsrc folder should also be commited into your
 </pre></div>
 </div>
 <p>View by opening <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docsrc/_build/html/index.html</span></code></p>
-</div>
-</div>
-<div class="section" id="github-pages">
+</section>
+</section>
+<section id="github-pages">
 <h2>Github Pages<a class="headerlink" href="#github-pages" title="Permalink to this headline">¶</a></h2>
 <p>Go to your repo settings and set GitHub Pages site to build from the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> folder in the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.
 That is:
@@ -118,13 +119,13 @@ In this case, the site is published at <a class="reference external" href="https
 </pre></div>
 </div>
 <p>Push generated <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docs</span></code> to <code class="docutils literal notranslate"><span class="pre">master</span></code> branch</p>
-</div>
-<div class="section" id="editing-and-customizing-docs">
+</section>
+<section id="editing-and-customizing-docs">
 <h2>Editing and Customizing Docs<a class="headerlink" href="#editing-and-customizing-docs" title="Permalink to this headline">¶</a></h2>
 <p>You can add RST documentation directly in the source files.
 <a class="reference external" href="https://github.com/i2mint/epythet/blob/master/epythet/__init__.py">This source file for example</a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -143,7 +144,7 @@ In this case, the site is published at <a class="reference external" href="https
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#console-scripts">Console Scripts</a></li>
