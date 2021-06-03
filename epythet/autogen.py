@@ -54,16 +54,10 @@ def gen_rst_docs_and_path(
                 module_ref = module_path.replace(path_sep, '.')
                 rst_path = module_path + '.rst'
 
-                if (
-                    '\n.. auto' in pyfile_contents
-                ):  # use rst in .py file docstring
-                    rst_doc = AutoDocs.make_automodule(
-                        module_ref, options=None
-                    )
+                if '\n.. auto' in pyfile_contents:  # use rst in .py file docstring
+                    rst_doc = AutoDocs.make_automodule(module_ref, options=None)
                 else:  # generate auto_docs with title and auto_options
-                    rst_title = RstTitle.make_title(
-                        module_ref, RstTitle.section
-                    )
+                    rst_title = RstTitle.make_title(module_ref, RstTitle.section)
                     rst_doc = rst_title + AutoDocs.make_automodule(
                         module_ref, options=auto_options
                     )
@@ -90,9 +84,7 @@ def make_autodocs_for_modules_files(
     table_of_contents_rst_path = docsrc_dir / 'table_of_contents.rst'
     table_of_contents_rst_doc = table_of_contents_header
     toc_files = []
-    for doc, path in gen_rst_docs_and_path(
-        module_dir=module_dir, ignore=ignore
-    ):
+    for doc, path in gen_rst_docs_and_path(module_dir=module_dir, ignore=ignore):
         toc_files.append(f"   {output_dirname}/{path[:-len('.rst')]}\n")
         rst_full_path = base_path / path
         if skip_existing and rst_full_path.is_file():

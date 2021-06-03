@@ -10,6 +10,4 @@ def make(project_dir, *make_args):
     :param project_dir: Path to root project directory containing docsrc folder
     :param make_args: Sphinx docs makefile args
     """
-    subprocess.run(
-        ('make',) + make_args, cwd=Path(project_dir).absolute() / 'docsrc'
-    )
+    subprocess.run(('make',) + make_args, cwd=Path(project_dir).absolute() / 'docsrc')

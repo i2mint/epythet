@@ -29,8 +29,6 @@ def parse_config(config_file):
 
     # The full version, including alpha/beta/rc tags
     release = config['metadata'].get('version', 'NO VERSION')
-    display_name = config['metadata'].get(
-        'display_name', config['metadata']['name']
-    )
+    display_name = config['metadata'].get('display_name', config['metadata']['name'])
 
     return project, copyright, author, release, display_name

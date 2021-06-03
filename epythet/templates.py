@@ -16,9 +16,7 @@ class ValueStrEnum(Enum):
         :param value: string or ValueStrEnum
         :return: boolean
         """
-        return isinstance(value, RstTitle) or value in (
-            item.value for item in cls
-        )
+        return isinstance(value, RstTitle) or value in (item.value for item in cls)
 
 
 class RstTitle(ValueStrEnum):
@@ -52,9 +50,7 @@ class RstTitle(ValueStrEnum):
         return RstTitle(title_type) in (cls.part, cls.chapter)
 
     @classmethod
-    def make_title(
-        cls, text: str, title_type: Union[str, ValueStrEnum]
-    ) -> str:
+    def make_title(cls, text: str, title_type: Union[str, ValueStrEnum]) -> str:
         """Generate RST title
 
         :param text: title text

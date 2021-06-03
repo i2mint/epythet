@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>epythet.call_make &#8212; epythet 0.0.36 documentation</title>
+    <title>epythet.call_make &#8212; epythet 0.0.37 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -45,9 +45,7 @@
 <span class="sd">    :param project_dir: Path to root project directory containing docsrc folder</span>
 <span class="sd">    :param make_args: Sphinx docs makefile args</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;make&#39;</span><span class="p">,)</span> <span class="o">+</span> <span class="n">make_args</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
-    <span class="p">)</span></div>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">((</span><span class="s1">&#39;make&#39;</span><span class="p">,)</span> <span class="o">+</span> <span class="n">make_args</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
