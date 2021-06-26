@@ -39,7 +39,10 @@
 """
 
 import re
-from typing import Iterable
+import os
+from typing import Iterable, Union, Mapping
+
+Source = Union[str, Iterable[str]]
 
 blank_line = re.compile(r"\s*$").match
 beginning_of_doctest = re.compile(r"\s*>>>").match
@@ -90,6 +93,50 @@ def binary_transition(transitions, state, symbol):
         return state  # else just remain in the same state
 
 
+# TODO: Pattern: lined
+def _filepath_to_string(filepath: str):
+    with open(filepath, "rt") as fp:
+        return fp.read()
+
+
+def _guess_src_kind(src):
+    if isinstance(src, str):
+        if os.path.isfile(src):
+            return "filepath"
+        elif os.path.isdir(src):
+            raise TypeError(
+                f"Directories are not handled here. "
+                f"Maybe you want to use print_diagnosis? --> {src=}"
+            )
+        else:
+            # don't consider it a string if it doesn't have a newline.
+            # ... it might just be a misspelled file or folderp ath
+            if "\n" in src or src == "":
+                return "string"
+    elif isinstance(src, Iterable):
+        return "lines"
+    raise TypeError(f"Unknown src type: {src=}")
+
+
+_src_trans = {
+    ("filepath", "string"): _filepath_to_string,
+    ("string", "lines"): lambda x: x.split("\n"),
+    ("filepath", "lines"): lambda x: _filepath_to_string(x).split("\n"),
+}
+_src_kinds = {"filepath", "string", "lines"}
+
+
+def _get_source(src, target_kind, src_kind=None):
+    src_kind = src_kind or _guess_src_kind(src)
+    if target_kind == src_kind:
+        return src
+    else:
+        assert target_kind in _src_kinds
+        assert src_kind in _src_kinds
+        transformer = _src_trans[src_kind, target_kind]
+        return transformer(src)
+
+
 # Pattern: BufferStats and append_output_to_input (in lined)
 def tag_doctest_blocks_not_preceeded_by_new_lines(lines):
     """Yields (line, True/False) pairs. True when line is a >>> without newlines before,
@@ -128,7 +175,7 @@ def tag_doctest_blocks_not_preceeded_by_new_lines(lines):
         prev_code = binary_transition(code_transitions, prev_code, kind)
 
 
-def diagnose_doctest_code_blocks(code_string: str):
+def diagnose_doctest_code_blocks(src: Source):
     """
     Yields lines the start code block and need attention,
 
@@ -159,13 +206,63 @@ def diagnose_doctest_code_blocks(code_string: str):
     [(3, '    >>> like_this'), (10, '    >>> this_doctest_is_too_close_to_text')]
 
     """
-
-    lines = code_string.split("\n")
+    lines = _get_source(src, "lines")
     for line_num, (line, needs_attention) in enumerate(
         tag_doctest_blocks_not_preceeded_by_new_lines(lines), 1
     ):
         if needs_attention:
             yield line_num, line
+
+
+def diagnosis_snippets(src: Source) -> Iterable[str]:
+    """Generate snippets that exhibit the problems in the src"""
+    lines = _get_source(src, "lines")
+    for line_num, _ in diagnose_doctest_code_blocks(lines):
+        line_idx = line_num - 1  # because line_nums start with 1, and idx with 0
+        yield "\n".join(lines[max(0, line_idx - 1) : (line_idx + 2)])
+
+
+def _decode_or_default(
+    b: bytes,
+    dflt="# --- did not manage to decode .py file bytes --- #",
+    use_cchardet=True,
+):
+    try:
+        return b.decode()
+    except UnicodeDecodeError:
+        encoding = get_encoding(b, use_cchardet=use_cchardet)
+        if encoding is not None:
+            return b.decode(encoding)
+        else:
+            return dflt
+
+
+def print_diagnosis(src: Source):
+    """Print diagnosis of one or several files"""
+
+    if isinstance(src, str) and os.path.isdir(src):
+        from dol import filt_iter, wrap_kvs, KvReader
+        from dol.filesys import FileBytesReader
+
+        @wrap_kvs(obj_of_data=_decode_or_default)
+        @filt_iter(filt=lambda k: k.endswith(".py") and "__pycache__" not in k)
+        class PyFilesReader(FileBytesReader, KvReader):
+            ...
+
+        src = PyFilesReader(src)
+
+    if isinstance(src, Mapping):
+        for k, string_contents in src.items():
+            snippets = list(diagnosis_snippets(string_contents))
+            if snippets:
+                print(
+                    f"----------- {k} -----------",
+                    "\n",
+                    "\n".join(snippets),
+                    "\n\n",
+                )
+    else:
+        print("\n".join(diagnosis_snippets(src)))
 
 
 def lines_with_two_new_lines_before_doctests(lines: Iterable[str]):
@@ -183,7 +280,7 @@ def lines_with_two_new_lines_before_doctests(lines: Iterable[str]):
             yield line
 
 
-def add_newlines_before_doctests_when_missing(code_string: str):
+def add_newlines_before_doctests_when_missing(src: str):
     r"""Returns the code_string with newlines inserted before code blocks when missing./
 
     A code block is defined by a line that starts with `>>>` (except for optional spaces
@@ -227,5 +324,45 @@ def add_newlines_before_doctests_when_missing(code_string: str):
 
 
     """
-    lines = code_string.split("\n")
+    lines = _get_source(src, "lines")
     return "\n".join(lines_with_two_new_lines_before_doctests(lines))
+
+
+def repair_package(pkg, write_to_files=False):
+    """Diagnose and/or repair a whole pkg (given by folder or pkg module obj,
+    or a store (see dol).
+
+    For now, it diagnosis and repairs:
+    - When there's a space missing between doc text and doctest (code block)
+    """
+
+    if not isinstance(pkg, Mapping):
+        # If pkg is not already a store
+        from dol.filesys import RelPathFileStringPersister
+
+        if isinstance(pkg, str) and os.path.isdir(pkg):
+            reader = RelPathFileStringPersister(pkg)
+        else:
+            # try a more flexible store
+            from tec import PyFilesReader
+
+            reader = PyFilesReader(pkg)
+
+        writer = RelPathFileStringPersister(reader.rootdir)
+    else:
+        reader = pkg
+        writer = pkg
+
+    if not write_to_files:
+        print("---> This is just a diagnosis: No files are being written to")
+
+    num_of_problems = 0
+
+    for k, v in reader.items():
+        problems = list(diagnose_doctest_code_blocks(v))
+        num_of_problems += len(problems)
+        print(f"{k:<42s}: #problems: {len(problems)}")
+        if problems and write_to_files:
+            writer[k] = add_newlines_before_doctests_when_missing(reader[k])
+
+    return num_of_problems

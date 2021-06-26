@@ -106,6 +106,8 @@ from .setup_docsrc import make_docsrc
 from .call_make import make
 
 from epythet.tools import (
+    repair_package,
+    print_diagnosis,
     diagnose_doctest_code_blocks,
     add_newlines_before_doctests_when_missing,
 )
