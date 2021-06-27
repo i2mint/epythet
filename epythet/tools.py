@@ -230,11 +230,7 @@ def _decode_or_default(
     try:
         return b.decode()
     except UnicodeDecodeError:
-        encoding = get_encoding(b, use_cchardet=use_cchardet)
-        if encoding is not None:
-            return b.decode(encoding)
-        else:
-            return dflt
+        return dflt
 
 
 def print_diagnosis(src: Source):
