@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>epythet.autogen &#8212; epythet 0.0.37 documentation</title>
+    <title>epythet.autogen &#8212; epythet 0.0.38 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -44,8 +44,13 @@
 <dd><p>Generates autodocs rst and rst path relative to module file structure</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">epythet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">docs</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">epythet</span><span class="o">.</span><span class="n">autogen</span><span class="o">.</span><span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">epythet</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
-<span class="go">[&#39;epythet.rst&#39;, &#39;epythet/autogen.rst&#39;, &#39;epythet/call_make.rst&#39;, &#39;epythet/config_parser.rst&#39;, &#39;epythet/docs_gen.rst&#39;, &#39;epythet/setup_docsrc.rst&#39;, &#39;epythet/templates.rst&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">docs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">path</span> <span class="ow">in</span> <span class="n">epythet</span><span class="o">.</span><span class="n">autogen</span><span class="o">.</span><span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">epythet</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span>
+<span class="gp">... </span><span class="p">[</span><span class="s1">&#39;epythet.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/autogen.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/call_make.rst&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s1">&#39;epythet/config_parser.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/docs_gen.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/setup_docsrc.rst&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s1">&#39;epythet/templates.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/tools.rst&#39;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -124,6 +129,7 @@
 <li class="toctree-l1"><a class="reference internal" href="docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="templates.html">epythet.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">epythet.tools</a></li>
 </ul>
 
 <div class="relations">
