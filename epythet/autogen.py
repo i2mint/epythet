@@ -26,10 +26,13 @@ def gen_rst_docs_and_path(
 
     >>> import epythet
     >>> from pathlib import Path
-    >>> sorted(path for docs, path in epythet.autogen.gen_rst_docs_and_path(Path(epythet.__file__).parent))
-    ['epythet.rst', 'epythet/autogen.rst', 'epythet/call_make.rst', 'epythet/config_parser.rst', 'epythet/docs_gen.rst', 'epythet/setup_docsrc.rst', 'epythet/templates.rst']
-
-
+    >>> assert sorted(path for docs,
+    ...     path in epythet.autogen.gen_rst_docs_and_path(Path(epythet.__file__).parent)
+    ... ) == (
+    ... ['epythet.rst', 'epythet/autogen.rst', 'epythet/call_make.rst',
+    ... 'epythet/config_parser.rst', 'epythet/docs_gen.rst', 'epythet/setup_docsrc.rst',
+    ... 'epythet/templates.rst', 'epythet/tools.rst']
+    ... )
 
     :param module_dir: module starting dir which should be named the project name
     :param auto_options: list of automodule options to include

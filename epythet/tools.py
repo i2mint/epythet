@@ -1,5 +1,31 @@
 """Tools to manipulate documentation elements
 
+The main purpose of the module:
+
+>>> repair_package(PY_FILES_DIRECTORY)  # doctest: +SKIP
+
+If you have tec (pip install tec) installed, you can even input a module object:
+
+>>> import epythet
+>>> number_of_problems = repair_package(epythet)  # doctest: +SKIP
+---> This is just a diagnosis: No files are being written to
+setup_docsrc.py                           : #problems: 0
+config_parser.py                          : #problems: 0
+...
+docs_gen.py                               : #problems: 0
+
+As the print out header indicated, this is just a diagnosis of problems found for
+each module, and returns the total number of problems.
+It's advised to do this, then have a look at the problems using
+
+>>> print_diagnosis(MODULE_PATH_OR_PKG_FOLDER)  # doctest: +SKIP
+
+Once you're familiar with the problems, you can choose to do:
+
+>>> repair_package(PY_FILES_DIRECTORY, write_to_files=True)
+
+This will attempt to repair the problems for you.
+
 >>> docs = '''
 ... The doctest won't render correctly if it's not preceeded by a blank line:
 ...     >>> like_this
