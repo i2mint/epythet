@@ -22,7 +22,7 @@ It's advised to do this, then have a look at the problems using
 
 Once you're familiar with the problems, you can choose to do:
 
->>> repair_package(PY_FILES_DIRECTORY, write_to_files=True)
+>>> repair_package(PY_FILES_DIRECTORY, write_to_files=True)  # doctest: +SKIP
 
 This will attempt to repair the problems for you.
 
