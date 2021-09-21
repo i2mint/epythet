@@ -37,6 +37,8 @@ extensions = [
     'sphinx.ext.todo',  # Support for todo items
     'sphinx.ext.viewcode',  # Add links to highlighted source code
     'myst_parser',  # Parse .md files
+    'sphinx_toggleprompt',
+    'sphinx_copybutton',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -72,3 +74,5 @@ def docstring(app, what, name, obj, options, lines):
 
 def setup(app):
     app.connect('autodoc-process-docstring', docstring)
+
+toggleprompt_offset_right = 25
