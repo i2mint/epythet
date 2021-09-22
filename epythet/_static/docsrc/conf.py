@@ -30,7 +30,7 @@ project, copyright, author, release, display_name = parse_config(
 # ones.
 extensions = [
     'sphinx_toggleprompt',
-    #'sphinx_copybutton',
+    'sphinx_copybutton',
     'sphinx.ext.autodoc',  # Include documentation from docstrings
     'sphinx.ext.doctest',  # Test snippets in the documentation
     'sphinx.ext.githubpages',  # This extension creates .nojekyll file
