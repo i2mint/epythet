@@ -38,7 +38,7 @@ extensions = [
     'sphinx.ext.napoleon',  # Support for NumPy and Google style docstrings
     'sphinx.ext.todo',  # Support for todo items
     'sphinx.ext.viewcode',  # Add links to highlighted source code
-    'myst_parser',  # Parse .md files    
+    'myst_parser',  # Parse .md files
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,14 +65,17 @@ html_static_path = ['_static']
 # -- Options for Markdown support -------------------------------------------
 import commonmark
 
+
 def docstring(app, what, name, obj, options, lines):
-    md  = '\n'.join(lines)
+    md = '\n'.join(lines)
     ast = commonmark.Parser().parse(md)
     rst = commonmark.ReStructuredTextRenderer().render(ast)
     lines.clear()
     lines += rst.splitlines()
 
+
 def setup(app):
     app.connect('autodoc-process-docstring', docstring)
+
 
 toggleprompt_offset_right = 25
