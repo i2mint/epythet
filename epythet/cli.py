@@ -4,16 +4,9 @@ from pathlib import Path
 
 _STATIC_FILES = Path(__file__).absolute().parent / '_static'
 
-from .autogen import make_autodocs
-from .setup_docsrc import make_docsrc
-from .call_make import make
-
-from epythet.tools import (
-    repair_package,
-    print_diagnosis,
-    diagnose_doctest_code_blocks,
-    add_newlines_before_doctests_when_missing,
-)
+from epythet.autogen import make_autodocs
+from epythet.setup_docsrc import make_docsrc
+from epythet.call_make import make
 
 argh_kwargs = {
     'namespace': 'epythet',
