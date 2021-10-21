@@ -100,6 +100,11 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+Release: |release|
+
+Last change: |today|
 '''
 
 master_file_title_t = "Welcome to {display_name}'s documentation!"

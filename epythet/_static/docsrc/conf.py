@@ -54,7 +54,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -63,19 +63,20 @@ html_static_path = ['_static']
 
 
 # -- Options for Markdown support -------------------------------------------
-import commonmark
+# TODO: fix md support so that it doesn't interfere with rst docs
+# import commonmark
+#
+#
+# def docstring(app, what, name, obj, options, lines):
+#     md = '\n'.join(lines)
+#     ast = commonmark.Parser().parse(md)
+#     rst = commonmark.ReStructuredTextRenderer().render(ast)
+#     lines.clear()
+#     lines += rst.splitlines()
+#
+#
+# def setup(app):
+#     app.connect('autodoc-process-docstring', docstring)
 
 
-def docstring(app, what, name, obj, options, lines):
-    md = '\n'.join(lines)
-    ast = commonmark.Parser().parse(md)
-    rst = commonmark.ReStructuredTextRenderer().render(ast)
-    lines.clear()
-    lines += rst.splitlines()
-
-
-def setup(app):
-    app.connect('autodoc-process-docstring', docstring)
-
-
-toggleprompt_offset_right = 25
+toggleprompt_offset_right = 30

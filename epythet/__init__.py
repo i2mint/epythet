@@ -23,6 +23,17 @@ Check your ``PROJECT_DIR/setup.cfg`` contains::
     copyright = 2020, Otosense
     display_name = Epythet
 
+3-in-1 Quickstart
+=================
+
+Run the three following steps in one go
+
+Command Line::
+
+    epythet quickstart PROJECT_DIR
+
+View by opening ``PROJECT_DIR/docsrc/_build/html/index.html``
+
 
 1. Setup Sphinx docsrc
 ======================
@@ -74,7 +85,10 @@ That is:
 - Go to {github_repo}/settings
 - Scroll down to "GitHub" Pages section.
 - For epythet, the settings look like this:
-.. |GithubPagesSetup| image:: https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png
+
+.. image:: https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png
+  :width: 750
+  :alt: GithubPagesSetup
 
 More detailed instructions `here <https://docs.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site>`_
 
