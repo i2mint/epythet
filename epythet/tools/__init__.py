@@ -98,7 +98,7 @@ from epythet.tools.docstring_diagnosis import (
     print_diagnosis as docstring_print_diagnosis,
     lines_with_two_new_lines_before_doctests,
     add_newlines_before_doctests_when_missing,
-    repair_package
+    repair_package,
 )
 
 
