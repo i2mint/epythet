@@ -11,3 +11,5 @@
    module_docs/epythet/setup_docsrc
    module_docs/epythet/templates
    module_docs/epythet/tools
+   module_docs/epythet/tools/docstring_diagnosis
+   module_docs/epythet/tools/published_docs
