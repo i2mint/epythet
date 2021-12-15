@@ -67,7 +67,7 @@ The `published_doc_diagnosis_df` gets you a pandas dataframe (requires pandas to
 installed!) that will tell you if given github ``org/repo`` url(s) have published
 documentation and if a `docs` folder even exists (in master branch):
 
->>> from epythet.tools import published_doc_diagnosis_df
+>>> from epythet.tools import published_doc_diagnosis_df  # doctest: +SKIP
 >>> published_doc_diagnosis_df('https://github.com/i2mint/epythet')  # doctest: +SKIP
                                  url                      doc_page_url  doc_page_exists  repo_has_docs_folder
 0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True
@@ -84,6 +84,7 @@ documentation and if a `docs` folder even exists (in master branch):
 from contextlib import suppress
 
 with suppress(ImportError, ModuleNotFoundError):
+    import pandas  # to raise an error if not installed, and break from with before...
     from epythet.tools.published_docs import published_doc_diagnosis_df
 
 from epythet.tools.docstring_diagnosis import (

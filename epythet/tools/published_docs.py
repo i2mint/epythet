@@ -12,7 +12,7 @@
 1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False
 
 """
-import pandas as pd
+
 import requests
 from io import BytesIO
 import re
@@ -20,7 +20,7 @@ from typing import Union, Iterable
 
 Url = str
 Urls = Iterable[Url]
-Table = Union[Url, Urls, pd.DataFrame]
+Table = Union[Url, Urls, Iterable[Iterable]]
 
 github_url_p = re.compile(r'https?://github.com/(?P<org>[^/]+)/(?P<repo>[^/]+).*?')
 github_root_url_p = re.compile(r'^https?://github.com/[^/]+/[^/]+/?$')
@@ -55,6 +55,8 @@ def published_doc_diagnosis_df(urls: Table = DFLT_URL_TABLE_SOURCE, url_column='
 
 
 def _get_table(df):
+    import pandas as pd
+
     if isinstance(df, str):
         url = df
         if is_a_github_repo_root_url(url):
@@ -96,6 +98,8 @@ def repo_url_to_repo_docs_url(repo_url):
 
 
 def table_url_to_df(url: Url):
+    import pandas as pd
+
     html = requests.get(url).content
     df = pd.read_csv(BytesIO(html))
     df.columns = [column_name.strip() for column_name in df.columns]
