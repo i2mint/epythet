@@ -141,3 +141,8 @@ from epythet.tools import (
     diagnose_doctest_code_blocks,
     add_newlines_before_doctests_when_missing,
 )
+
+from contextlib import suppress
+
+with suppress(ImportError, ModuleNotFoundError):
+    from epythet.tools import published_doc_diagnosis_df
