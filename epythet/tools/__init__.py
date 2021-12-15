@@ -83,6 +83,8 @@ documentation and if a `docs` folder even exists (in master branch):
 
 from contextlib import suppress
 
+published_doc_diagnosis = None
+
 with suppress(ImportError, ModuleNotFoundError):
     import pandas  # to raise an error if not installed, and break from with before...
     from epythet.tools.published_docs import published_doc_diagnosis_df
