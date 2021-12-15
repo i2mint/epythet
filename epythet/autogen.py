@@ -30,10 +30,10 @@ def gen_rst_docs_and_path(
     ...     path in epythet.autogen.gen_rst_docs_and_path(Path(epythet.__file__).parent)
     ... )
     >>> assert sorted_rst_files == [
-    ... 'epythet.rst', 'epythet/autogen.rst', 'epythet/call_make.rst',
-    ... 'epythet/cli.rst', 'epythet/config_parser.rst', 'epythet/docs_gen.rst',
-    ... 'epythet/setup_docsrc.rst', 'epythet/templates.rst', 'epythet/tools.rst'
-    ... ]
+    ... 'epythet.rst', 'epythet/autogen.rst', 'epythet/call_make.rst', 'epythet/cli.rst',
+    ... 'epythet/config_parser.rst', 'epythet/docs_gen.rst', 'epythet/setup_docsrc.rst',
+    ... 'epythet/templates.rst', 'epythet/tools.rst', 'epythet/tools/docstring_diagnosis.rst',
+    ... 'epythet/tools/published_docs.rst']
 
     :param module_dir: module starting dir which should be named the project name
     :param auto_options: list of automodule options to include
