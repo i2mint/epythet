@@ -91,7 +91,7 @@ jobs:
 
       - name: Push to docs
         run: |
-          git checkout docs
+          git switch docs
           pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
           
       - name: Push Changes
