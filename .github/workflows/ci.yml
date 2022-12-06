@@ -49,8 +49,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Checkout branch docs
-        run: git switch docs
+      - name: Create or checkout branch docs
+        run: |
+          git branch $(git rev-parse --verify --quiet docs || echo 'docs')
+          git switch docs
+          git push --set-upstream origin docs
 
       - name: Configure Git
         run: |
