@@ -125,7 +125,7 @@ jobs:
 
       - name: Generate Documentation
         run: |
-          pip install $PKG_PATH
+          #pip install $PKG_PATH
           isee generate-documentation
 
       - name: Push docs
