@@ -1,4 +1,0 @@
-epythet.docs_gen.config_parser
-==============================
-.. automodule:: epythet.docs_gen.config_parser
-   :members:
