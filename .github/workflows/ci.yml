@@ -91,12 +91,15 @@ jobs:
 
       - name: Push Changes to branch docs
         run: |
-          git checkout docs
+          cp setup.cfg setup.cfg_
+          git checkout setup.cfg
+          git switch docs
           pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
 
       - name: Push Changes to master
         run: |
           git checkout master
+          mv setup.cfg_ setup.cfg
           git merge docs
           rm -rf docs
           pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
