@@ -100,10 +100,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: docs
-          token: ${{ secrets.GITHUB_TOKEN }}
+          #token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Checkout or create branch docs
+        run: |
+          git checkout $(git show-ref --verify --quiet refs/heads/docs || echo '-b') docs
+          
       - name: Configure Git
         run: |
           git config --global user.email "thorwhalen1@gmail.com"
