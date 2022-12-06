@@ -51,9 +51,8 @@ jobs:
       
       - name: Create or checkout branch docs
         run: |
-          git branch $(git rev-parse --verify --quiet docs || echo 'docs')
-          git switch docs
-          git push --set-upstream origin docs
+          git checkout $(git rev-parse --verify --quiet docs_branch || echo '-b docs_branch')
+          git push --set-upstream origin docs_branch
 
       - name: Configure Git
         run: |
@@ -101,7 +100,7 @@ jobs:
       - name: Push Changes to master
         run: |
           git checkout master
-          git merge docs
+          git merge docs_branch
           rm -rf docs
           pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
 
