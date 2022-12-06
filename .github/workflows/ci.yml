@@ -78,6 +78,7 @@ jobs:
         run: |
           python setup.py sdist
           echo "PKG_PATH=dist/$PROJECT_NAME-$VERSION.tar.gz" >> $GITHUB_ENV
+          pip install $PKG_PATH
 
       - name: Publish
         run: |
@@ -125,8 +126,11 @@ jobs:
 
       - name: Generate Documentation
         run: |
-          # pip install $PKG_PATH
           isee generate-documentation
 
       - name: Push docs
-        run: pack check-in "**CI** Updated documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+        run: |
+          git add *
+          git commit -m '**CI** Updated documentation. [skip ci]'
+          git push -u
+        #run: pack check-in "**CI** Updated documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
