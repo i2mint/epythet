@@ -51,9 +51,10 @@ jobs:
       
       - name: Create or checkout branch docs
         run: |
-          git push origin -d docs_branch
-          #git checkout $(git rev-parse --verify --quiet docs_branch || echo '-b docs_branch')
-          git checkout -b docs_branch
+          #git push origin -d docs_branch
+          git pull
+          git checkout $(git rev-parse --verify --quiet docs_branch || echo '-b docs_branch')
+          #git checkout -b docs_branch
           git push --set-upstream origin docs_branch
 
       - name: Configure Git
@@ -90,11 +91,11 @@ jobs:
         run: |
           pip install $PKG_PATH
           isee generate-documentation
+          epythet make . github
 
       - name: Publish
         run: |
           twine upload $PKG_PATH -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-          epythet make . github
 
       - name: Push Changes to branch docs
         run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
