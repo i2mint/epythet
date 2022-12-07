@@ -132,4 +132,7 @@ jobs:
           epythet make . github
           
       - name: Push Changes to docs branch
-        run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+        run: |
+          #pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
+          git add .
+          git commit -m "**CI** Formatted code + Updated version number and documentation. [skip ci]"
