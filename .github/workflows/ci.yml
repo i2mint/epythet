@@ -78,13 +78,12 @@ jobs:
         run: |
           python setup.py sdist
           echo "PKG_PATH=dist/$PROJECT_NAME-$VERSION.tar.gz" >> $GITHUB_ENV
-          echo $PKG_PATH
-          pip install $PKG_PATH
+          #echo $PKG_PATH
+          #pip install $PKG_PATH
           
       - name: Publish
         run: |
           twine upload $PKG_PATH -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-          
 
       - name: Push Changes to master
         run: |
