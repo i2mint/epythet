@@ -49,7 +49,7 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Create or checkout branch docs
+      - name: Create or checkout docs branch
         run: |
           git pull
           git checkout $(git rev-parse --verify --quiet docs_branch || echo '-b docs_branch')
@@ -89,13 +89,13 @@ jobs:
         run: |
           pip install $PKG_PATH
           isee generate-documentation
-          epythet make . github
 
       - name: Publish
         run: |
           twine upload $PKG_PATH -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }} --non-interactive  --skip-existing --disable-progress-bar
-
-      - name: Push Changes to branch docs
+          epythet make . github
+          
+      - name: Push Changes to docs branch
         run: pack check-in "**CI** Formatted code + Updated version number and documentation. [skip ci]" --auto-choose-default-action --bypass-docstring-validation --bypass-tests --bypass-code-formatting --verbose
 
       - name: Push Changes to master
