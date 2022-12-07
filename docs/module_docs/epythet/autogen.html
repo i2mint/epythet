@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epythet.autogen &mdash; epythet 0.0.68 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/toggleprompt.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="epythet.call_make" href="call_make.html" />
+    <link rel="prev" title="epythet" href="../epythet.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> epythet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../epythet.html">epythet</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="call_make.html">epythet.call_make</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">epythet.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="templates.html">epythet.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">epythet.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">epythet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">epythet.autogen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/module_docs/epythet/autogen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-epythet.autogen">
+<span id="epythet-autogen"></span><h1>epythet.autogen<a class="headerlink" href="#module-epythet.autogen" title="Permalink to this headline">¶</a></h1>
+<p>Documentation generation</p>
+<dl class="py function">
+<dt id="epythet.autogen.gen_rst_docs_and_path">
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">gen_rst_docs_and_path</code><span class="sig-paren">(</span><em class="sig-param">module_dir: Union[str, pathlib.Path], auto_options: List[epythet.templates.AutoDocs] = (&lt;AutoDocs.members: ':members:'&gt;,), ignore: List[str] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#gen_rst_docs_and_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.gen_rst_docs_and_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates autodocs rst and rst path relative to module file structure</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">epythet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sorted_rst_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span> <span class="k">for</span> <span class="n">docs</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">path</span> <span class="ow">in</span> <span class="n">epythet</span><span class="o">.</span><span class="n">autogen</span><span class="o">.</span><span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">epythet</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">sorted_rst_files</span> <span class="o">==</span> <span class="p">[</span>
+<span class="gp">... </span><span class="s1">&#39;epythet.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/autogen.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/call_make.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/cli.rst&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s1">&#39;epythet/config_parser.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/docs_gen.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/setup_docsrc.rst&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s1">&#39;epythet/templates.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/tools.rst&#39;</span><span class="p">,</span> <span class="s1">&#39;epythet/tools/docstring_diagnosis.rst&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="s1">&#39;epythet/tools/published_docs.rst&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_dir</strong> – module starting dir which should be named the project name</p></li>
+<li><p><strong>auto_options</strong> – list of automodule options to include</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>rst_doc, rst_path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.autogen.make_autodocs">
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_dir</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pathlib.Path<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="o">=</span><span class="default_value">'module_docs'</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create sphinx autodocs and table of contents for module defined by setup.cfg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_dir</strong> – Path to root project directory containing setup.cfg</p></li>
+<li><p><strong>output_dirname</strong> – directory name to be created under docsrc</p></li>
+<li><p><strong>skip_existing</strong> – existing docs will not be overwritten if True</p></li>
+<li><p><strong>docsrc_dir</strong> – path to sphinx docs source file</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="epythet.autogen.make_autodocs_for_modules_files">
+<code class="sig-prename descclassname">epythet.autogen.</code><code class="sig-name descname">make_autodocs_for_modules_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module_dir</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pathlib.Path<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">docsrc_dir</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pathlib.Path<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">output_dirname</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">skip_existing</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ignore</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/autogen.html#make_autodocs_for_modules_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#epythet.autogen.make_autodocs_for_modules_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create sphinx autodocs for module and table of contents</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_dir</strong> – module starting dir</p></li>
+<li><p><strong>output_dirname</strong> – directory name to be created under docsrc</p></li>
+<li><p><strong>skip_existing</strong> – existing docs will not be overwritten if True</p></li>
+<li><p><strong>docsrc_dir</strong> – path to sphinx docs source file</p></li>
+<li><p><strong>ignore</strong> – skip file if path contains any ignore strings</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../epythet.html" class="btn btn-neutral float-left" title="epythet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="call_make.html" class="btn btn-neutral float-right" title="epythet.call_make" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Otosense.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

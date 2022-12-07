@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epythet &mdash; epythet 0.0.68 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/toggleprompt.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="epythet.autogen" href="epythet/autogen.html" />
+    <link rel="prev" title="Welcome to Epythet’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> epythet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#console-scripts">Console Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prequisite">Prequisite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#in-1-quickstart">3-in-1 Quickstart</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-sphinx-docsrc">1. Setup Sphinx docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-module-docs">2. Generate module docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compile-docs">3. Compile docs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#github-pages">Github Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#editing-and-customizing-docs">Editing and Customizing Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/autogen.html">epythet.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/call_make.html">epythet.call_make</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/cli.html">epythet.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/templates.html">epythet.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/tools.html">epythet.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/tools/docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epythet/tools/published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">epythet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">epythet</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/module_docs/epythet.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-epythet">
+<span id="epythet"></span><h1>epythet<a class="headerlink" href="#module-epythet" title="Permalink to this headline">¶</a></h1>
+<p>Setup and generate Sphinx docs effortlessly</p>
+<section id="console-scripts">
+<h2>Console Scripts<a class="headerlink" href="#console-scripts" title="Permalink to this headline">¶</a></h2>
+<p>To see available commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+</section>
+<section id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
+<p>As easy as 1, 2, 3</p>
+<section id="prequisite">
+<h3>Prequisite<a class="headerlink" href="#prequisite" title="Permalink to this headline">¶</a></h3>
+<p>Check your <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/setup.cfg</span></code> contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">epythet</span>
+<span class="n">version</span> <span class="o">=</span> <span class="mf">0.0.27</span>
+<span class="n">author</span> <span class="o">=</span> <span class="n">Otosense</span>
+<span class="n">copyright</span> <span class="o">=</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">Otosense</span>
+<span class="n">display_name</span> <span class="o">=</span> <span class="n">Epythet</span>
+</pre></div>
+</div>
+<p>For graphviz support:</p>
+<p>For MacOS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">graphviz</span>
+</pre></div>
+</div>
+<p>For Ubuntu:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">graphviz</span>
+</pre></div>
+</div>
+<p>For Windows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Install windows package from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
+Add C:\Program Files (x86)\Graphviz2.38in to User path
+Add C:\Program Files (x86)\Graphviz2.38in\dot.exe to System Path
+</pre></div>
+</div>
+</section>
+<section id="in-1-quickstart">
+<h3>3-in-1 Quickstart<a class="headerlink" href="#in-1-quickstart" title="Permalink to this headline">¶</a></h3>
+<p>Run the three following steps in one go</p>
+<p>Command Line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">quickstart</span> <span class="n">PROJECT_DIR</span>
+</pre></div>
+</div>
+<p>View by opening <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docsrc/_build/html/index.html</span></code></p>
+</section>
+<section id="setup-sphinx-docsrc">
+<h3>1. Setup Sphinx docsrc<a class="headerlink" href="#setup-sphinx-docsrc" title="Permalink to this headline">¶</a></h3>
+<p>One time setup to create docsrc folder with Sphinx docs config and makefile.  Commit docsrc into your git repo.</p>
+<p>Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.setup_docsrc</span> <span class="kn">import</span> <span class="n">make_docsrc</span>
+<span class="n">make_docsrc</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Command Line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">make</span><span class="o">-</span><span class="n">docsrc</span> <span class="n">PROJECT_DIR</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-module-docs">
+<h3>2. Generate module docs<a class="headerlink" href="#generate-module-docs" title="Permalink to this headline">¶</a></h3>
+<p>Generate rst docs for all .py modules in your package.  Use make_autodocs each time there is a new .py file added.
+These rst files generated in the docsrc folder should also be commited into your git repo.</p>
+<p>Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.autogen</span> <span class="kn">import</span> <span class="n">make_autodocs</span>
+<span class="n">make_autodocs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Command Line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">make</span><span class="o">-</span><span class="n">autodocs</span> <span class="n">PROJECT_DIR</span>
+</pre></div>
+</div>
+</section>
+<section id="compile-docs">
+<h3>3. Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h3>
+<p>Compile generated rst docs with Sphinx makefile.  Use this each time you make changes to your .py files or .rst files.</p>
+<p>Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">epythet.call_make</span> <span class="kn">import</span> <span class="n">make</span>
+<span class="n">make</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Command Line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">epythet</span> <span class="n">make</span> <span class="n">PROJECT_DIR</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>View by opening <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docsrc/_build/html/index.html</span></code></p>
+</section>
+</section>
+<section id="github-pages">
+<h2>Github Pages<a class="headerlink" href="#github-pages" title="Permalink to this headline">¶</a></h2>
+<p>Go to your repo settings and set GitHub Pages site to build from the <code class="docutils literal notranslate"><span class="pre">/docs</span></code> folder in the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.
+That is:
+- Go to {github_repo}/settings
+- Scroll down to “GitHub” Pages section.
+- For epythet, the settings look like this:</p>
+<a class="reference internal image-reference" href="https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png"><img alt="GithubPagesSetup" src="https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png" style="width: 750px;" /></a>
+<p>More detailed instructions <a class="reference external" href="https://docs.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site">here</a></p>
+<p>Github will tell you where it will be published.
+In this case, the site is published at <a class="reference external" href="https://i2mint.github.io/epythet/">https://i2mint.github.io/epythet/</a></p>
+<p>Compile docs for github</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">PROJECT_DIR</span><span class="o">/</span><span class="n">docsrc</span>
+<span class="n">make</span> <span class="n">github</span>
+</pre></div>
+</div>
+<p>Push generated <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR/docs</span></code> to <code class="docutils literal notranslate"><span class="pre">master</span></code> branch</p>
+</section>
+<section id="editing-and-customizing-docs">
+<h2>Editing and Customizing Docs<a class="headerlink" href="#editing-and-customizing-docs" title="Permalink to this headline">¶</a></h2>
+<p>You can add RST documentation directly in the source files.
+<a class="reference external" href="https://github.com/i2mint/epythet/blob/master/epythet/__init__.py">This source file for example</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to Epythet’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="epythet/autogen.html" class="btn btn-neutral float-right" title="epythet.autogen" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Otosense.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
