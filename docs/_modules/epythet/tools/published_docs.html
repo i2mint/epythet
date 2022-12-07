@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epythet.tools.published_docs &mdash; epythet 0.0.66 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/toggleprompt.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> epythet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/autogen.html">epythet.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/call_make.html">epythet.call_make</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/cli.html">epythet.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/templates.html">epythet.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/tools.html">epythet.tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/tools/docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/epythet/tools/published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epythet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">epythet.tools.published_docs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for epythet.tools.published_docs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Elements for a tool to check if docs are published, and if not, why.</span>
+
+<span class="sd">&gt;&gt;&gt; from epythet.tools.published_docs import published_doc_diagnosis_df</span>
+<span class="sd">&gt;&gt;&gt; published_doc_diagnosis_df(&#39;https://github.com/i2mint/epythet&#39;)  # doctest: +SKIP</span>
+<span class="sd">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
+<span class="sd">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
+<span class="sd">&gt;&gt;&gt; published_doc_diagnosis_df([  # doctest: +SKIP</span>
+<span class="sd">...     &#39;https://github.com/i2mint/epythet&#39;, &#39;https://github.com/otosense/omisc&#39;,</span>
+<span class="sd">... ])</span>
+<span class="sd">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
+<span class="sd">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
+<span class="sd">1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="n">Url</span> <span class="o">=</span> <span class="nb">str</span>
+<span class="n">Urls</span> <span class="o">=</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Url</span><span class="p">]</span>
+<span class="n">Table</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Url</span><span class="p">,</span> <span class="n">Urls</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">]]</span>
+
+<span class="n">github_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;https?://github.com/(?P&lt;org&gt;[^/]+)/(?P&lt;repo&gt;[^/]+).*?&#39;</span><span class="p">)</span>
+<span class="n">github_root_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^https?://github.com/[^/]+/[^/]+/?$&#39;</span><span class="p">)</span>
+
+<span class="c1"># TODO: Make the following particulars controllable from outside module</span>
+<span class="n">DFLT_URL_TABLE_SOURCE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv&#39;</span>
+<span class="p">)</span>
+<span class="n">docs_url_template</span> <span class="o">=</span> <span class="s1">&#39;https://</span><span class="si">{org}</span><span class="s1">.github.io/</span><span class="si">{repo}</span><span class="s1">&#39;</span>
+<span class="n">repo_docs_url_template</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/</span><span class="si">{org}</span><span class="s1">/</span><span class="si">{repo}</span><span class="s1">/tree/master/docs&#39;</span>
+
+
+<div class="viewcode-block" id="published_doc_diagnosis_df"><a class="viewcode-back" href="../../../module_docs/epythet/tools/published_docs.html#epythet.tools.published_docs.published_doc_diagnosis_df">[docs]</a><span class="k">def</span> <span class="nf">published_doc_diagnosis_df</span><span class="p">(</span><span class="n">urls</span><span class="p">:</span> <span class="n">Table</span> <span class="o">=</span> <span class="n">DFLT_URL_TABLE_SOURCE</span><span class="p">,</span> <span class="n">url_column</span><span class="o">=</span><span class="s1">&#39;url&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `published_doc_diagnosis_df` gets you a pandas dataframe (requires pandas to be</span>
+<span class="sd">    installed!) that will tell you if given github ``org/repo`` url(s) have published</span>
+<span class="sd">    documentation and if a `docs` folder even exists (in master branch).</span>
+
+<span class="sd">    :param urls: A list of urls, a table containing urls, or a single url pointing to</span>
+<span class="sd">        a csv where this table can be downloaded from.</span>
+<span class="sd">    :param url_column: When ``urls`` is a table, what column name contains the urls.</span>
+<span class="sd">    :return: A dataframe with the diagnosis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">_get_table</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">repo_url_to_docs_url</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_exists&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">url_exists</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;repo_has_docs_folder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url_exists</span><span class="p">(</span><span class="n">repo_url_to_repo_docs_url</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_table</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="k">if</span> <span class="n">is_a_github_repo_root_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">url</span><span class="p">]})</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># consider it to be a csv source of the table listing the urls</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">table_url_to_df</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">urls</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="k">def</span> <span class="nf">is_a_github_repo_root_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">github_root_url_p</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="github_org_and_repo"><a class="viewcode-back" href="../../../module_docs/epythet/tools/published_docs.html#epythet.tools.published_docs.github_org_and_repo">[docs]</a><span class="k">def</span> <span class="nf">github_org_and_repo</span><span class="p">(</span><span class="n">github_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; github_org_and_repo(&#39;https://github.com/i2mint/i2&#39;)</span>
+<span class="sd">    {&#39;org&#39;: &#39;i2mint&#39;, &#39;repo&#39;: &#39;i2&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">github_url_p</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">github_url</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="repo_url_to_docs_url"><a class="viewcode-back" href="../../../module_docs/epythet/tools/published_docs.html#epythet.tools.published_docs.repo_url_to_docs_url">[docs]</a><span class="k">def</span> <span class="nf">repo_url_to_docs_url</span><span class="p">(</span><span class="n">repo_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; repo_url_to_docs_url(&#39;https://github.com/i2mint/i2&#39;)</span>
+<span class="sd">    &#39;https://i2mint.github.io/i2&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">docs_url_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">github_org_and_repo</span><span class="p">(</span><span class="n">repo_url</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="repo_url_to_repo_docs_url"><a class="viewcode-back" href="../../../module_docs/epythet/tools/published_docs.html#epythet.tools.published_docs.repo_url_to_repo_docs_url">[docs]</a><span class="k">def</span> <span class="nf">repo_url_to_repo_docs_url</span><span class="p">(</span><span class="n">repo_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; repo_url_to_repo_docs_url(&#39;https://github.com/i2mint/i2&#39;)</span>
+<span class="sd">    &#39;https://github.com/i2mint/i2/tree/master/docs&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">repo_docs_url_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">github_org_and_repo</span><span class="p">(</span><span class="n">repo_url</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">table_url_to_df</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">Url</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+    <span class="n">html</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="k">def</span> <span class="nf">is_valid_response</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+
+
+<span class="k">def</span> <span class="nf">url_exists</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">is_valid_response</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+
+<span class="c1"># Below is stuff I wrote on my way to getting rid of pandas, but then decided to stop</span>
+
+
+<span class="k">def</span> <span class="nf">url_of_urls_csv_to_urls</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">Url</span><span class="p">,</span> <span class="n">url_column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">table_url_to_df</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">url_column</span> <span class="o">=</span> <span class="n">url_column</span> <span class="ow">or</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_get_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urls</span>
+        <span class="k">if</span> <span class="n">is_a_github_repo_root_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">url</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># consider it to be a csv source of the table listing the urls</span>
+            <span class="k">return</span> <span class="n">url_of_urls_csv_to_urls</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urls</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Otosense.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
