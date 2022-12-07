@@ -52,6 +52,7 @@ jobs:
       - name: Create or checkout branch docs
         run: |
           #git push origin -d docs_branch
+          
           git pull
           git checkout $(git rev-parse --verify --quiet docs_branch || echo '-b docs_branch')
           #git checkout -b docs_branch
