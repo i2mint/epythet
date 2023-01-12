@@ -1,0 +1,55 @@
+name: "publish github pages"
+
+description: "Generate Epythet documentation and push to github pages branch"
+
+inputs:
+  github-token:
+    description: GITHUB_TOKEN
+    required: true
+
+  docs-branch:
+    description: "Branch to push documentation build"
+    required: false
+    default: "gh-pages"
+
+  docs-dir:
+    description: "Location of generated docs"
+    required: false
+    default: "./docsrc/_build/html/"
+
+  python-version:
+    description: "Python version used to generate documentation"
+    required: false
+    default: "3.10"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Epythet
+      run: |
+        python -m pip install --upgrade pip
+        pip -q install epythet
+      shell: bash
+
+    - name: Generate Documentation
+      run: epythet quickstart .
+      shell: bash
+
+    - name: Deploy GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3.9.1
+      with:
+        github_token: ${{ inputs.github-token }}
+        publish_branch: ${{ inputs.docs-branch }}
+        publish_dir: ${{ inputs.docs-dir }}
+        enable_jekyll: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
