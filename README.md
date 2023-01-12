@@ -13,7 +13,32 @@ pip install epythet
 ```
 Follow the short [Quickstart Guide](https://i2mint.github.io/epythet/module_docs/epythet.html#quickstart)
 
-
 # About
 Tired of learning new frameworks and just need something to quickly display your docstrings in your python files? You've come to the right place. Epythet is built on
  [Sphinx Python Documentation Generator](https://www.sphinx-doc.org/en/master/index.html) but automatically generates pages for each module .py files and a table of contents.
+
+
+# Publishing to GitHub Page with GitHub Actions
+Add workflow [.github/workflows/publish-docs.yml](https://github.com/i2mint/epythet/blob/master/.github/workflows/publish-docs.yml) to your repo and modify the trigger conditions to suit your needs.  Example below will run automatically when the other "Continuous Integration" workflow is completed.
+```
+name: GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: i2mint/epythet/actions/publish-github-pages@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          docs-branch: "gh-pages"
+          docs-dir: "./docsrc/_build/html/"
+          python-version: "3.10"
+```
+Setup the GitHub Pages for your repo after the target docs-branch is created.  Set the target branch (default: "gh-pages") and folder as `/(root)`
+![image](https://user-images.githubusercontent.com/22692594/212193474-80b287e2-211c-470d-aa7c-9f779bdd3866.png)
