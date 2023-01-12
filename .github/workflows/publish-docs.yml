@@ -1,9 +1,10 @@
 name: GitHub Pages
 
 on:
-  push:
-    tags:
-      - '**'
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
 
 jobs:
   deploy:
