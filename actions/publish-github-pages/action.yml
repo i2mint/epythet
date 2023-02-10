@@ -40,6 +40,10 @@ runs:
         pip -q install epythet
       shell: bash
 
+    - name: Install Repo Project
+      run: pip install -e .
+      shell: bash
+
     - name: Generate Documentation
       run: epythet quickstart .
       shell: bash
