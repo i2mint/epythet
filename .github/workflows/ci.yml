@@ -93,3 +93,11 @@ jobs:
 
       - name: Tag Repository
         run: isee tag-repo $VERSION
+  github-pages:
+    name: Publish GitHub Pages
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: i2mint/epythet/actions/publish-github-pages@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
