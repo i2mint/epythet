@@ -363,7 +363,7 @@ def repair_package(pkg, write_to_files=False):
             reader = RelPathFileStringPersister(pkg)
         else:
             # try a more flexible store
-            from tec import PyFilesReader
+            from tec import PyFilesReader  # pylint: disable=E0401
 
             reader = PyFilesReader(pkg)
 
