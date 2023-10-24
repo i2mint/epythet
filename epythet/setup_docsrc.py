@@ -26,7 +26,7 @@ def make_master_file(docsrc_dir, title: str):
     master_file.write_text(master_contents)
 
 
-def make_docsrc(project_dir, verbose: bool = True):
+def make_docsrc(project_dir, *, verbose: bool = True):
     """Make source folder for documentation based on setup.cfg metadata
 
     :param project_dir: Path to root project directory containing setup.cfg

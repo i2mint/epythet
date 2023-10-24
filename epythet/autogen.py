@@ -103,6 +103,7 @@ def make_autodocs_for_modules_files(
 @argh.arg('-i', '--ignore', nargs='*')
 def make_autodocs(
     project_dir: Union[str, Path],
+    *,
     output_dirname='module_docs',
     skip_existing=True,
     docsrc_dir=None,
