@@ -175,7 +175,7 @@ def repo_stubs_for_org(org: Org) -> RepoStubs:
 
 def configure_github_pages_for_repo_stubs(repo_stubs: Union[RepoStubs, Org]):
     """
-    Configure GitHub Pages for all repos in an organization.
+    Configure Pages for an iterable of repo stubs, or all repos in an organization.
 
     >>> repo_pages_status = dict(
     ...     configure_github_pages_for_stubs('i2mint')  # doctest: +SKIP
