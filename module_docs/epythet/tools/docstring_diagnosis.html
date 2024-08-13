@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epythet.tools.docstring_diagnosis &mdash; epythet 0.1.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="epythet.tools.published_docs" href="published_docs.html" />
+    <link rel="prev" title="epythet.tools" href="../tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            epythet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../epythet.html">epythet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autogen.html">epythet.autogen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../call_make.html">epythet.call_make</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">epythet.cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../templates.html">epythet.templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">epythet.tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.tools.docstring_diagnosis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.add_newlines_before_doctests_when_missing"><code class="docutils literal notranslate"><span class="pre">add_newlines_before_doctests_when_missing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.beginning_of_doctest"><code class="docutils literal notranslate"><span class="pre">beginning_of_doctest()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.binary_transition"><code class="docutils literal notranslate"><span class="pre">binary_transition()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.blank_line"><code class="docutils literal notranslate"><span class="pre">blank_line()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.diagnose_doctest_code_blocks"><code class="docutils literal notranslate"><span class="pre">diagnose_doctest_code_blocks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.diagnosis_snippets"><code class="docutils literal notranslate"><span class="pre">diagnosis_snippets()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.lines_with_two_new_lines_before_doctests"><code class="docutils literal notranslate"><span class="pre">lines_with_two_new_lines_before_doctests()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.print_diagnosis"><code class="docutils literal notranslate"><span class="pre">print_diagnosis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.repair_package"><code class="docutils literal notranslate"><span class="pre">repair_package()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines"><code class="docutils literal notranslate"><span class="pre">tag_doctest_blocks_not_preceeded_by_new_lines()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines_alt_2"><code class="docutils literal notranslate"><span class="pre">tag_doctest_blocks_not_preceeded_by_new_lines_alt_2()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">epythet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">epythet.tools.docstring_diagnosis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/module_docs/epythet/tools/docstring_diagnosis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-epythet.tools.docstring_diagnosis">
+<span id="epythet-tools-docstring-diagnosis"></span><h1>epythet.tools.docstring_diagnosis<a class="headerlink" href="#module-epythet.tools.docstring_diagnosis" title="Link to this heading"></a></h1>
+<p>Tools to manipulate documentation elements</p>
+<p>The main purpose of the module:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>If you have tec (pip install tec) installed, you can even input a module object:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">epythet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">number_of_problems</span> <span class="o">=</span> <span class="n">repair_package</span><span class="p">(</span><span class="n">epythet</span><span class="p">)</span>  
+<span class="go">---&gt; This is just a diagnosis: No files are being written to</span>
+<span class="go">setup_docsrc.py                           : #problems: 0</span>
+<span class="go">config_parser.py                          : #problems: 0</span>
+<span class="go">...</span>
+<span class="go">docs_gen.py                               : #problems: 0</span>
+</pre></div>
+</div>
+<p>As the print out header indicated, this is just a diagnosis of problems found for
+each module, and returns the total number of problems.
+It’s advised to do this, then have a look at the problems using</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_diagnosis</span><span class="p">(</span><span class="n">MODULE_PATH_OR_PKG_FOLDER</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>Once you’re familiar with the problems, you can choose to do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">,</span> <span class="n">write_to_files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>This will attempt to repair the problems for you.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    Is also detected in indentations</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
+<span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
+<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_docs</span> <span class="o">=</span> <span class="n">add_newlines_before_doctests_when_missing</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_docs</span> <span class="o">==</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    Is also detected in indentations</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
+<span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
+<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.add_newlines_before_doctests_when_missing">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">add_newlines_before_doctests_when_missing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#add_newlines_before_doctests_when_missing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.add_newlines_before_doctests_when_missing" title="Link to this definition"></a></dt>
+<dd><p>Returns the code_string with newlines inserted before code blocks when missing./</p>
+<p>A code block is defined by a line that starts with <cite>&gt;&gt;&gt;</cite> (except for optional spaces
+before it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    Is also detected in indentations</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
+<span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
+<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_docs</span> <span class="o">=</span> <span class="n">add_newlines_before_doctests_when_missing</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_docs</span> <span class="o">==</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    Is also detected in indentations</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
+<span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
+<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.beginning_of_doctest">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">beginning_of_doctest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9223372036854775807</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#epythet.tools.docstring_diagnosis.beginning_of_doctest" title="Link to this definition"></a></dt>
+<dd><p>Matches zero or more characters at the beginning of the string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.binary_transition">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">binary_transition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transitions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#binary_transition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.binary_transition" title="Link to this definition"></a></dt>
+<dd><p>Binary state machine transition computation. Computes next state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transitions</strong> – Transition “matrix”, in the form of:
+{True: state_inverting_symbols, False: state_inverting_symbols}</p></li>
+<li><p><strong>state</strong> – Current state. True or False</p></li>
+<li><p><strong>symbol</strong> – Incoming symbol</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New state</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transitions</span> <span class="o">=</span> <span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">},</span> <span class="kc">True</span><span class="p">:</span> <span class="p">{</span><span class="mi">3</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.blank_line">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">blank_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9223372036854775807</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#epythet.tools.docstring_diagnosis.blank_line" title="Link to this definition"></a></dt>
+<dd><p>Matches zero or more characters at the beginning of the string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.diagnose_doctest_code_blocks">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">diagnose_doctest_code_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#diagnose_doctest_code_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.diagnose_doctest_code_blocks" title="Link to this definition"></a></dt>
+<dd><p>Yields lines the start code block and need attention,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">    Is also detected in indentations</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
+<span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
+<span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
+<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">diagnose_doctest_code_blocks</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You would usually run <cite>next(it)</cite> to check on the first problem, repair, and rerun.
+(Oh, and it’s important to rerun, because the line numbers won’t be valid anymore
+once you edit the source code_string!).</p>
+<p>But, to doctest this we’ll do this:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+<span class="go">[(3, &#39;    &gt;&gt;&gt; like_this&#39;), (10, &#39;    &gt;&gt;&gt; this_doctest_is_too_close_to_text&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.diagnosis_snippets">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">diagnosis_snippets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#diagnosis_snippets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.diagnosis_snippets" title="Link to this definition"></a></dt>
+<dd><p>Generate snippets that exhibit the problems in the src</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.lines_with_two_new_lines_before_doctests">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">lines_with_two_new_lines_before_doctests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#lines_with_two_new_lines_before_doctests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.lines_with_two_new_lines_before_doctests" title="Link to this definition"></a></dt>
+<dd><p>Yields the input lines, but interleaving an empty (‘’) line if a code block
+starts with out an empty line preceeding it</p>
+<p>A code block is defined by a line that starts with <cite>&gt;&gt;&gt;</cite> (except for optional spaces
+before it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.print_diagnosis">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">print_diagnosis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#print_diagnosis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.print_diagnosis" title="Link to this definition"></a></dt>
+<dd><p>Print diagnosis of one or several files</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.repair_package">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">repair_package</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_to_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#repair_package"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.repair_package" title="Link to this definition"></a></dt>
+<dd><p>Diagnose and/or repair a whole pkg (given by folder or pkg module obj,
+or a store (see dol).</p>
+<p>For now, it diagnosis and repairs:
+- When there’s a space missing between doc text and doctest (code block)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">tag_doctest_blocks_not_preceeded_by_new_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#tag_doctest_blocks_not_preceeded_by_new_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines" title="Link to this definition"></a></dt>
+<dd><p>Yields (line, True/False) pairs. True when line is a &gt;&gt;&gt; without newlines before,</p>
+<p>A code block is defined by a line that starts with <cite>&gt;&gt;&gt;</cite> (except for optional spaces
+before it. To render well through Sphinx, code blocks must be separated from earlier
+text by a blank (only spaces) line.</p>
+<p>This function diagnoses that.</p>
+<p>It uses three finite (binary) state machines.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines_alt_2">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.docstring_diagnosis.</span></span><span class="sig-name descname"><span class="pre">tag_doctest_blocks_not_preceeded_by_new_lines_alt_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/docstring_diagnosis.html#tag_doctest_blocks_not_preceeded_by_new_lines_alt_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines_alt_2" title="Link to this definition"></a></dt>
+<dd><p>Yields (line, True/False) pairs. True when line is a &gt;&gt;&gt; without newlines before,</p>
+<p>A code block is defined by a line that starts with <cite>&gt;&gt;&gt;</cite> (except for optional spaces
+before it. To render well through Sphinx, code blocks must be separated from earlier
+text by a blank (only spaces) line.</p>
+<p>This function diagnoses that.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tools.html" class="btn btn-neutral float-left" title="epythet.tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="published_docs.html" class="btn btn-neutral float-right" title="epythet.tools.published_docs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Otosense.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
