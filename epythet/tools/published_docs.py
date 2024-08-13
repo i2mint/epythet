@@ -101,7 +101,7 @@ def verify_repo_access(repo_stub):
         print(f"Access to {repo_stub} verified.")
     else:
         print(f"Failed to access {repo_stub}: {response.status_code}")
-        
+
     return response.json()
 
 
@@ -118,7 +118,9 @@ def branch_exists(repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_he
     if response.status_code == 200:
         return True
     else:
-        print(f"branch_exists response: {response.status_code}, {response.content=}")
+        print(
+            f"repo_stub {branch} branch doesn't exist: {response.status_code}, {response.content=}"
+        )
         return False
 
 
@@ -135,31 +137,56 @@ def configure_github_pages(
     Example:
 
     >>> configure_github_pages('i2mint/epythet')  # doctest: +SKIP
-    
+
     """
     headers = _get_obj(headers)
 
     if not branch_exists(repo_stub, target_branch, headers=headers):
-        print(f"---> Branch {target_branch} does not exist. Please create the branch first.")
-        return
+        print(
+            f"---> {repo_stub} Branch {target_branch} does not exist. Please create the branch first."
+        )
+        return "https://github.com/{repo_stub}/branches/all"
 
     url = f"https://api.github.com/repos/{repo_stub}/pages"
-    data = {
-        "source": {
-            "branch": target_branch,
-            "path": folder
-        }
-    }
-    
+    data = {"source": {"branch": target_branch, "path": folder}}
+
     response = requests.put(url, headers=headers, json=data)
 
     if response.status_code == 204:
-        print("GitHub Pages has been successfully updated.")
+        print(f"{repo_stub} GitHub Pages has been successfully updated.")
     elif response.status_code == 201:
-        print("GitHub Pages has been successfully configured.")
+        print(f"{repo_stub} GitHub Pages has been successfully configured.")
     else:
-        print(f"Failed to configure GitHub Pages: {response.status_code}")
+        print(f"{repo_stub} Failed to configure GitHub Pages: {response.status_code}")
         print(response.json())
+        return response
+
+
+RepoStubs = Iterable[str]
+Org = str
+
+
+def repo_stubs_for_org(org: Org) -> RepoStubs:
+    import hubcap
+
+    org_reader = hubcap.GitHubReader(org)
+    return [f"{org}/{repo}" for repo in list(org_reader)]
+
+
+def configure_github_pages_for_repo_stubs(repo_stubs: Union[RepoStubs, Org]):
+    """
+    Configure GitHub Pages for all repos in an organization.
+
+    >>> repo_pages_status = dict(
+    ...     configure_github_pages_for_stubs('i2mint')  # doctest: +SKIP
+    ... )
+
+    """
+    if isinstance(repo_stubs, str):
+        repo_stubs = repo_stubs_for_org(repo_stubs)
+
+    for repo_stub in repo_stubs:
+        yield repo_stub, configure_github_pages(repo_stub)
 
 
 # -----------------------------------------------------------------------------------
