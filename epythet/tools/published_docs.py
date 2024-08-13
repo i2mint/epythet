@@ -145,7 +145,7 @@ def configure_github_pages(
         print(
             f"---> {repo_stub} Branch {target_branch} does not exist. Please create the branch first."
         )
-        return "https://github.com/{repo_stub}/branches/all"
+        return f"https://github.com/{repo_stub}/branches/all"
 
     url = f"https://api.github.com/repos/{repo_stub}/pages"
     data = {"source": {"branch": target_branch, "path": folder}}
