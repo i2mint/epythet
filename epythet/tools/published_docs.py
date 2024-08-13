@@ -1,4 +1,6 @@
-"""Elements for a tool to check if docs are published, and if not, why.
+"""
+
+Elements for a tool to setup docs and check if docs are published, and if not, why.
 
 >>> from epythet.tools.published_docs import published_doc_diagnosis_df
 >>> published_doc_diagnosis_df('https://github.com/i2mint/epythet')  # doctest: +SKIP
@@ -16,14 +18,133 @@
 import requests
 from io import BytesIO
 import re
-from typing import Union, Iterable
+from typing import Union, Iterable, Callable
 
 Url = str
 Urls = Iterable[Url]
 Table = Union[Url, Urls, Iterable[Iterable]]
+Headers = dict
+HeadersFunc = Callable[[], Headers]
+HeadersSpec = Union[Headers, HeadersFunc]
 
 github_url_p = re.compile(r'https?://github.com/(?P<org>[^/]+)/(?P<repo>[^/]+).*?')
 github_root_url_p = re.compile(r'^https?://github.com/[^/]+/[^/]+/?$')
+
+# -----------------------------------------------------------------------------------
+
+import requests
+import os
+from warnings import warn
+
+DFLT_DOCS_BRANCH = 'gh-pages'
+DFLT_DOCS_FOLDER = '/'
+
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+HEADERS = {
+    'Authorization': f'token {GITHUB_TOKEN}',
+    'Accept': 'application/vnd.github.v3+json',
+}
+
+
+def github_token():
+    token = os.getenv('GITHUB_TOKEN')
+    if token is None:
+        raise ValueError(
+            "GITHUB_TOKEN is not set. You can set it as an environment variable."
+        )
+
+
+def dflt_headers(token=None):
+    if token is None:
+        token = github_token()
+    return {
+        'Authorization': f'token {token}',
+        'Accept': 'application/vnd.github.v3+json',
+    }
+
+
+def _get_obj(obj_spec):
+    """
+    Get the object from the object spec.
+
+    If the object spec is a callable, call it (with no args) to get the object.
+    Otherwise, return the object spec as is.
+
+    >>> _get_obj(3)
+    3
+    >>> _get_obj(lambda: 3)
+    3
+
+    """
+    if callable(obj_spec):
+        return obj_spec()
+    return obj_spec
+
+
+def token_user_info(token=None):
+    response = requests.get('https://api.github.com/user', headers=dflt_headers(token))
+
+    if response.status_code == 200:
+        print("Token is valid.")
+    else:
+        print(f"Failed to authenticate: {response.status_code}")
+
+    return response.json()
+
+
+def branch_exists(repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_headers):
+    """
+    Check if a branch exists in a repo.
+
+    :param repo_stub: A string of the form ``org/repo``.
+    :param branch: The branch name to check for.
+    :param headers: A function that returns a dictionary of headers
+    """
+    url = f"https://api.github.com/repos/{repo_stub}/branches/{branch}"
+    response = requests.get(url, headers=_get_obj(headers))
+    if response.status_code == 200:
+        return True
+    else:
+        print(f"branch_exists response: {response.status_code}, {response.content=}")
+        return False
+
+
+def configure_github_pages(
+    repo_stub: str,
+    *,
+    target_branch=DFLT_DOCS_BRANCH,
+    folder=DFLT_DOCS_FOLDER,
+    headers: HeadersSpec = dflt_headers,
+):
+    """
+    Configure GitHub Pages for a repo.
+
+
+    """
+    headers = _get_obj(headers)
+
+    if not branch_exists(repo_stub, target_branch, headers=headers):
+        print(
+            f"---> Branch {target_branch} does not exist. Please create the branch first."
+        )
+        return
+
+    url = f"https://api.github.com/repos/{repo_stub}/pages"
+    data = {"source": {"branch": target_branch, "path": folder}}
+    response = requests.post(url, headers=_get_obj(headers), json=data)
+
+    if response.status_code == 201:
+        print("GitHub Pages has been successfully configured.")
+    else:
+        print(f"Failed to configure GitHub Pages: {response.status_code}")
+        print(response.json())
+
+
+# -----------------------------------------------------------------------------------
+# Note: Some of code below may need to be updated, given it assumes the old
+# (prior to Oct 2023) way of setting up docs on github: Namely, where docs where
+# in a docs folder in the master branch.
+
 
 # TODO: Make the following particulars controllable from outside module
 DFLT_URL_TABLE_SOURCE = (
