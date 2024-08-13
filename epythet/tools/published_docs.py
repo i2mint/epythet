@@ -46,12 +46,13 @@ HEADERS = {
 }
 
 
-def github_token():
-    token = os.getenv('GITHUB_TOKEN')
+def github_token(env_var='GITHUB_TOKEN'):
+    token = os.getenv(env_var)
     if token is None:
         raise ValueError(
             "GITHUB_TOKEN is not set. You can set it as an environment variable."
         )
+    return token
 
 
 def dflt_headers(token=None):
@@ -92,6 +93,18 @@ def token_user_info(token=None):
     return response.json()
 
 
+def verify_repo_access(repo_stub):
+    url = f"https://api.github.com/repos/{repo_stub}"
+    response = requests.get(url, headers=dflt_headers())
+
+    if response.status_code == 200:
+        print(f"Access to {repo_stub} verified.")
+    else:
+        print(f"Failed to access {repo_stub}: {response.status_code}")
+        
+    return response.json()
+
+
 def branch_exists(repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_headers):
     """
     Check if a branch exists in a repo.
@@ -117,23 +130,32 @@ def configure_github_pages(
     headers: HeadersSpec = dflt_headers,
 ):
     """
-    Configure GitHub Pages for a repo.
+    Configure or update GitHub Pages for a repo.
 
+    Example:
 
+    >>> configure_github_pages('i2mint/epythet')  # doctest: +SKIP
+    
     """
     headers = _get_obj(headers)
 
     if not branch_exists(repo_stub, target_branch, headers=headers):
-        print(
-            f"---> Branch {target_branch} does not exist. Please create the branch first."
-        )
+        print(f"---> Branch {target_branch} does not exist. Please create the branch first.")
         return
 
     url = f"https://api.github.com/repos/{repo_stub}/pages"
-    data = {"source": {"branch": target_branch, "path": folder}}
-    response = requests.post(url, headers=_get_obj(headers), json=data)
+    data = {
+        "source": {
+            "branch": target_branch,
+            "path": folder
+        }
+    }
+    
+    response = requests.put(url, headers=headers, json=data)
 
-    if response.status_code == 201:
+    if response.status_code == 204:
+        print("GitHub Pages has been successfully updated.")
+    elif response.status_code == 201:
         print("GitHub Pages has been successfully configured.")
     else:
         print(f"Failed to configure GitHub Pages: {response.status_code}")
