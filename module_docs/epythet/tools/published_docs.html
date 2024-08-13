@@ -61,6 +61,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tools.html">epythet.tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.tools.published_docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.branch_exists"><code class="docutils literal notranslate"><span class="pre">branch_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.configure_github_pages"><code class="docutils literal notranslate"><span class="pre">configure_github_pages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.github_org_and_repo"><code class="docutils literal notranslate"><span class="pre">github_org_and_repo()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.published_doc_diagnosis_df"><code class="docutils literal notranslate"><span class="pre">published_doc_diagnosis_df()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_url_to_docs_url"><code class="docutils literal notranslate"><span class="pre">repo_url_to_docs_url()</span></code></a></li>
@@ -95,7 +97,7 @@
              
   <section id="module-epythet.tools.published_docs">
 <span id="epythet-tools-published-docs"></span><h1>epythet.tools.published_docs<a class="headerlink" href="#module-epythet.tools.published_docs" title="Link to this heading"></a></h1>
-<p>Elements for a tool to check if docs are published, and if not, why.</p>
+<p>Elements for a tool to setup docs and check if docs are published, and if not, why.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">epythet.tools.published_docs</span> <span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">)</span>  
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
@@ -108,6 +110,27 @@
 <span class="go">1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False</span>
 </pre></div>
 </div>
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.branch_exists">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">branch_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#branch_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.branch_exists" title="Link to this definition"></a></dt>
+<dd><p>Check if a branch exists in a repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo_stub</strong> – A string of the form <code class="docutils literal notranslate"><span class="pre">org/repo</span></code>.</p></li>
+<li><p><strong>branch</strong> – The branch name to check for.</p></li>
+<li><p><strong>headers</strong> – A function that returns a dictionary of headers</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.configure_github_pages">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">configure_github_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch='gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder='/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#configure_github_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.configure_github_pages" title="Link to this definition"></a></dt>
+<dd><p>Configure GitHub Pages for a repo.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.github_org_and_repo">
 <span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">github_org_and_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">github_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#github_org_and_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.github_org_and_repo" title="Link to this definition"></a></dt>
