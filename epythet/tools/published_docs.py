@@ -15,6 +15,7 @@ Elements for a tool to setup docs and check if docs are published, and if not, w
 
 """
 
+from functools import partial
 import requests
 from io import BytesIO
 import re
@@ -31,6 +32,10 @@ github_url_p = re.compile(r'https?://github.com/(?P<org>[^/]+)/(?P<repo>[^/]+).*
 github_root_url_p = re.compile(r'^https?://github.com/[^/]+/[^/]+/?$')
 
 # -----------------------------------------------------------------------------------
+# gh-pages
+# TODO: A lot of tools herein are more general than epythet, and should be moved to
+# hubcap, and refactored to not have so many repetitions (e.g. should centralize
+# the url templates, factor out headers, etc.)
 
 import requests
 import os
@@ -38,12 +43,18 @@ from warnings import warn
 
 DFLT_DOCS_BRANCH = 'gh-pages'
 DFLT_DOCS_FOLDER = '/'
+DFLT_VERBOSE = True
 
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 HEADERS = {
     'Authorization': f'token {GITHUB_TOKEN}',
     'Accept': 'application/vnd.github.v3+json',
 }
+
+
+def clog(condition, *args, **kwargs):
+    if condition:
+        print(*args, **kwargs)
 
 
 def github_token(env_var='GITHUB_TOKEN'):
@@ -82,30 +93,58 @@ def _get_obj(obj_spec):
     return obj_spec
 
 
-def token_user_info(token=None):
+def token_user_info(token=None, *, verbose=DFLT_VERBOSE):
+    _clog = partial(clog, verbose)
     response = requests.get('https://api.github.com/user', headers=dflt_headers(token))
 
     if response.status_code == 200:
-        print("Token is valid.")
+        _clog("Token is valid.")
     else:
-        print(f"Failed to authenticate: {response.status_code}")
+        _clog(f"Failed to authenticate: {response.status_code}")
 
     return response.json()
 
 
-def verify_repo_access(repo_stub):
+def check_token_scopes(token=None, *, verbose=DFLT_VERBOSE):
+    """
+    Check the scopes of a GitHub token.
+    """
+    _clog = partial(clog, verbose)
+
+    url = "https://api.github.com/user"
+    headers = dflt_headers(token)
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        scopes = response.headers.get("X-OAuth-Scopes", "No scopes found")
+        _clog("Token scopes:", scopes)
+        return scopes.split(", ")
+    else:
+        _clog("Failed to retrieve token scopes. Status code:", response.status_code)
+        _clog(response.json())
+        return None
+
+
+def verify_repo_access(repo_stub, *, verbose=DFLT_VERBOSE):
+    _clog = partial(clog, verbose)
     url = f"https://api.github.com/repos/{repo_stub}"
     response = requests.get(url, headers=dflt_headers())
 
     if response.status_code == 200:
-        print(f"Access to {repo_stub} verified.")
+        _clog(f"Access to {repo_stub} verified.")
     else:
-        print(f"Failed to access {repo_stub}: {response.status_code}")
+        _clog(f"Failed to access {repo_stub}: {response.status_code}")
 
     return response.json()
 
 
-def branch_exists(repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_headers):
+def branch_exists(
+    repo_stub: str,
+    branch: str,
+    *,
+    headers: HeadersSpec = dflt_headers,
+    verbose=DFLT_VERBOSE,
+):
     """
     Check if a branch exists in a repo.
 
@@ -113,13 +152,15 @@ def branch_exists(repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_he
     :param branch: The branch name to check for.
     :param headers: A function that returns a dictionary of headers
     """
+    _clog = partial(clog, verbose)
+
     url = f"https://api.github.com/repos/{repo_stub}/branches/{branch}"
     response = requests.get(url, headers=_get_obj(headers))
     if response.status_code == 200:
         return True
     else:
-        print(
-            f"repo_stub {branch} branch doesn't exist: {response.status_code}, {response.content=}"
+        _clog(
+            f"{repo_stub} {branch} branch doesn't exist: {response.status_code}, {response.content=}"
         )
         return False
 
@@ -129,7 +170,9 @@ def configure_github_pages(
     *,
     target_branch=DFLT_DOCS_BRANCH,
     folder=DFLT_DOCS_FOLDER,
+    ensure_branch_exists=True,
     headers: HeadersSpec = dflt_headers,
+    verbose=DFLT_VERBOSE,
 ):
     """
     Configure or update GitHub Pages for a repo.
@@ -139,13 +182,21 @@ def configure_github_pages(
     >>> configure_github_pages('i2mint/epythet')  # doctest: +SKIP
 
     """
+    _clog = partial(clog, verbose)
+
     headers = _get_obj(headers)
 
     if not branch_exists(repo_stub, target_branch, headers=headers):
-        print(
-            f"---> {repo_stub} Branch {target_branch} does not exist. Please create the branch first."
-        )
-        return f"https://github.com/{repo_stub}/branches/all"
+        if ensure_branch_exists:
+            ensure_branch(repo_stub=repo_stub, branch=target_branch, headers=headers)
+        else:
+            _clog(
+                f"---> {repo_stub} Branch {target_branch} does not exist. "
+                "Please create the branch first. You can do so manually, or using the "
+                "ensure_branch_exists=True option in configure_github_pages, or the "
+                "ensure_branch function."
+            )
+            return f"https://github.com/{repo_stub}/branches/all"
 
     url = f"https://api.github.com/repos/{repo_stub}/pages"
     data = {"source": {"branch": target_branch, "path": folder}}
@@ -153,13 +204,134 @@ def configure_github_pages(
     response = requests.put(url, headers=headers, json=data)
 
     if response.status_code == 204:
-        print(f"{repo_stub} GitHub Pages has been successfully updated.")
+        _clog(f"{repo_stub} GitHub Pages has been successfully updated.")
     elif response.status_code == 201:
-        print(f"{repo_stub} GitHub Pages has been successfully configured.")
+        _clog(f"{repo_stub} GitHub Pages has been successfully configured.")
     else:
-        print(f"{repo_stub} Failed to configure GitHub Pages: {response.status_code}")
-        print(response.json())
+        _clog(f"{repo_stub} Failed to configure GitHub Pages: {response.status_code}")
+        _clog(response.json())
         return response
+
+
+# # TODO: Same as configure_github_pages
+# def set_github_pages_source(
+#     repo_stub: str,
+#     *,
+#     target_branch: str = DFLT_DOCS_BRANCH,
+#     path: str,
+#     headers: HeadersSpec = dflt_headers,
+# ) -> dict:
+#     """
+#     Configures the GitHub Pages source branch and directory for the given repository.
+
+#     Parameters:
+#         repo_stub (str): Owner and name of the GitHub repository, e.g., 'owner/repo'.
+#         target_branch (str): Branch for GitHub Pages to use.
+#         path (str): Path within the branch to serve GitHub Pages from, either '/' or '/docs'.
+#         headers (dict): Headers for authentication, e.g., {'Authorization': 'Bearer <token>'}.
+
+#     Returns:
+#         dict: Response from GitHub API as a dictionary.
+#     """
+#     url = f"https://api.github.com/repos/{repo_stub}/pages"
+#     data = {"source": {"branch": target_branch, "path": path}}
+#     headers = _get_obj(headers)
+
+#     response = requests.put(url, headers=headers, json=data)
+#     response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
+#     return response.json()
+
+
+def ensure_branch(
+    repo_stub: str,
+    *,
+    branch: str,
+    commit_sha: str = None,
+    headers: HeadersSpec = dflt_headers,
+    verbose=DFLT_VERBOSE,
+) -> dict:
+    """
+    Ensures a branch exists. Does nothing if it already does, and creates it if not.
+
+    Parameters:
+        repo_stub (str): Owner and name of the GitHub repository, e.g., 'owner/repo'.
+        branch (str): Name of the branch to be created if it doesn't exist
+        commit_sha (str): Commit SHA to base the new branch on. By default,
+            it's the SHA of the most recent commit of the default branch.
+        headers (dict): Headers for authentication, e.g., {'Authorization': 'Bearer <token>'}.
+
+    Returns:
+        dict: Response from GitHub API as a dictionary.
+    """
+    _clog = partial(clog, verbose)
+
+    if branch_exists(repo_stub, branch):
+        _clog(f"{repo_stub} Branch {branch} already exists.")
+        return
+
+    url = f"https://api.github.com/repos/{repo_stub}/git/refs"
+
+    if commit_sha is None:
+        commit_sha = default_branch_and_commit_sha(repo_stub, headers=headers)['commit_sha']
+
+    data = {"ref": f"refs/heads/{branch}", "sha": commit_sha}
+
+    headers = _get_obj(headers)
+
+    response = requests.post(url, headers=headers, json=data)
+    response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
+    _clog(f"{repo_stub} Branch {branch} has been successfully created.")
+    return response.json()
+
+
+def repo_data(repo_stub: str, *, headers: HeadersSpec = dflt_headers) -> dict:
+    """
+    Retrieves data about a GitHub repository.
+    """
+    url = f"https://api.github.com/repos/{repo_stub}"
+
+    headers = _get_obj(headers)
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()  # Raise error if the request was unsuccessful
+
+    return response.json()
+
+
+def commit_data(
+    repo_stub: str, branch: str, *, headers: HeadersSpec = dflt_headers
+) -> dict:
+    """
+    Retrieves data about the latest commit on a branch of a GitHub repository.
+    """
+    # Get the SHA for the latest commit on the default branch
+    headers = _get_obj(headers)
+
+    commit_url = f"https://api.github.com/repos/{repo_stub}/git/refs/heads/{branch}"
+    commit_response = requests.get(commit_url, headers=headers)
+    commit_response.raise_for_status()
+    return commit_response.json()
+
+
+def default_branch_and_commit_sha(
+    repo_stub: str, *, headers: HeadersSpec = dflt_headers
+) -> dict:
+    """
+    Retrieves the default branch and current commit SHA for a given GitHub repository.
+
+    Parameters:
+        repo_stub (str): The GitHub repository in "owner/repo" format.
+        headers (dict): Headers for authentication, e.g., {'Authorization': 'Bearer <token>'}.
+
+    Returns:
+        dict: A dictionary containing 'default_branch' and 'commit_sha'.
+    """
+    _repo_data = repo_data(repo_stub, headers=headers)
+    default_branch = _repo_data['default_branch']
+
+    _commit_data = commit_data(repo_stub, branch=default_branch, headers=headers)
+    commit_sha = _commit_data['object']['sha']
+
+    return {"default_branch": default_branch, "commit_sha": commit_sha}
 
 
 RepoStubs = Iterable[str]
