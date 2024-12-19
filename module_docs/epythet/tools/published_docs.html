@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
@@ -6,23 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>epythet.tools.published_docs &mdash; epythet 0.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
-        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
-        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -62,9 +60,15 @@
 <li class="toctree-l1"><a class="reference internal" href="docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.tools.published_docs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.branch_exists"><code class="docutils literal notranslate"><span class="pre">branch_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.check_token_scopes"><code class="docutils literal notranslate"><span class="pre">check_token_scopes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.commit_data"><code class="docutils literal notranslate"><span class="pre">commit_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.configure_github_pages"><code class="docutils literal notranslate"><span class="pre">configure_github_pages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.configure_github_pages_for_repo_stubs"><code class="docutils literal notranslate"><span class="pre">configure_github_pages_for_repo_stubs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.default_branch_and_commit_sha"><code class="docutils literal notranslate"><span class="pre">default_branch_and_commit_sha()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.ensure_branch"><code class="docutils literal notranslate"><span class="pre">ensure_branch()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.github_org_and_repo"><code class="docutils literal notranslate"><span class="pre">github_org_and_repo()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.published_doc_diagnosis_df"><code class="docutils literal notranslate"><span class="pre">published_doc_diagnosis_df()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_data"><code class="docutils literal notranslate"><span class="pre">repo_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_url_to_docs_url"><code class="docutils literal notranslate"><span class="pre">repo_url_to_docs_url()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_url_to_repo_docs_url"><code class="docutils literal notranslate"><span class="pre">repo_url_to_repo_docs_url()</span></code></a></li>
 </ul>
@@ -112,7 +116,7 @@
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.branch_exists">
-<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">branch_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#branch_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.branch_exists" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">branch_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#branch_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.branch_exists" title="Link to this definition"></a></dt>
 <dd><p>Check if a branch exists in a repo.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -126,13 +130,79 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.check_token_scopes">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">check_token_scopes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#check_token_scopes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.check_token_scopes" title="Link to this definition"></a></dt>
+<dd><p>Check the scopes of a GitHub token.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.commit_data">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">commit_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#commit_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.commit_data" title="Link to this definition"></a></dt>
+<dd><p>Retrieves data about the latest commit on a branch of a GitHub repository.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.configure_github_pages">
-<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">configure_github_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch='gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder='/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#configure_github_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.configure_github_pages" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">configure_github_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_branch='gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder='/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_branch_exists=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#configure_github_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.configure_github_pages" title="Link to this definition"></a></dt>
 <dd><p>Configure or update GitHub Pages for a repo.</p>
 <p>Example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">configure_github_pages</span><span class="p">(</span><span class="s1">&#39;i2mint/epythet&#39;</span><span class="p">)</span>  
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.configure_github_pages_for_repo_stubs">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">configure_github_pages_for_repo_stubs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stubs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#configure_github_pages_for_repo_stubs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.configure_github_pages_for_repo_stubs" title="Link to this definition"></a></dt>
+<dd><p>Configure Pages for an iterable of repo stubs, or all repos in an organization.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repo_pages_status</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">configure_github_pages_for_stubs</span><span class="p">(</span><span class="s1">&#39;i2mint&#39;</span><span class="p">)</span>  
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.default_branch_and_commit_sha">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">default_branch_and_commit_sha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#default_branch_and_commit_sha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.default_branch_and_commit_sha" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the default branch and current commit SHA for a given GitHub repository.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo_stub</strong> (<em>str</em>) – The GitHub repository in “owner/repo” format.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer &lt;token&gt;’}.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing ‘default_branch’ and ‘commit_sha’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.ensure_branch">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">ensure_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit_sha:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#ensure_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.ensure_branch" title="Link to this definition"></a></dt>
+<dd><p>Ensures a branch exists. Does nothing if it already does, and creates it if not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo_stub</strong> (<em>str</em>) – Owner and name of the GitHub repository, e.g., ‘owner/repo’.</p></li>
+<li><p><strong>branch</strong> (<em>str</em>) – Name of the branch to be created if it doesn’t exist</p></li>
+<li><p><strong>commit_sha</strong> (<em>str</em>) – Commit SHA to base the new branch on. By default,
+it’s the SHA of the most recent commit of the default branch.</p></li>
+<li><p><strong>headers</strong> (<em>dict</em>) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer &lt;token&gt;’}.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response from GitHub API as a dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -162,6 +232,12 @@ a csv where this table can be downloaded from.</p></li>
 <dd class="field-even"><p>A dataframe with the diagnosis</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.repo_data">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">repo_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#repo_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.repo_data" title="Link to this definition"></a></dt>
+<dd><p>Retrieves data about a GitHub repository.</p>
 </dd></dl>
 
 <dl class="py function">
