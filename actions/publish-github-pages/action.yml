@@ -3,6 +3,10 @@ name: "publish github pages"
 description: "Generate Epythet documentation and push to github pages branch"
 
 inputs:
+  ignore:
+    description: "skip file in documentation generation, if path contains any ignore strings"
+    required: false
+
   github-token:
     description: GITHUB_TOKEN
     required: true
@@ -45,7 +49,7 @@ runs:
       shell: bash
 
     - name: Generate Documentation
-      run: epythet quickstart .
+      run: epythet quickstart . --ignore ${{ inputs.ignore }}
       shell: bash
 
     - name: Deploy GitHub Pages
