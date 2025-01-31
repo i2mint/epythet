@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>epythet.setup_docsrc &mdash; epythet 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -86,13 +86,13 @@
   <h1>Source code for epythet.setup_docsrc</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Docstring makers&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">from</span> <span class="nn">epythet</span> <span class="kn">import</span> <span class="n">_STATIC_FILES</span>
-<span class="kn">from</span> <span class="nn">epythet.config_parser</span> <span class="kn">import</span> <span class="n">parse_config</span>
-<span class="kn">from</span> <span class="nn">epythet.templates</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet</span><span class="w"> </span><span class="kn">import</span> <span class="n">_STATIC_FILES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.templates</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">master_file_t</span><span class="p">,</span>
     <span class="n">master_file_title_t</span><span class="p">,</span>
     <span class="n">RstTitle</span><span class="p">,</span>
@@ -101,7 +101,7 @@
 
 <div class="viewcode-block" id="make_master_file">
 <a class="viewcode-back" href="../../module_docs/epythet/setup_docsrc.html#epythet.setup_docsrc.make_master_file">[docs]</a>
-<span class="k">def</span> <span class="nf">make_master_file</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_master_file</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make index.rst in docsrc_dir using template master_file_t</span>
 
 <span class="sd">    :param docsrc_dir:</span>
@@ -117,7 +117,7 @@
 
 <div class="viewcode-block" id="make_docsrc">
 <a class="viewcode-back" href="../../module_docs/epythet/setup_docsrc.html#epythet.setup_docsrc.make_docsrc">[docs]</a>
-<span class="k">def</span> <span class="nf">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make source folder for documentation based on setup.cfg metadata</span>
 
 <span class="sd">    :param project_dir: Path to root project directory containing setup.cfg</span>
@@ -146,7 +146,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">argh</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">argh</span>
 
     <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_command</span><span class="p">(</span><span class="n">make_docsrc</span><span class="p">)</span>
 </pre></div>

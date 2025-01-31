@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>epythet.tools &mdash; epythet 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -98,7 +98,7 @@
 </pre></div>
 </div>
 <p>If you have tec (pip install tec) installed, you can even input a module object:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">epythet</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">epythet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">number_of_problems</span> <span class="o">=</span> <span class="n">repair_package</span><span class="p">(</span><span class="n">epythet</span><span class="p">)</span>  
 <span class="go">---&gt; This is just a diagnosis: No files are being written to</span>
 <span class="go">setup_docsrc.py                           : #problems: 0</span>
@@ -158,7 +158,7 @@ It’s advised to do this, then have a look at the problems using</p>
 <p>The <cite>published_doc_diagnosis_df</cite> gets you a pandas dataframe (requires pandas to be
 installed!) that will tell you if given github <code class="docutils literal notranslate"><span class="pre">org/repo</span></code> url(s) have published
 documentation and if a <cite>docs</cite> folder even exists (in master branch):</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">epythet.tools</span> <span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">)</span>  
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>

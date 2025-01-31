@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>epythet.tools.docstring_diagnosis &mdash; epythet 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
@@ -150,9 +150,9 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span>
 
 <span class="n">Source</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
 
@@ -160,7 +160,7 @@
 <span class="n">beginning_of_doctest</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*&gt;&gt;&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">match</span>
 
 
-<span class="k">def</span> <span class="nf">_ensure_lines</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_lines</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
@@ -169,7 +169,7 @@
 <span class="c1"># Pattern: BufferStats and append_output_to_input (in lined)</span>
 <div class="viewcode-block" id="tag_doctest_blocks_not_preceeded_by_new_lines_alt_2">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines_alt_2">[docs]</a>
-<span class="k">def</span> <span class="nf">tag_doctest_blocks_not_preceeded_by_new_lines_alt_2</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tag_doctest_blocks_not_preceeded_by_new_lines_alt_2</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yields (line, True/False) pairs. True when line is a &gt;&gt;&gt; without newlines before,</span>
 
 <span class="sd">    A code block is defined by a line that starts with `&gt;&gt;&gt;` (except for optional spaces</span>
@@ -183,7 +183,7 @@
 
 <div class="viewcode-block" id="binary_transition">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.binary_transition">[docs]</a>
-<span class="k">def</span> <span class="nf">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">binary_transition</span><span class="p">(</span><span class="n">transitions</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Binary state machine transition computation. Computes next state.</span>
 
 <span class="sd">    :param transitions: Transition &quot;matrix&quot;, in the form of:</span>
@@ -212,12 +212,12 @@
 
 
 <span class="c1"># TODO: Pattern: lined</span>
-<span class="k">def</span> <span class="nf">_filepath_to_string</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_filepath_to_string</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_guess_src_kind</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_guess_src_kind</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;filepath&#39;</span>
@@ -244,7 +244,7 @@
 <span class="n">_src_kinds</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;filepath&#39;</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;lines&#39;</span><span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">_get_source</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">target_kind</span><span class="p">,</span> <span class="n">src_kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_source</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">target_kind</span><span class="p">,</span> <span class="n">src_kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">src_kind</span> <span class="o">=</span> <span class="n">src_kind</span> <span class="ow">or</span> <span class="n">_guess_src_kind</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">target_kind</span> <span class="o">==</span> <span class="n">src_kind</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">src</span>
@@ -258,7 +258,7 @@
 <span class="c1"># Pattern: BufferStats and append_output_to_input (in lined)</span>
 <div class="viewcode-block" id="tag_doctest_blocks_not_preceeded_by_new_lines">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines">[docs]</a>
-<span class="k">def</span> <span class="nf">tag_doctest_blocks_not_preceeded_by_new_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tag_doctest_blocks_not_preceeded_by_new_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yields (line, True/False) pairs. True when line is a &gt;&gt;&gt; without newlines before,</span>
 
 <span class="sd">    A code block is defined by a line that starts with `&gt;&gt;&gt;` (except for optional spaces</span>
@@ -270,7 +270,7 @@
 <span class="sd">    It uses three finite (binary) state machines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">line_kind</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_kind</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">beginning_of_doctest</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;code_start&#39;</span>
         <span class="k">elif</span> <span class="n">blank_line</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
@@ -298,7 +298,7 @@
 
 <div class="viewcode-block" id="diagnose_doctest_code_blocks">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.diagnose_doctest_code_blocks">[docs]</a>
-<span class="k">def</span> <span class="nf">diagnose_doctest_code_blocks</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">diagnose_doctest_code_blocks</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Yields lines the start code block and need attention,</span>
 
@@ -340,7 +340,7 @@
 
 <div class="viewcode-block" id="diagnosis_snippets">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.diagnosis_snippets">[docs]</a>
-<span class="k">def</span> <span class="nf">diagnosis_snippets</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">diagnosis_snippets</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate snippets that exhibit the problems in the src&quot;&quot;&quot;</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">_get_source</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s1">&#39;lines&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">line_num</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">diagnose_doctest_code_blocks</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
@@ -349,7 +349,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_decode_or_default</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_decode_or_default</span><span class="p">(</span>
     <span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
     <span class="n">dflt</span><span class="o">=</span><span class="s1">&#39;# --- did not manage to decode .py file bytes --- #&#39;</span><span class="p">,</span>
     <span class="n">use_cchardet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -362,16 +362,16 @@
 
 <div class="viewcode-block" id="print_diagnosis">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.print_diagnosis">[docs]</a>
-<span class="k">def</span> <span class="nf">print_diagnosis</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_diagnosis</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Source</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print diagnosis of one or several files&quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">dol</span> <span class="kn">import</span> <span class="n">filt_iter</span><span class="p">,</span> <span class="n">wrap_kvs</span><span class="p">,</span> <span class="n">KvReader</span>
-        <span class="kn">from</span> <span class="nn">dol.filesys</span> <span class="kn">import</span> <span class="n">FileBytesReader</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">dol</span><span class="w"> </span><span class="kn">import</span> <span class="n">filt_iter</span><span class="p">,</span> <span class="n">wrap_kvs</span><span class="p">,</span> <span class="n">KvReader</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">dol.filesys</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileBytesReader</span>
 
         <span class="nd">@wrap_kvs</span><span class="p">(</span><span class="n">obj_of_data</span><span class="o">=</span><span class="n">_decode_or_default</span><span class="p">)</span>
         <span class="nd">@filt_iter</span><span class="p">(</span><span class="n">filt</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.py&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;__pycache__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">class</span> <span class="nc">PyFilesReader</span><span class="p">(</span><span class="n">FileBytesReader</span><span class="p">,</span> <span class="n">KvReader</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">PyFilesReader</span><span class="p">(</span><span class="n">FileBytesReader</span><span class="p">,</span> <span class="n">KvReader</span><span class="p">):</span>
             <span class="o">...</span>
 
         <span class="n">src</span> <span class="o">=</span> <span class="n">PyFilesReader</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
@@ -390,7 +390,7 @@
 
 <div class="viewcode-block" id="lines_with_two_new_lines_before_doctests">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.lines_with_two_new_lines_before_doctests">[docs]</a>
-<span class="k">def</span> <span class="nf">lines_with_two_new_lines_before_doctests</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lines_with_two_new_lines_before_doctests</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Yields the input lines, but interleaving an empty (&#39;&#39;) line if a code block</span>
 <span class="sd">    starts with out an empty line preceeding it</span>
 
@@ -408,7 +408,7 @@
 
 <div class="viewcode-block" id="add_newlines_before_doctests_when_missing">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.add_newlines_before_doctests_when_missing">[docs]</a>
-<span class="k">def</span> <span class="nf">add_newlines_before_doctests_when_missing</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_newlines_before_doctests_when_missing</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Returns the code_string with newlines inserted before code blocks when missing./</span>
 
 <span class="sd">    A code block is defined by a line that starts with `&gt;&gt;&gt;` (except for optional spaces</span>
@@ -459,7 +459,7 @@
 
 <div class="viewcode-block" id="repair_package">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/docstring_diagnosis.html#epythet.tools.docstring_diagnosis.repair_package">[docs]</a>
-<span class="k">def</span> <span class="nf">repair_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">write_to_files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">repair_package</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">write_to_files</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Diagnose and/or repair a whole pkg (given by folder or pkg module obj,</span>
 <span class="sd">    or a store (see dol).</span>
 
@@ -469,13 +469,13 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="c1"># If pkg is not already a store</span>
-        <span class="kn">from</span> <span class="nn">dol.filesys</span> <span class="kn">import</span> <span class="n">RelPathFileStringPersister</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">dol.filesys</span><span class="w"> </span><span class="kn">import</span> <span class="n">RelPathFileStringPersister</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pkg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">pkg</span><span class="p">):</span>
             <span class="n">reader</span> <span class="o">=</span> <span class="n">RelPathFileStringPersister</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># try a more flexible store</span>
-            <span class="kn">from</span> <span class="nn">tec</span> <span class="kn">import</span> <span class="n">PyFilesReader</span>  <span class="c1"># pylint: disable=E0401</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">tec</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyFilesReader</span>  <span class="c1"># pylint: disable=E0401</span>
 
             <span class="n">reader</span> <span class="o">=</span> <span class="n">PyFilesReader</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span>
 

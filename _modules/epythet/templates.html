@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>epythet.templates &mdash; epythet 0.1.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
@@ -85,22 +85,22 @@
              
   <h1>Source code for epythet.templates</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module containing templates&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 
 <div class="viewcode-block" id="ValueStrEnum">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.ValueStrEnum">[docs]</a>
-<span class="k">class</span> <span class="nc">ValueStrEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValueStrEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Special Enum&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
 <div class="viewcode-block" id="ValueStrEnum.has_value">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.ValueStrEnum.has_value">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">has_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check of value is one of the enum values</span>
 
 <span class="sd">        :param value: string or ValueStrEnum</span>
@@ -113,7 +113,7 @@
 
 <div class="viewcode-block" id="RstTitle">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle">[docs]</a>
-<span class="k">class</span> <span class="nc">RstTitle</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RstTitle</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;RST Title convention:</span>
 
 <span class="sd">    # # with overline, for parts</span>
@@ -137,7 +137,7 @@
 <div class="viewcode-block" id="RstTitle.has_overline">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle.has_overline">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">has_overline</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_overline</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if title_type will generate a title with both over and underline</span>
 
 <span class="sd">        :param title_type: one from RstTitle enum</span>
@@ -149,7 +149,7 @@
 <div class="viewcode-block" id="RstTitle.make_title">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle.make_title">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">make_title</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_title</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate RST title</span>
 
 <span class="sd">        :param text: title text</span>
@@ -168,7 +168,7 @@
 
 <div class="viewcode-block" id="AutoDocs">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.AutoDocs">[docs]</a>
-<span class="k">class</span> <span class="nc">AutoDocs</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutoDocs</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate automodule rst and help with options&quot;&quot;&quot;</span>
 
     <span class="n">members</span> <span class="o">=</span> <span class="s1">&#39;:members:&#39;</span>
@@ -176,7 +176,7 @@
 <div class="viewcode-block" id="AutoDocs.make_automodule">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.AutoDocs.make_automodule">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">make_automodule</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_automodule</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">import_ref</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ValueStrEnum</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate automodule rst with options included</span>
