@@ -6,7 +6,7 @@ More info in the main epythet documentation page
 from typing import List
 from pathlib import Path
 
-_STATIC_FILES = Path(__file__).absolute().parent / '_static'
+_STATIC_FILES = Path(__file__).absolute().parent / "_static"
 
 from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
@@ -15,7 +15,7 @@ from epythet.call_make import make
 import argh
 
 
-@argh.arg('--ignore', nargs='*')
+@argh.arg("--ignore", nargs="*")
 def quickstart(project_dir, *, ignore: List[str] = None):
     """Quickstart will run through the three steps
 
@@ -28,15 +28,15 @@ def quickstart(project_dir, *, ignore: List[str] = None):
     """
     make_docsrc(project_dir, verbose=True)
     make_autodocs(project_dir, skip_existing=False, ignore=ignore)
-    make(project_dir, 'html')
+    make(project_dir, "html")
 
 
 argh_kwargs = {
-    'namespace': 'epythet',
-    'functions': [make_docsrc, make_autodocs, make, quickstart],
-    'namespace_kwargs': {
-        'title': 'Documentation Generator',
-        'description': 'Setup and generate Sphinx docs effortlessly',
+    "namespace": "epythet",
+    "functions": [make_docsrc, make_autodocs, make, quickstart],
+    "namespace_kwargs": {
+        "title": "Documentation Generator",
+        "description": "Setup and generate Sphinx docs effortlessly",
     },
 }
 
@@ -44,8 +44,8 @@ argh_kwargs = {
 def epythet_cli():
     import argh  # pip install argh
 
-    argh.dispatch_commands(argh_kwargs.get('functions', None))
+    argh.dispatch_commands(argh_kwargs.get("functions", None))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     epythet_cli()

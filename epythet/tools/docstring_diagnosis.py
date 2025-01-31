@@ -70,13 +70,13 @@ from typing import Iterable, Union, Mapping
 
 Source = Union[str, Iterable[str]]
 
-blank_line = re.compile(r'\s*$').match
-beginning_of_doctest = re.compile(r'\s*>>>').match
+blank_line = re.compile(r"\s*$").match
+beginning_of_doctest = re.compile(r"\s*>>>").match
 
 
 def _ensure_lines(x):
     if isinstance(x, str):
-        return x.split('\n')
+        return x.split("\n")
     return x
 
 
@@ -121,35 +121,35 @@ def binary_transition(transitions, state, symbol):
 
 # TODO: Pattern: lined
 def _filepath_to_string(filepath: str):
-    with open(filepath, 'rt') as fp:
+    with open(filepath, "rt") as fp:
         return fp.read()
 
 
 def _guess_src_kind(src):
     if isinstance(src, str):
         if os.path.isfile(src):
-            return 'filepath'
+            return "filepath"
         elif os.path.isdir(src):
             raise TypeError(
-                f'Directories are not handled here. '
-                f'Maybe you want to use print_diagnosis? --> {src=}'
+                f"Directories are not handled here. "
+                f"Maybe you want to use print_diagnosis? --> {src=}"
             )
         else:
             # don't consider it a string if it doesn't have a newline.
             # ... it might just be a misspelled file or folderp ath
-            if '\n' in src or src == '':
-                return 'string'
+            if "\n" in src or src == "":
+                return "string"
     elif isinstance(src, Iterable):
-        return 'lines'
-    raise TypeError(f'Unknown src type: {src=}')
+        return "lines"
+    raise TypeError(f"Unknown src type: {src=}")
 
 
 _src_trans = {
-    ('filepath', 'string'): _filepath_to_string,
-    ('string', 'lines'): lambda x: x.split('\n'),
-    ('filepath', 'lines'): lambda x: _filepath_to_string(x).split('\n'),
+    ("filepath", "string"): _filepath_to_string,
+    ("string", "lines"): lambda x: x.split("\n"),
+    ("filepath", "lines"): lambda x: _filepath_to_string(x).split("\n"),
 }
-_src_kinds = {'filepath', 'string', 'lines'}
+_src_kinds = {"filepath", "string", "lines"}
 
 
 def _get_source(src, target_kind, src_kind=None):
@@ -178,17 +178,17 @@ def tag_doctest_blocks_not_preceeded_by_new_lines(lines):
 
     def line_kind(line):
         if beginning_of_doctest(line):
-            return 'code_start'
+            return "code_start"
         elif blank_line(line):
-            return 'blank_line'
+            return "blank_line"
         else:
-            return 'normal_line'
+            return "normal_line"
 
-    code_transitions = {True: {'blank_line'}, False: {'code_start'}}
+    code_transitions = {True: {"blank_line"}, False: {"code_start"}}
 
     previous_normal_transitions = {
-        True: {'blank_line', 'code_start'},
-        False: {'normal_line'},
+        True: {"blank_line", "code_start"},
+        False: {"normal_line"},
     }
 
     code, prev_normal, prev_code = False, False, False
@@ -232,7 +232,7 @@ def diagnose_doctest_code_blocks(src: Source):
     [(3, '    >>> like_this'), (10, '    >>> this_doctest_is_too_close_to_text')]
 
     """
-    lines = _get_source(src, 'lines')
+    lines = _get_source(src, "lines")
     for line_num, (line, needs_attention) in enumerate(
         tag_doctest_blocks_not_preceeded_by_new_lines(lines), 1
     ):
@@ -242,15 +242,15 @@ def diagnose_doctest_code_blocks(src: Source):
 
 def diagnosis_snippets(src: Source) -> Iterable[str]:
     """Generate snippets that exhibit the problems in the src"""
-    lines = _get_source(src, 'lines')
+    lines = _get_source(src, "lines")
     for line_num, _ in diagnose_doctest_code_blocks(lines):
         line_idx = line_num - 1  # because line_nums start with 1, and idx with 0
-        yield '\n'.join(lines[max(0, line_idx - 1) : (line_idx + 2)])
+        yield "\n".join(lines[max(0, line_idx - 1) : (line_idx + 2)])
 
 
 def _decode_or_default(
     b: bytes,
-    dflt='# --- did not manage to decode .py file bytes --- #',
+    dflt="# --- did not manage to decode .py file bytes --- #",
     use_cchardet=True,
 ):
     try:
@@ -267,9 +267,8 @@ def print_diagnosis(src: Source):
         from dol.filesys import FileBytesReader
 
         @wrap_kvs(obj_of_data=_decode_or_default)
-        @filt_iter(filt=lambda k: k.endswith('.py') and '__pycache__' not in k)
-        class PyFilesReader(FileBytesReader, KvReader):
-            ...
+        @filt_iter(filt=lambda k: k.endswith(".py") and "__pycache__" not in k)
+        class PyFilesReader(FileBytesReader, KvReader): ...
 
         src = PyFilesReader(src)
 
@@ -278,10 +277,13 @@ def print_diagnosis(src: Source):
             snippets = list(diagnosis_snippets(string_contents))
             if snippets:
                 print(
-                    f'----------- {k} -----------', '\n', '\n'.join(snippets), '\n\n',
+                    f"----------- {k} -----------",
+                    "\n",
+                    "\n".join(snippets),
+                    "\n\n",
                 )
     else:
-        print('\n'.join(diagnosis_snippets(src)))
+        print("\n".join(diagnosis_snippets(src)))
 
 
 def lines_with_two_new_lines_before_doctests(lines: Iterable[str]):
@@ -293,7 +295,7 @@ def lines_with_two_new_lines_before_doctests(lines: Iterable[str]):
     """
     for line, needs_attention in tag_doctest_blocks_not_preceeded_by_new_lines(lines):
         if needs_attention:
-            yield ''
+            yield ""
             yield line
         else:
             yield line
@@ -343,8 +345,8 @@ def add_newlines_before_doctests_when_missing(src: str):
 
 
     """
-    lines = _get_source(src, 'lines')
-    return '\n'.join(lines_with_two_new_lines_before_doctests(lines))
+    lines = _get_source(src, "lines")
+    return "\n".join(lines_with_two_new_lines_before_doctests(lines))
 
 
 def repair_package(pkg, write_to_files=False):
@@ -373,14 +375,14 @@ def repair_package(pkg, write_to_files=False):
         writer = pkg
 
     if not write_to_files:
-        print('---> This is just a diagnosis: No files are being written to')
+        print("---> This is just a diagnosis: No files are being written to")
 
     num_of_problems = 0
 
     for k, v in reader.items():
         problems = list(diagnose_doctest_code_blocks(v))
         num_of_problems += len(problems)
-        print(f'{k:<42s}: #problems: {len(problems)}')
+        print(f"{k:<42s}: #problems: {len(problems)}")
         if problems and write_to_files:
             writer[k] = add_newlines_before_doctests_when_missing(reader[k])
 

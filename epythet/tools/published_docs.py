@@ -28,8 +28,8 @@ Headers = dict
 HeadersFunc = Callable[[], Headers]
 HeadersSpec = Union[Headers, HeadersFunc]
 
-github_url_p = re.compile(r'https?://github.com/(?P<org>[^/]+)/(?P<repo>[^/]+).*?')
-github_root_url_p = re.compile(r'^https?://github.com/[^/]+/[^/]+/?$')
+github_url_p = re.compile(r"https?://github.com/(?P<org>[^/]+)/(?P<repo>[^/]+).*?")
+github_root_url_p = re.compile(r"^https?://github.com/[^/]+/[^/]+/?$")
 
 # -----------------------------------------------------------------------------------
 # gh-pages
@@ -41,14 +41,14 @@ import requests
 import os
 from warnings import warn
 
-DFLT_DOCS_BRANCH = 'gh-pages'
-DFLT_DOCS_FOLDER = '/'
+DFLT_DOCS_BRANCH = "gh-pages"
+DFLT_DOCS_FOLDER = "/"
 DFLT_VERBOSE = True
 
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 HEADERS = {
-    'Authorization': f'token {GITHUB_TOKEN}',
-    'Accept': 'application/vnd.github.v3+json',
+    "Authorization": f"token {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github.v3+json",
 }
 
 
@@ -57,7 +57,7 @@ def clog(condition, *args, **kwargs):
         print(*args, **kwargs)
 
 
-def github_token(env_var='GITHUB_TOKEN'):
+def github_token(env_var="GITHUB_TOKEN"):
     token = os.getenv(env_var)
     if token is None:
         raise ValueError(
@@ -70,8 +70,8 @@ def dflt_headers(token=None):
     if token is None:
         token = github_token()
     return {
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json',
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
     }
 
 
@@ -95,7 +95,7 @@ def _get_obj(obj_spec):
 
 def token_user_info(token=None, *, verbose=DFLT_VERBOSE):
     _clog = partial(clog, verbose)
-    response = requests.get('https://api.github.com/user', headers=dflt_headers(token))
+    response = requests.get("https://api.github.com/user", headers=dflt_headers(token))
 
     if response.status_code == 200:
         _clog("Token is valid.")
@@ -114,7 +114,7 @@ def check_token_scopes(token=None, *, verbose=DFLT_VERBOSE):
     url = "https://api.github.com/user"
     headers = dflt_headers(token)
     response = requests.get(url, headers=headers)
-    
+
     if response.status_code == 200:
         scopes = response.headers.get("X-OAuth-Scopes", "No scopes found")
         _clog("Token scopes:", scopes)
@@ -272,7 +272,9 @@ def ensure_branch(
     url = f"https://api.github.com/repos/{repo_stub}/git/refs"
 
     if commit_sha is None:
-        commit_sha = default_branch_and_commit_sha(repo_stub, headers=headers)['commit_sha']
+        commit_sha = default_branch_and_commit_sha(repo_stub, headers=headers)[
+            "commit_sha"
+        ]
 
     data = {"ref": f"refs/heads/{branch}", "sha": commit_sha}
 
@@ -326,10 +328,10 @@ def default_branch_and_commit_sha(
         dict: A dictionary containing 'default_branch' and 'commit_sha'.
     """
     _repo_data = repo_data(repo_stub, headers=headers)
-    default_branch = _repo_data['default_branch']
+    default_branch = _repo_data["default_branch"]
 
     _commit_data = commit_data(repo_stub, branch=default_branch, headers=headers)
-    commit_sha = _commit_data['object']['sha']
+    commit_sha = _commit_data["object"]["sha"]
 
     return {"default_branch": default_branch, "commit_sha": commit_sha}
 
@@ -369,13 +371,13 @@ def configure_github_pages_for_repo_stubs(repo_stubs: Union[RepoStubs, Org]):
 
 # TODO: Make the following particulars controllable from outside module
 DFLT_URL_TABLE_SOURCE = (
-    'https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv'
+    "https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv"
 )
-docs_url_template = 'https://{org}.github.io/{repo}'
-repo_docs_url_template = 'https://github.com/{org}/{repo}/tree/master/docs'
+docs_url_template = "https://{org}.github.io/{repo}"
+repo_docs_url_template = "https://github.com/{org}/{repo}/tree/master/docs"
 
 
-def published_doc_diagnosis_df(urls: Table = DFLT_URL_TABLE_SOURCE, url_column='url'):
+def published_doc_diagnosis_df(urls: Table = DFLT_URL_TABLE_SOURCE, url_column="url"):
     """
     The `published_doc_diagnosis_df` gets you a pandas dataframe (requires pandas to be
     installed!) that will tell you if given github ``org/repo`` url(s) have published
@@ -388,9 +390,9 @@ def published_doc_diagnosis_df(urls: Table = DFLT_URL_TABLE_SOURCE, url_column='
 
     """
     df = _get_table(urls)
-    df['doc_page_url'] = df[url_column].apply(repo_url_to_docs_url)
-    df['doc_page_exists'] = df['doc_page_url'].apply(url_exists)
-    df['repo_has_docs_folder'] = df[url_column].apply(
+    df["doc_page_url"] = df[url_column].apply(repo_url_to_docs_url)
+    df["doc_page_exists"] = df["doc_page_url"].apply(url_exists)
+    df["repo_has_docs_folder"] = df[url_column].apply(
         lambda url: url_exists(repo_url_to_repo_docs_url(url))
     )
     return df
@@ -402,12 +404,12 @@ def _get_table(df):
     if isinstance(df, str):
         url = df
         if is_a_github_repo_root_url(url):
-            return pd.DataFrame({'url': [url]})
+            return pd.DataFrame({"url": [url]})
         else:  # consider it to be a csv source of the table listing the urls
             df = table_url_to_df(url)
     elif not isinstance(df, pd.DataFrame) and isinstance(df, Iterable):
         urls = df
-        df = pd.DataFrame({'url': urls})
+        df = pd.DataFrame({"url": urls})
     return df
 
 

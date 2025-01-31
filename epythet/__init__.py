@@ -129,7 +129,7 @@ You can add RST documentation directly in the source files.
 
 from pathlib import Path
 
-_STATIC_FILES = Path(__file__).absolute().parent / '_static'
+_STATIC_FILES = Path(__file__).absolute().parent / "_static"
 
 from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
