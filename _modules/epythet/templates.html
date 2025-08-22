@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.templates &mdash; epythet 0.1.3 documentation</title>
+  <title>epythet.templates &mdash; epythet 0.1.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=360bc84d"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=22607128"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -85,6 +85,7 @@
              
   <h1>Source code for epythet.templates</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module containing templates&quot;&quot;&quot;</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
@@ -127,11 +128,11 @@
 <span class="sd">    succession of headings. However, it is better to stick to the same convention</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">part</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span>
-    <span class="n">chapter</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
-    <span class="n">section</span> <span class="o">=</span> <span class="s1">&#39;=&#39;</span>
-    <span class="n">subsection</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
-    <span class="n">subsubsection</span> <span class="o">=</span> <span class="s1">&#39;^&#39;</span>
+    <span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
+    <span class="n">chapter</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;=&quot;</span>
+    <span class="n">subsection</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+    <span class="n">subsubsection</span> <span class="o">=</span> <span class="s2">&quot;^&quot;</span>
     <span class="n">paragraphs</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span>
 
 <div class="viewcode-block" id="RstTitle.has_overline">
@@ -158,9 +159,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">title_type</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span>
         <span class="n">_title_line</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_overline</span><span class="p">(</span><span class="n">title_type</span><span class="p">):</span>
-            <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">_title</span></div>
 </div>
 
@@ -171,7 +172,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">AutoDocs</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate automodule rst and help with options&quot;&quot;&quot;</span>
 
-    <span class="n">members</span> <span class="o">=</span> <span class="s1">&#39;:members:&#39;</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="s2">&quot;:members:&quot;</span>
 
 <div class="viewcode-block" id="AutoDocs.make_automodule">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.AutoDocs.make_automodule">[docs]</a>
@@ -186,44 +187,44 @@
 <span class="sd">        :return: rst string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">automod_doc</span> <span class="o">=</span> <span class="n">automodule_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">import_ref</span><span class="o">=</span><span class="n">import_ref</span><span class="p">)</span>
-        <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">automod_doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">automod_doc</span><span class="si">}</span><span class="s1">   </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">automod_doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">automod_doc</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">automod_doc</span></div>
 </div>
 
 
 
-<span class="n">master_file_t</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="n">master_file_t</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
 <span class="si">{rst_title}</span>
 
-<span class="s1">.. include:: ./table_of_contents.rst</span>
+<span class="s2">.. include:: ./table_of_contents.rst</span>
 
 
-<span class="s1">Indices and tables</span>
-<span class="s1">==================</span>
+<span class="s2">Indices and tables</span>
+<span class="s2">==================</span>
 
-<span class="s1">* :ref:`genindex`</span>
-<span class="s1">* :ref:`modindex`</span>
-<span class="s1">* :ref:`search`</span>
+<span class="s2">* :ref:`genindex`</span>
+<span class="s2">* :ref:`modindex`</span>
+<span class="s2">* :ref:`search`</span>
 
 
-<span class="s1">Release: |release|</span>
+<span class="s2">Release: |release|</span>
 
-<span class="s1">Last change: |today|</span>
-<span class="s1">&#39;&#39;&#39;</span>
+<span class="s2">Last change: |today|</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
 <span class="n">master_file_title_t</span> <span class="o">=</span> <span class="s2">&quot;Welcome to </span><span class="si">{display_name}</span><span class="s2">&#39;s documentation!&quot;</span>
 
-<span class="n">table_of_contents_header</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
-<span class="s1">.. toctree::</span>
-<span class="s1">   :maxdepth: 2</span>
-<span class="s1">   :caption: Contents:</span>
+<span class="n">table_of_contents_header</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">.. toctree::</span>
+<span class="s2">   :maxdepth: 2</span>
+<span class="s2">   :caption: Contents:</span>
 
-<span class="s1">&#39;&#39;&#39;</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">automodule_t</span> <span class="o">=</span> <span class="s1">&#39;.. automodule:: </span><span class="si">{import_ref}</span><span class="s1">&#39;</span>
+<span class="n">automodule_t</span> <span class="o">=</span> <span class="s2">&quot;.. automodule:: </span><span class="si">{import_ref}</span><span class="s2">&quot;</span>
 </pre></div>
 
            </div>

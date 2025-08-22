@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools.published_docs &mdash; epythet 0.1.3 documentation</title>
+  <title>epythet.tools.published_docs &mdash; epythet 0.1.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=360bc84d"></script>
-      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/documentation_options.js?v=22607128"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,8 +114,8 @@
 <span class="n">HeadersFunc</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Headers</span><span class="p">]</span>
 <span class="n">HeadersSpec</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Headers</span><span class="p">,</span> <span class="n">HeadersFunc</span><span class="p">]</span>
 
-<span class="n">github_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;https?://github.com/(?P&lt;org&gt;[^/]+)/(?P&lt;repo&gt;[^/]+).*?&#39;</span><span class="p">)</span>
-<span class="n">github_root_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^https?://github.com/[^/]+/[^/]+/?$&#39;</span><span class="p">)</span>
+<span class="n">github_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;https?://github.com/(?P&lt;org&gt;[^/]+)/(?P&lt;repo&gt;[^/]+).*?&quot;</span><span class="p">)</span>
+<span class="n">github_root_url_p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^https?://github.com/[^/]+/[^/]+/?$&quot;</span><span class="p">)</span>
 
 <span class="c1"># -----------------------------------------------------------------------------------</span>
 <span class="c1"># gh-pages</span>
@@ -127,14 +127,14 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 
-<span class="n">DFLT_DOCS_BRANCH</span> <span class="o">=</span> <span class="s1">&#39;gh-pages&#39;</span>
-<span class="n">DFLT_DOCS_FOLDER</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+<span class="n">DFLT_DOCS_BRANCH</span> <span class="o">=</span> <span class="s2">&quot;gh-pages&quot;</span>
+<span class="n">DFLT_DOCS_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
 <span class="n">DFLT_VERBOSE</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="n">GITHUB_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;GITHUB_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">GITHUB_TOKEN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GITHUB_TOKEN&quot;</span><span class="p">)</span>
 <span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">GITHUB_TOKEN</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/vnd.github.v3+json&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;token </span><span class="si">{</span><span class="n">GITHUB_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.github.v3+json&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -143,7 +143,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">github_token</span><span class="p">(</span><span class="n">env_var</span><span class="o">=</span><span class="s1">&#39;GITHUB_TOKEN&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">github_token</span><span class="p">(</span><span class="n">env_var</span><span class="o">=</span><span class="s2">&quot;GITHUB_TOKEN&quot;</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">env_var</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -156,8 +156,8 @@
     <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">token</span> <span class="o">=</span> <span class="n">github_token</span><span class="p">()</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/vnd.github.v3+json&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.github.v3+json&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
 
@@ -181,7 +181,7 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">token_user_info</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">DFLT_VERBOSE</span><span class="p">):</span>
     <span class="n">_clog</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">clog</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.github.com/user&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">dflt_headers</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://api.github.com/user&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">dflt_headers</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
         <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;Token is valid.&quot;</span><span class="p">)</span>
@@ -202,7 +202,7 @@
     <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.github.com/user&quot;</span>
     <span class="n">headers</span> <span class="o">=</span> <span class="n">dflt_headers</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
         <span class="n">scopes</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;X-OAuth-Scopes&quot;</span><span class="p">,</span> <span class="s2">&quot;No scopes found&quot;</span><span class="p">)</span>
         <span class="n">_clog</span><span class="p">(</span><span class="s2">&quot;Token scopes:&quot;</span><span class="p">,</span> <span class="n">scopes</span><span class="p">)</span>
@@ -369,7 +369,9 @@
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/git/refs&quot;</span>
 
     <span class="k">if</span> <span class="n">commit_sha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">commit_sha</span> <span class="o">=</span> <span class="n">default_branch_and_commit_sha</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)[</span><span class="s1">&#39;commit_sha&#39;</span><span class="p">]</span>
+        <span class="n">commit_sha</span> <span class="o">=</span> <span class="n">default_branch_and_commit_sha</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)[</span>
+            <span class="s2">&quot;commit_sha&quot;</span>
+        <span class="p">]</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ref&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;refs/heads/</span><span class="si">{</span><span class="n">branch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;sha&quot;</span><span class="p">:</span> <span class="n">commit_sha</span><span class="p">}</span>
 
@@ -432,10 +434,10 @@
 <span class="sd">        dict: A dictionary containing &#39;default_branch&#39; and &#39;commit_sha&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_repo_data</span> <span class="o">=</span> <span class="n">repo_data</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    <span class="n">default_branch</span> <span class="o">=</span> <span class="n">_repo_data</span><span class="p">[</span><span class="s1">&#39;default_branch&#39;</span><span class="p">]</span>
+    <span class="n">default_branch</span> <span class="o">=</span> <span class="n">_repo_data</span><span class="p">[</span><span class="s2">&quot;default_branch&quot;</span><span class="p">]</span>
 
     <span class="n">_commit_data</span> <span class="o">=</span> <span class="n">commit_data</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="n">default_branch</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    <span class="n">commit_sha</span> <span class="o">=</span> <span class="n">_commit_data</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">][</span><span class="s1">&#39;sha&#39;</span><span class="p">]</span>
+    <span class="n">commit_sha</span> <span class="o">=</span> <span class="n">_commit_data</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">][</span><span class="s2">&quot;sha&quot;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;default_branch&quot;</span><span class="p">:</span> <span class="n">default_branch</span><span class="p">,</span> <span class="s2">&quot;commit_sha&quot;</span><span class="p">:</span> <span class="n">commit_sha</span><span class="p">}</span></div>
 
@@ -479,15 +481,15 @@
 
 <span class="c1"># TODO: Make the following particulars controllable from outside module</span>
 <span class="n">DFLT_URL_TABLE_SOURCE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s1">&#39;https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv&#39;</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv&quot;</span>
 <span class="p">)</span>
-<span class="n">docs_url_template</span> <span class="o">=</span> <span class="s1">&#39;https://</span><span class="si">{org}</span><span class="s1">.github.io/</span><span class="si">{repo}</span><span class="s1">&#39;</span>
-<span class="n">repo_docs_url_template</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/</span><span class="si">{org}</span><span class="s1">/</span><span class="si">{repo}</span><span class="s1">/tree/master/docs&#39;</span>
+<span class="n">docs_url_template</span> <span class="o">=</span> <span class="s2">&quot;https://</span><span class="si">{org}</span><span class="s2">.github.io/</span><span class="si">{repo}</span><span class="s2">&quot;</span>
+<span class="n">repo_docs_url_template</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/</span><span class="si">{org}</span><span class="s2">/</span><span class="si">{repo}</span><span class="s2">/tree/master/docs&quot;</span>
 
 
 <div class="viewcode-block" id="published_doc_diagnosis_df">
 <a class="viewcode-back" href="../../../module_docs/epythet/tools/published_docs.html#epythet.tools.published_docs.published_doc_diagnosis_df">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">published_doc_diagnosis_df</span><span class="p">(</span><span class="n">urls</span><span class="p">:</span> <span class="n">Table</span> <span class="o">=</span> <span class="n">DFLT_URL_TABLE_SOURCE</span><span class="p">,</span> <span class="n">url_column</span><span class="o">=</span><span class="s1">&#39;url&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">published_doc_diagnosis_df</span><span class="p">(</span><span class="n">urls</span><span class="p">:</span> <span class="n">Table</span> <span class="o">=</span> <span class="n">DFLT_URL_TABLE_SOURCE</span><span class="p">,</span> <span class="n">url_column</span><span class="o">=</span><span class="s2">&quot;url&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The `published_doc_diagnosis_df` gets you a pandas dataframe (requires pandas to be</span>
 <span class="sd">    installed!) that will tell you if given github ``org/repo`` url(s) have published</span>
@@ -500,9 +502,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">_get_table</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">repo_url_to_docs_url</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_exists&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;doc_page_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">url_exists</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;repo_has_docs_folder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">repo_url_to_docs_url</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_exists&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">url_exists</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;repo_has_docs_folder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">url</span><span class="p">:</span> <span class="n">url_exists</span><span class="p">(</span><span class="n">repo_url_to_repo_docs_url</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
@@ -515,12 +517,12 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">df</span>
         <span class="k">if</span> <span class="n">is_a_github_repo_root_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">url</span><span class="p">]})</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">url</span><span class="p">]})</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># consider it to be a csv source of the table listing the urls</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">table_url_to_df</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
         <span class="n">urls</span> <span class="o">=</span> <span class="n">df</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">urls</span><span class="p">})</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">urls</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">df</span>
 
 

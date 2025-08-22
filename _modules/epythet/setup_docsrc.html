@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.setup_docsrc &mdash; epythet 0.1.3 documentation</title>
+  <title>epythet.setup_docsrc &mdash; epythet 0.1.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=360bc84d"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=22607128"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -107,7 +107,7 @@
 <span class="sd">    :param docsrc_dir:</span>
 <span class="sd">    :param title:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">master_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;index.rst&#39;</span>
+    <span class="n">master_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;index.rst&quot;</span>
     <span class="n">master_contents</span> <span class="o">=</span> <span class="n">master_file_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">rst_title</span><span class="o">=</span><span class="n">RstTitle</span><span class="o">.</span><span class="n">make_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">RstTitle</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
     <span class="p">)</span>
@@ -124,28 +124,28 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># copy _static/docsrc files to project_dir/docsrc</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Making and populating a docsrc directory (for documentation)&#39;</span><span class="p">)</span>
-    <span class="n">docsrc_src</span> <span class="o">=</span> <span class="n">_STATIC_FILES</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making and populating a docsrc directory (for documentation)&quot;</span><span class="p">)</span>
+    <span class="n">docsrc_src</span> <span class="o">=</span> <span class="n">_STATIC_FILES</span> <span class="o">/</span> <span class="s2">&quot;docsrc&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">docsrc_src</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epythet module missing files in: </span><span class="si">{</span><span class="n">docsrc_src</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">docsrc_dst</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;docsrc&#39;</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epythet module missing files in: </span><span class="si">{</span><span class="n">docsrc_src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">docsrc_dst</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;docsrc&quot;</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc_src</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docsrc_dst</span><span class="p">),</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc_src</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docsrc_dst</span><span class="p">))</span>
 
-    <span class="n">docsrc_static_dir</span> <span class="o">=</span> <span class="n">docsrc_dst</span> <span class="o">/</span> <span class="s1">&#39;_static&#39;</span>
+    <span class="n">docsrc_static_dir</span> <span class="o">=</span> <span class="n">docsrc_dst</span> <span class="o">/</span> <span class="s2">&quot;_static&quot;</span>
     <span class="n">docsrc_static_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># make master file</span>
     <span class="n">project</span><span class="p">,</span> <span class="n">copyright</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">release</span><span class="p">,</span> <span class="n">display_name</span> <span class="o">=</span> <span class="n">parse_config</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;setup.cfg&#39;</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;setup.cfg&quot;</span>
     <span class="p">)</span>
     <span class="n">title</span> <span class="o">=</span> <span class="n">master_file_title_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">)</span>
     <span class="n">make_master_file</span><span class="p">(</span><span class="n">docsrc_dir</span><span class="o">=</span><span class="n">docsrc_dst</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span></div>
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">argh</span>
 
     <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_command</span><span class="p">(</span><span class="n">make_docsrc</span><span class="p">)</span>
