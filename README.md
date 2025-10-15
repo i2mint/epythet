@@ -42,3 +42,6 @@ jobs:
 ```
 Setup the GitHub Pages for your repo after the target docs-branch is created.  Set the target branch (default: "gh-pages") and folder as `/(root)`
 ![image](https://user-images.githubusercontent.com/22692594/212193474-80b287e2-211c-470d-aa7c-9f779bdd3866.png)
+
+See [CI epythet troubleshooting](https://github.com/i2mint/epythet/wiki/CI-epythet-troubleshooting).
+
