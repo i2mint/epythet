@@ -72,9 +72,7 @@ class AutoDocs(ValueStrEnum):
     members = ":members:"
 
     @classmethod
-    def make_automodule(
-        cls, import_ref: str, options: list[str | ValueStrEnum] = None
-    ):
+    def make_automodule(cls, import_ref: str, options: list[str | ValueStrEnum] = None):
         """Generate automodule rst with options included
 
         :param import_ref: ref for this file is "epythet.templates"
