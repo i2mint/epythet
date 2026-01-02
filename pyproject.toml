@@ -61,6 +61,7 @@ convention = "google"
 "tests/*" = ["D"]
 "examples/*" = ["D"]
 "scrap/*" = ["D"]
+"_static/*" = ["D"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
