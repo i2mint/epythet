@@ -66,7 +66,8 @@ This will attempt to repair the problems for you.
 
 import re
 import os
-from typing import Iterable, Union, Mapping
+from typing import Union
+from collections.abc import Iterable, Mapping
 
 Source = Union[str, Iterable[str]]
 
@@ -121,7 +122,7 @@ def binary_transition(transitions, state, symbol):
 
 # TODO: Pattern: lined
 def _filepath_to_string(filepath: str):
-    with open(filepath, "rt") as fp:
+    with open(filepath) as fp:
         return fp.read()
 
 

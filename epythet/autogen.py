@@ -17,9 +17,9 @@ path_sep = os.path.sep
 
 
 def gen_rst_docs_and_path(
-    module_dir: Union[str, Path],
-    auto_options: List[AutoDocs] = (AutoDocs.members,),
-    ignore: List[str] = None,
+    module_dir: str | Path,
+    auto_options: list[AutoDocs] = (AutoDocs.members,),
+    ignore: list[str] = None,
 ):
     """Generates autodocs rst and rst path relative to module file structure
 
@@ -69,11 +69,11 @@ def gen_rst_docs_and_path(
 
 
 def make_autodocs_for_modules_files(
-    module_dir: Union[str, Path],
-    docsrc_dir: Union[str, Path],
+    module_dir: str | Path,
+    docsrc_dir: str | Path,
     output_dirname: str,
     skip_existing=True,
-    ignore: List[str] = None,
+    ignore: list[str] = None,
 ):
     """Create sphinx autodocs for module and table of contents
 
@@ -102,12 +102,12 @@ def make_autodocs_for_modules_files(
 
 @argh.arg("-i", "--ignore", nargs="*")
 def make_autodocs(
-    project_dir: Union[str, Path],
+    project_dir: str | Path,
     *,
     output_dirname="module_docs",
     skip_existing=True,
     docsrc_dir=None,
-    ignore: List[str] = None,
+    ignore: list[str] = None,
 ):
     """Create sphinx autodocs and table of contents for module defined by setup.cfg
 

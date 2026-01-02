@@ -19,7 +19,8 @@ from functools import partial
 import requests
 from io import BytesIO
 import re
-from typing import Union, Iterable, Callable
+from typing import Union
+from collections.abc import Iterable, Callable
 
 Url = str
 Urls = Iterable[Url]
@@ -347,7 +348,7 @@ def repo_stubs_for_org(org: Org) -> RepoStubs:
     return [f"{org}/{repo}" for repo in list(org_reader)]
 
 
-def configure_github_pages_for_repo_stubs(repo_stubs: Union[RepoStubs, Org]):
+def configure_github_pages_for_repo_stubs(repo_stubs: RepoStubs | Org):
     """
     Configure Pages for an iterable of repo stubs, or all repos in an organization.
 

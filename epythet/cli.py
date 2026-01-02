@@ -16,7 +16,7 @@ import argh
 
 
 @argh.arg("--ignore", nargs="*")
-def quickstart(project_dir, *, ignore: List[str] = None):
+def quickstart(project_dir, *, ignore: list[str] = None):
     """Quickstart will run through the three steps
 
     1. epythet make_docsrc project_dir

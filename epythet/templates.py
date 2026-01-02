@@ -42,7 +42,7 @@ class RstTitle(ValueStrEnum):
     paragraphs = '"'
 
     @classmethod
-    def has_overline(cls, title_type: Union[str, ValueStrEnum]) -> bool:
+    def has_overline(cls, title_type: str | ValueStrEnum) -> bool:
         """Check if title_type will generate a title with both over and underline
 
         :param title_type: one from RstTitle enum
@@ -51,7 +51,7 @@ class RstTitle(ValueStrEnum):
         return RstTitle(title_type) in (cls.part, cls.chapter)
 
     @classmethod
-    def make_title(cls, text: str, title_type: Union[str, ValueStrEnum]) -> str:
+    def make_title(cls, text: str, title_type: str | ValueStrEnum) -> str:
         """Generate RST title
 
         :param text: title text
@@ -73,7 +73,7 @@ class AutoDocs(ValueStrEnum):
 
     @classmethod
     def make_automodule(
-        cls, import_ref: str, options: List[Union[str, ValueStrEnum]] = None
+        cls, import_ref: str, options: list[str | ValueStrEnum] = None
     ):
         """Generate automodule rst with options included
 
