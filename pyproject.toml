@@ -58,10 +58,10 @@ ignore = ["D203", "E501", "B905"]
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D"]
-"examples/*" = ["D"]
-"scrap/*" = ["D"]
-"_static/*" = ["D"]
+"**/tests/*" = ["D"]
+"**/examples/*" = ["D"]
+"**/scrap/*" = ["D"]
+"**/_static/*" = ["D"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
