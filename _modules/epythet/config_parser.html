@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.config_parser &mdash; epythet 0.1.9 documentation</title>
+  <title>epythet.config_parser &mdash; epythet 0.1.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/documentation_options.js?v=bafade30"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -88,14 +88,15 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">configparser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 
 <div class="viewcode-block" id="parse_config">
 <a class="viewcode-back" href="../../module_docs/epythet/config_parser.html#epythet.config_parser.parse_config">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the following data from the project setup.cfg for Sphinx conf.py</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the following data from the project setup. cfg or pyproject.toml for Sphinx conf.py</span>
 
-<span class="sd">    ::</span>
+<span class="sd">    For setup.cfg:: </span>
 
 <span class="sd">        [metadata]</span>
 <span class="sd">        name = epythet</span>
@@ -104,10 +105,37 @@
 <span class="sd">        copyright = 2020, Otosense</span>
 <span class="sd">        display_name = Epythet</span>
 
-<span class="sd">    :param config_file: PROJECT_DIR/setup.cfg</span>
+<span class="sd">    For pyproject.toml::</span>
+
+<span class="sd">        [project]</span>
+<span class="sd">        name = &quot;epythet&quot;</span>
+<span class="sd">        version = &quot;0.0.27&quot;</span>
+<span class="sd">        authors = [{name = &quot;Otosense&quot;}]</span>
+<span class="sd">        </span>
+<span class="sd">        [tool.epythet]</span>
+<span class="sd">        copyright = &quot;2020, Otosense&quot;</span>
+<span class="sd">        display_name = &quot;Epythet&quot;</span>
+
+<span class="sd">    :param config_file: PROJECT_DIR/setup.cfg or PROJECT_DIR/pyproject.toml</span>
 <span class="sd">    :return: name, copyright, author, version, display_name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+    
+    <span class="c1"># If setup.cfg doesn&#39;t exist, try pyproject.toml</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">project_dir</span> <span class="o">=</span> <span class="n">config_path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">pyproject_path</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">&quot;pyproject.toml&quot;</span>
+        
+        <span class="k">if</span> <span class="n">pyproject_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">_parse_pyproject_toml</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Neither </span><span class="si">{</span><span class="n">config_file</span><span class="si">}</span><span class="s2"> nor </span><span class="si">{</span><span class="n">pyproject_path</span><span class="si">}</span><span class="s2"> found. &quot;</span>
+                <span class="s2">&quot;Please provide either setup.cfg or pyproject.toml.&quot;</span>
+            <span class="p">)</span>
+    
+    <span class="c1"># Parse setup.cfg</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">config</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -117,11 +145,52 @@
     <span class="n">author</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;NO AUTHOR&quot;</span><span class="p">)</span>
 
     <span class="c1"># The full version, including alpha/beta/rc tags</span>
-    <span class="n">release</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;NO VERSION&quot;</span><span class="p">)</span>
+    <span class="n">release</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span> <span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;NO VERSION&quot;</span><span class="p">)</span>
     <span class="n">display_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">project</span><span class="p">,</span> <span class="n">copyright</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">release</span><span class="p">,</span> <span class="n">display_name</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_pyproject_toml</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse project metadata from pyproject.toml</span>
+<span class="sd">    </span>
+<span class="sd">    :param pyproject_path: Path to pyproject.toml</span>
+<span class="sd">    :return: name, copyright, author, version, display_name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> 
+        <span class="c1"># Python &lt; 3.11</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">tomli</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tomllib</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;tomli is required to parse pyproject.toml on Python &lt; 3.11. &quot;</span>
+                <span class="s2">&quot;Install it with: pip install tomli&quot;</span>
+            <span class="p">)</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">tomllib</span><span class="o">.</span> <span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    
+    <span class="n">project_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;project&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">tool_epythet</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;epythet&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    
+    <span class="n">project</span> <span class="o">=</span> <span class="n">project_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;NO PROJECT NAME&quot;</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">project_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;NO VERSION&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Extract author from authors list if available</span>
+    <span class="n">authors</span> <span class="o">=</span> <span class="n">project_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">authors</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;NO AUTHOR&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="s2">&quot;NO AUTHOR&quot;</span>
+    
+    <span class="c1"># Check tool.epythet section first, then fallback to defaults</span>
+    <span class="n">copyright</span> <span class="o">=</span> <span class="n">tool_epythet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;NO COPYRIGHT&quot;</span><span class="p">)</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">tool_epythet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">project</span><span class="p">,</span> <span class="n">copyright</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">display_name</span>
 </pre></div>
 
            </div>

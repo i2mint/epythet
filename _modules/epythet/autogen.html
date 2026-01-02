@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.autogen &mdash; epythet 0.1.9 documentation</title>
+  <title>epythet.autogen &mdash; epythet 0.1.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8618f531"></script>
+      <script src="../../_static/documentation_options.js?v=bafade30"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -105,9 +105,9 @@
 <div class="viewcode-block" id="gen_rst_docs_and_path">
 <a class="viewcode-back" href="../../module_docs/epythet/autogen.html#epythet.autogen.gen_rst_docs_and_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">gen_rst_docs_and_path</span><span class="p">(</span>
-    <span class="n">module_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-    <span class="n">auto_options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AutoDocs</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">AutoDocs</span><span class="o">.</span><span class="n">members</span><span class="p">,),</span>
-    <span class="n">ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">module_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">auto_options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AutoDocs</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">AutoDocs</span><span class="o">.</span><span class="n">members</span><span class="p">,),</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates autodocs rst and rst path relative to module file structure</span>
 
@@ -160,11 +160,11 @@
 <div class="viewcode-block" id="make_autodocs_for_modules_files">
 <a class="viewcode-back" href="../../module_docs/epythet/autogen.html#epythet.autogen.make_autodocs_for_modules_files">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_autodocs_for_modules_files</span><span class="p">(</span>
-    <span class="n">module_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
-    <span class="n">docsrc_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="n">module_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">docsrc_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">output_dirname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create sphinx autodocs for module and table of contents</span>
 
@@ -196,12 +196,12 @@
 <a class="viewcode-back" href="../../module_docs/epythet/autogen.html#epythet.autogen.make_autodocs">[docs]</a>
 <span class="nd">@argh</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--ignore&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_autodocs</span><span class="p">(</span>
-    <span class="n">project_dir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">output_dirname</span><span class="o">=</span><span class="s2">&quot;module_docs&quot;</span><span class="p">,</span>
     <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">docsrc_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create sphinx autodocs and table of contents for module defined by setup.cfg</span>
 
