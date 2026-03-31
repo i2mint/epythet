@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.cli &mdash; epythet 0.1.10 documentation</title>
+  <title>epythet.cli &mdash; epythet 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -53,6 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="autogen.html">epythet.autogen</a></li>
 <li class="toctree-l1"><a class="reference internal" href="call_make.html">epythet.call_make</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.cli</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.cli.check_pages"><code class="docutils literal notranslate"><span class="pre">check_pages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.cli.configure_pages"><code class="docutils literal notranslate"><span class="pre">configure_pages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.cli.quickstart"><code class="docutils literal notranslate"><span class="pre">quickstart()</span></code></a></li>
 </ul>
 </li>
@@ -93,6 +95,35 @@
 <span id="epythet-cli"></span><h1>epythet.cli<a class="headerlink" href="#module-epythet.cli" title="Link to this heading"></a></h1>
 <p>Command line access to epythet</p>
 <p>More info in the main epythet documentation page</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.cli.check_pages">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">check_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_url_check</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/cli.html#check_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.check_pages" title="Link to this definition"></a></dt>
+<dd><p>Diagnose GitHub Pages setup for a repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo</strong> – GitHub repo as ‘owner/repo’, or path to a local git checkout.</p></li>
+<li><p><strong>no_url_check</strong> – Skip checking if the docs URL actually responds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.cli.configure_pages">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">configure_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/cli.html#configure_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.configure_pages" title="Link to this definition"></a></dt>
+<dd><p>Enable or fix GitHub Pages for a repo. Requires gh CLI or GITHUB_TOKEN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>repo</strong> – GitHub repo as ‘owner/repo’, or path to a local git checkout.</p></li>
+<li><p><strong>branch</strong> – Branch to serve Pages from (default: gh-pages).</p></li>
+<li><p><strong>path</strong> – Folder within the branch (default: /).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.cli.quickstart">
 <span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">quickstart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/epythet/cli.html#quickstart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.quickstart" title="Link to this definition"></a></dt>

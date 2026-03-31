@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools.published_docs &mdash; epythet 0.1.10 documentation</title>
+  <title>epythet.tools.published_docs &mdash; epythet 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -60,15 +60,19 @@
 <li class="toctree-l1"><a class="reference internal" href="docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">epythet.tools.published_docs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.branch_exists"><code class="docutils literal notranslate"><span class="pre">branch_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.check_pages_setup"><code class="docutils literal notranslate"><span class="pre">check_pages_setup()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.check_token_scopes"><code class="docutils literal notranslate"><span class="pre">check_token_scopes()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.commit_data"><code class="docutils literal notranslate"><span class="pre">commit_data()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.configure_github_pages"><code class="docutils literal notranslate"><span class="pre">configure_github_pages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.configure_github_pages_for_repo_stubs"><code class="docutils literal notranslate"><span class="pre">configure_github_pages_for_repo_stubs()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.default_branch_and_commit_sha"><code class="docutils literal notranslate"><span class="pre">default_branch_and_commit_sha()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.enable_pages"><code class="docutils literal notranslate"><span class="pre">enable_pages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.ensure_branch"><code class="docutils literal notranslate"><span class="pre">ensure_branch()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.github_org_and_repo"><code class="docutils literal notranslate"><span class="pre">github_org_and_repo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.pages_config"><code class="docutils literal notranslate"><span class="pre">pages_config()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.published_doc_diagnosis_df"><code class="docutils literal notranslate"><span class="pre">published_doc_diagnosis_df()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_data"><code class="docutils literal notranslate"><span class="pre">repo_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_stub_from_local_dir"><code class="docutils literal notranslate"><span class="pre">repo_stub_from_local_dir()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_url_to_docs_url"><code class="docutils literal notranslate"><span class="pre">repo_url_to_docs_url()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#epythet.tools.published_docs.repo_url_to_repo_docs_url"><code class="docutils literal notranslate"><span class="pre">repo_url_to_repo_docs_url()</span></code></a></li>
 </ul>
@@ -130,6 +134,30 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.check_pages_setup">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">check_pages_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_branch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#check_pages_setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.check_pages_setup" title="Link to this definition"></a></dt>
+<dd><p>Diagnose the GitHub Pages setup for a single repo.</p>
+<p>Returns a dict describing the state of things:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;repo&#39;</span><span class="p">:</span> <span class="s1">&#39;owner/repo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gh_pages_branch_exists&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;pages_enabled&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;source_branch&#39;</span><span class="p">:</span> <span class="s1">&#39;gh-pages&#39;</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;source_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/&#39;</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;correctly_configured&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;docs_url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://owner.github.io/repo&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;docs_url_responding&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="o">/</span><span class="kc">False</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># None if not checked</span>
+    <span class="s1">&#39;diagnosis&#39;</span><span class="p">:</span> <span class="s1">&#39;A human-readable summary of what is wrong (or right).&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Works with either a <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> env var or an authenticated <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_pages_setup</span><span class="p">(</span><span class="s1">&#39;i2mint/epythet&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.check_token_scopes">
 <span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">check_token_scopes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#check_token_scopes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.check_token_scopes" title="Link to this definition"></a></dt>
 <dd><p>Check the scopes of a GitHub token.</p>
@@ -183,6 +211,19 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.enable_pages">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">enable_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gh-pages'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#enable_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.enable_pages" title="Link to this definition"></a></dt>
+<dd><p>Enable or update GitHub Pages for a repo. Uses <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI or GITHUB_TOKEN.</p>
+<p>This is the recommended way to programmatically set up Pages.  Unlike
+<code class="docutils literal notranslate"><span class="pre">configure_github_pages</span></code> (which requires <code class="docutils literal notranslate"><span class="pre">requests</span></code> and a token), this
+function works out of the box if you have <code class="docutils literal notranslate"><span class="pre">gh</span></code> installed and authenticated.</p>
+<p>Returns the API response dict on success, or None on failure.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">enable_pages</span><span class="p">(</span><span class="s1">&#39;thorwhalen/denote&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.ensure_branch">
 <span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">ensure_branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branch:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit_sha:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~collections.abc.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#ensure_branch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.ensure_branch" title="Link to this definition"></a></dt>
 <dd><p>Ensures a branch exists. Does nothing if it already does, and creates it if not.</p>
@@ -215,6 +256,19 @@ it’s the SHA of the most recent commit of the default branch.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.pages_config">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">pages_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#pages_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.pages_config" title="Link to this definition"></a></dt>
+<dd><p>Return the GitHub Pages configuration for a repo, or None if not configured.</p>
+<p>Returns a dict with keys like <code class="docutils literal notranslate"><span class="pre">source</span></code> (containing <code class="docutils literal notranslate"><span class="pre">branch</span></code> and <code class="docutils literal notranslate"><span class="pre">path</span></code>),
+<code class="docutils literal notranslate"><span class="pre">html_url</span></code>, <code class="docutils literal notranslate"><span class="pre">build_type</span></code>, etc.  Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> when Pages is not enabled.</p>
+<p>Works with either a <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> env var or an authenticated <code class="docutils literal notranslate"><span class="pre">gh</span></code> CLI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pages_config</span><span class="p">(</span><span class="s1">&#39;i2mint/epythet&#39;</span><span class="p">)</span>  
+<span class="go">{&#39;source&#39;: {&#39;branch&#39;: &#39;gh-pages&#39;, &#39;path&#39;: &#39;/&#39;}, &#39;html_url&#39;: &#39;...&#39;, ...}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.published_doc_diagnosis_df">
 <span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">published_doc_diagnosis_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'url'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#published_doc_diagnosis_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.published_doc_diagnosis_df" title="Link to this definition"></a></dt>
 <dd><p>The <cite>published_doc_diagnosis_df</cite> gets you a pandas dataframe (requires pandas to be
@@ -238,6 +292,16 @@ a csv where this table can be downloaded from.</p></li>
 <dt class="sig sig-object py" id="epythet.tools.published_docs.repo_data">
 <span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">repo_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_stub:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers:</span> <span class="pre">dict</span> <span class="pre">|</span> <span class="pre">~collections.abc.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">dflt_headers&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#repo_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.repo_data" title="Link to this definition"></a></dt>
 <dd><p>Retrieves data about a GitHub repository.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.tools.published_docs.repo_stub_from_local_dir">
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">repo_stub_from_local_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#repo_stub_from_local_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.repo_stub_from_local_dir" title="Link to this definition"></a></dt>
+<dd><p>Extract the <code class="docutils literal notranslate"><span class="pre">owner/repo</span></code> slug from a local git checkout’s remote URL.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repo_stub_from_local_dir</span><span class="p">(</span><span class="s1">&#39;/path/to/some/git/repo&#39;</span><span class="p">)</span>  
+<span class="go">&#39;owner/repo&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">

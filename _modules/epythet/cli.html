@@ -5,16 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.cli &mdash; epythet 0.1.10 documentation</title>
+  <title>epythet.cli &mdash; epythet 0.1.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bafade30"></script>
+      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -120,9 +120,85 @@
 
 
 
+<div class="viewcode-block" id="check_pages">
+<a class="viewcode-back" href="../../module_docs/epythet/cli.html#epythet.cli.check_pages">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_pages</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">no_url_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Diagnose GitHub Pages setup for a repo.</span>
+
+<span class="sd">    :param repo: GitHub repo as &#39;owner/repo&#39;, or path to a local git checkout.</span>
+<span class="sd">    :param no_url_check: Skip checking if the docs URL actually responds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools.published_docs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+        <span class="n">check_pages_setup</span><span class="p">,</span>
+        <span class="n">repo_stub_from_local_dir</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">repo_stub</span> <span class="o">=</span> <span class="n">_resolve_repo_stub</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">check_pages_setup</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">check_url</span><span class="o">=</span><span class="ow">not</span> <span class="n">no_url_check</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;diagnosis&quot;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">&quot;gh_pages_branch_exists&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pages_enabled&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;source_branch&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;source_path&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;correctly_configured&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;docs_url&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;docs_url_responding&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="configure_pages">
+<a class="viewcode-back" href="../../module_docs/epythet/cli.html#epythet.cli.configure_pages">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">configure_pages</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">branch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gh-pages&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enable or fix GitHub Pages for a repo. Requires gh CLI or GITHUB_TOKEN.</span>
+
+<span class="sd">    :param repo: GitHub repo as &#39;owner/repo&#39;, or path to a local git checkout.</span>
+<span class="sd">    :param branch: Branch to serve Pages from (default: gh-pages).</span>
+<span class="sd">    :param path: Folder within the branch (default: /).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools.published_docs</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_pages</span>
+
+    <span class="n">repo_stub</span> <span class="o">=</span> <span class="n">_resolve_repo_stub</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">enable_pages</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">branch</span><span class="o">=</span><span class="n">branch</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">org</span> <span class="o">=</span> <span class="n">repo_stub</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">repo_name</span> <span class="o">=</span> <span class="n">repo_stub</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pages enabled for </span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  URL: https://</span><span class="si">{</span><span class="n">org</span><span class="si">}</span><span class="s2">.github.io/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to enable Pages for </span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_repo_stub</span><span class="p">(</span><span class="n">repo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve a repo argument to an owner/repo slug.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">repo</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">repo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">repo</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+        <span class="c1"># Looks like owner/repo already</span>
+        <span class="k">return</span> <span class="n">repo</span>
+    <span class="c1"># Try as a local directory</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools.published_docs</span><span class="w"> </span><span class="kn">import</span> <span class="n">repo_stub_from_local_dir</span>
+
+    <span class="n">stub</span> <span class="o">=</span> <span class="n">repo_stub_from_local_dir</span><span class="p">(</span><span class="n">repo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Could not determine GitHub repo from &#39;</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+            <span class="s2">&quot;Pass &#39;owner/repo&#39; directly or point to a local git checkout.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">stub</span>
+
+
 <span class="n">argh_kwargs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;namespace&quot;</span><span class="p">:</span> <span class="s2">&quot;epythet&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;functions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">make_docsrc</span><span class="p">,</span> <span class="n">make_autodocs</span><span class="p">,</span> <span class="n">make</span><span class="p">,</span> <span class="n">quickstart</span><span class="p">],</span>
+    <span class="s2">&quot;functions&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="n">make_docsrc</span><span class="p">,</span>
+        <span class="n">make_autodocs</span><span class="p">,</span>
+        <span class="n">make</span><span class="p">,</span>
+        <span class="n">quickstart</span><span class="p">,</span>
+        <span class="n">check_pages</span><span class="p">,</span>
+        <span class="n">configure_pages</span><span class="p">,</span>
+    <span class="p">],</span>
     <span class="s2">&quot;namespace_kwargs&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Documentation Generator&quot;</span><span class="p">,</span>
         <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Setup and generate Sphinx docs effortlessly&quot;</span><span class="p">,</span>
