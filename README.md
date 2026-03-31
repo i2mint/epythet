@@ -18,7 +18,10 @@ Tired of learning new frameworks and just need something to quickly display your
  [Sphinx Python Documentation Generator](https://www.sphinx-doc.org/en/master/index.html) but automatically generates pages for each module .py files and a table of contents.
 
 
-# Publishing to GitHub Page with GitHub Actions
+# Publishing to GitHub Pages with GitHub Actions
+
+## Step 1: Add the CI workflow
+
 Add workflow [.github/workflows/publish-docs.yml](https://github.com/i2mint/epythet/blob/master/.github/workflows/publish-docs.yml) to your repo and modify the trigger conditions to suit your needs.  Example below will run automatically when the other "Continuous Integration" workflow is completed.
 ```
 name: GitHub Pages
@@ -40,8 +43,52 @@ jobs:
           docs-dir: "./docsrc/_build/html/"
           python-version: "3.10"
 ```
-Setup the GitHub Pages for your repo after the target docs-branch is created.  Set the target branch (default: "gh-pages") and folder as `/(root)`
+
+## Step 2: Enable GitHub Pages
+
+After the CI runs and creates the `gh-pages` branch, you need to tell GitHub to
+actually serve it. There are two ways to do this:
+
+### The clicky way (for those who enjoy navigating settings menus)
+
+Go to your repo's **Settings > Pages**, set the source branch to `gh-pages` and
+the folder to `/ (root)`, then click Save.
+
 ![image](https://user-images.githubusercontent.com/22692594/212193474-80b287e2-211c-470d-aa7c-9f779bdd3866.png)
+
+### The fast way (for those who value their time)
+
+If you have the [`gh` CLI](https://cli.github.com/) installed:
+
+```bash
+# Check if Pages is set up correctly
+epythet check-pages owner/repo
+
+# Enable or fix Pages configuration
+epythet configure-pages owner/repo
+```
+
+Or from Python:
+
+```python
+from epythet import check_pages_setup, enable_pages
+
+# Diagnose
+check_pages_setup('owner/repo')
+
+# Fix
+enable_pages('owner/repo')
+```
+
+You can also point these at a local git checkout instead of `owner/repo`:
+
+```bash
+epythet check-pages .
+epythet configure-pages /path/to/my/project
+```
+
+These tools work with either the `gh` CLI (recommended) or a `GITHUB_TOKEN`
+environment variable.
 
 See [CI epythet troubleshooting](https://github.com/i2mint/epythet/wiki/CI-epythet-troubleshooting).
 

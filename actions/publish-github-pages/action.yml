@@ -61,3 +61,28 @@ runs:
         enable_jekyll: true
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Enable GitHub Pages source
+      run: |
+        # Enable Pages if not already configured, or update if misconfigured.
+        # This is idempotent -- safe to run on every CI invocation.
+        REPO="${{ github.repository }}"
+        BRANCH="${{ inputs.docs-branch }}"
+        # Try to create (POST). If Pages already exists, API returns 409 -- then update (PUT).
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+          -X POST \
+          -H "Authorization: token ${{ inputs.github-token }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${REPO}/pages" \
+          -d "{\"build_type\":\"legacy\",\"source\":{\"branch\":\"${BRANCH}\",\"path\":\"/\"}}")
+        if [ "$STATUS" = "409" ] || [ "$STATUS" = "422" ]; then
+          # Already exists -- update source to ensure correct config
+          curl -s -o /dev/null \
+            -X PUT \
+            -H "Authorization: token ${{ inputs.github-token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${REPO}/pages" \
+            -d "{\"source\":{\"branch\":\"${BRANCH}\",\"path\":\"/\"}}"
+        fi
+        echo "GitHub Pages source set to ${BRANCH} / (root)"
+      shell: bash

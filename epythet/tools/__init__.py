@@ -89,6 +89,14 @@ with suppress(ImportError, ModuleNotFoundError):
     import pandas  # to raise an error if not installed, and break from with before...
     from epythet.tools.published_docs import published_doc_diagnosis_df
 
+from epythet.tools.published_docs import (
+    pages_config,
+    check_pages_setup,
+    enable_pages,
+    configure_github_pages,
+    repo_stub_from_local_dir,
+)
+
 from epythet.tools.docstring_diagnosis import (
     Source,
     blank_line,

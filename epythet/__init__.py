@@ -140,6 +140,11 @@ from epythet.tools import (
     print_diagnosis,
     diagnose_doctest_code_blocks,
     add_newlines_before_doctests_when_missing,
+    pages_config,
+    check_pages_setup,
+    enable_pages,
+    configure_github_pages,
+    repo_stub_from_local_dir,
 )
 
 from contextlib import suppress
