@@ -213,9 +213,7 @@ def check_pages_setup(
     }
 
     # Check if the expected branch exists
-    branch_info = _github_api_get(
-        f"repos/{repo_stub}/branches/{expected_branch}"
-    )
+    branch_info = _github_api_get(f"repos/{repo_stub}/branches/{expected_branch}")
     result["gh_pages_branch_exists"] = branch_info is not None
 
     # Check pages config
@@ -464,9 +462,7 @@ def enable_pages(
     data = {"source": {"branch": branch, "path": path}}
 
     # Try POST first (create), fall back to PUT (update)
-    result = _github_api_request(
-        f"repos/{repo_stub}/pages", method="POST", data=data
-    )
+    result = _github_api_request(f"repos/{repo_stub}/pages", method="POST", data=data)
     if result is None:
         # Pages might already exist but misconfigured -- try PUT to update
         result = _github_api_request(
