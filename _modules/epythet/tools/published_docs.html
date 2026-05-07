@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools.published_docs &mdash; epythet 0.1.11 documentation</title>
+  <title>epythet.tools.published_docs &mdash; epythet 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,9 +14,9 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1e825a29"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=297ad043"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -304,9 +304,7 @@
     <span class="p">}</span>
 
     <span class="c1"># Check if the expected branch exists</span>
-    <span class="n">branch_info</span> <span class="o">=</span> <span class="n">_github_api_get</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;repos/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/branches/</span><span class="si">{</span><span class="n">expected_branch</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="n">branch_info</span> <span class="o">=</span> <span class="n">_github_api_get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;repos/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/branches/</span><span class="si">{</span><span class="n">expected_branch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">result</span><span class="p">[</span><span class="s2">&quot;gh_pages_branch_exists&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">branch_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="c1"># Check pages config</span>
@@ -567,9 +565,7 @@
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;branch&quot;</span><span class="p">:</span> <span class="n">branch</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">}}</span>
 
     <span class="c1"># Try POST first (create), fall back to PUT (update)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">_github_api_request</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;repos/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/pages&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span>
-    <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_github_api_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;repos/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/pages&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Pages might already exist but misconfigured -- try PUT to update</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">_github_api_request</span><span class="p">(</span>

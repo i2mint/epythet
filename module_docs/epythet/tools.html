@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools &mdash; epythet 0.1.11 documentation</title>
+  <title>epythet.tools &mdash; epythet 0.1.12 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,9 +15,9 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1e825a29"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=297ad043"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
@@ -94,12 +94,12 @@
 <span id="epythet-tools"></span><h1>epythet.tools<a class="headerlink" href="#module-epythet.tools" title="Link to this heading"></a></h1>
 <p>Tools to diagnose (and sometimes, repair) documentation</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you have tec (pip install tec) installed, you can even input a module object:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">epythet</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">number_of_problems</span> <span class="o">=</span> <span class="n">repair_package</span><span class="p">(</span><span class="n">epythet</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">number_of_problems</span> <span class="o">=</span> <span class="n">repair_package</span><span class="p">(</span><span class="n">epythet</span><span class="p">)</span>
 <span class="go">---&gt; This is just a diagnosis: No files are being written to</span>
 <span class="go">setup_docsrc.py                           : #problems: 0</span>
 <span class="go">config_parser.py                          : #problems: 0</span>
@@ -110,11 +110,11 @@
 <p>As the print out header indicated, this is just a diagnosis of problems found for
 each module, and returns the total number of problems.
 It’s advised to do this, then have a look at the problems using</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_diagnosis</span><span class="p">(</span><span class="n">MODULE_PATH_OR_PKG_FOLDER</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_diagnosis</span><span class="p">(</span><span class="n">MODULE_PATH_OR_PKG_FOLDER</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Once you’re familiar with the problems, you can choose to do:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">,</span> <span class="n">write_to_files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repair_package</span><span class="p">(</span><span class="n">PY_FILES_DIRECTORY</span><span class="p">,</span> <span class="n">write_to_files</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will attempt to repair the problems for you.</p>
@@ -158,11 +158,11 @@ It’s advised to do this, then have a look at the problems using</p>
 <p>The <cite>published_doc_diagnosis_df</cite> gets you a pandas dataframe (requires pandas to be
 installed!) that will tell you if given github <code class="docutils literal notranslate"><span class="pre">org/repo</span></code> url(s) have published
 documentation and if a <cite>docs</cite> folder even exists (in master branch):</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>  
-<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">)</span>
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">([</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">,</span> <span class="s1">&#39;https://github.com/otosense/omisc&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">])</span>
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
