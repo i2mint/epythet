@@ -22,9 +22,11 @@ inputs:
     default: "./docsrc/_build/html/"
 
   python-version:
-    description: "Python version used to generate documentation"
+    description: "Python version used to generate documentation. Override
+      via `with: python-version: '3.12'` if your project's `requires-python`
+      is higher than this default."
     required: false
-    default: "3.10"
+    default: "3.11"
 
 runs:
   using: composite
