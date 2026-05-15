@@ -100,7 +100,7 @@ pytest_args = ["-v", "--tb=short"]
 coverage_enabled = true
 coverage_threshold = 0
 coverage_report_format = ["term", "xml"]
-exclude_paths = ["examples", "scrap", "_static"]
+exclude_paths = ["examples", "scrap", "_static", "epythet/_static"]
 test_on_windows = true
 
 [tool.wads.ci.metrics]
