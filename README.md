@@ -90,5 +90,15 @@ epythet configure-pages /path/to/my/project
 These tools work with either the `gh` CLI (recommended) or a `GITHUB_TOKEN`
 environment variable.
 
+Under the hood, `configure-pages` is just the GitHub Pages REST API — the direct
+`gh` equivalent of *Settings > Pages → Branch `gh-pages`, folder `/ (root)` →
+Save* is:
+
+```bash
+# POST creates the Pages site (when Pages is not yet enabled — GitHub's default);
+# use -X PUT instead to change an already-enabled Pages config.
+gh api repos/owner/repo/pages -X POST -f 'source[branch]=gh-pages' -f 'source[path]=/'
+```
+
 See [CI epythet troubleshooting](https://github.com/i2mint/epythet/wiki/CI-epythet-troubleshooting).
 

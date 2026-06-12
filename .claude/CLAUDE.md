@@ -50,7 +50,9 @@ Many functions take a `repo_stub` (e.g., `"owner/repo"`). The `repo_stub_from_lo
 
 ## GitHub Pages setup flow
 
-The most common issue: CI pushes docs to the `gh-pages` branch, but Pages isn't enabled in repo settings. The fix is:
+The most common issue: CI pushes docs to the `gh-pages` branch, but Pages isn't
+enabled in repo settings. The target setting is **source branch `gh-pages`,
+folder `/ (root)`**. The fix is:
 
 ```python
 from epythet import enable_pages
@@ -58,3 +60,24 @@ enable_pages("owner/repo")  # uses gh CLI or GITHUB_TOKEN
 ```
 
 Or via CLI: `epythet configure-pages owner/repo`
+
+### Raw `gh` equivalent
+
+`enable_pages` is a thin wrapper over the GitHub Pages REST API. The equivalent
+of clicking *Settings > Pages → Branch `gh-pages`, folder `/ (root)` → Save* is:
+
+```bash
+# Read current config (empty/404 means Pages is NOT enabled — GitHub's default)
+gh api repos/OWNER/REPO/pages --jq '{branch:.source.branch, path:.source.path}'
+
+# Enable Pages — POST creates the Pages site (use when Pages is not yet enabled)
+gh api repos/OWNER/REPO/pages -X POST -f 'source[branch]=gh-pages' -f 'source[path]=/'
+
+# Change an existing Pages config — PUT updates it (use when Pages already exists)
+gh api repos/OWNER/REPO/pages -X PUT  -f 'source[branch]=gh-pages' -f 'source[path]=/'
+```
+
+`enable_pages` tries `POST` first and falls back to `PUT` if Pages already
+exists. See `_gh_api` / `_flatten_json` in `epythet/tools/published_docs.py`,
+which turn the nested `{"source": {"branch": ..., "path": ...}}` body into
+`gh api`'s `source[branch]=…` / `source[path]=…` bracket form.
