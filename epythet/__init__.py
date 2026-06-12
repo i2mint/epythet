@@ -19,8 +19,8 @@ Check your ``PROJECT_DIR/setup.cfg`` contains::
     [metadata]
     name = epythet
     version = 0.0.27
-    author = Otosense
-    copyright = 2020, Otosense
+    author = Jane Doe
+    copyright = 2020, Jane Doe  # optional; omit for no copyright line
     display_name = Epythet
 
 For graphviz support:

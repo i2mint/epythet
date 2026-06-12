@@ -8,13 +8,17 @@ import os
 def parse_config(config_file):
     """Parse the following data from the project setup. cfg or pyproject.toml for Sphinx conf.py
 
+    ``copyright`` is optional: when it isn't set, an empty string is returned and
+    the generated docs render no copyright line at all (see the docsrc ``conf.py``
+    template, which sets ``html_show_copyright = bool(copyright)``).
+
     For setup.cfg::
 
         [metadata]
         name = epythet
         version = 0.0.27
-        author = Otosense
-        copyright = 2020, Otosense
+        author = Jane Doe
+        copyright = 2020, Jane Doe  # optional
         display_name = Epythet
 
     For pyproject.toml::
@@ -22,10 +26,10 @@ def parse_config(config_file):
         [project]
         name = "epythet"
         version = "0.0.27"
-        authors = [{name = "Otosense"}]
+        authors = [{name = "Jane Doe"}]
 
         [tool.epythet]
-        copyright = "2020, Otosense"
+        copyright = "2020, Jane Doe"  # optional
         display_name = "Epythet"
 
     :param config_file: PROJECT_DIR/setup.cfg or PROJECT_DIR/pyproject.toml
@@ -53,8 +57,9 @@ def parse_config(config_file):
         config.read_file(f)
 
     project = config["metadata"]["name"]
-    copyright = config["metadata"].get("copyright", "NO COPYRIGHT")
-    author = config["metadata"].get("author", "NO AUTHOR")
+    # Empty when unset -> docs render no copyright line (html_show_copyright=False)
+    copyright = config["metadata"].get("copyright", "")
+    author = config["metadata"].get("author", "")
 
     # The full version, including alpha/beta/rc tags
     release = config["metadata"].get("version", "NO VERSION")
@@ -93,12 +98,12 @@ def _parse_pyproject_toml(pyproject_path):
     # Extract author from authors list if available
     authors = project_data.get("authors", [])
     if authors and isinstance(authors, list) and len(authors) > 0:
-        author = authors[0].get("name", "NO AUTHOR")
+        author = authors[0].get("name", "")
     else:
-        author = "NO AUTHOR"
+        author = ""
 
-    # Check tool.epythet section first, then fallback to defaults
-    copyright = tool_epythet.get("copyright", "NO COPYRIGHT")
+    # Empty when unset -> docs render no copyright line (html_show_copyright=False)
+    copyright = tool_epythet.get("copyright", "")
     display_name = tool_epythet.get("display_name", project)
 
     return project, copyright, author, version, display_name

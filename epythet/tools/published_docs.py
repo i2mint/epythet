@@ -7,11 +7,11 @@ Elements for a tool to setup docs and check if docs are published, and if not, w
                                  url                      doc_page_url  doc_page_exists  repo_has_docs_folder
 0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True
 >>> published_doc_diagnosis_df([  # doctest: +SKIP
-...     'https://github.com/i2mint/epythet', 'https://github.com/otosense/omisc',
+...     'https://github.com/i2mint/epythet', 'https://github.com/myorg/myrepo',
 ... ])
                                  url                      doc_page_url  doc_page_exists  repo_has_docs_folder
 0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True
-1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False
+1    https://github.com/myorg/myrepo    https://myorg.github.io/myrepo            False                 False
 
 """
 
@@ -621,10 +621,8 @@ def repo_stub_from_local_dir(path="."):
 # in a docs folder in the master branch.
 
 
-# TODO: Make the following particulars controllable from outside module
-DFLT_URL_TABLE_SOURCE = (
-    "https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv"
-)
+# No default url-table source is bundled: pass the repos you want to diagnose.
+DFLT_URL_TABLE_SOURCE = None
 docs_url_template = "https://{org}.github.io/{repo}"
 repo_docs_url_template = "https://github.com/{org}/{repo}/tree/master/docs"
 
@@ -641,6 +639,11 @@ def published_doc_diagnosis_df(urls: Table = DFLT_URL_TABLE_SOURCE, url_column="
     :return: A dataframe with the diagnosis
 
     """
+    if urls is None:
+        raise ValueError(
+            "No urls given. Pass a github url, a list of urls, or a table/csv-url "
+            "of repos to diagnose (there is no bundled default source)."
+        )
     df = _get_table(urls)
     df["doc_page_url"] = df[url_column].apply(repo_url_to_docs_url)
     df["doc_page_exists"] = df["doc_page_url"].apply(url_exists)

@@ -23,6 +23,11 @@ project, copyright, author, release, display_name = parse_config(
     Path(__file__).absolute().parent.parent / "setup.cfg"
 )
 
+# Only render a copyright line when one is actually configured. epythet returns
+# an empty string when no copyright is set, so suppress the footer entirely
+# instead of showing a blank "© Copyright ." (or a "NO COPYRIGHT" placeholder).
+html_show_copyright = bool(copyright)
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be

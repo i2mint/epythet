@@ -72,11 +72,11 @@ documentation and if a `docs` folder even exists (in master branch):
                                  url                      doc_page_url  doc_page_exists  repo_has_docs_folder
 0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True
 >>> published_doc_diagnosis_df([  # doctest: +SKIP
-...     'https://github.com/i2mint/epythet', 'https://github.com/otosense/omisc',
+...     'https://github.com/i2mint/epythet', 'https://github.com/myorg/myrepo',
 ... ])
                                  url                      doc_page_url  doc_page_exists  repo_has_docs_folder
 0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True
-1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False
+1    https://github.com/myorg/myrepo    https://myorg.github.io/myrepo            False                 False
 
 
 """
