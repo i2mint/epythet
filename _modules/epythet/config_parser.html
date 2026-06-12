@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.config_parser &mdash; epythet 0.1.13 documentation</title>
+  <title>epythet.config_parser &mdash; epythet 0.1.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8d02545a"></script>
+      <script src="../../_static/documentation_options.js?v=468bc497"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -96,13 +96,17 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the following data from the project setup. cfg or pyproject.toml for Sphinx conf.py</span>
 
+<span class="sd">    ``copyright`` is optional: when it isn&#39;t set, an empty string is returned and</span>
+<span class="sd">    the generated docs render no copyright line at all (see the docsrc ``conf.py``</span>
+<span class="sd">    template, which sets ``html_show_copyright = bool(copyright)``).</span>
+
 <span class="sd">    For setup.cfg::</span>
 
 <span class="sd">        [metadata]</span>
 <span class="sd">        name = epythet</span>
 <span class="sd">        version = 0.0.27</span>
-<span class="sd">        author = Otosense</span>
-<span class="sd">        copyright = 2020, Otosense</span>
+<span class="sd">        author = Jane Doe</span>
+<span class="sd">        copyright = 2020, Jane Doe  # optional</span>
 <span class="sd">        display_name = Epythet</span>
 
 <span class="sd">    For pyproject.toml::</span>
@@ -110,10 +114,10 @@
 <span class="sd">        [project]</span>
 <span class="sd">        name = &quot;epythet&quot;</span>
 <span class="sd">        version = &quot;0.0.27&quot;</span>
-<span class="sd">        authors = [{name = &quot;Otosense&quot;}]</span>
+<span class="sd">        authors = [{name = &quot;Jane Doe&quot;}]</span>
 
 <span class="sd">        [tool.epythet]</span>
-<span class="sd">        copyright = &quot;2020, Otosense&quot;</span>
+<span class="sd">        copyright = &quot;2020, Jane Doe&quot;  # optional</span>
 <span class="sd">        display_name = &quot;Epythet&quot;</span>
 
 <span class="sd">    :param config_file: PROJECT_DIR/setup.cfg or PROJECT_DIR/pyproject.toml</span>
@@ -141,8 +145,9 @@
         <span class="n">config</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="n">project</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-    <span class="n">copyright</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;NO COPYRIGHT&quot;</span><span class="p">)</span>
-    <span class="n">author</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;NO AUTHOR&quot;</span><span class="p">)</span>
+    <span class="c1"># Empty when unset -&gt; docs render no copyright line (html_show_copyright=False)</span>
+    <span class="n">copyright</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
     <span class="c1"># The full version, including alpha/beta/rc tags</span>
     <span class="n">release</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;NO VERSION&quot;</span><span class="p">)</span>
@@ -182,12 +187,12 @@
     <span class="c1"># Extract author from authors list if available</span>
     <span class="n">authors</span> <span class="o">=</span> <span class="n">project_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="p">[])</span>
     <span class="k">if</span> <span class="n">authors</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">authors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">author</span> <span class="o">=</span> <span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;NO AUTHOR&quot;</span><span class="p">)</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="n">authors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">author</span> <span class="o">=</span> <span class="s2">&quot;NO AUTHOR&quot;</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="c1"># Check tool.epythet section first, then fallback to defaults</span>
-    <span class="n">copyright</span> <span class="o">=</span> <span class="n">tool_epythet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;NO COPYRIGHT&quot;</span><span class="p">)</span>
+    <span class="c1"># Empty when unset -&gt; docs render no copyright line (html_show_copyright=False)</span>
+    <span class="n">copyright</span> <span class="o">=</span> <span class="n">tool_epythet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">display_name</span> <span class="o">=</span> <span class="n">tool_epythet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">project</span><span class="p">,</span> <span class="n">copyright</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">display_name</span>
@@ -200,7 +205,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Otosense.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

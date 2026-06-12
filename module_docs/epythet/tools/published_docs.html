@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools.published_docs &mdash; epythet 0.1.13 documentation</title>
+  <title>epythet.tools.published_docs &mdash; epythet 0.1.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8d02545a"></script>
+      <script src="../../../_static/documentation_options.js?v=468bc497"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -111,11 +111,11 @@
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">,</span> <span class="s1">&#39;https://github.com/otosense/omisc&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">,</span> <span class="s1">&#39;https://github.com/myorg/myrepo&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">])</span>
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
-<span class="go">1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False</span>
+<span class="go">1    https://github.com/myorg/myrepo    https://myorg.github.io/myrepo            False                 False</span>
 </pre></div>
 </div>
 <dl class="py function">
@@ -270,7 +270,7 @@ it’s the SHA of the most recent commit of the default branch.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.tools.published_docs.published_doc_diagnosis_df">
-<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">published_doc_diagnosis_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'url'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#published_doc_diagnosis_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.published_doc_diagnosis_df" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.tools.published_docs.</span></span><span class="sig-name descname"><span class="pre">published_doc_diagnosis_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Iterable</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'url'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/epythet/tools/published_docs.html#published_doc_diagnosis_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.tools.published_docs.published_doc_diagnosis_df" title="Link to this definition"></a></dt>
 <dd><p>The <cite>published_doc_diagnosis_df</cite> gets you a pandas dataframe (requires pandas to be
 installed!) that will tell you if given github <code class="docutils literal notranslate"><span class="pre">org/repo</span></code> url(s) have published
 documentation and if a <cite>docs</cite> folder even exists (in master branch).</p>
@@ -334,7 +334,7 @@ a csv where this table can be downloaded from.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Otosense.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

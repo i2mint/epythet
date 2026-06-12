@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools.published_docs &mdash; epythet 0.1.13 documentation</title>
+  <title>epythet.tools.published_docs &mdash; epythet 0.1.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8d02545a"></script>
+      <script src="../../../_static/documentation_options.js?v=468bc497"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -93,11 +93,11 @@
 <span class="sd">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="sd">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
 <span class="sd">&gt;&gt;&gt; published_doc_diagnosis_df([  # doctest: +SKIP</span>
-<span class="sd">...     &#39;https://github.com/i2mint/epythet&#39;, &#39;https://github.com/otosense/omisc&#39;,</span>
+<span class="sd">...     &#39;https://github.com/i2mint/epythet&#39;, &#39;https://github.com/myorg/myrepo&#39;,</span>
 <span class="sd">... ])</span>
 <span class="sd">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="sd">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
-<span class="sd">1  https://github.com/otosense/omisc  https://otosense.github.io/omisc            False                 False</span>
+<span class="sd">1    https://github.com/myorg/myrepo    https://myorg.github.io/myrepo            False                 False</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -743,10 +743,8 @@
 <span class="c1"># in a docs folder in the master branch.</span>
 
 
-<span class="c1"># TODO: Make the following particulars controllable from outside module</span>
-<span class="n">DFLT_URL_TABLE_SOURCE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;https://raw.githubusercontent.com/otosense/content/main/tables/projects.csv&quot;</span>
-<span class="p">)</span>
+<span class="c1"># No default url-table source is bundled: pass the repos you want to diagnose.</span>
+<span class="n">DFLT_URL_TABLE_SOURCE</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">docs_url_template</span> <span class="o">=</span> <span class="s2">&quot;https://</span><span class="si">{org}</span><span class="s2">.github.io/</span><span class="si">{repo}</span><span class="s2">&quot;</span>
 <span class="n">repo_docs_url_template</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/</span><span class="si">{org}</span><span class="s2">/</span><span class="si">{repo}</span><span class="s2">/tree/master/docs&quot;</span>
 
@@ -765,6 +763,11 @@
 <span class="sd">    :return: A dataframe with the diagnosis</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">urls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;No urls given. Pass a github url, a list of urls, or a table/csv-url &quot;</span>
+            <span class="s2">&quot;of repos to diagnose (there is no bundled default source).&quot;</span>
+        <span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">_get_table</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
     <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">url_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">repo_url_to_docs_url</span><span class="p">)</span>
     <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_exists&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;doc_page_url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">url_exists</span><span class="p">)</span>
@@ -870,7 +873,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Otosense.</p>
+    <p></p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
