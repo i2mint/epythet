@@ -4,8 +4,6 @@ import os
 from pathlib import Path
 from typing import Union, List
 
-import argh
-
 from epythet.templates import (
     table_of_contents_header,
     RstTitle,
@@ -100,7 +98,6 @@ def make_autodocs_for_modules_files(
     table_of_contents_rst_path.write_text(table_of_contents_rst_doc)
 
 
-@argh.arg("-i", "--ignore", nargs="*")
 def make_autodocs(
     project_dir: str | Path,
     *,
@@ -133,6 +130,6 @@ def make_autodocs(
 
 
 if __name__ == "__main__":
-    import argh
+    import cw
 
-    argh.dispatch_command(make_autodocs)
+    raise SystemExit(cw.dispatch(make_autodocs))
