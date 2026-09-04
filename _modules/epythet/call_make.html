@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.call_make &mdash; epythet 0.1.14 documentation</title>
+  <title>epythet.call_make &mdash; epythet 0.1.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=468bc497"></script>
+      <script src="../../_static/documentation_options.js?v=e2f3408e"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -84,7 +84,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for epythet.call_make</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Just to call make&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Just to call make"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -93,12 +93,12 @@
 <div class="viewcode-block" id="make">
 <a class="viewcode-back" href="../../module_docs/epythet/call_make.html#epythet.call_make.make">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="o">*</span><span class="n">make_args</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Invokes the Sphinx docs makefile in project_dir/docsrc.  Commonly used make_args: &quot;html&quot;, &quot;doctest&quot;, &quot;github&quot;</span>
+<span class="w">    </span><span class="sd">"""Invokes the Sphinx docs makefile in project_dir/docsrc.  Commonly used make_args: "html", "doctest", "github"</span>
 
 <span class="sd">    :param project_dir: Path to root project directory containing docsrc folder</span>
 <span class="sd">    :param make_args: Sphinx docs makefile args</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">((</span><span class="s2">&quot;make&quot;</span><span class="p">,)</span> <span class="o">+</span> <span class="n">make_args</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;docsrc&quot;</span><span class="p">)</span></div>
+<span class="sd">    """</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">((</span><span class="s2">"make"</span><span class="p">,)</span> <span class="o">+</span> <span class="n">make_args</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"docsrc"</span><span class="p">)</span></div>
 
 </pre></div>
 

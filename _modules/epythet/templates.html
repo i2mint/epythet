@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.templates &mdash; epythet 0.1.14 documentation</title>
+  <title>epythet.templates &mdash; epythet 0.1.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=468bc497"></script>
+      <script src="../../_static/documentation_options.js?v=e2f3408e"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -84,7 +84,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for epythet.templates</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Module containing templates&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Module containing templates"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
@@ -93,7 +93,7 @@
 <div class="viewcode-block" id="ValueStrEnum">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.ValueStrEnum">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ValueStrEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Special Enum&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Special Enum"""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
@@ -102,11 +102,11 @@
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.ValueStrEnum.has_value">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check of value is one of the enum values</span>
+<span class="w">        </span><span class="sd">"""Check of value is one of the enum values</span>
 
 <span class="sd">        :param value: string or ValueStrEnum</span>
 <span class="sd">        :return: boolean</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RstTitle</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">)</span></div>
 </div>
 
@@ -115,7 +115,7 @@
 <div class="viewcode-block" id="RstTitle">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RstTitle</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;RST Title convention:</span>
+<span class="w">    </span><span class="sd">"""RST Title convention:</span>
 
 <span class="sd">    # # with overline, for parts</span>
 <span class="sd">    # * with overline, for chapters</span>
@@ -126,24 +126,24 @@
 
 <span class="sd">    Normally, there are no heading levels assigned to certain characters as the structure is determined from the</span>
 <span class="sd">    succession of headings. However, it is better to stick to the same convention</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
-    <span class="n">chapter</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
-    <span class="n">section</span> <span class="o">=</span> <span class="s2">&quot;=&quot;</span>
-    <span class="n">subsection</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
-    <span class="n">subsubsection</span> <span class="o">=</span> <span class="s2">&quot;^&quot;</span>
-    <span class="n">paragraphs</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span>
+    <span class="n">part</span> <span class="o">=</span> <span class="s2">"#"</span>
+    <span class="n">chapter</span> <span class="o">=</span> <span class="s2">"*"</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="s2">"="</span>
+    <span class="n">subsection</span> <span class="o">=</span> <span class="s2">"-"</span>
+    <span class="n">subsubsection</span> <span class="o">=</span> <span class="s2">"^"</span>
+    <span class="n">paragraphs</span> <span class="o">=</span> <span class="s1">'"'</span>
 
 <div class="viewcode-block" id="RstTitle.has_overline">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle.has_overline">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_overline</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ValueStrEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if title_type will generate a title with both over and underline</span>
+<span class="w">        </span><span class="sd">"""Check if title_type will generate a title with both over and underline</span>
 
 <span class="sd">        :param title_type: one from RstTitle enum</span>
 <span class="sd">        :return: boolean</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">part</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">chapter</span><span class="p">)</span></div>
 
 
@@ -151,17 +151,17 @@
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.RstTitle.make_title">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">make_title</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ValueStrEnum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate RST title</span>
+<span class="w">        </span><span class="sd">"""Generate RST title</span>
 
 <span class="sd">        :param text: title text</span>
 <span class="sd">        :param title_type: one from RstTitle enum</span>
 <span class="sd">        :return: rst title string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">title_type</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span>
         <span class="n">_title_line</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">title_type</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">has_overline</span><span class="p">(</span><span class="n">title_type</span><span class="p">):</span>
-            <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_title_line</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">_title</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">_title</span></div>
 </div>
 
@@ -170,31 +170,31 @@
 <div class="viewcode-block" id="AutoDocs">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.AutoDocs">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AutoDocs</span><span class="p">(</span><span class="n">ValueStrEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate automodule rst and help with options&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Generate automodule rst and help with options"""</span>
 
-    <span class="n">members</span> <span class="o">=</span> <span class="s2">&quot;:members:&quot;</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="s2">":members:"</span>
 
 <div class="viewcode-block" id="AutoDocs.make_automodule">
 <a class="viewcode-back" href="../../module_docs/epythet/templates.html#epythet.templates.AutoDocs.make_automodule">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">make_automodule</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">import_ref</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">ValueStrEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate automodule rst with options included</span>
+<span class="w">        </span><span class="sd">"""Generate automodule rst with options included</span>
 
-<span class="sd">        :param import_ref: ref for this file is &quot;epythet.templates&quot;</span>
+<span class="sd">        :param import_ref: ref for this file is "epythet.templates"</span>
 <span class="sd">        :param options: list of autodoc options, such as AutoDocs.members</span>
 <span class="sd">        :return: rst string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">automod_doc</span> <span class="o">=</span> <span class="n">automodule_t</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">import_ref</span><span class="o">=</span><span class="n">import_ref</span><span class="p">)</span>
-        <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">automod_doc</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
-                <span class="n">automod_doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">automod_doc</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">automod_doc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">automod_doc</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">automod_doc</span></div>
 </div>
 
 
 
-<span class="n">master_file_t</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="n">master_file_t</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
 <span class="si">{rst_title}</span>
 
 <span class="s2">.. include:: ./table_of_contents.rst</span>
@@ -211,18 +211,18 @@
 <span class="s2">Release: |release|</span>
 
 <span class="s2">Last change: |today|</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">"""</span>
 
-<span class="n">master_file_title_t</span> <span class="o">=</span> <span class="s2">&quot;Welcome to </span><span class="si">{display_name}</span><span class="s2">&#39;s documentation!&quot;</span>
+<span class="n">master_file_title_t</span> <span class="o">=</span> <span class="s2">"Welcome to </span><span class="si">{display_name}</span><span class="s2">'s documentation!"</span>
 
-<span class="n">table_of_contents_header</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="n">table_of_contents_header</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
 <span class="s2">.. toctree::</span>
 <span class="s2">   :maxdepth: 2</span>
 <span class="s2">   :caption: Contents:</span>
 
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">"""</span>
 
-<span class="n">automodule_t</span> <span class="o">=</span> <span class="s2">&quot;.. automodule:: </span><span class="si">{import_ref}</span><span class="s2">&quot;</span>
+<span class="n">automodule_t</span> <span class="o">=</span> <span class="s2">".. automodule:: </span><span class="si">{import_ref}</span><span class="s2">"</span>
 </pre></div>
 
            </div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.tools &mdash; epythet 0.1.14 documentation</title>
+  <title>epythet.tools &mdash; epythet 0.1.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=468bc497"></script>
+      <script src="../../_static/documentation_options.js?v=e2f3408e"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -118,11 +118,11 @@ It’s advised to do this, then have a look at the problems using</p>
 </pre></div>
 </div>
 <p>This will attempt to repair the problems for you.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">docs</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="gp">... </span><span class="s1">The doctest won't render correctly if it's not preceeded by a blank line:</span>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
 <span class="gp">...</span>
-<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it's fine</span>
 <span class="gp">...</span>
 <span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
 <span class="gp">...</span>
@@ -130,18 +130,18 @@ It’s advised to do this, then have a look at the problems using</p>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
 <span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
-<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">... </span><span class="s1">    since it's within a doctest block</span>
 <span class="gp">...</span>
-<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">'''</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_docs</span> <span class="o">=</span> <span class="n">add_newlines_before_doctests_when_missing</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_docs</span> <span class="o">==</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="gp">... </span><span class="s1">The doctest won&#39;t render correctly if it&#39;s not preceeded by a blank line:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">new_docs</span> <span class="o">==</span> <span class="s1">'''</span>
+<span class="gp">... </span><span class="s1">The doctest won't render correctly if it's not preceeded by a blank line:</span>
 <span class="gp">...</span>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; like_this</span>
 <span class="gp">...</span>
-<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it&#39;s fine</span>
+<span class="gp">... </span><span class="s1">But with a blank line before a block of doctests, it's fine</span>
 <span class="gp">...</span>
 <span class="gp">... </span><span class="s1">&gt;&gt;&gt; okay</span>
 <span class="gp">...</span>
@@ -150,20 +150,20 @@ It’s advised to do this, then have a look at the problems using</p>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; this_doctest_is_too_close_to_text</span>
 <span class="gp">... </span><span class="s1">    SOME_OUTPUT</span>
 <span class="gp">... </span><span class="s1">    &gt;&gt;&gt; but_this_is_fine</span>
-<span class="gp">... </span><span class="s1">    since it&#39;s within a doctest block</span>
+<span class="gp">... </span><span class="s1">    since it's within a doctest block</span>
 <span class="gp">...</span>
-<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">'''</span>
 </pre></div>
 </div>
 <p>The <cite>published_doc_diagnosis_df</cite> gets you a pandas dataframe (requires pandas to be
 installed!) that will tell you if given github <code class="docutils literal notranslate"><span class="pre">org/repo</span></code> url(s) have published
 documentation and if a <cite>docs</cite> folder even exists (in master branch):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">published_doc_diagnosis_df</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">(</span><span class="s1">'https://github.com/i2mint/epythet'</span><span class="p">)</span>
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">published_doc_diagnosis_df</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;https://github.com/i2mint/epythet&#39;</span><span class="p">,</span> <span class="s1">&#39;https://github.com/myorg/myrepo&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">'https://github.com/i2mint/epythet'</span><span class="p">,</span> <span class="s1">'https://github.com/myorg/myrepo'</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">])</span>
 <span class="go">                                 url                      doc_page_url  doc_page_exists  repo_has_docs_folder</span>
 <span class="go">0  https://github.com/i2mint/epythet  https://i2mint.github.io/epythet             True                  True</span>

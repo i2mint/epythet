@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>epythet.autogen &mdash; epythet 0.1.14 documentation</title>
+  <title>epythet.autogen &mdash; epythet 0.1.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=468bc497"></script>
+      <script src="../../_static/documentation_options.js?v=e2f3408e"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -84,13 +84,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for epythet.autogen</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Documentation generation&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Documentation generation"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">argh</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.templates</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">table_of_contents_header</span><span class="p">,</span>
@@ -109,7 +107,7 @@
     <span class="n">auto_options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AutoDocs</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">AutoDocs</span><span class="o">.</span><span class="n">members</span><span class="p">,),</span>
     <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates autodocs rst and rst path relative to module file structure</span>
+<span class="w">    </span><span class="sd">"""Generates autodocs rst and rst path relative to module file structure</span>
 
 
 <span class="sd">    &gt;&gt;&gt; import epythet</span>
@@ -118,23 +116,23 @@
 <span class="sd">    ...     path in epythet.autogen.gen_rst_docs_and_path(Path(epythet.__file__).parent)</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; assert sorted_rst_files == [</span>
-<span class="sd">    ... &#39;epythet.rst&#39;, &#39;epythet/autogen.rst&#39;, &#39;epythet/call_make.rst&#39;, &#39;epythet/cli.rst&#39;,</span>
-<span class="sd">    ... &#39;epythet/config_parser.rst&#39;, &#39;epythet/docs_gen.rst&#39;, &#39;epythet/setup_docsrc.rst&#39;,</span>
-<span class="sd">    ... &#39;epythet/templates.rst&#39;, &#39;epythet/tools.rst&#39;, &#39;epythet/tools/docstring_diagnosis.rst&#39;,</span>
-<span class="sd">    ... &#39;epythet/tools/published_docs.rst&#39;]</span>
+<span class="sd">    ... 'epythet.rst', 'epythet/autogen.rst', 'epythet/call_make.rst', 'epythet/cli.rst',</span>
+<span class="sd">    ... 'epythet/config_parser.rst', 'epythet/docs_gen.rst', 'epythet/setup_docsrc.rst',</span>
+<span class="sd">    ... 'epythet/templates.rst', 'epythet/tools.rst', 'epythet/tools/docstring_diagnosis.rst',</span>
+<span class="sd">    ... 'epythet/tools/published_docs.rst']</span>
 
 <span class="sd">    :param module_dir: module starting dir which should be named the project name</span>
 <span class="sd">    :param auto_options: list of automodule options to include</span>
 <span class="sd">    :param ignore: skip file if path contains any ignore strings</span>
 <span class="sd">    :return: rst_doc, rst_path</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">module_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">module_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
     <span class="n">root_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">module_dir</span><span class="p">)</span>
     <span class="n">root_name_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">root_name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">module_name</span> <span class="o">=</span> <span class="n">module_dir</span><span class="o">.</span><span class="n">name</span>
-    <span class="n">init_path</span> <span class="o">=</span> <span class="n">path_sep</span> <span class="o">+</span> <span class="s2">&quot;__init__&quot;</span>
-    <span class="k">for</span> <span class="n">pyfile</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">root_name</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*.py&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">pyfile</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="p">(</span>
+    <span class="n">init_path</span> <span class="o">=</span> <span class="n">path_sep</span> <span class="o">+</span> <span class="s2">"__init__"</span>
+    <span class="k">for</span> <span class="n">pyfile</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">root_name</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*.py"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pyfile</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"__init__.py"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="n">ignore</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="n">skip</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">pyfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">skip</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -142,11 +140,11 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pyfile_contents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">module_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">pyfile</span><span class="p">)[</span><span class="n">root_name_length</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">init_path</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-                <span class="n">module_ref</span> <span class="o">=</span> <span class="n">module_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_sep</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">rst_path</span> <span class="o">=</span> <span class="n">module_path</span> <span class="o">+</span> <span class="s2">&quot;.rst&quot;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">init_path</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+                <span class="n">module_ref</span> <span class="o">=</span> <span class="n">module_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_sep</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
+                <span class="n">rst_path</span> <span class="o">=</span> <span class="n">module_path</span> <span class="o">+</span> <span class="s2">".rst"</span>
 
-                <span class="k">if</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">.. auto&quot;</span> <span class="ow">in</span> <span class="n">pyfile_contents</span><span class="p">:</span>  <span class="c1"># use rst in .py file docstring</span>
+                <span class="k">if</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">.. auto"</span> <span class="ow">in</span> <span class="n">pyfile_contents</span><span class="p">:</span>  <span class="c1"># use rst in .py file docstring</span>
                     <span class="n">rst_doc</span> <span class="o">=</span> <span class="n">AutoDocs</span><span class="o">.</span><span class="n">make_automodule</span><span class="p">(</span><span class="n">module_ref</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>  <span class="c1"># generate auto_docs with title and auto_options</span>
                     <span class="n">rst_title</span> <span class="o">=</span> <span class="n">RstTitle</span><span class="o">.</span><span class="n">make_title</span><span class="p">(</span><span class="n">module_ref</span><span class="p">,</span> <span class="n">RstTitle</span><span class="o">.</span><span class="n">section</span><span class="p">)</span>
@@ -166,55 +164,54 @@
     <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create sphinx autodocs for module and table of contents</span>
+<span class="w">    </span><span class="sd">"""Create sphinx autodocs for module and table of contents</span>
 
 <span class="sd">    :param module_dir: module starting dir</span>
 <span class="sd">    :param output_dirname: directory name to be created under docsrc</span>
 <span class="sd">    :param skip_existing: existing docs will not be overwritten if True</span>
 <span class="sd">    :param docsrc_dir: path to sphinx docs source file</span>
 <span class="sd">    :param ignore: skip file if path contains any ignore strings</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">base_path</span> <span class="o">=</span> <span class="n">docsrc_dir</span> <span class="o">/</span> <span class="n">output_dirname</span>
-    <span class="n">table_of_contents_rst_path</span> <span class="o">=</span> <span class="n">docsrc_dir</span> <span class="o">/</span> <span class="s2">&quot;table_of_contents.rst&quot;</span>
+    <span class="n">table_of_contents_rst_path</span> <span class="o">=</span> <span class="n">docsrc_dir</span> <span class="o">/</span> <span class="s2">"table_of_contents.rst"</span>
     <span class="n">table_of_contents_rst_doc</span> <span class="o">=</span> <span class="n">table_of_contents_header</span>
     <span class="n">toc_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gen_rst_docs_and_path</span><span class="p">(</span><span class="n">module_dir</span><span class="o">=</span><span class="n">module_dir</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">):</span>
-        <span class="n">toc_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">output_dirname</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">path</span><span class="p">[:</span><span class="w"> </span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;.rst&#39;</span><span class="p">)]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">toc_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   </span><span class="si">{</span><span class="n">output_dirname</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">path</span><span class="p">[:</span><span class="w"> </span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">'.rst'</span><span class="p">)]</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">rst_full_path</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">path</span>
         <span class="k">if</span> <span class="n">skip_existing</span> <span class="ow">and</span> <span class="n">rst_full_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">continue</span>
         <span class="n">rst_full_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">rst_full_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
     <span class="n">toc_files</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-    <span class="n">table_of_contents_rst_doc</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">toc_files</span><span class="p">)</span>
+    <span class="n">table_of_contents_rst_doc</span> <span class="o">+=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">toc_files</span><span class="p">)</span>
     <span class="n">table_of_contents_rst_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">table_of_contents_rst_doc</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="make_autodocs">
 <a class="viewcode-back" href="../../module_docs/epythet/autogen.html#epythet.autogen.make_autodocs">[docs]</a>
-<span class="nd">@argh</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--ignore&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_autodocs</span><span class="p">(</span>
     <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">output_dirname</span><span class="o">=</span><span class="s2">&quot;module_docs&quot;</span><span class="p">,</span>
+    <span class="n">output_dirname</span><span class="o">=</span><span class="s2">"module_docs"</span><span class="p">,</span>
     <span class="n">skip_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">docsrc_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create sphinx autodocs and table of contents for module defined by setup.cfg</span>
+<span class="w">    </span><span class="sd">"""Create sphinx autodocs and table of contents for module defined by setup.cfg</span>
 
 <span class="sd">    :param project_dir: Path to root project directory containing setup.cfg</span>
 <span class="sd">    :param output_dirname: directory name to be created under docsrc</span>
 <span class="sd">    :param skip_existing: existing docs will not be overwritten if True</span>
 <span class="sd">    :param docsrc_dir: path to sphinx docs source file</span>
 <span class="sd">    :param ignore: skip file if path contains any ignore strings</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
-    <span class="n">project_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_config</span><span class="p">(</span><span class="n">project_dir</span> <span class="o">/</span> <span class="s2">&quot;setup.cfg&quot;</span><span class="p">)</span>
+    <span class="n">project_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_config</span><span class="p">(</span><span class="n">project_dir</span> <span class="o">/</span> <span class="s2">"setup.cfg"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">docsrc_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">docsrc_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">&quot;docsrc&quot;</span>
+        <span class="n">docsrc_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="s2">"docsrc"</span>
 
     <span class="n">module_dir</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">/</span> <span class="n">project_name</span>
     <span class="n">make_autodocs_for_modules_files</span><span class="p">(</span>
@@ -227,10 +224,10 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">argh</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cw</span>
 
-    <span class="n">argh</span><span class="o">.</span><span class="n">dispatch_command</span><span class="p">(</span><span class="n">make_autodocs</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">cw</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">make_autodocs</span><span class="p">))</span>
 </pre></div>
 
            </div>
