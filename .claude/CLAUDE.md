@@ -56,6 +56,7 @@ folder `/ (root)`**. The fix is:
 
 ```python
 from epythet import enable_pages
+
 enable_pages("owner/repo")  # uses gh CLI or GITHUB_TOKEN
 ```
 

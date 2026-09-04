@@ -74,10 +74,10 @@ Or from Python:
 from epythet import check_pages_setup, enable_pages
 
 # Diagnose
-check_pages_setup('owner/repo')
+check_pages_setup("owner/repo")
 
 # Fix
-enable_pages('owner/repo')
+enable_pages("owner/repo")
 ```
 
 You can also point these at a local git checkout instead of `owner/repo`:
