@@ -54,6 +54,6 @@ def make_docsrc(project_dir, *, verbose: bool = True):
 
 
 if __name__ == "__main__":
-    import argh
+    import cw
 
-    argh.dispatch_command(make_docsrc)
+    raise SystemExit(cw.dispatch(make_docsrc))

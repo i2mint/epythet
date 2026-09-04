@@ -12,10 +12,9 @@ from epythet.autogen import make_autodocs
 from epythet.setup_docsrc import make_docsrc
 from epythet.call_make import make
 
-import argh
+import cw
 
 
-@argh.arg("--ignore", nargs="*")
 def quickstart(project_dir, *, ignore: list[str] = None):
     """Quickstart will run through the three steps
 
@@ -94,27 +93,20 @@ def _resolve_repo_stub(repo):
     return stub
 
 
-argh_kwargs = {
-    "namespace": "epythet",
-    "functions": [
-        make_docsrc,
-        make_autodocs,
-        make,
-        quickstart,
-        check_pages,
-        configure_pages,
-    ],
-    "namespace_kwargs": {
-        "title": "Documentation Generator",
-        "description": "Setup and generate Sphinx docs effortlessly",
-    },
-}
+#: The commands ``epythet`` exposes, in the order they appear in ``--help``.
+COMMANDS = [
+    make_docsrc,
+    make_autodocs,
+    make,
+    quickstart,
+    check_pages,
+    configure_pages,
+]
 
 
 def epythet_cli():
-    import argh  # pip install argh
-
-    argh.dispatch_commands(argh_kwargs.get("functions", None))
+    """Entry point for the ``epythet`` console script."""
+    raise SystemExit(cw.dispatch(COMMANDS))
 
 
 if __name__ == "__main__":
