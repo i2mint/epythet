@@ -1,0 +1,5 @@
+This enables caching, e.g.::
+
+    cache=lambda self: Files(self.user_id)
+
+Next paragraph.

@@ -1,33 +1,31 @@
-"""Command line access to epythet
+"""Command line access to epythet.
 
-More info in the main epythet documentation page
+``epythet quickstart PROJECT_DIR [--ignore ...]`` is the command the
+``publish-github-pages`` action runs: it scaffolds ``docsrc``, builds the HTML
+and writes it to ``PROJECT_DIR/docsrc/_build/html``.
 """
-
-from typing import List
-from pathlib import Path
-
-_STATIC_FILES = Path(__file__).absolute().parent / "_static"
-
-from epythet.autogen import make_autodocs
-from epythet.setup_docsrc import make_docsrc
-from epythet.call_make import make
 
 import cw
 
+from epythet.build import build, make
+from epythet.config import load_config
+from epythet.scaffold import make_autodocs, make_docsrc, scaffold
+
 
 def quickstart(project_dir, *, ignore: list[str] = None):
-    """Quickstart will run through the three steps
+    """Scaffold docsrc and build the HTML documentation in one go.
 
-    1. epythet make_docsrc project_dir
-    2. epythet make_autodocs project_dir
-    3. epythet make project_dir html
+    Equivalent to ``make-docsrc`` then ``make html``, with ``ignore`` applied
+    to the API generator. An empty ``ignore`` (the action passes ``--ignore``
+    with no values when its input is unset) means "use the configured default".
 
-    :param project_dir: Path to root project directory containing docsrc folder
+    :param project_dir: Path to root project directory (pyproject.toml or setup.cfg)
     :param ignore: skip file if path contains any ignore strings
     """
-    make_docsrc(project_dir, verbose=True)
-    make_autodocs(project_dir, skip_existing=False, ignore=ignore)
-    make(project_dir, "html")
+    overrides = {"ignore": list(ignore)} if ignore else {}
+    config = load_config(project_dir, **overrides)
+    scaffold(config, verbose=True)
+    return build(config, "html", overrides=overrides)
 
 
 def check_pages(repo, *, no_url_check: bool = False):
@@ -36,10 +34,7 @@ def check_pages(repo, *, no_url_check: bool = False):
     :param repo: GitHub repo as 'owner/repo', or path to a local git checkout.
     :param no_url_check: Skip checking if the docs URL actually responds.
     """
-    from epythet.tools.published_docs import (
-        check_pages_setup,
-        repo_stub_from_local_dir,
-    )
+    from epythet.tools.published_docs import check_pages_setup
 
     repo_stub = _resolve_repo_stub(repo)
     result = check_pages_setup(repo_stub, check_url=not no_url_check)

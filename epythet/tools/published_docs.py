@@ -16,7 +16,6 @@ Elements for a tool to setup docs and check if docs are published, and if not, w
 """
 
 from functools import partial
-import requests
 from io import BytesIO
 import re
 from typing import Union
@@ -38,11 +37,25 @@ github_root_url_p = re.compile(r"^https?://github.com/[^/]+/[^/]+/?$")
 # hubcap, and refactored to not have so many repetitions (e.g. should centralize
 # the url templates, factor out headers, etc.)
 
-import requests
 import os
 import shutil
 import subprocess
 import json
+
+
+class _LazyModule:
+    """Import a module on first attribute access (keeps ``import epythet`` fast)."""
+
+    def __init__(self, name):
+        self._name = name
+
+    def __getattr__(self, attr):
+        import importlib
+
+        return getattr(importlib.import_module(self._name), attr)
+
+
+requests = _LazyModule("requests")
 from warnings import warn
 
 DFLT_DOCS_BRANCH = "gh-pages"
