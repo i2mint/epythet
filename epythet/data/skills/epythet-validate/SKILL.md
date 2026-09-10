@@ -47,7 +47,7 @@ report.findings             # list of Finding (rule, severity, level, object, fi
 | 2 | render | the built text/HTML output | empty pages, unresolved xrefs, dangling anchors, missing images, snapshot drift | 5 to 20 s | yes, snapshot diff |
 | 3 | review | an LLM over rendered text of changed pages | unknown unknowns; **proposes** new ledger rules | minutes | **never** |
 
-The CLI `--level` is a *tier*: `0` runs level 0; `1` (default) runs 0 and 0.5; `2` adds level 1. Levels 2 and 3 are **coming in WP3** (see the tracking issue linked below); until then, Level 3 is performed by the `docs-reviewer` subagent shipped with epythet, which produces proposed rules rather than pass/fail.
+The CLI `--level` is a *tier*: `0` runs level 0; `1` (default) runs 0 and 0.5; `2` adds level 1 (which needs a `docsrc/conf.py`: run `epythet quickstart` first, or pass `--docsrc`); the next two tiers will run levels 2 and 3. Levels 2 and 3 are **coming in WP3** (see the tracking issue linked below); until then, Level 3 is performed by the `docs-reviewer` subagent shipped with epythet, which produces proposed rules rather than pass/fail.
 
 Options: `--style google|numpy|sphinx` (the convention passed to the linters), `--no-napoleon` (parse without Google/NumPy pre-processing), `--ledger DIR` (overlay extra rules), `--docsrc DIR` (Sphinx sources for the build level), `--no-observe` (do not record observations), `--max-per-rule N` (table verbosity).
 
@@ -67,7 +67,7 @@ Options: `--style google|numpy|sphinx` (the convention passed to the linters), `
 
 ## Output
 
-`--format table` groups one line per finding by rule, with "N more of DRxxx" trailers. `--format json` is the full report (`schema_version`, package, versions, `levels_run`, `summary` with counts and durations, `findings`). `--format jsonl` streams one finding per line. All three are views of one `Report`, so they cannot disagree. A finding carries: `rule`, `severity`, `level`, `object` (dotted path), `file`, `line`, `detector`, `message`, `evidence`, `fix`, `autofixable`, `ledger_occurrences`.
+`--format table` groups one line per finding by rule, with "N more of DRxxx" trailers. `--format json` is the full report (`schema_version`, `package`, `package_dir`, `epythet_version`, `sphinx_version`, `docutils_version`, `levels_run`, `ledger_sources`, `summary` with counts and durations, `notes`, `findings`). `--format jsonl` streams one finding per line. All three are views of one `Report`, so they cannot disagree. A finding carries: `rule`, `severity`, `level`, `object` (dotted path), `file`, `line`, `detector`, `message`, `evidence`, `fix`, `autofixable`, `ledger_occurrences`.
 
 ## Reading a finding
 

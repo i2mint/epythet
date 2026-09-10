@@ -95,7 +95,7 @@ for stub in repo_stubs_for_org("myorg"):
         print(f"Enabled Pages for {stub}")
 ```
 
-`published_doc_diagnosis_df(org)` (needs pandas) returns the same diagnosis for every repo as a DataFrame.
+`published_doc_diagnosis_df(urls)` (needs pandas) takes a list or table of documentation URLs and returns their status as a DataFrame.
 
 ## Local checkouts
 

@@ -27,7 +27,7 @@ One session per repository. The sweep couples two things on purpose: fixing rend
 | repair: all safe normalizer rewrites to source, with a diff | `epythet repair` | **coming in WP3** |
 | RST field lists to Google sections, per module, opt-in | `epythet migrate-style` | **coming in WP3** |
 | fleet-wide artifact frequency run | `epythet sweep` | **coming in WP3** |
-| validate levels 2 (render) and 3 (review) | `epythet validate --level 3/4` | **coming in WP3**; use the `docs-reviewer` subagent meanwhile |
+| validate levels 2 (render) and 3 (review) | `epythet validate` with the higher `--level` tiers | **coming in WP3**; use the `docs-reviewer` subagent meanwhile |
 
 Until `epythet repair` ships, every artifact beyond the missing blank line before a doctest is fixed by hand, guided by the `fix` hint on each finding. Do not write a competing repair script into the repository.
 
@@ -40,8 +40,11 @@ git switch -c docs/epythet-sweep
 pytest -q                          # must be green before you touch anything
 pytest --doctest-modules -q PKG    # record how many doctests run and pass
 epythet validate . --format json --output /tmp/before.json
+epythet quickstart . --ignore tests/          # scaffold docsrc/ so the build level has a conf.py
 epythet validate . --level 2 --format table   # the Sphinx warnings, for the before count
 ```
+
+Level 2 (the Sphinx build) needs `docsrc/conf.py`; without one it reports a `NO_DOCSRC` note and checks nothing, so run `quickstart` first (or pass `--docsrc DIR`). After step 7 deletes a committed `docsrc/`, regenerate it the same way before the exit gate.
 
 A sweep landing on a red package cannot tell its own damage from pre-existing damage. If tests are red, stop and report.
 
@@ -92,7 +95,7 @@ Also remove `docsrc/` references from packaging config if any, and check `[tool.
 ```bash
 pytest -q && pytest --doctest-modules -q PKG
 epythet validate . --format json --output /tmp/after.json
-epythet validate . --level 2
+epythet quickstart . --ignore tests/ && epythet validate . --level 2
 ```
 
 Both must be green (or the remaining findings explicitly accepted). Compose the per-package report: coverage before and after, validate counts per rule before and after, Sphinx warning count before and after, rubric distribution for entry points, and the list of claims declined for lack of verification.

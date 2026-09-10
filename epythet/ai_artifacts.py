@@ -1,4 +1,4 @@
-"""Discover a repository's AI agent artifacts and render the "For AI agents" page.
+r"""Discover a repository's AI agent artifacts and render the "For AI agents" page.
 
 A repository that ships tooling for coding agents does so by convention, not
 registration: skills are folders holding a ``SKILL.md`` (the Agent Skills spec),
@@ -38,7 +38,7 @@ without the epythet marker is never overwritten.
 >>> skill = root / "pkg" / "data" / "skills" / "pkg-quickstart"
 >>> skill.mkdir(parents=True)
 >>> _ = (skill / "SKILL.md").write_text(
-...     "---\\nname: pkg-quickstart\\ndescription: Use pkg.\\n---\\n\\n# Body\\n"
+...     "---\nname: pkg-quickstart\ndescription: Use pkg.\n---\n\n# Body\n"
 ... )
 >>> found = discover_artifacts(root, package_dir=root / "pkg")
 >>> [s.name for s in found.skills], found.skills[0].shipped
@@ -50,12 +50,14 @@ without the epythet marker is never overwritten.
 from __future__ import annotations
 
 import json
+import os
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, Iterator
 
 from epythet import templates
+from epythet.config import ConfigError
 
 #: Skill folders relative to the project root; ``{pkg}`` is the package directory.
 SKILL_LOCATIONS: tuple[str, ...] = ("{pkg}/data/skills", "skills", ".claude/skills")
@@ -74,6 +76,9 @@ INSTRUCTION_LOCATIONS: tuple[tuple[str, str], ...] = (
 PAGE_FILENAME = "ai-agents.md"
 #: The agent host named in generated ``gh skill install`` lines.
 DEFAULT_AGENT_HOST = "claude-code"
+#: Environment variable that switches the page off for a whole fleet build
+#: (``0`` / ``false`` / ``no`` / ``off``) without touching any ``pyproject.toml``.
+DISABLE_ENV = "EPYTHET_AI_ARTIFACTS"
 #: The machine-readable outputs every epythet site publishes, in display order.
 AGENT_OUTPUT_KINDS = (
     "llms",
@@ -161,6 +166,7 @@ class AIArtifacts:
     instruction_files: tuple[InstructionFile, ...] = ()
 
     def __bool__(self) -> bool:
+        """True when at least one artifact of any kind was found."""
         return bool(self.skills or self.subagents or self.instruction_files)
 
     def to_dict(self) -> dict:
@@ -220,13 +226,16 @@ def _discover_skills(root: Path, pkg: Path | None) -> Iterator[Skill]:
             if real in seen:
                 continue
             seen.add(real)
-            meta = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+            meta = _frontmatter_of(skill_md)
+            metadata = meta.get("metadata")
             source = _relative_source(real, root, fallback=entry)
             yield Skill(
-                name=str(meta.get("name") or entry.name),
+                name=_text(meta.get("name")) or entry.name,
                 source=source,
-                description=str(meta.get("description") or "").strip(),
-                audience=str((meta.get("metadata") or {}).get("audience") or ""),
+                description=_text(meta.get("description")),
+                audience=_text(metadata.get("audience"))
+                if isinstance(metadata, dict)
+                else "",
                 shipped=_is_under(real, pkg),
                 installable=not _is_hidden(source),
             )
@@ -242,11 +251,11 @@ def _discover_subagents(root: Path, pkg: Path | None) -> Iterator[Subagent]:
             if real in seen or not real.is_file():
                 continue
             seen.add(real)
-            meta = parse_frontmatter(entry.read_text(encoding="utf-8"))
+            meta = _frontmatter_of(entry)
             yield Subagent(
-                name=str(meta.get("name") or entry.stem),
+                name=_text(meta.get("name")) or entry.stem,
                 source=_relative_source(real, root, fallback=entry),
-                description=str(meta.get("description") or "").strip(),
+                description=_text(meta.get("description")),
                 tools=_tools_string(meta.get("tools")),
                 shipped=_is_under(real, pkg),
             )
@@ -257,6 +266,25 @@ def _discover_instruction_files(root: Path) -> Iterator[InstructionFile]:
         path = root / relative
         if path.is_file() or (path.is_dir() and any(path.iterdir())):
             yield InstructionFile(relative, audience, is_dir=path.is_dir())
+
+
+def _frontmatter_of(path: Path) -> dict:
+    """The frontmatter of a file, tolerating bad encodings and unreadable files."""
+    try:
+        return parse_frontmatter(path.read_text(encoding="utf-8", errors="replace"))
+    except OSError:
+        return {}
+
+
+def _text(value) -> str:
+    """A frontmatter scalar as one stripped string ('' for anything that is not text).
+
+    >>> _text(" x "), _text(["a"]), _text(None), _text(3)
+    ('x', '', '', '3')
+    """
+    if value is None or isinstance(value, (list, dict, bool)):
+        return ""
+    return str(value).strip()
 
 
 def _relative_source(real: Path, root: Path, *, fallback: Path) -> str:
@@ -299,13 +327,18 @@ def _tools_string(value) -> str:
 
 
 def parse_frontmatter(text: str) -> dict:
-    """The YAML frontmatter of a Markdown file as a dict (``{}`` when absent).
+    r"""The YAML frontmatter of a Markdown file as a dict (``{}`` when absent).
 
-    Uses PyYAML when installed; otherwise a small reader that understands the
-    subset skills and agents use: ``key: value`` scalars, ``>``/``|`` block
-    scalars, one level of nested mapping, and ``[a, b]`` flow lists.
+    Uses PyYAML when installed; otherwise, or when PyYAML rejects the block (an
+    unquoted ``description: Use when x: y`` is a common slip), a small reader
+    that understands the subset skills and agents use: ``key: value`` scalars,
+    ``>``/``|`` block scalars, one level of nested mapping, ``[a, b]`` flow
+    lists and trailing comments. A malformed frontmatter never raises.
 
-    >>> parse_frontmatter("---\\nname: x\\nmetadata:\\n  audience: users\\n---\\nbody")
+    >>> parse_frontmatter("---\ndescription: Use when a: b\nname: x\n---\n")
+    {'description': 'Use when a: b', 'name': 'x'}
+
+    >>> parse_frontmatter("---\nname: x\nmetadata:\n  audience: users\n---\nbody")
     {'name': 'x', 'metadata': {'audience': 'users'}}
     >>> parse_frontmatter("no frontmatter")
     {}
@@ -320,6 +353,8 @@ def parse_frontmatter(text: str) -> dict:
         loaded = yaml.safe_load(block)
         return loaded if isinstance(loaded, dict) else {}
     except ImportError:
+        return _parse_simple_yaml(block)
+    except Exception:  # yaml.YAMLError: degrade to the tolerant reader
         return _parse_simple_yaml(block)
 
 
@@ -366,6 +401,7 @@ def _nested_mapping(lines: list[str], i: int) -> tuple[dict, int]:
 
 
 def _scalar(value: str):
+    value = re.sub(r"\s+#.*$", "", value).strip()
     if value.startswith("[") and value.endswith("]"):
         return [v.strip().strip("'\"") for v in value[1:-1].split(",") if v.strip()]
     if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
@@ -376,6 +412,21 @@ def _scalar(value: str):
 # --------------------------------------------------------------------------
 # Rendering
 # --------------------------------------------------------------------------
+
+#: The fields a page template may use.
+TEMPLATE_FIELDS = frozenset(
+    {
+        "marker",
+        "name",
+        "display_name",
+        "repo_stub",
+        "site_url",
+        "skills_section",
+        "subagents_section",
+        "instructions_section",
+        "outputs_section",
+    }
+)
 
 #: The default page template; ``str.format`` fields are the section renders.
 DEFAULT_TEMPLATE = """\
@@ -474,10 +525,22 @@ def site_url_for(repo_url: str) -> str:
 def repo_stub_for(repo_url: str) -> str:
     """``owner/repo`` from a GitHub URL ('' when it is not one).
 
+    Deeper paths, fragments and queries are dropped, so an ``Issues`` URL in
+    ``[project.urls]`` still names the repository.
+
     >>> repo_stub_for("https://github.com/i2mint/epythet.git")
     'i2mint/epythet'
+    >>> repo_stub_for("https://github.com/i2mint/epythet/issues#readme")
+    'i2mint/epythet'
+    >>> repo_stub_for("git@github.com:i2mint/epythet.git")
+    'i2mint/epythet'
+    >>> repo_stub_for("https://gitlab.com/o/r")
+    ''
     """
-    match = re.search(r"github\.com[/:]([^/]+)/([^/]+?)(?:\.git)?/?$", repo_url or "")
+    match = re.search(
+        r"github\.com[/:]([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+?)(?:\.git)?(?:[/#?]|$)",
+        repo_url or "",
+    )
     return f"{match.group(1)}/{match.group(2)}" if match else ""
 
 
@@ -496,7 +559,7 @@ def render_ai_artifacts_page(
     :param agent: the host named in the ``gh skill install`` lines
     """
     repo_stub = repo_stub_for(config.repo_url)
-    source_base = f"{config.repo_url}/tree/HEAD/" if config.repo_url else ""
+    source_base = f"https://github.com/{repo_stub}/tree/HEAD/" if repo_stub else ""
     return template.format(
         marker=templates.INDEX_MARKER,
         name=config.name,
@@ -593,13 +656,17 @@ def _render_outputs(outputs) -> str:
 def ai_artifacts_page(config, *, artifacts: AIArtifacts | None = None):
     """The "For AI agents" :class:`~epythet.scaffold.PageSpec` for a project, or ``None``.
 
-    ``None`` when ``config.ai_artifacts`` is off or no artifact was found. The
-    template is ``config.ai_artifacts_template`` (a file, relative to the
-    project root) when set, else :data:`DEFAULT_TEMPLATE`.
+    ``None`` when ``config.ai_artifacts`` is off, when the ``EPYTHET_AI_ARTIFACTS``
+    environment variable is ``0``/``false`` (the fleet-wide switch), or when no
+    artifact was found. The template is ``config.ai_artifacts_template`` (a
+    file, relative to the project root) when set, else :data:`DEFAULT_TEMPLATE`.
+
+    :raises ConfigError: when the template file is missing or has a field the
+        renderer does not provide (literal braces must be doubled: ``{{``).
     """
     from epythet.scaffold import PageSpec
 
-    if not getattr(config, "ai_artifacts", True):
+    if not getattr(config, "ai_artifacts", True) or not enabled_by_environment():
         return None
     if artifacts is None:
         artifacts = discover_artifacts(
@@ -610,11 +677,40 @@ def ai_artifacts_page(config, *, artifacts: AIArtifacts | None = None):
     template = DEFAULT_TEMPLATE
     template_path = getattr(config, "ai_artifacts_template", "")
     if template_path:
-        template = (config.project_dir / template_path).read_text(encoding="utf-8")
+        path = config.project_dir / template_path
+        if not path.is_file():
+            raise ConfigError(
+                f"[tool.epythet] ai_artifacts_template points at {path}, "
+                "which does not exist"
+            )
+        template = path.read_text(encoding="utf-8")
         if templates.INDEX_MARKER not in template and "{marker}" not in template:
             template = "{marker}\n\n" + template
-    content = render_ai_artifacts_page(artifacts, config, template=template)
+    try:
+        content = render_ai_artifacts_page(artifacts, config, template=template)
+    except (KeyError, IndexError, ValueError) as e:
+        raise ConfigError(
+            f"ai_artifacts_template {template_path or '(default)'}: unknown field "
+            f"{e}; the fields are {sorted(TEMPLATE_FIELDS)} and literal braces "
+            "must be doubled ({{ and }})"
+        ) from e
     return PageSpec(PAGE_FILENAME, content, marker=templates.INDEX_MARKER)
+
+
+def enabled_by_environment() -> bool:
+    """False when ``EPYTHET_AI_ARTIFACTS`` is set to ``0``, ``false``, ``no`` or ``off``.
+
+    >>> os.environ[DISABLE_ENV] = "0"; enabled_by_environment()
+    False
+    >>> del os.environ[DISABLE_ENV]; enabled_by_environment()
+    True
+    """
+    return os.environ.get(DISABLE_ENV, "").strip().lower() not in (
+        "0",
+        "false",
+        "no",
+        "off",
+    )
 
 
 def default_pages(config) -> list:

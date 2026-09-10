@@ -128,7 +128,7 @@ API facts live in docstrings and are generated upward. A README or skill that re
 
 ## Checks to run
 
-- `epythet validate PROJECT_DIR` (level 1 by default: lint plus a doctree parse of every docstring, no build) catches rendering artifacts before they reach the site; `--level 2` adds the Sphinx build. See the `epythet-validate` skill.
+- `epythet validate PROJECT_DIR` (level 1 by default: lint plus a doctree parse of every docstring, no build) catches rendering artifacts before they reach the site; `--level 2` adds the Sphinx build (needs a `docsrc/conf.py`, so run `epythet quickstart` first). See the `epythet-validate` skill.
 - `pytest --doctest-modules` is the behavioural gate: every example must run.
 - Ruff with `[tool.ruff.lint.pydocstyle] convention = "google"` gives `D417` (undocumented parameter); `pydoclint` with `--arg-type-hints-in-docstring=False` checks `Returns`/`Raises` against the body.
 

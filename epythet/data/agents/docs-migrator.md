@@ -18,7 +18,7 @@ You bring one repository's documentation up to the epythet 0.2 standard, followi
 
 ## Procedure (one pass, in this order)
 
-1. **Baseline.** `git switch -c docs/epythet-sweep`. `pytest -q`; stop and report if red. `pytest --doctest-modules -q PKG` and record counts. `epythet validate . --format json --output /tmp/before.json`; `epythet validate . --level 2` for the Sphinx warning count. Record the public surface (`__all__`, else non-underscore names in `__init__` plus module-level callables) and the package's one-sentence purpose and three entry points.
+1. **Baseline.** `git switch -c docs/epythet-sweep`. `pytest -q`; stop and report if red. `pytest --doctest-modules -q PKG` and record counts. `epythet validate . --format json --output /tmp/before.json`; then `epythet quickstart . --ignore tests/` (the build level needs `docsrc/conf.py`) and `epythet validate . --level 2` for the Sphinx warning count. Record the public surface (`__all__`, else non-underscore names in `__init__` plus module-level callables) and the package's one-sentence purpose and three entry points.
 2. **Mechanical repair.** `python -c "from epythet import repair_package; repair_package('PKG', write_to_files=True)"`, then fix remaining `epythet validate` findings by rule, most frequent first, using each finding's `fix` hint. Keep RST field lists as RST. Re-run doctests: previously glued doctests now execute and may fail; fix the example only after running the code, else `# doctest: +SKIP` and file it.
 3. **Coverage.** Module docstring on every non-underscore module; docstring on every public name; one-line summaries for private helpers; lazy docstrings (summary restating the name) counted as missing and rewritten where you can say something true.
 4. **Correctness.** Parameters match signatures in name and order; `Returns`/`Yields`/`Raises` agree with the body; every backticked identifier resolves; prose types contradicting annotations are deleted. Every doctest runs.
@@ -26,7 +26,7 @@ You bring one repository's documentation up to the epythet 0.2 standard, followi
 6. **README.** One sentence, install, smallest complete runnable example, then paragraphs; link to the rendered docs and the `<package>.md` aggregate; no API reference duplication.
 7. **Theme.** Build locally (`epythet quickstart . --ignore tests/`), look at the landing page and one API page. Leave `theme = "auto"` unless the `epythet-theme` decision procedure says otherwise; write only `[tool.epythet]` keys.
 8. **Committed `docsrc/`.** If it is a stale epythet template (template `conf.py`, `index.rst`, `table_of_contents.rst`, `module_docs/`, `Makefile`), delete it and add `docsrc/` to `.gitignore`. Keep it only for hand-written pages, and then run `epythet make-docsrc .` so `conf.py` becomes the shim.
-9. **Exit gate.** `pytest -q && pytest --doctest-modules -q PKG`; `epythet validate . --format json --output /tmp/after.json`; `epythet validate . --level 2`. Green, or remaining findings explicitly accepted in the report.
+9. **Exit gate.** `pytest -q && pytest --doctest-modules -q PKG`; `epythet validate . --format json --output /tmp/after.json`; `epythet quickstart . --ignore tests/` then `epythet validate . --level 2`. Green, or remaining findings explicitly accepted in the report.
 10. **Pull request.** Commit in logical steps (mechanical repair separate from content changes). Open a PR whose body is the report below. If the brief pre-authorises landing, squash-merge after CI, then `epythet check-pages OWNER/REPO`.
 
 ## The report (PR body)
