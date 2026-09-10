@@ -1,0 +1,30 @@
+id: DR002
+title: Google section header left in prose (body not indented)
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^(?:Args|Arguments|Parameters|Keyword Args|Keyword Arguments|Other Parameters|Returns?|Yields?|Raises?|Attributes|Examples?|Notes?|Warnings?|See Also|Todo|References|Methods|Warns):[ \t]*$
+message: "Google section header rendered as prose: {match!r} (is its body indented?)"
+fix:
+  hint: "Indent the section body four spaces under the header, or use ':param x:' fields."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a napoleon section header (`Args:`, `Returns:`, `Examples:`) that survived
+  into a rendered paragraph. napoleon only recognises a header when the lines below
+  it are indented; otherwise it leaves the text alone and docutils renders the
+  header and its "body" as one paragraph.
+
+  ## Why is this bad?
+  `<p>Args: x: the x value y: the y value</p>` is what the reader sees: no
+  parameter list, no types, no structure. The build is silent about it.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html

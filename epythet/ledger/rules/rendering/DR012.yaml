@@ -1,0 +1,28 @@
+id: DR012
+title: Google sections become a definition list (napoleon not enabled)
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: doctree
+  function: section_as_definition_list
+message: "Google section {match!r} parsed as a definition list: napoleon is not enabled"
+fix:
+  hint: "Enable sphinx.ext.napoleon in conf.py (epythet does by default)."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+  napoleon: false
+explanation: |
+  ## What it does
+  Flags a definition-list term that is a napoleon section name (`Args`, `Returns`).
+  This is what a Google-style docstring becomes when `sphinx.ext.napoleon` is not
+  loaded, so the rule only applies when validating with `napoleon=False`.
+
+  ## Why is this bad?
+  Sections render as indented definitions instead of parameter tables and
+  rubrics. One line in conf.py fixes every docstring in the package at once.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html

@@ -1,0 +1,25 @@
+id: DR034
+title: Other Sphinx warning
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: medium
+detector:
+  kind: build-warning
+  warning_type: '*'
+  example_warning: "/p/dol/base.py:docstring of dol.base.Store:3: WARNING: Title underline too short."
+message: "sphinx: {match}"
+fix:
+  hint: "Read the warning; add a specific ledger rule if it recurs."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  The catch-all for warning lines no more specific build rule matched, including
+  lines with no `[type]` suffix.
+
+  ## Why is this bad?
+  Since Sphinx 8.1 any warning fails a `-W` build, so every one of these is a red
+  CI job waiting to happen.

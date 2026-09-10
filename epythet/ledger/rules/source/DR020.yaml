@@ -1,0 +1,33 @@
+id: DR020
+title: Backslash in a non-raw docstring is silently eaten
+namespace: source
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: source
+  scan: literal
+  requires_non_raw: true
+  skip_doctest_lines: true
+  pattern: |
+    (?<!\\)\\[A-Za-z0-9]
+message: "backslash escape in a non-raw docstring is eaten by Python or docutils: {match!r}"
+fix:
+  hint: "Make the docstring raw (r\"\"\"...\"\"\") and put the fragment in double backticks or a literal block."
+  autofixable: true
+  strategy: make-docstring-raw
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a backslash followed by a letter or digit in the *source* of a docstring
+  that is not a raw string, outside doctest lines.
+
+  ## Why is this bad?
+  `"path C:\temp\new and regex \d+"` renders as `C:tempnew` and `d+`. Python
+  turns `\t` and `\n` into whitespace before Sphinx ever sees them, and docutils
+  treats the remaining backslashes as escapes in prose. Nothing warns. No existing
+  linter checks this.
+references:
+  - https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals

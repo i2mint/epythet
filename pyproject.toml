@@ -39,6 +39,7 @@ dev = ["pytest>=7.0", "pytest-cov>=4.0", "hubcap", "pandas", "ruff>=0.1.0"]
 docs = []
 themes = ["sphinx-book-theme>=1.1", "sphinx-rtd-theme>=3"]
 pdf = ["playwright>=1.40"]
+validate = ["pyyaml>=6.0", "ruff>=0.5", "pydoclint>=0.5"]
 
 [project.scripts]
 epythet = "epythet.cli:epythet_cli"

@@ -1,0 +1,31 @@
+id: DR005
+title: Heading underline leaked into prose
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^\s*([=\-~^"#*+])\1+\s*$
+message: "heading underline rendered as text: {match!r} (shorter than its title?)"
+fix:
+  hint: "Make the underline at least as long as the title text above it."
+  autofixable: true
+  strategy: pad-underline
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a line made only of underline characters (`==`, `--`) that ended up inside
+  a paragraph.
+
+  ## Why is this bad?
+  A section underline shorter than its title is not a title: the title and the
+  underline are rendered as one paragraph, `<p>Section == Body text.</p>`, and the
+  section never exists. Sphinx warns "Title underline too short" only in some
+  contexts.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#sections

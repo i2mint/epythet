@@ -1,0 +1,28 @@
+id: DR004
+title: Markdown link left literal
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: very-high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    \[[^\]\n]{1,80}\]\((?:https?://|www\.|\.{0,2}/)[^)\s]+\)
+message: "Markdown link is not RST: {match!r}"
+fix:
+  hint: "Write RST links as `text <url>`_ (with the trailing underscore)."
+  autofixable: true
+  strategy: markdown-link-to-rst
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags `[text](url)` in a docstring paragraph.
+
+  ## Why is this bad?
+  docutils shows the brackets and parentheses literally; only the bare URL is
+  turned into a link, so the reader sees `[text](http://...)`.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#hyperlink-references

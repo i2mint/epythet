@@ -1,0 +1,27 @@
+id: DR009
+title: Directive text shown as prose
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: info
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    \.\.\s+[a-z][\w-]*::
+message: "directive syntax visible in a paragraph: {match!r}"
+fix:
+  hint: "Put the directive on its own line preceded by a blank line, or quote it in double backticks."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags `.. name::` appearing inside a paragraph's text.
+
+  ## Why is this bad?
+  A directive only works at the start of a block. Written mid-sentence, or on the
+  line right after prose, it is shown literally to the reader.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#directives

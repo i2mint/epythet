@@ -1,0 +1,30 @@
+id: DR029
+title: Google section header with its body on the same line
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^(?:Args|Arguments|Parameters|Keyword Args|Keyword Arguments|Returns?|Yields?|Raises?|Attributes|Examples?):[ \t]+\S.*
+message: "section body on the header line is rendered as prose: {match!r}"
+fix:
+  hint: "Put the body on the next line, indented: 'Returns:' newline '    a thing'."
+  autofixable: true
+  strategy: split-section-header
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags `Returns: a thing` (or `Args: ...`) written on one line. napoleon only
+  recognises a header that stands alone on its line, so the whole line is left as
+  prose.
+
+  ## Why is this bad?
+  The reader sees the paragraph "Returns: a thing" instead of a Returns section;
+  77 occurrences in the dol baseline alone, all silent.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html

@@ -1,0 +1,27 @@
+id: DR022
+title: Bullet list silently split by mixed markers
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: high
+detector:
+  kind: doctree
+  function: mixed_bullet_markers
+message: "bullet marker changed mid-list, so it became two lists: {match}"
+fix:
+  hint: "Use one bullet character for the whole list."
+  autofixable: true
+  strategy: unify-bullet-marker
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags two adjacent sibling bullet lists, which is what docutils produces when the
+  marker character changes (`-` then `*`).
+
+  ## Why is this bad?
+  The list is rendered as two lists with a gap, and docutils reports "Bullet list
+  ends without a blank line" only in some cases.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists

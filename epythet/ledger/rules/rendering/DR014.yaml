@@ -1,0 +1,28 @@
+id: DR014
+title: Prose used as a definition term (accidental definition list)
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: medium
+detector:
+  kind: doctree
+  function: prose_definition_term
+message: "indented continuation turned the line above into a definition term: {match!r}"
+fix:
+  hint: "Keep continuation lines at the same indent as the first line, or add a blank line before an indented block."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a definition-list term of three or more words. A line followed by a
+  more-indented line, with no blank line between, is a definition list in RST,
+  which is rarely what a docstring author meant.
+
+  ## Why is this bad?
+  The first line is rendered bold as a "term" and the rest as its indented
+  definition; wrapped sentences fall apart. 31 such lists in the dol baseline,
+  21 in i2.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#definition-lists

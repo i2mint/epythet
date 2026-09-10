@@ -1,0 +1,29 @@
+id: DR030
+title: Docstring starts directly with a doctest
+namespace: source
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: medium
+detector:
+  kind: source
+  whole_text: true
+  pattern: |
+    \A\s*>>>
+message: "docstring begins with a doctest; there is no summary line"
+fix:
+  hint: "Start with a one-line summary, then a blank line, then the doctest."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a docstring whose first non-blank text is a `>>>` prompt (epythet issue
+  #11).
+
+  ## Why is this bad?
+  The object has no summary line: autosummary tables and the "short description"
+  of every tool that reads the first line show `>>> ...` or nothing, and some
+  renderers mis-handle a doctest block that is also the first paragraph.
+references:
+  - https://github.com/i2mint/epythet/issues/11

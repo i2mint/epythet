@@ -1,0 +1,29 @@
+id: DR006
+title: Markdown code fence collapsed into an inline literal
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: doctree
+  function: markdown_fence_literal
+message: "Markdown fence is not RST; the block collapsed to one line: {match!r}"
+fix:
+  hint: "Use '.. code-block:: python' (or 'text::' + blank line + indented block) instead of ``` fences."
+  autofixable: true
+  strategy: fence-to-code-block
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a ``` or ~~~ fence in a docstring. In the doctree the fence becomes an
+  inline `literal` whose text starts or ends with a backtick (the fence's own
+  characters are consumed as the literal's delimiters), which is the signature
+  this detector reads.
+
+  ## Why is this bad?
+  The whole code block is rendered as one line of inline code, or as a giant
+  italic run when single backticks were used, and no warning is emitted.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks

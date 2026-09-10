@@ -1,0 +1,31 @@
+id: DR003
+title: Doctest rendered as prose
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^\s*>>>\s.*
+message: "doctest glued to the preceding paragraph: {match!r}"
+fix:
+  hint: "Insert a blank line before the first '>>>' line (epythet.repair_package does this)."
+  autofixable: true
+  strategy: insert-blank-line-before-doctest
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a `>>>` prompt that docutils placed inside a paragraph, which happens when
+  there is no blank line between narrative text and the doctest.
+
+  ## Why is this bad?
+  The example is shown as wrapped prose with smart quotes (`'a'` becomes
+  `'a'`), uncopyable and unrunnable, and Sphinx does not warn. The wads audit
+  found this on 8 of 30 pages; it is also the subject of epythet issue #11.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#doctest-blocks
+  - https://github.com/i2mint/epythet/issues/11

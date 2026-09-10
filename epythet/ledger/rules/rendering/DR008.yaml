@@ -1,0 +1,29 @@
+id: DR008
+title: Bullet list glued to the preceding paragraph
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^.+\n[ \t]*[-*+][ \t]+\S.*
+message: "bullet list collapsed into a paragraph: {match!r}"
+fix:
+  hint: "Put a blank line between the introducing line and the first bullet."
+  autofixable: true
+  strategy: insert-blank-line-before-list
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a paragraph in which a line is followed by a `- item` line: RST needs a
+  blank line before a list, Markdown does not.
+
+  ## Why is this bad?
+  The "list" is one wrapped paragraph with literal hyphens and no `<ul>`. The wads
+  audit found 27 such paragraphs on 8 pages; the build is silent.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists

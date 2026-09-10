@@ -1,0 +1,30 @@
+id: DR010
+title: Unbalanced inline markup
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: doctree
+  function: problematic_nodes
+message: "unbalanced inline markup renders as a red problematic span: {match!r}"
+fix:
+  hint: "Close the delimiter, or wrap code such as *args in double backticks."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags every `problematic` node in the doctree: a `*`, `**`, `` ` `` or ``` `` ```
+  start-string with no end-string.
+
+  ## Why is this bad?
+  This is the only artifact class that leaves a visible error marker on the page:
+  a red `<span class="problematic">` linking to a footnote Sphinx has removed.
+  The usual cause is a bare `*args` or `**kwargs` in prose; the fix is to wrap
+  the code fragment in double backticks. Sphinx does warn ("Inline emphasis
+  start-string without end-string") and it is the most frequent warning class in
+  the fleet baseline.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#inline-markup
