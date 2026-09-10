@@ -13,6 +13,7 @@ from pathlib import Path
 import cw
 
 from epythet.validation.model import IMPLEMENTED_TIERS, SEVERITIES
+from epythet.validation.lint import STYLES
 from epythet.validation.render import FORMATS
 
 
@@ -44,7 +45,7 @@ def validate(
     :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.
     :param style: Docstring convention for the linters: google, numpy, or sphinx.
     :param no_napoleon: Parse docstrings without napoleon's Google/NumPy pre-processing.
-    :param ignore: Skip files whose path contains any of these strings.
+    :param ignore: Skip files whose path contains this string (repeat -i for several).
     :param docsrc: Sphinx source directory for level 2 (default: <project>/docsrc).
     :param no_observe: Do not append findings to the ledger's observations file.
     :param max_per_rule: How many findings to show per rule in the table.
@@ -63,6 +64,8 @@ def validate(
         raise cw.CommandError(f"--format must be one of {list(FORMATS)}", code=2)
     if fail_on not in SEVERITIES:
         raise cw.CommandError(f"--fail-on must be one of {list(SEVERITIES)}", code=2)
+    if style not in STYLES:
+        raise cw.CommandError(f"--style must be one of {list(STYLES)}", code=2)
     try:
         report = _validate(
             package,

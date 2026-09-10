@@ -64,6 +64,20 @@ class _StubDirective(Directive):
         return [N.literal_block("", "\n".join(self.content))]
 
 
+class _OneArgumentStub(_StubDirective):
+    """A stub with the real directive's argument count, so a missing blank line
+    after ``.. code-block:: python`` is still an error (research DR018 specimen)."""
+
+    optional_arguments = 1
+    final_argument_whitespace = False
+
+
+#: Directives whose real implementation takes at most one argument.
+ONE_ARGUMENT_DIRECTIVES = frozenset(
+    {"code-block", "code", "sourcecode", "literalinclude", "math"}
+)
+
+
 def _stub_role(name, rawtext, text, lineno, inliner, options=None, content=None):
     return [N.literal(rawtext, text)], []
 
@@ -79,7 +93,8 @@ def install_stubs() -> None:
     for role in SPHINX_ROLES:
         roles.register_local_role(role, _stub_role)
     for name in SPHINX_DIRECTIVES:
-        directives.register_directive(name, _StubDirective)
+        stub = _OneArgumentStub if name in ONE_ARGUMENT_DIRECTIVES else _StubDirective
+        directives.register_directive(name, stub)
     _STUBS_INSTALLED = True
 
 
@@ -156,10 +171,15 @@ class ParsedDocstring:
 
     @property
     def paragraphs(self) -> list[str]:
-        """Text of every paragraph not inside a system message."""
+        """Prose of every paragraph not inside a system message.
+
+        Text inside inline ``literal`` nodes is left out, so a field marker
+        quoted as code (double backticks around ``:param x:``) never trips a
+        prose regex.
+        """
         if self._paragraphs is None:
             self._paragraphs = [
-                p.astext()
+                _prose_text(p)
                 for p in self.tree.findall(N.paragraph)
                 if not isinstance(p.parent, N.system_message)
             ]
@@ -179,6 +199,20 @@ class ParsedDocstring:
         if node == "literal":
             return self.literals
         return self.paragraphs + self.literals
+
+
+def _prose_text(paragraph: N.paragraph) -> str:
+    """The paragraph's text with inline literals blanked out."""
+    parts = []
+    for node in paragraph.findall(N.Text):
+        parent = node.parent
+        while parent is not None and parent is not paragraph:
+            if isinstance(parent, (N.literal, N.literal_block, N.raw)):
+                break
+            parent = parent.parent
+        else:
+            parts.append(node.astext())
+    return "".join(parts)
 
 
 DOCTEST_LINE_RE = re.compile(r"^\s*(>>>|\.\.\.)(\s|$)")
@@ -231,12 +265,23 @@ def evaluate_rule(rule: Rule, parsed: ParsedDocstring) -> list[str]:
 def findings_for(
     parsed: ParsedDocstring, rules: Iterable[Rule], *, level: float = PARSE_LEVEL
 ) -> Iterator[Finding]:
-    """One finding per (docstring, rule) that fired, carrying the first hit and the count."""
+    """One finding per (docstring, rule) that fired, carrying the first hit and the count.
+
+    A rule whose detector declares ``only_if_no_other_hits: true`` (the
+    catch-all DR032) is evaluated last and reported only when nothing more
+    specific fired on the same docstring, so a docutils message never appears
+    twice under two rule ids.
+    """
     doc = parsed.docstring
+    rules = sorted(rules, key=lambda r: bool(r.detector.get("only_if_no_other_hits")))
+    fired = False
     for rule in rules:
+        if rule.detector.get("only_if_no_other_hits") and fired:
+            continue
         hits = evaluate_rule(rule, parsed)
         if not hits:
             continue
+        fired = True
         evidence = hits[0]
         message = rule.format_message(evidence)
         if len(hits) > 1:

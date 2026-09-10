@@ -107,6 +107,11 @@ class Rule:
         candidate = self.path.with_suffix(".py")
         return candidate if candidate.exists() else None
 
+    @property
+    def is_proposed(self) -> bool:
+        """Whether the rule is still a proposal (level 3 or a human wrote it, nobody promoted it)."""
+        return "proposed" in self.status
+
     def applies(self, *, napoleon: bool) -> bool:
         """Whether the rule is live under the given napoleon setting.
 
@@ -114,7 +119,7 @@ class Rule:
         when Google/NumPy sections are *not* pre-processed (DR012 is the case).
         """
         wanted = self.applies_to.get("napoleon")
-        return wanted is None or bool(wanted) == napoleon
+        return wanted is None or wanted == napoleon
 
     def format_message(self, match: str) -> str:
         """Fill the rule's message template with the matched evidence."""
@@ -146,6 +151,7 @@ class Rule:
             evidence=evidence,
             fix=self.fix_hint,
             autofixable=self.autofixable,
+            strategy=str(self.fix.get("strategy", "")),
         )
 
 
@@ -166,6 +172,14 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 _REQUIRED = ("id", "title", "namespace", "severity", "precision", "detector", "message")
+_OPTIONAL = ("fix", "status", "applies_to", "explanation", "references")
+
+
+def _require_bool(value, *, path: Path, field_name: str) -> None:
+    if value is not None and not isinstance(value, bool):
+        raise LedgerError(
+            f"{path}: {field_name} must be a YAML boolean (true/false), got {value!r}"
+        )
 
 
 def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
@@ -173,6 +187,9 @@ def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
     missing = [key for key in _REQUIRED if key not in data]
     if missing:
         raise LedgerError(f"{path}: missing required field(s) {missing}")
+    unknown = sorted(set(data) - set(_REQUIRED) - set(_OPTIONAL))
+    if unknown:
+        raise LedgerError(f"{path}: unknown field(s) {unknown}")
     rule_id = data["id"]
     if not isinstance(rule_id, str) or not RULE_ID_RE.match(rule_id):
         raise LedgerError(f"{path}: id {rule_id!r} must look like DR001")
@@ -184,17 +201,32 @@ def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
         raise LedgerError(f"{path}: precision must be one of {PRECISIONS}")
     if data["namespace"] not in NAMESPACES:
         raise LedgerError(f"{path}: namespace must be one of {NAMESPACES}")
+    for section in ("fix", "status", "applies_to"):
+        if section in data and not isinstance(data[section], dict):
+            raise LedgerError(f"{path}: {section} must be a mapping")
+    _require_bool(
+        data.get("fix", {}).get("autofixable"), path=path, field_name="fix.autofixable"
+    )
+    _require_bool(
+        data.get("applies_to", {}).get("napoleon"),
+        path=path,
+        field_name="applies_to.napoleon",
+    )
     detector = data["detector"]
     if not isinstance(detector, dict) or detector.get("kind") not in DETECTOR_KINDS:
         raise LedgerError(f"{path}: detector.kind must be one of {DETECTOR_KINDS}")
     kind = detector["kind"]
+    for key in ("pattern", "message_pattern"):
+        if detector.get(key):
+            try:
+                re.compile(detector[key])
+            except re.error as e:
+                raise LedgerError(
+                    f"{path}: detector.{key} does not compile: {e}"
+                ) from e
     if kind in ("regex", "source"):
         if not detector.get("pattern"):
             raise LedgerError(f"{path}: a {kind} detector needs a pattern")
-        try:
-            re.compile(detector["pattern"])
-        except re.error as e:
-            raise LedgerError(f"{path}: pattern does not compile: {e}") from e
     elif kind == "doctree":
         if not detector.get("function"):
             raise LedgerError(f"{path}: a doctree detector needs a function name")
@@ -207,6 +239,15 @@ def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
             raise LedgerError(f"{path}: a build-warning rule needs an example_warning")
     if kind in PARSE_KINDS and not path.with_suffix(".py").exists():
         raise LedgerError(f"{path}: a {kind} rule needs a sibling .py fixture")
+
+
+def _validate_fixture(rule: "Rule") -> None:
+    """A parse-level fixture must carry at least one ``ruleid`` and one ``ok`` tag for its rule."""
+    cases = [c for c in iter_fixture_cases(rule.fixture_path) if rule.id in c.rule_ids]
+    if not any(c.expect_hit for c in cases):
+        raise LedgerError(f"{rule.fixture_path}: no '# ruleid: {rule.id}' specimen")
+    if not any(not c.expect_hit for c in cases):
+        raise LedgerError(f"{rule.fixture_path}: no '# ok: {rule.id}' specimen")
 
 
 def load_rule(path: Path) -> Rule:
@@ -225,6 +266,8 @@ def load_rule(path: Path) -> Rule:
                 f"{path}: unknown doctree detector {rule.detector['function']!r}; "
                 f"known: {sorted(DETECTORS)}"
             )
+    if rule.kind in PARSE_KINDS:
+        _validate_fixture(rule)
     return rule
 
 
@@ -249,9 +292,18 @@ class Ledger:
     def __getitem__(self, rule_id: str) -> Rule:
         return self.rules[rule_id]
 
-    def of_kind(self, *kinds: str) -> list[Rule]:
-        """Rules whose detector kind is one of ``kinds``, in id order."""
-        return [r for r in self if r.kind in kinds]
+    def of_kind(self, *kinds: str, include_proposed: bool = False) -> list[Rule]:
+        """Rules whose detector kind is one of ``kinds``, in id order.
+
+        Proposed rules (``status: {proposed: ...}``) are left out unless asked
+        for: a proposal from level 3 must not gate anyone until a maintainer
+        promotes it.
+        """
+        return [
+            r
+            for r in self
+            if r.kind in kinds and (include_proposed or not r.is_proposed)
+        ]
 
     def add_dir(self, rules_dir: Path, *, allow_override: bool = False) -> None:
         """Load every rule under ``rules_dir``; duplicates are an error unless overriding."""
@@ -266,6 +318,22 @@ class Ledger:
                 )
             self.rules[rule.id] = rule
         self.sources.append(rules_dir)
+        self.check_build_examples()
+
+    def check_build_examples(self) -> None:
+        """Every build-warning rule's ``example_warning`` must classify to that rule."""
+        from epythet.validation.build import classify_warning, parse_warning_line
+
+        for rule in self.of_kind("build-warning", include_proposed=True):
+            warning = parse_warning_line(rule.detector["example_warning"])
+            if warning is None:
+                raise LedgerError(f"{rule.path}: example_warning is not a warning line")
+            winner = classify_warning(warning, self)
+            if winner is None or winner.id != rule.id:
+                raise LedgerError(
+                    f"{rule.path}: example_warning classifies to "
+                    f"{winner.id if winner else 'nothing'}, not {rule.id}"
+                )
 
 
 def load_ledger(ledger: Ledger | str | os.PathLike | None = None) -> Ledger:

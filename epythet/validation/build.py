@@ -7,11 +7,12 @@ future MkDocs backend implements the same two methods, :meth:`SphinxBackend.vers
 and :meth:`SphinxBackend.build_warnings`, and inherits the whole ledger.
 
 Two Sphinx facts shape the invocation. Since Sphinx 8.1 ``-W`` runs the whole
-build and exits 1 if any warning occurred, so ``--keep-going`` is redundant
-and not passed. Since Sphinx 8.0 ``show_warning_types`` defaults on, which
-suffixes every warning with ``[docutils]``-style types; that suffix is what
-the ledger's ``build-warning`` rules match on, because Sphinx still has no
-structured warning output.
+build and exits 1 if any warning occurred; ``--keep-going`` is still passed
+because epythet's Sphinx floor predates 8.1, where ``-W`` alone stops at the
+first warning (it is a no-op on newer versions). Since Sphinx 8.0
+``show_warning_types`` defaults on, which suffixes every warning with
+``[docutils]``-style types; that suffix is what the ledger's ``build-warning``
+rules match on, because Sphinx still has no structured warning output.
 """
 
 from __future__ import annotations
@@ -23,14 +24,19 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import ExitStack
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Iterator, Sequence
+from typing import Iterable, Iterator, Protocol, Sequence
 
 from epythet.validation.ledger import Ledger, Rule
 from epythet.validation.model import Finding
 
 BUILD_LEVEL = 1
+#: ``BuildResult.returncode`` when there is no Sphinx source directory to build.
+NO_DOCSRC = -1
+#: Sphinx's exit status when the only problem was warnings under ``-W``.
+WARNINGS_ONLY_EXIT = 1
 
 #: ``path:docstring of obj:3: WARNING: message [type]`` and the simpler
 #: ``path:12: WARNING: message [type]`` and ``WARNING: message`` shapes.
@@ -233,7 +239,11 @@ class SphinxBackend:
         return docsrc if (docsrc / "conf.py").exists() else None
 
     def build_warnings(self, project_dir: Path) -> BuildResult:
-        """Run the build and parse its warnings; never raises on a failed build."""
+        """Run the build and parse its warnings; never raises on a failed build.
+
+        Without ``outdir`` the build goes to a temporary directory that is
+        removed before returning; only the parsed warnings and the log survive.
+        """
         project_dir = Path(project_dir)
         command = (
             list(self.sphinx_build) if self.sphinx_build else default_sphinx_build()
@@ -243,47 +253,91 @@ class SphinxBackend:
         docsrc = self.resolve_docsrc(project_dir)
         if docsrc is None:
             return BuildResult(
-                returncode=2, log="no docsrc/conf.py to build", command=command
+                returncode=NO_DOCSRC, log="no docsrc/conf.py to build", command=command
             )
-        outdir = (
-            Path(self.outdir)
-            if self.outdir
-            else Path(tempfile.mkdtemp(prefix="epythet-validate-"))
-        )
-        warnings_file = outdir / "warnings.txt"
-        args = [*command, "-b", self.builder, "-W", "-q", "-w", str(warnings_file)]
-        if self.nitpicky:
-            args.append("-n")
-        args += [
-            "-d",
-            str(outdir / ".doctrees"),
-            str(docsrc),
-            str(outdir / self.builder),
-        ]
-        proc = subprocess.run(args, cwd=project_dir, capture_output=True, text=True)
-        log = proc.stdout + proc.stderr
-        stream = (
-            warnings_file.read_text(encoding="utf-8", errors="replace")
-            if warnings_file.exists()
-            else log
-        )
-        return BuildResult(
-            returncode=proc.returncode,
-            warnings=list(parse_warning_stream(stream, project_dir=project_dir)),
-            log=log,
-            outdir=outdir,
-            command=args,
-        )
+        with ExitStack() as stack:
+            if self.outdir:
+                outdir = Path(self.outdir)
+                outdir.mkdir(parents=True, exist_ok=True)
+            else:
+                outdir = Path(
+                    stack.enter_context(
+                        tempfile.TemporaryDirectory(prefix="epythet-validate-")
+                    )
+                )
+            warnings_file = outdir / "warnings.txt"
+            args = [
+                *command,
+                "-b",
+                self.builder,
+                "-W",
+                "--keep-going",
+                "-q",
+                "-w",
+                str(warnings_file),
+            ]
+            if self.nitpicky:
+                args.append("-n")
+            args += [
+                "-d",
+                str(outdir / ".doctrees"),
+                str(docsrc),
+                str(outdir / self.builder),
+            ]
+            proc = subprocess.run(args, cwd=project_dir, capture_output=True, text=True)
+            log = proc.stdout + proc.stderr
+            stream = (
+                warnings_file.read_text(encoding="utf-8", errors="replace")
+                if warnings_file.exists()
+                else log
+            )
+            return BuildResult(
+                returncode=proc.returncode,
+                warnings=list(parse_warning_stream(stream, project_dir=project_dir)),
+                log=log,
+                outdir=outdir if self.outdir else None,
+                command=args,
+            )
+
+
+class BuildBackend(Protocol):
+    """What the ``backend=`` seam requires: a name, versions, and the warning stream.
+
+    :class:`SphinxBackend` is the shipped implementation; a MkDocs backend
+    implements the same two methods and inherits the whole ledger.
+    """
+
+    name: str
+
+    def versions(self) -> dict[str, str | None]: ...
+
+    def build_warnings(self, project_dir: Path) -> BuildResult: ...
 
 
 def run_build_level(
-    project_dir: Path, ledger: Ledger, *, backend: SphinxBackend
+    project_dir: Path, ledger: Ledger, *, backend: BuildBackend
 ) -> tuple[list[Finding], list[str]]:
-    """Level 1: build, classify warnings, and report a failed build as a finding."""
+    """Level 1: build, classify warnings, and report a crashed build as a finding.
+
+    A missing ``docsrc/`` is a ``NO_DOCSRC`` warning, not an error: the fleet
+    plan deletes committed ``docsrc/`` directories, and "nothing to build"
+    must not gate a package whose docstrings are clean.
+    """
     result = backend.build_warnings(project_dir)
     notes: list[str] = []
+    if result.returncode == NO_DOCSRC:
+        return [
+            Finding(
+                rule="NO_DOCSRC",
+                severity="warning",
+                level=BUILD_LEVEL,
+                message="no docsrc/conf.py to build; level 1 checked nothing (run epythet quickstart, or pass --docsrc)",
+                detector="build-warning",
+                tool=backend.name,
+            )
+        ], notes
     findings = warnings_to_findings(result.warnings, ledger)
-    if result.returncode != 0 and not findings:
+    if result.returncode not in (0, WARNINGS_ONLY_EXIT):
         tail = result.log.strip().splitlines()[-5:]
         findings.append(
             Finding(

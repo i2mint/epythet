@@ -217,3 +217,43 @@ def test_python_m_entry_point(tmp_path):
     )
     assert proc.returncode == 0, proc.stderr
     assert json.loads(proc.stdout)["package"] == "mainpkg"
+
+
+def test_defs_inside_if_blocks_and_fixture_dirs(tmp_path, observations):
+    project = _project(tmp_path, "nestpkg", CLEAN_MODULE)
+    (project / "nestpkg" / "cond.py").write_text(
+        '"""Conditional defs."""\n\nif True:\n\n    def leaky(x):\n        """Do.\n        :param x: leak\n        """\n'
+    )
+    data = (
+        project / "nestpkg" / "data"
+    )  # no __init__.py: not a package, never validated
+    data.mkdir()
+    (data / "fixture.py").write_text(
+        '"""Fixture."""\n\n\ndef bad():\n    """Do.\n    :param x: leak\n    """\n'
+    )
+    report = validate(project, level=1, observations_path=observations, observe=False)
+    leaks = [f for f in report.findings if f.rule == "DR001"]
+    assert [f.object for f in leaks] == ["nestpkg.cond.leaky"]
+    assert report.objects_checked == 5  # package, mod, mod.fine, cond, cond.leaky
+
+
+def test_unreadable_file_is_noted(tmp_path, observations):
+    project = _project(tmp_path, "brokenpkg", CLEAN_MODULE)
+    (project / "brokenpkg" / "broken.py").write_text("def (:\n")
+    report = validate(project, level=1, observations_path=observations, observe=False)
+    assert any("skipped broken.py" in note for note in report.notes)
+
+
+def test_explicit_levels_run_parse_only(tmp_path, observations):
+    project = _project(tmp_path, "sweeppkg", BAD_MODULE)
+    report = validate(
+        project, levels=[0.5], observations_path=observations, observe=False
+    )
+    assert report.levels_run == [0.5]
+    assert {f.level for f in report.findings} == {0.5}
+    assert "0" not in report.durations
+
+
+def test_cli_rejects_unknown_style(tmp_path, capsys):
+    code = cw.dispatch(validate_command, [str(tmp_path), "--style", "bogus"])
+    assert code == 2 and "--style" in capsys.readouterr().err

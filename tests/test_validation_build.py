@@ -55,9 +55,38 @@ def test_classification_maps_to_ledger_rules():
     assert by_rule["DR015"][0].object == "dol.appendable"
 
 
-def test_missing_docsrc_is_a_build_finding(tmp_path):
+def test_missing_docsrc_is_a_non_gating_finding(tmp_path):
+    from epythet.validation.build import NO_DOCSRC, run_build_level
+
     result = SphinxBackend(sphinx_build=["true"]).build_warnings(tmp_path)
-    assert result.returncode != 0 and "docsrc" in result.log
+    assert result.returncode == NO_DOCSRC
+    findings, _ = run_build_level(
+        tmp_path, load_ledger(), backend=SphinxBackend(sphinx_build=["true"])
+    )
+    assert [f.rule for f in findings] == ["NO_DOCSRC"] and findings[
+        0
+    ].severity == "warning"
+
+
+def test_crashed_build_is_reported_even_with_warnings(tmp_path):
+    from epythet.validation.build import BuildResult, run_build_level
+
+    class Crashing:
+        name = "fake"
+
+        def versions(self):
+            return {}
+
+        def build_warnings(self, project_dir):
+            return BuildResult(
+                returncode=2,
+                warnings=list(parse_warning_stream(STREAM)),
+                log="Extension error!",
+            )
+
+    findings, _ = run_build_level(tmp_path, load_ledger(), backend=Crashing())
+    assert any(f.rule == "BUILD" and f.severity == "error" for f in findings)
+    assert any(f.rule == "DR015" for f in findings)
 
 
 sphinx = pytest.importorskip("sphinx")

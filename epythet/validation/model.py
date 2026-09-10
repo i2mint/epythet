@@ -46,6 +46,8 @@ LEVELS: dict[float, str] = {
 TIERS: list[float] = list(LEVELS)
 #: Tiers this work package implements. Tiers 3 and 4 (levels 2 and 3) are WP3.
 IMPLEMENTED_TIERS = (0, 1, 2)
+#: The levels those tiers run.
+IMPLEMENTED_LEVELS = (0, 0.5, 1)
 
 EXIT_OK = 0
 EXIT_INTERNAL = 1
@@ -103,6 +105,7 @@ class Finding:
     evidence: str = ""
     fix: str = ""
     autofixable: bool = False
+    strategy: str = ""
     tool: str = "epythet"
     ledger_occurrences: int | None = None
 
@@ -133,6 +136,7 @@ class Report:
     epythet_version: str | None = None
     sphinx_version: str | None = None
     docutils_version: str | None = None
+    ledger_sources: list[str] = field(default_factory=list)
     schema_version: str = SCHEMA_VERSION
 
     def counts_by_severity(self) -> dict[str, int]:
@@ -162,6 +166,7 @@ class Report:
             "sphinx_version": self.sphinx_version,
             "docutils_version": self.docutils_version,
             "levels_run": self.levels_run,
+            "ledger_sources": list(self.ledger_sources),
             "summary": self.summary(),
             "notes": list(self.notes),
             "findings": [f.to_dict() for f in self.findings],

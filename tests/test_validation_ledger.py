@@ -46,7 +46,6 @@ def _specimens():
 def test_fixture_specimen(ledger, rule_id, case):
     rule = ledger[rule_id]
     napoleon = rule.applies_to.get("napoleon", True)
-    napoleon = napoleon not in (False, "false")
     parsed = parse_docstring(case.docstring, napoleon=napoleon)
     hits = evaluate_rule(rule, parsed)
     if case.expect_hit:
@@ -93,10 +92,14 @@ def test_build_rules_classify_their_example_warning(ledger):
         assert classify_warning(warning, ledger).id == rule.id
 
 
-def test_duplicate_rule_id_is_a_ledger_error(tmp_path):
+def _copy_dr001(tmp_path, *, yaml_transform=lambda s: s):
     src = BUNDLED_RULES_DIR / "rendering" / "DR001.yaml"
-    (tmp_path / "DR001.yaml").write_text(src.read_text())
-    (tmp_path / "DR001.py").write_text('"""x"""\n')
+    (tmp_path / "DR001.yaml").write_text(yaml_transform(src.read_text()))
+    (tmp_path / "DR001.py").write_text(src.with_suffix(".py").read_text())
+
+
+def test_duplicate_rule_id_is_a_ledger_error(tmp_path):
+    _copy_dr001(tmp_path)
     catalog = Ledger()
     catalog.add_dir(BUNDLED_RULES_DIR)
     with pytest.raises(LedgerError, match="duplicate rule id"):
@@ -104,13 +107,98 @@ def test_duplicate_rule_id_is_a_ledger_error(tmp_path):
 
 
 def test_overlay_overrides_by_id(tmp_path):
-    src = BUNDLED_RULES_DIR / "rendering" / "DR001.yaml"
-    (tmp_path / "DR001.yaml").write_text(
-        src.read_text().replace("severity: error", "severity: info")
+    _copy_dr001(
+        tmp_path,
+        yaml_transform=lambda s: s.replace("severity: error", "severity: info"),
     )
-    (tmp_path / "DR001.py").write_text('"""x"""\n')
     catalog = load_ledger(tmp_path)
     assert catalog["DR001"].severity == "info"
+    assert str(tmp_path) in [str(p) for p in catalog.sources]
+
+
+@pytest.mark.parametrize(
+    "transform,match",
+    [
+        (lambda s: s + "applies_to_extra: 1\n", "unknown field"),
+        (
+            lambda s: s.replace("  autofixable: true", '  autofixable: "true"'),
+            "YAML boolean",
+        ),
+        (
+            lambda s: s.replace("applies_to:\n", "applies_to:\n  napoleon: 'false'\n"),
+            "YAML boolean",
+        ),
+    ],
+)
+def test_strict_schema(tmp_path, transform, match):
+    _copy_dr001(tmp_path, yaml_transform=transform)
+    with pytest.raises(LedgerError, match=match):
+        load_rule(tmp_path / "DR001.yaml")
+
+
+def test_untagged_fixture_is_a_ledger_error(tmp_path):
+    _copy_dr001(tmp_path)
+    (tmp_path / "DR001.py").write_text('"""x"""\n\n\ndef f():\n    """Do."""\n')
+    with pytest.raises(LedgerError, match="ruleid"):
+        load_rule(tmp_path / "DR001.yaml")
+
+
+def test_proposed_rules_do_not_run_by_default(tmp_path):
+    _copy_dr001(
+        tmp_path,
+        yaml_transform=lambda s: s.replace(
+            'status: {stable_since: "0.2.0"}',
+            'status: {proposed: "0.3.0", proposed_by: llm}',
+        ),
+    )
+    catalog = load_ledger(tmp_path)
+    assert "DR001" not in {r.id for r in catalog.of_kind("regex")}
+    assert "DR001" in {r.id for r in catalog.of_kind("regex", include_proposed=True)}
+
+
+def test_build_example_must_classify_to_its_rule(tmp_path):
+    src = BUNDLED_RULES_DIR / "build_warnings" / "DR024.yaml"
+    (tmp_path / "DR024.yaml").write_text(
+        src.read_text().replace(
+            "warning_type: image.not_readable", "warning_type: image.nope"
+        )
+    )
+    with pytest.raises(LedgerError, match="classifies to"):
+        load_ledger(tmp_path)
+
+
+def test_literal_text_never_trips_a_prose_regex(ledger):
+    from epythet.validation.docstrings import Docstring
+    from epythet.validation.parse import findings_for, parse_docstring
+
+    text = "Insert a blank line before the first ``:param x:`` line; ``>>> f()`` is a prompt."
+    doc = Docstring("m.py", 1, 1, "m.f", "function", text, repr(text), False)
+    found = list(
+        findings_for(parse_docstring(doc), ledger.of_kind("regex", "source", "doctree"))
+    )
+    assert [f.rule for f in found] == []
+
+
+def test_catch_all_dr032_is_suppressed_by_a_specific_rule(ledger):
+    from epythet.validation.docstrings import Docstring
+    from epythet.validation.parse import findings_for, parse_docstring
+
+    rules = ledger.of_kind("regex", "source", "doctree")
+    doc = Docstring("m.py", 1, 1, "m.f", "function", "Call f(*args) now.", "", False)
+    fired = {f.rule for f in findings_for(parse_docstring(doc), rules)}
+    assert "DR010" in fired and "DR032" not in fired
+    doc = Docstring(
+        "m.py",
+        1,
+        1,
+        "m.f",
+        "function",
+        "Do a thing.\n\nA paragraph.\n\n        deep\n    less deep\n",
+        "",
+        False,
+    )
+    fired = {f.rule for f in findings_for(parse_docstring(doc), rules)}
+    assert "DR032" in fired
 
 
 @pytest.mark.parametrize(
@@ -129,7 +217,9 @@ def test_schema_violations_are_ledger_errors(tmp_path, mutation, match):
         "kind: regex": src.replace("kind: regex", "kind: magic"),
     }[mutation]
     (tmp_path / "DR001.yaml").write_text(broken)
-    (tmp_path / "DR001.py").write_text('"""x"""\n')
+    (tmp_path / "DR001.py").write_text(
+        (BUNDLED_RULES_DIR / "rendering" / "DR001.py").read_text()
+    )
     with pytest.raises(LedgerError, match=match):
         load_rule(tmp_path / "DR001.yaml")
 

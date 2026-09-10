@@ -52,11 +52,6 @@ NEAR_SECTIONS = frozenset(
         "rasies",
         "exemple",
         "exemples",
-        "usage",
-        "input",
-        "inputs",
-        "output",
-        "outputs",
     }
 )
 
@@ -169,10 +164,10 @@ def blockquote_with_unexpected_indent(parsed: "ParsedDocstring") -> list[str]:
 def markdown_fence_literal(parsed: "ParsedDocstring") -> list[str]:
     """A Markdown fence collapsed into an inline literal (DR006).
 
-    Refinement from the research: a ``` fence parses as an inline ``literal``
-    whose text starts or ends with a backtick, because the fence characters
-    are consumed as the literal's delimiters. Testing for three backticks in
-    the paragraph text does not work.
+    Refinement from the research: a triple-backtick fence parses as an inline
+    ``literal`` whose text starts or ends with a backtick, because two of the
+    fence characters are consumed as the literal's delimiters. Testing for
+    three backticks in the paragraph text does not work.
     """
     hits = [
         _short(lit.astext())

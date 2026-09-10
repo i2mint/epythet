@@ -59,12 +59,12 @@ def render_table(report: Report, *, max_per_rule: int = 10) -> str:
     return "\n".join(lines)
 
 
-def render_json(report: Report) -> str:
+def render_json(report: Report, **_) -> str:
     """The full JSON document (decision D8), pretty-printed."""
     return json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
 
 
-def render_jsonl(report: Report) -> str:
+def render_jsonl(report: Report, **_) -> str:
     """One finding per line; the summary is not included (use ``json`` for it)."""
     return "\n".join(
         json.dumps(f.to_dict(), ensure_ascii=False) for f in report.findings
@@ -82,5 +82,4 @@ def render(report: Report, format: str = "table", **kwargs) -> str:
     """Render with the named format (``table``, ``json`` or ``jsonl``)."""
     if format not in RENDERERS:
         raise ValueError(f"format must be one of {FORMATS}, got {format!r}")
-    renderer = RENDERERS[format]
-    return renderer(report, **kwargs) if format == "table" else renderer(report)
+    return RENDERERS[format](report, **kwargs)

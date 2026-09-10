@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Iterable
 
 from epythet.validation.model import (
+    IMPLEMENTED_LEVELS,
     IMPLEMENTED_TIERS,
     Finding,
     Report,
@@ -57,9 +58,8 @@ def _project_metadata(project_dir: Path) -> tuple[str | None, str | None]:
     """``(name, version)`` from the project config.
 
     epythet's own ``parse_config`` is tried first (the one import from the rest
-    of epythet; it keeps its 5-tuple by the v2 back-compat contract). It
-    requires author metadata, so a minimal ``pyproject.toml`` falls back to a
-    direct read of ``[project]``.
+    of epythet; it keeps its 5-tuple by the v2 back-compat contract). Whenever
+    it cannot read the file, a direct read of ``[project]`` is the fallback.
     """
     for marker in PROJECT_MARKERS:
         config = project_dir / marker
@@ -158,6 +158,7 @@ def validate(
     package: str | os.PathLike,
     *,
     level: int = 1,
+    levels: Iterable[float] | None = None,
     ledger: Ledger | str | os.PathLike | None = None,
     backend=None,
     fail_on: str = "error",
@@ -173,6 +174,8 @@ def validate(
         package: A project root, a package directory, or an importable name.
         level: The CLI tier: ``0`` lint only, ``1`` lint + parse (default),
             ``2`` adds the Sphinx build. Tiers 3 and 4 belong to WP3.
+        levels: An explicit set of levels (``[0.5]`` for a parse-only sweep);
+            overrides ``level`` when given.
         ledger: ``None`` for the bundled rules, or a directory overlay.
         backend: The build backend for level 1 (default: ``SphinxBackend()``).
         fail_on: Severity threshold recorded on the report for exit codes.
@@ -188,15 +191,23 @@ def validate(
     from epythet.validation.lint import run_lint_level
     from epythet.validation.parse import run_parse_level, sphinx_available
 
-    if level not in IMPLEMENTED_TIERS:
+    if levels is None:
+        if level not in IMPLEMENTED_TIERS:
+            raise NotImplementedError(
+                f"level {level} (render/review) is owned by WP3; implemented tiers: {IMPLEMENTED_TIERS}"
+            )
+        levels = levels_for_tier(level)
+    levels = sorted(set(levels))
+    unsupported = [lv for lv in levels if lv not in IMPLEMENTED_LEVELS]
+    if unsupported:
         raise NotImplementedError(
-            f"level {level} (render/review) is owned by WP3; implemented tiers: {IMPLEMENTED_TIERS}"
+            f"levels {unsupported} are owned by WP3; implemented: {IMPLEMENTED_LEVELS}"
         )
-    levels = levels_for_tier(level)
     resolved = resolve_package(package)
     catalog = load_ledger(ledger)
     backend = backend if backend is not None else SphinxBackend()
-    versions = backend.versions()
+    # Importing Sphinx costs a few hundred ms; only pay it when a level needs it.
+    versions = backend.versions() if any(lv >= 0.5 for lv in levels) else {}
     report = Report(
         package=resolved.name,
         package_dir=str(resolved.package_dir),
@@ -204,6 +215,7 @@ def validate(
         epythet_version=_epythet_version(),
         sphinx_version=versions.get("sphinx"),
         docutils_version=versions.get("docutils"),
+        ledger_sources=[str(p) for p in catalog.sources],
     )
     ignore = tuple(ignore)
     findings: list[Finding] = []
@@ -222,11 +234,19 @@ def validate(
                 report.notes.append(
                     "sphinx not importable: napoleon pre-processing skipped"
                 )
+            skipped: list[str] = []
             findings += run_parse_level(
-                iter_docstrings(resolved.package_dir, ignore=ignore),
+                iter_docstrings(
+                    resolved.package_dir,
+                    ignore=ignore,
+                    on_skip=lambda path, reason: skipped.append(
+                        f"skipped {path.name}: {reason}"
+                    ),
+                ),
                 catalog,
                 napoleon=napoleon,
             )
+            report.notes += skipped
             coverage = count_public_objects(resolved.package_dir, ignore=ignore)
         report.objects_checked = coverage.checked
         report.objects_undocumented = coverage.undocumented
@@ -251,5 +271,4 @@ def validate(
             path=Path(observations_path) if observations_path else None,
         )
         report.notes.append(f"{written} observations appended to the ledger")
-    report.fail_on = fail_on  # type: ignore[attr-defined]
     return report

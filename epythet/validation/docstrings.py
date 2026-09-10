@@ -17,7 +17,7 @@ import ast
 import inspect
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator
+from typing import Callable, Iterable, Iterator
 
 DocKind = str  # "module" | "class" | "function"
 
@@ -75,20 +75,54 @@ def _is_raw_literal(segment: str | None) -> bool:
     return "r" in prefix.lower()
 
 
+_CONTAINERS = (
+    ast.If,
+    ast.For,
+    ast.AsyncFor,
+    ast.While,
+    ast.With,
+    ast.AsyncWith,
+    ast.Try,
+)
+if hasattr(ast, "TryStar"):  # Python 3.11+
+    _CONTAINERS += (ast.TryStar,)
+if hasattr(ast, "Match"):  # Python 3.10+
+    _CONTAINERS += (ast.Match, ast.match_case)
+
+
+def _iter_defs(node: ast.AST) -> Iterator[ast.AST]:
+    """Class and function definitions directly owned by ``node``.
+
+    Definitions nested in ``if``/``try``/``with``/loop bodies belong to the same
+    owner (autodoc documents them), so those statements are looked through.
+    """
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+            yield child
+        elif isinstance(child, _CONTAINERS):
+            yield from _iter_defs(child)
+
+
 def iter_file_docstrings(
-    path: Path, *, root: Path | None = None
+    path: Path,
+    *,
+    root: Path | None = None,
+    on_skip: Callable[[Path, str], None] | None = None,
 ) -> Iterator[Docstring]:
     """Yield the module, class and function docstrings of one file, in source order.
 
-    Files that do not parse are skipped silently: a syntax error is the linter's
-    business, not the renderer's.
+    A file that does not parse or decode is skipped; ``on_skip(path, reason)``
+    is called so the caller can report it (a syntax error is the linter's
+    business, but silence would hide a docstring from the ledger).
     """
     path = Path(path)
     root = Path(root) if root is not None else path.parent
     try:
         source = path.read_text(encoding="utf-8")
         tree = ast.parse(source, filename=str(path))
-    except (SyntaxError, ValueError, UnicodeDecodeError):
+    except (SyntaxError, ValueError, UnicodeDecodeError) as e:
+        if on_skip is not None:
+            on_skip(path, f"{type(e).__name__}: {e}")
         return
     module = _module_name(path, root)
     rel = (
@@ -109,23 +143,35 @@ def iter_file_docstrings(
                 source=segment,
                 is_raw=_is_raw_literal(segment),
             )
-        for child in getattr(node, "body", []):
-            if isinstance(child, ast.ClassDef):
-                yield from visit(child, f"{qualname}.{child.name}", "class")
-            elif isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                yield from visit(child, f"{qualname}.{child.name}", "function")
+        for child in _iter_defs(node):
+            child_kind = "class" if isinstance(child, ast.ClassDef) else "function"
+            yield from visit(child, f"{qualname}.{child.name}", child_kind)
 
     yield from visit(tree, module, "module")
+
+
+def _in_package(path: Path, package_dir: Path) -> bool:
+    """Whether every directory from ``package_dir`` down to ``path`` is a package.
+
+    Data directories inside a package (epythet's own ``ledger/rules`` fixtures,
+    for instance) hold ``.py`` files autodoc never sees; they are skipped the
+    same way ``epythet.autogen`` skips them.
+    """
+    for parent in path.relative_to(package_dir).parents:
+        if parent != Path(".") and not (package_dir / parent / "__init__.py").exists():
+            return False
+    return True
 
 
 def iter_python_files(
     package_dir: Path, *, ignore: Iterable[str] = ()
 ) -> Iterator[Path]:
-    """Every ``.py`` under ``package_dir``, skipping caches and ``ignore`` substrings."""
+    """Every ``.py`` in the package tree, skipping caches, non-package dirs and ``ignore`` substrings."""
     ignore = tuple(ignore)
-    for path in sorted(Path(package_dir).rglob("*.py")):
+    package_dir = Path(package_dir)
+    for path in sorted(package_dir.rglob("*.py")):
         posix = path.as_posix()
-        if "__pycache__" in path.parts:
+        if "__pycache__" in path.parts or not _in_package(path, package_dir):
             continue
         if any(token in posix for token in ignore):
             continue
@@ -133,12 +179,15 @@ def iter_python_files(
 
 
 def iter_docstrings(
-    package_dir: Path, *, ignore: Iterable[str] = ()
+    package_dir: Path,
+    *,
+    ignore: Iterable[str] = (),
+    on_skip: Callable[[Path, str], None] | None = None,
 ) -> Iterator[Docstring]:
     """Yield every docstring in a package directory tree."""
     package_dir = Path(package_dir)
     for path in iter_python_files(package_dir, ignore=ignore):
-        yield from iter_file_docstrings(path, root=package_dir)
+        yield from iter_file_docstrings(path, root=package_dir, on_skip=on_skip)
 
 
 @dataclass
@@ -161,7 +210,8 @@ def count_public_objects(package_dir: Path, *, ignore: Iterable[str] = ()) -> Co
             tree = ast.parse(path.read_text(encoding="utf-8"))
         except (SyntaxError, ValueError, UnicodeDecodeError):
             continue
-        if any(part.startswith("_") and part != "__init__.py" for part in path.parts):
+        rel_parts = path.relative_to(Path(package_dir)).parts
+        if any(part.startswith("_") and part != "__init__.py" for part in rel_parts):
             continue
         nodes = [tree] + [
             n
