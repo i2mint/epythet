@@ -8,7 +8,7 @@ include, nested API tree, typed cross-references, agent twins) or a direct
 consequence of the decision record.
 
 >>> from epythet.config import DocsConfig
->>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo")
+>>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo", api_generator="autosummary")
 >>> s = sphinx_settings(cfg)
 >>> s["html_theme"], s["default_role"], "sphinx.ext.autosummary" in s["extensions"]
 ('furo', 'code', True)
@@ -124,7 +124,9 @@ def sphinx_settings(config: DocsConfig) -> dict[str, Any]:
 def _api_generator_settings(config: DocsConfig) -> dict[str, Any]:
     """Settings for the ``api_generator`` seam.
 
-    ``autosummary`` (default) imports the package, so aliases, ``functools.partial``
+    ``auto`` (default) resolves to ``autosummary`` when the package imports and
+    to ``autoapi`` otherwise (:func:`epythet.config.resolve_api_generator`).
+    ``autosummary`` imports the package, so aliases, ``functools.partial``
     objects and other assigned names keep the docstring of what they point to;
     measured on dol it documents every object the 0.1.x autodoc pages had.
     ``autoapi`` parses statically (no import, no side effects) at the cost of
@@ -136,12 +138,12 @@ def _api_generator_settings(config: DocsConfig) -> dict[str, Any]:
             f"Cannot find the package directory for {config.name!r} under "
             f"{config.project_dir}. Set [tool.epythet] package_dir."
         )
-    if config.api_generator == "autoapi":
+    if config.resolved_api_generator == "autoapi":
         return {
             "extensions": ["autoapi.extension"],
             "autoapi_dirs": [str(package_dir)],
             "autoapi_root": API_ROOT,
-            "autoapi_ignore": [f"*{pattern}*" for pattern in config.ignore],
+            "autoapi_ignore": [f"*{pattern}*" for pattern in config.api_ignore],
             "autoapi_options": ["members", "show-inheritance", "show-module-summary"],
             "autoapi_member_order": "bysource",
             "autoapi_python_class_content": "class",
@@ -157,7 +159,7 @@ def _api_generator_settings(config: DocsConfig) -> dict[str, Any]:
         "templates_path": ["_templates"],  # the ignore-aware module.rst (scaffold)
         "exclude_patterns": [
             f"_autosummary/*{pattern.strip('/').replace('/', '.')}*"
-            for pattern in config.ignore
+            for pattern in config.api_ignore
         ],
         "suppress_warnings": ["toc.excluded", "toc.not_included"],
     }
@@ -167,12 +169,12 @@ def api_toctree_entry(config: DocsConfig) -> str:
     """The document ``index.md``'s toctree points at for the API pages.
 
     >>> from epythet.config import DocsConfig
-    >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x"))
+    >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autosummary"))
     'api'
     >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autoapi"))
     'api/index'
     """
-    return f"{API_ROOT}/index" if config.api_generator == "autoapi" else API_ROOT
+    return f"{API_ROOT}/index" if config.resolved_api_generator == "autoapi" else API_ROOT
 
 
 def merge_settings(base: dict[str, Any], extra: dict[str, Any]) -> dict[str, Any]:

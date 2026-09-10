@@ -79,7 +79,12 @@ API reference
 #: What 0.1.x wrote to docsrc/.gitignore; safe to replace.
 LEGACY_DOCSRC_GITIGNORES = ("_build/", "_build")
 
-#: autosummary's stock ``module.rst`` (Sphinx 9) with one addition: submodules
+#: autosummary's stock ``module.rst`` (Sphinx 9) with two changes to the
+#: ``modules`` block: (1) the recursion runs over ``all_modules`` (every
+#: submodule, minus the private ``_``-prefixed ones) rather than ``modules``,
+#: because with ``autosummary_ignore_module_all = False`` a package whose
+#: ``__init__`` declares an ``__all__`` of *objects* would otherwise get no
+#: submodule pages at all (a third of the fleet declares one); (2) submodules
 #: matching the ignore fragments are left out of the recursion, so no stub is
 #: generated (and no second import attempted) for tests/, scrap/, examples/.
 autosummary_module_rst = """\
@@ -134,8 +139,8 @@ autosummary_module_rst = """\
 {{%- block modules %}}
 {{%- set ignored = {ignored_fragments} %}}
 {{%- set ns = namespace(kept=[]) %}}
-{{%- for item in modules %}}
-{{%- if not (ignored | select("in", '.' ~ item ~ '.') | list) %}}
+{{%- for item in all_modules %}}
+{{%- if not item.startswith('_') and not (ignored | select("in", '.' ~ item ~ '.') | list) %}}
 {{%- set ns.kept = ns.kept + [item] %}}
 {{%- endif %}}
 {{%- endfor %}}

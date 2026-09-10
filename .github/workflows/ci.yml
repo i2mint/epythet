@@ -226,4 +226,6 @@ jobs:
       - uses: i2mint/epythet/actions/publish-github-pages@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          ignore: "tests/,scrap/,examples/"
+          ignore: "tests/,scrap/,examples/,ledger/"
+          # epythet's own site is the first v2 site (WP5 pilot, #16)
+          epythet-spec: "epythet>=0.2,<0.3"

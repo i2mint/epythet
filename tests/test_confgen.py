@@ -16,6 +16,9 @@ from epythet.themes import (
 
 
 def _cfg(**kw):
+    # /tmp/proj/proj does not import, so "auto" would resolve to autoapi here;
+    # these tests pin the generator (resolution is covered in test_config.py).
+    kw.setdefault("api_generator", "autosummary")
     return DocsConfig(project_dir="/tmp/proj", name="proj", package_dir="proj", **kw)
 
 
@@ -49,7 +52,7 @@ def test_autoapi_generator():
     assert "autoapi.extension" in s["extensions"]
     assert "sphinx.ext.autosummary" not in s["extensions"]
     assert s["autoapi_dirs"] == [str(Path("/tmp/proj/proj").absolute())]
-    assert s["autoapi_ignore"] == ["*tests/*", "*scrap/*"]
+    assert s["autoapi_ignore"] == ["*tests/*", "*scrap/*", "*__main__*"]
     assert "imported-members" not in s["autoapi_options"]
     assert api_toctree_entry(_cfg(api_generator="autoapi")) == "api/index"
 

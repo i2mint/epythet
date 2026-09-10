@@ -24,7 +24,7 @@ The ``[tool.epythet]`` keys, all optional::
     accent = "#3661ac"            # default: derived from the package name (OKLCH)
     mode = "auto"                 # "auto" | "light" | "dark"
     ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
-    api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
+    api_generator = "auto"        # "auto" | "autosummary" (imports the package) | "autoapi" (static)
     agent_outputs = true          # llms.txt + .md twins of every page
     aggregates = ["md"]           # flat single-document twins at the site root
     ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
@@ -54,14 +54,22 @@ The ``[tool.epythet]`` keys, all optional::
 
 from __future__ import annotations
 
+import subprocess
+import sys
 import tomllib
 from configparser import ConfigParser
 from dataclasses import dataclass, field, replace
+from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
 #: Path substrings skipped by default when discovering modules to document.
 DEFAULT_IGNORE: tuple[str, ...] = ("tests/", "scrap/", "examples/")
+
+#: Modules never documented, whatever ``ignore`` says. Importing a package's
+#: ``__main__`` runs its command line (argparse prints usage and exits) in the
+#: middle of the build, and the module has no API to show.
+ALWAYS_IGNORE: tuple[str, ...] = ("__main__",)
 
 #: Directory under the project root holding the Sphinx sources.
 DEFAULT_DOCS_DIR = "docsrc"
@@ -75,7 +83,9 @@ NON_PACKAGE_DIRS = frozenset(
 )
 
 VALID_MODES = ("auto", "light", "dark")
-VALID_API_GENERATORS = ("autosummary", "autoapi")
+VALID_API_GENERATORS = ("auto", "autosummary", "autoapi")
+#: Seconds allowed for the import probe behind ``api_generator = "auto"``.
+IMPORT_PROBE_TIMEOUT = 120
 VALID_AGGREGATES = ("md", "pdf")
 
 
@@ -104,7 +114,7 @@ class DocsConfig:
     mode: str = "auto"
     theme_options: dict[str, Any] = field(default_factory=dict)
     ignore: tuple[str, ...] = DEFAULT_IGNORE
-    api_generator: str = "autosummary"
+    api_generator: str = "auto"
     agent_outputs: bool = True
     aggregates: tuple[str, ...] = ("md",)
     ai_artifacts: bool = True
@@ -127,13 +137,27 @@ class DocsConfig:
             raise ConfigError(
                 f"aggregates may only contain {VALID_AGGREGATES}; got {sorted(unknown)}"
             )
-        object.__setattr__(self, "ignore", tuple(self.ignore))
+        object.__setattr__(self, "ignore", split_ignore(self.ignore))
         object.__setattr__(self, "aggregates", tuple(self.aggregates))
         object.__setattr__(self, "project_dir", Path(self.project_dir).absolute())
         if self.package_dir is not None:
             object.__setattr__(
                 self, "package_dir", (self.project_dir / self.package_dir).absolute()
             )
+
+    @cached_property
+    def resolved_api_generator(self) -> str:
+        """``api_generator`` with ``"auto"`` resolved: see :func:`resolve_api_generator`."""
+        return resolve_api_generator(self)
+
+    @property
+    def api_ignore(self) -> tuple[str, ...]:
+        """``ignore`` plus :data:`ALWAYS_IGNORE`: what the API generators skip.
+
+        >>> DocsConfig(project_dir="/tmp/x", name="x", ignore=["tests/"]).api_ignore
+        ('tests/', '__main__')
+        """
+        return tuple(dict.fromkeys((*self.ignore, *ALWAYS_IGNORE)))
 
     @property
     def docsrc_dir(self) -> Path:
@@ -178,6 +202,73 @@ def load_config(project_dir: str | Path, **overrides) -> DocsConfig:
     if package_dir is None:
         package_dir = find_package_dir(project_dir, raw["name"])
     return DocsConfig(project_dir=project_dir, package_dir=package_dir, **raw)
+
+
+def resolve_api_generator(config: DocsConfig) -> str:
+    """The generator to run: ``autosummary`` when the package imports, else ``autoapi``.
+
+    ``autosummary`` imports the package and documents what it finds (aliases,
+    partials, re-exports); when the import fails, in CI typically because an
+    optional dependency is missing, it produces an *empty* API section and a
+    successful build. ``auto`` probes the import once, in a subprocess with the
+    project root on ``sys.path`` (as the build has it), and falls back to the
+    static ``autoapi`` generator, printing why. An explicit value is returned as is.
+    """
+    if config.api_generator != "auto":
+        return config.api_generator
+    ok, error = _import_probe(
+        config.package_name, str(config.project_dir), sys.executable
+    )
+    if ok:
+        return "autosummary"
+    print(
+        f"epythet: {config.package_name!r} does not import ({error}); documenting "
+        "it statically with autoapi (aliases and re-exports are not followed). "
+        "Install the package's dependencies in the docs environment to get the "
+        "full API pages.",
+        file=sys.stderr,
+    )
+    return "autoapi"
+
+
+@lru_cache(maxsize=None)
+def _import_probe(package_name: str, project_dir: str, python: str) -> tuple[bool, str]:
+    """``(imported, last error line)`` for importing ``package_name`` in a subprocess."""
+    code = (
+        "import importlib, sys; "
+        f"sys.path[:0] = [{project_dir!r}, {project_dir + '/src'!r}]; "
+        f"importlib.import_module({package_name!r})"
+    )
+    try:
+        result = subprocess.run(
+            [python, "-c", code],
+            cwd=project_dir,
+            capture_output=True,
+            text=True,
+            timeout=IMPORT_PROBE_TIMEOUT,
+        )
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return False, f"{type(e).__name__}: {e}"
+    if result.returncode == 0:
+        return True, ""
+    lines = [line for line in result.stderr.strip().splitlines() if line.strip()]
+    return False, (lines[-1] if lines else f"exit status {result.returncode}")
+
+
+def split_ignore(ignore: Iterable[str]) -> tuple[str, ...]:
+    """Normalise ignore patterns: each item may itself be a comma-separated list.
+
+    The publish action passes its ``ignore`` input verbatim as one argument,
+    ``--ignore tests/,scrap/,examples/``, and ``setup.cfg`` values are strings;
+    both must mean three patterns, not one that never matches.
+
+    >>> split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])
+    ('tests/', 'scrap/', 'examples/')
+    """
+    if isinstance(ignore, str):
+        ignore = [ignore]
+    parts = (part.strip() for item in ignore for part in item.split(","))
+    return tuple(dict.fromkeys(part for part in parts if part))
 
 
 def find_package_dir(project_dir: str | Path, name: str) -> Path | None:

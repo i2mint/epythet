@@ -276,3 +276,66 @@ def test_load_config_sees_the_demo_project(project):
     cfg = load_config(project)
     assert cfg.package_dir == project / "demo"
     assert cfg.repo_url == "https://github.com/org/demo"
+
+
+# ---------------------------------------------------------------------------
+# Fleet robustness (WP5): __all__ of objects, __main__ with argparse, comma ignore
+# ---------------------------------------------------------------------------
+
+ALL_INIT = '''"""A package whose __all__ lists objects, not submodules (a third of the fleet)."""
+
+from allpkg.core import thing
+
+__all__ = ["thing"]
+'''
+
+ARGPARSE_MAIN = '''"""Command line: importing this module parses sys.argv (and exits)."""
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("required")
+ARGS = parser.parse_args()
+'''
+
+
+@pytest.fixture(scope="module")
+def all_project(tmp_path_factory) -> Path:
+    root = tmp_path_factory.mktemp("allpkg")
+    (root / "pyproject.toml").write_text(PYPROJECT.replace("demo", "allpkg"))
+    (root / "README.md").write_text("# allpkg\n")
+    pkg = root / "allpkg"
+    pkg.mkdir()
+    (pkg / "__init__.py").write_text(ALL_INIT)
+    (pkg / "core.py").write_text('"""Core."""\n\n\ndef thing():\n    """A thing."""\n')
+    (pkg / "extra.py").write_text('"""Not in __all__, still a public module."""\n')
+    (pkg / "_private.py").write_text('"""Private: never a page."""\n')
+    (pkg / "__main__.py").write_text(ARGPARSE_MAIN)
+    (pkg / "tests").mkdir()
+    (pkg / "tests" / "__init__.py").write_text("")
+    (pkg / "tests" / "test_x.py").write_text(TEST_MODULE)
+    (pkg / "scrap").mkdir()
+    (pkg / "scrap" / "__init__.py").write_text('"""Scrap."""\n')
+    return root
+
+
+@pytest.fixture(scope="module")
+def all_site(all_project) -> Path:
+    # The action passes its `ignore` input as ONE comma-joined argument.
+    return quickstart(all_project, ignore=["tests/,scrap/"])
+
+
+def test_comma_joined_ignore_is_split(all_project):
+    assert load_config(all_project, ignore=["tests/,scrap/"]).ignore == ("tests/", "scrap/")
+
+
+def test_all_of_objects_still_yields_every_public_submodule(all_site):
+    pages = {p.name for p in (all_site / "_autosummary").glob("*.html")}
+    assert {"allpkg.html", "allpkg.core.html", "allpkg.extra.html"} <= pages
+    assert "allpkg._private.html" not in pages
+
+
+def test_main_and_ignored_modules_get_no_page(all_site):
+    pages = {p.name for p in (all_site / "_autosummary").glob("*.html")}
+    assert "allpkg.__main__.html" not in pages
+    assert not any(".tests." in p or ".scrap." in p for p in pages)

@@ -58,7 +58,7 @@ theme = "auto"                  # "auto" | "furo" | "shibuya" | "pydata" | "sphi
 accent = "#3661ac"              # default: derived from the package name (OKLCH, WCAG AA on white by construction)
 mode = "auto"                   # "auto" | "light" | "dark"  (where the theme supports forcing it)
 ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignore` on the CLI overrides
-api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
+api_generator = "auto"          # "auto" (autosummary if the package imports, else autoapi) | "autosummary" | "autoapi"
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
 ai_artifacts = true             # "For AI agents" page when skills / subagents / CLAUDE.md exist
