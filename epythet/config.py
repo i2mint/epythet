@@ -218,7 +218,9 @@ def resolve_api_generator(config: DocsConfig) -> str:
     is, and so is ``"auto"`` when the package directory is unknown.
     """
     if config.api_generator != "auto" or config.package_dir is None:
-        return config.api_generator  # nothing to probe; scaffold reports the missing dir
+        return (
+            config.api_generator
+        )  # nothing to probe; scaffold reports the missing dir
     ok, error = _import_probe(
         config.package_name, str(config.project_dir), sys.executable
     )

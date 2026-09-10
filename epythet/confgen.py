@@ -174,7 +174,9 @@ def api_toctree_entry(config: DocsConfig) -> str:
     >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autoapi"))
     'api/index'
     """
-    return f"{API_ROOT}/index" if config.resolved_api_generator == "autoapi" else API_ROOT
+    return (
+        f"{API_ROOT}/index" if config.resolved_api_generator == "autoapi" else API_ROOT
+    )
 
 
 def merge_settings(base: dict[str, Any], extra: dict[str, Any]) -> dict[str, Any]:
