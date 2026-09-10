@@ -1,0 +1,24 @@
+id: DR033
+title: autodoc could not import the object
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: build-warning
+  warning_type: autodoc.import_object
+  example_warning: "/p/docsrc/module_docs/dol/base.rst:4: WARNING: autodoc: failed to import module 'base' from module 'dol'; the following exception was raised: No module named 'pandas' [autodoc.import_object]"
+message: "autodoc import failed: {match}"
+fix:
+  hint: "Make the package importable in the docs environment (dependencies, sys.path), or use autodoc_mock_imports."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Maps `[autodoc.import_object]` warnings to a finding.
+
+  ## Why is this bad?
+  The whole module page is empty: nothing was documented because nothing could be
+  imported.

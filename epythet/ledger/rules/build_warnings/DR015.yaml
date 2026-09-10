@@ -1,0 +1,27 @@
+id: DR015
+title: docutils warning during the Sphinx build
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: build-warning
+  warning_type: docutils
+  example_warning: "/p/dol/base.py:docstring of dol.base.Store:7: WARNING: Inline emphasis start-string without end-string. [docutils]"
+message: "docutils: {match}"
+fix:
+  hint: "Fix the construct the message names; run 'epythet validate --level 1' for the parse-level diagnosis."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Maps every `[docutils]`-typed line of the Sphinx warning stream to a finding at
+  the object the warning names.
+
+  ## Why is this bad?
+  A docutils warning means content was parsed other than intended and, for four of
+  the specimen classes, deleted from the page. 127 in the dol baseline, 119 in i2.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-show_warning_types

@@ -1,0 +1,26 @@
+id: DR023
+title: Unresolved cross-reference
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: high
+detector:
+  kind: build-warning
+  warning_type: 'ref.*'
+  example_warning: "/p/dol/base.py:docstring of dol.base.Store:3: WARNING: py:class reference target not found: Nonexistent [ref.class]"
+message: "unresolved reference: {match}"
+fix:
+  hint: "Fix the target, or add it to nitpick_ignore."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Maps `[ref.python]`, `[ref.any]` and other `ref.*` warnings (emitted with `-n`)
+  to a finding.
+
+  ## Why is this bad?
+  The reference renders as plain code with no link.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-nitpicky

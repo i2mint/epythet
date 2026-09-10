@@ -1,0 +1,24 @@
+id: DR025
+title: Duplicate object description
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: very-high
+detector:
+  kind: build-warning
+  message_pattern: duplicate object description
+  example_warning: "/p/docsrc/module_docs/dol.rst:4: WARNING: duplicate object description of dol.Store, other instance in module_docs/dol/base, use :no-index: for one of them [app.add_directive]"
+message: "{match}"
+fix:
+  hint: "Add ':no-index:' to one of the two directives documenting the object."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Maps "duplicate object description of X" warnings to a finding.
+
+  ## Why is this bad?
+  The object is documented twice (typically via automodule plus autoclass, or a
+  facade re-export), and cross-references to it become ambiguous.

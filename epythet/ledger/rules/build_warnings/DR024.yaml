@@ -1,0 +1,23 @@
+id: DR024
+title: Image not readable
+namespace: build
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: build-warning
+  warning_type: image.not_readable
+  example_warning: "/p/docsrc/index.rst:12: WARNING: image file not readable: missing.png [image.not_readable]"
+message: "image missing: {match}"
+fix:
+  hint: "Fix the image path relative to the source file."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Maps `[image.not_readable]` warnings to a finding.
+
+  ## Why is this bad?
+  The page shows a broken image.

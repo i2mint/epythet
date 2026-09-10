@@ -2,7 +2,9 @@
 
 Storage is split by mutability, as decided in the v2 decision record (D8):
 
-- **Rules** are one YAML file per rule under ``epythet/ledger/rules/<namespace>/``
+- **Rules** are one YAML file per rule under ``epythet/ledger/rules/<group>/``
+  (the ``build`` namespace lives in ``build_warnings/``: a directory named
+  ``build/`` is dropped from wheels by the project's ``.gitignore``)
   with a sibling ``.py`` fixture that doubles as the regression test. They are
   human-edited, rarely, and ship inside epythet.
 - **Observations** (occurrences with file paths and snippets from real repos)
