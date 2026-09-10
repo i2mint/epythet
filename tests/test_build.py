@@ -286,7 +286,7 @@ ALL_INIT = '''"""A package whose __all__ lists objects, not submodules (a third 
 
 from allpkg.core import thing
 
-__all__ = ["thing"]
+__all__ = ["thing", "_listed"]
 '''
 
 ARGPARSE_MAIN = '''"""Command line: importing this module parses sys.argv (and exits)."""
@@ -310,6 +310,7 @@ def all_project(tmp_path_factory) -> Path:
     (pkg / "core.py").write_text('"""Core."""\n\n\ndef thing():\n    """A thing."""\n')
     (pkg / "extra.py").write_text('"""Not in __all__, still a public module."""\n')
     (pkg / "_private.py").write_text('"""Private: never a page."""\n')
+    (pkg / "_listed.py").write_text('"""Private but named in __all__: keeps its page."""\n')
     (pkg / "__main__.py").write_text(ARGPARSE_MAIN)
     (pkg / "tests").mkdir()
     (pkg / "tests" / "__init__.py").write_text("")
@@ -333,6 +334,7 @@ def test_all_of_objects_still_yields_every_public_submodule(all_site):
     pages = {p.name for p in (all_site / "_autosummary").glob("*.html")}
     assert {"allpkg.html", "allpkg.core.html", "allpkg.extra.html"} <= pages
     assert "allpkg._private.html" not in pages
+    assert "allpkg._listed.html" in pages  # __all__ publishes it (0.2.3 behaviour kept)
 
 
 def test_main_and_ignored_modules_get_no_page(all_site):

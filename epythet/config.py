@@ -59,16 +59,18 @@ import sys
 import tomllib
 from configparser import ConfigParser
 from dataclasses import dataclass, field, replace
-from functools import cached_property, lru_cache
+from functools import cached_property
 from pathlib import Path
 from typing import Any, Iterable
 
 #: Path substrings skipped by default when discovering modules to document.
 DEFAULT_IGNORE: tuple[str, ...] = ("tests/", "scrap/", "examples/")
 
-#: Modules never documented, whatever ``ignore`` says. Importing a package's
-#: ``__main__`` runs its command line (argparse prints usage and exits) in the
-#: middle of the build, and the module has no API to show.
+#: Modules that never get a page, whatever ``ignore`` says: a ``__main__`` is a
+#: command line, not an API. (autosummary still imports it once while
+#: discovering the package, as it does every submodule; a ``__main__`` that
+#: runs argparse at import survives that because Sphinx turns its ``SystemExit``
+#: into a skipped import.)
 ALWAYS_IGNORE: tuple[str, ...] = ("__main__",)
 
 #: Directory under the project root holding the Sphinx sources.
@@ -212,10 +214,11 @@ def resolve_api_generator(config: DocsConfig) -> str:
     optional dependency is missing, it produces an *empty* API section and a
     successful build. ``auto`` probes the import once, in a subprocess with the
     project root on ``sys.path`` (as the build has it), and falls back to the
-    static ``autoapi`` generator, printing why. An explicit value is returned as is.
+    static ``autoapi`` generator, printing why. An explicit value is returned as
+    is, and so is ``"auto"`` when the package directory is unknown.
     """
-    if config.api_generator != "auto":
-        return config.api_generator
+    if config.api_generator != "auto" or config.package_dir is None:
+        return config.api_generator  # nothing to probe; scaffold reports the missing dir
     ok, error = _import_probe(
         config.package_name, str(config.project_dir), sys.executable
     )
@@ -231,9 +234,13 @@ def resolve_api_generator(config: DocsConfig) -> str:
     return "autoapi"
 
 
-@lru_cache(maxsize=None)
 def _import_probe(package_name: str, project_dir: str, python: str) -> tuple[bool, str]:
-    """``(imported, last error line)`` for importing ``package_name`` in a subprocess."""
+    """``(imported, last error line)`` for importing ``package_name`` in a subprocess.
+
+    Not cached here: :attr:`DocsConfig.resolved_api_generator` caches per config
+    instance, and :func:`epythet.build.build` hands the resolved value to the
+    Sphinx process, so a build probes once.
+    """
     code = (
         "import importlib, sys; "
         f"sys.path[:0] = [{project_dir!r}, {project_dir + '/src'!r}]; "

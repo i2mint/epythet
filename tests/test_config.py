@@ -217,3 +217,12 @@ def test_auto_generator_resolves_by_import_probe(tmp_path, capsys):
         project_dir=bad, name="badpkg", package_dir="badpkg", api_generator="autosummary"
     )
     assert pinned.resolved_api_generator == "autosummary"
+
+
+def test_empty_ignore_override_keeps_default(tmp_path):
+    from epythet.cli import quickstart  # the orchestrator applies the rule
+    from epythet.config import DEFAULT_IGNORE, split_ignore
+
+    assert split_ignore([""]) == ()
+    assert split_ignore(["", " , "]) == ()
+    assert DocsConfig(project_dir="/tmp/x", name="x").ignore == DEFAULT_IGNORE
