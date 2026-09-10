@@ -236,3 +236,48 @@ epythet 0.2 keeps the contract the fleet depends on and changes what is behind i
 - URLs of API pages changed (`module_docs/<pkg>/<mod>.html` is now `_autosummary/<pkg>.<mod>.html`); `objects.inv` keeps every symbol resolvable across sites.
 
 The publish action pins `epythet<0.2` until v2 is validated across the fleet; see the [v2 decision record](https://github.com/i2mint/epythet/discussions/15) and the [tracking issue](https://github.com/i2mint/epythet/issues/16).
+
+
+# Validation and repair
+
+`epythet validate` checks a package's documentation in tiers, `epythet repair` fixes the markup slips it finds in the source, and `epythet sweep` runs the checks across many packages. Install the extras you need: `pip install 'epythet[validate]'` (ruff, pydoclint, PyYAML), `'epythet[repair]'` (LibCST, optional), `'epythet[migrate]'` (docstring-parser), `'epythet[review]'` (Playwright screenshots).
+
+```bash
+epythet validate .                  # lint + parse every docstring (no build), exit 0/10/11
+epythet validate . --level 3        # + Sphinx build + rendered-output checks, exit 12/13
+epythet repair . && epythet repair . --write   # diff first, then apply
+epythet sweep pkg1 pkg2 --manifest my_packages.pth   # read-only, many packages
+```
+
+## `validate`: five levels, one exit code per level
+
+| `--level` | Runs | What it reads | Exit code |
+|---|---|---|---|
+| 0 | lint | the docstring text: ruff `D` rules, pydoclint, and the coverage detectors (public objects without a docstring, entry points without an example, summaries that only restate the name, parameter descriptions that only restate the type) | 10 |
+| 1 (default) | + parse | the docutils doctree of every docstring, in isolation, against the artifact ledger (a `:param` line glued to the summary, a doctest rendered as prose, a Markdown fence, `*args` opening an emphasis, ...) | 11 |
+| 2 | + build | the Sphinx warning stream | 12 |
+| 3 | + render | the built pages: `-b xml` for objects described with nothing and cross-references that rendered as plain code, `-b html` for dangling `#idN` anchors and missing images, `-b text` for snapshots | 13 |
+| 4 | + review | writes a review *packet* (rendered text of the changed or sampled pages, the rubric, a strict JSON schema) for an in-session agent; never calls a model and never gates | 14, only with `--fail-on-review` |
+
+Levels 0 to 3 gate on `--fail-on error` (default), `warning` or `info`; exit 20 means the ledger itself is broken. `--format json` and `--format jsonl` give the machine-readable report.
+
+Text snapshots are opt-in: `--update-snapshots` writes the `-b text` render of every page under `docsrc/_snapshots/text`, and `--snapshot` diffs against it (a changed page is a level-2 error; the snapshot diff is the proof that a migration changed nothing). Level 4 writes its packet under the user data dir (`~/.local/share/epythet/review/<package>/<run>/`, `EPYTHET_DATA_DIR` overrides); a reviewer answers with a `review.json` that `--review-reply` ingests, and `epythet ledger propose review.json` turns its proposed rules into `status: proposed` ledger rules in an overlay (`--ledger DIR` uses them) for a human to promote.
+
+Every finding names a rule from the ledger (`epythet/ledger/rules/`, one YAML per rule with a fixture that is also its regression test). Findings are appended, as observations, to `~/.local/share/epythet/ledger/observations.jsonl`, never inside the repository.
+
+## `repair`: the normalizer's fixes, written back to the source
+
+The docs build already normalizes docstrings on the fly. `epythet repair` applies the same source-safe rewrites to the files: a blank line before a doctest, list or field list; a Markdown fence to a `.. code-block::` (or a `::` literal block with `--fence-style literal`); `Returns: text` to a real section; `## Heading` to a rubric; `[text](url)` to an RST link; a short title underline padded.
+
+```bash
+epythet repair path/to/pkg            # dry run: a unified diff, and what needs a hand
+epythet repair path/to/pkg --write    # apply, after verifying
+```
+
+Only the docstring literals change; the rest of the file is copied byte for byte and the module's AST outside its docstrings must be identical or nothing is written. Doctest sources are never altered. Each rewritten docstring is re-validated at level 1 (a rewrite that would introduce a finding is dropped), and with `--write` the doctests of every touched file are run before and after, and a file whose failures went up is restored. What no rule can fix safely (a prose `*args`, unmatched backticks, a backslash in a non-raw docstring) is listed under "needs a hand". `repair_package` from `epythet.tools` keeps working and delegates here.
+
+`epythet migrate-style path --to google` (or `numpy`) is the opt-in cousin: it rewrites an RST field list (`:param x:`, `:returns:`, `:raises:`) as a Google or NumPy section via `docstring_parser`, with the same guarantees, and leaves alone any docstring whose fields would not round-trip.
+
+## `sweep`: the fleet distribution and the work queue
+
+`epythet sweep DIR... [--manifest FILE]` validates every package at levels 0 and 0.5 without writing into any of them, prints how often each rule fires (findings, packages affected, rate per hundred public objects) and a queue of packages ranked by the work they hold, entry points first. It is what decides the severities in the ledger, and the shortest path to "which package should I document next".

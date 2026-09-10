@@ -1,0 +1,27 @@
+id: DQ004
+title: Parameter description only restates the type
+namespace: coverage
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: info
+precision: medium
+detector:
+  kind: coverage
+  function: type_restatement
+message: "type restated: {match}"
+fix:
+  hint: "Describe the meaning, units or default behaviour; delete the type words."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a parameter whose description's content words are a subset of its
+  annotation's tokens (`n: int` described as "an integer").
+
+  ## Why is this bad?
+  Pure noise: deleting it strictly improves the docstring (research_doc_quality §6.2).
+  Queue item.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://github.com/i2mint/epythet/issues/16

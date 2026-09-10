@@ -1,0 +1,28 @@
+id: DQ003
+title: Summary only restates the name
+namespace: coverage
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: info
+precision: medium
+detector:
+  kind: coverage
+  function: trivial_summary
+message: "trivial summary: {match!r}"
+fix:
+  hint: "Say what it does and when to reach for it, in one verb-first sentence."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Splits the identifier on snake_case/camelCase and the summary on whitespace,
+  strips stop words with a crude lemmatiser, and flags a summary whose content
+  words are all in the name's (the *lazy docstring* smell, research_doc_quality §6.2).
+
+  ## Why is this bad?
+  `load_config`: "Load the config." tells the reader nothing the name did not.
+  The research counts these as uncovered. Queue item.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://github.com/i2mint/epythet/issues/16

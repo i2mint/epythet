@@ -1,0 +1,28 @@
+id: DQ002
+title: Entry point without a runnable example
+namespace: coverage
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: info
+precision: high
+detector:
+  kind: coverage
+  function: entry_point_without_example
+message: "entry point has no example: {match}"
+fix:
+  hint: "Add one doctest for the common case, run it, and paste the real output."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a callable the package `__init__` exposes (its `__all__`, else what it
+  defines or imports) whose docstring has no `>>>` line. Helpers are not asked for
+  examples; only entry points are.
+
+  ## Why is this bad?
+  Examples are what both readers and agents use first (research_doc_quality §1),
+  and the gain is largest for less common libraries. This is a queue item, never a gate.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://github.com/i2mint/epythet/issues/16

@@ -1,0 +1,28 @@
+id: DQ001
+title: Public object without a docstring
+namespace: coverage
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: warning
+precision: very-high
+detector:
+  kind: coverage
+  function: missing_docstring
+message: "no docstring: {match}"
+fix:
+  hint: "Write at least a one-line summary; entry points also need an example."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a public module, class or function (no leading underscore in its dotted
+  name; `__all__` honoured where present) whose docstring is missing or blank.
+  Runs without ruff, so the fleet sweep reports it on every checkout.
+
+  ## Why is this bad?
+  The rendered page shows a signature and nothing else. Coverage of the public
+  surface is the first item on the sweep's checklist.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://github.com/i2mint/epythet/issues/16

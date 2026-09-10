@@ -13,8 +13,8 @@ level  name     reads
 0      lint     the source text of each docstring (ruff, pydoclint)
 0.5    parse    the docutils doctree of each docstring, in isolation
 1      build    the Sphinx warning stream
-2      render   the built output (owned by WP3, not implemented here)
-3      review   an LLM review of rendered pages (WP3, never gates)
+2      render   the built output: XML, HTML and text pages
+3      review   a review packet for an in-session agent (never gates)
 =====  =======  ==================================================
 
 The CLI exposes them as a *tier index* (``--level 0`` runs level 0,
@@ -44,10 +44,14 @@ LEVELS: dict[float, str] = {
 }
 #: Run order of the levels; index into this list is the CLI ``--level`` tier.
 TIERS: list[float] = list(LEVELS)
-#: Tiers this work package implements. Tiers 3 and 4 (levels 2 and 3) are WP3.
-IMPLEMENTED_TIERS = (0, 1, 2)
+#: Every CLI tier is implemented: 0 lint, 1 parse, 2 build, 3 render, 4 review.
+IMPLEMENTED_TIERS = (0, 1, 2, 3, 4)
 #: The levels those tiers run.
-IMPLEMENTED_LEVELS = (0, 0.5, 1)
+IMPLEMENTED_LEVELS = (0, 0.5, 1, 2, 3)
+#: The review level never gates unless the caller asks for it (decision D8).
+REVIEW_LEVEL = 3
+#: The one level-3 finding every packet run emits; "a packet was written" is not a defect.
+REVIEW_PACKET_RULE = "REVIEW"
 
 EXIT_OK = 0
 EXIT_INTERNAL = 1
@@ -172,16 +176,31 @@ class Report:
             "findings": [f.to_dict() for f in self.findings],
         }
 
-    def failing_levels(self, fail_on: str = "error") -> list[float]:
-        """Levels with at least one finding at or above ``fail_on``, in run order."""
+    def failing_levels(
+        self, fail_on: str = "error", *, fail_on_review: bool = False
+    ) -> list[float]:
+        """Levels with at least one finding at or above ``fail_on``, in run order.
+
+        Level 3 (review) never counts unless ``fail_on_review`` is set, and
+        then any finding a reviewer's reply produced counts whatever its
+        severity (the "packet written" finding never does): a review
+        proposes, it does not gate (decision D8).
+        """
         if fail_on not in SEVERITY_RANK:
             raise ValueError(f"fail_on must be one of {SEVERITIES}, got {fail_on!r}")
         levels = {
-            f.level for f in self.findings if severity_at_or_above(f.severity, fail_on)
+            f.level
+            for f in self.findings
+            if f.level != REVIEW_LEVEL and severity_at_or_above(f.severity, fail_on)
         }
+        if fail_on_review and any(
+            f.level == REVIEW_LEVEL and f.rule != REVIEW_PACKET_RULE
+            for f in self.findings
+        ):
+            levels.add(REVIEW_LEVEL)
         return sorted(levels)
 
-    def exit_code(self, fail_on: str = "error") -> int:
+    def exit_code(self, fail_on: str = "error", *, fail_on_review: bool = False) -> int:
         """The process exit code: ``0`` when clean, else the code of the first failing level.
 
         The *first* (lowest) failing level is reported because it is the first
@@ -196,8 +215,14 @@ class Report:
         >>> r.findings.append(Finding("D102", "warning", 0, "missing"))
         >>> r.exit_code(), r.exit_code("warning")
         (11, 10)
+        >>> r = Report("p", "/p", [3], [Finding("REVIEW", "info", 3, "packet")])
+        >>> r.exit_code(fail_on_review=True)
+        0
+        >>> r.findings.append(Finding("DR001", "warning", 3, "reviewer said so"))
+        >>> r.exit_code(), r.exit_code(fail_on_review=True)
+        (0, 14)
         """
-        failing = self.failing_levels(fail_on)
+        failing = self.failing_levels(fail_on, fail_on_review=fail_on_review)
         return EXIT_FOR_LEVEL[failing[0]] if failing else EXIT_OK
 
 

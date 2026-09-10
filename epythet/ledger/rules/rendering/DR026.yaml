@@ -1,0 +1,27 @@
+id: DR026
+title: Object documented but empty
+namespace: rendering
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: warning
+precision: very-high
+detector:
+  kind: html
+  function: empty_descriptions
+message: "object listed with no description: {match}"
+fix:
+  hint: "Write a docstring (a one-line summary is enough for a helper)."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx]
+explanation: |
+  ## What it does
+  Reads the `-b xml` render (level 2) for a `desc` whose content holds nothing but
+  generated text, and for an autosummary row whose summary cell is empty.
+
+  ## Why is this bad?
+  The reader sees a signature and nothing else, or a table row with a blank
+  second column. Level 0 counts these as undocumented; this rule shows which of
+  them actually reach the page.
+references:
+  - https://github.com/i2mint/epythet/discussions/15

@@ -11,6 +11,10 @@ from epythet.build import build, make
 from epythet.config import load_config
 from epythet.scaffold import make_autodocs, make_docsrc, scaffold
 from epythet.validation.cli import validate
+from epythet.validation.propose import propose_command as propose
+from epythet.repair import repair_command as repair
+from epythet.migrate import migrate_style_command as migrate_style
+from epythet.sweep import sweep_command as sweep
 
 
 def quickstart(project_dir, *, ignore: list[str] = None):
@@ -133,10 +137,29 @@ COMMANDS = [
     ai_artifacts,
 ]
 
+#: The v2 source-editing and fleet commands, by their command-line name.
+TOOL_COMMANDS = {"repair": repair, "migrate-style": migrate_style, "sweep": sweep}
 
-def epythet_cli():
+#: ``epythet ledger <command>``: maintenance of the artifact ledger.
+LEDGER_COMMANDS = {"propose": propose}
+
+
+def mk_epythet_parser(**parser_kwargs):
+    """The full ``epythet`` parser: the flat commands plus the ``ledger`` group."""
+    parser = cw.mk_parser(COMMANDS, **parser_kwargs)
+    cw.add_commands(parser, TOOL_COMMANDS)
+    cw.add_commands(
+        parser,
+        LEDGER_COMMANDS,
+        group_name="ledger",
+        group_kwargs={"title": "Artifact ledger maintenance"},
+    )
+    return parser
+
+
+def epythet_cli(argv=None):
     """Entry point for the ``epythet`` console script."""
-    raise SystemExit(cw.dispatch(COMMANDS))
+    raise SystemExit(cw.run(mk_epythet_parser(), argv))
 
 
 if __name__ == "__main__":

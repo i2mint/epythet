@@ -40,6 +40,9 @@ docs = []
 themes = ["sphinx-book-theme>=1.1", "sphinx-rtd-theme>=3"]
 pdf = ["playwright>=1.40"]
 validate = ["pyyaml>=6.0", "ruff>=0.5", "pydoclint>=0.5"]
+repair = ["libcst>=1.0"]
+migrate = ["docstring-parser>=0.16", "libcst>=1.0"]
+review = ["playwright>=1.40"]
 
 [project.scripts]
 epythet = "epythet.cli:epythet_cli"

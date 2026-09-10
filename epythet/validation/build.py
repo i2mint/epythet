@@ -208,6 +208,92 @@ def default_sphinx_build() -> list[str] | None:
 
 
 @dataclass
+class RenderResult:
+    """What a multi-builder render produced: one output directory per builder.
+
+    ``outdirs`` maps a builder name (``html``, ``text``, ``xml``) to the
+    directory holding its pages; a builder that failed is absent from it and
+    its exit status is in ``returncodes``. ``warnings`` is the parsed warning
+    stream of the first builder (the others repeat it).
+    """
+
+    outdirs: dict[str, Path] = field(default_factory=dict)
+    returncodes: dict[str, int] = field(default_factory=dict)
+    warnings: list[BuildWarning] = field(default_factory=list)
+    log: str = ""
+
+    @property
+    def ok(self) -> bool:
+        """Whether every builder exited 0 or with warnings only."""
+        return all(
+            code in (0, WARNINGS_ONLY_EXIT) for code in self.returncodes.values()
+        )
+
+
+#: The builders level 2 reads: HTML for links and images, text for snapshots,
+#: XML for structure (research §5.4: text and xml are complementary).
+RENDER_BUILDERS = ("html", "text", "xml")
+
+
+def _render_with_sphinx(
+    backend: "SphinxBackend",
+    project_dir: Path,
+    *,
+    builders: Sequence[str],
+    outdir: Path,
+) -> RenderResult:
+    """Run one ``sphinx-build`` per builder into ``outdir/<builder>``, sharing doctrees."""
+    project_dir = Path(project_dir)
+    command = (
+        list(backend.sphinx_build) if backend.sphinx_build else default_sphinx_build()
+    )
+    if command is None:
+        return RenderResult(
+            returncodes={b: 127 for b in builders}, log="sphinx-build not found"
+        )
+    docsrc = backend.resolve_docsrc(project_dir)
+    if docsrc is None:
+        return RenderResult(
+            returncodes={b: NO_DOCSRC for b in builders},
+            log="no docsrc/conf.py to build",
+        )
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    result = RenderResult()
+    logs = []
+    for index, builder in enumerate(builders):
+        warnings_file = outdir / f"warnings-{builder}.txt"
+        args = [
+            *command,
+            "-b",
+            builder,
+            "-q",
+            "-w",
+            str(warnings_file),
+            "-d",
+            str(outdir / ".doctrees"),
+            str(docsrc),
+            str(outdir / builder),
+        ]
+        if backend.nitpicky:
+            args.append("-n")
+        proc = subprocess.run(args, cwd=project_dir, capture_output=True, text=True)
+        logs.append(f"$ {' '.join(args)}\n{proc.stdout}{proc.stderr}")
+        result.returncodes[builder] = proc.returncode
+        if proc.returncode in (0, WARNINGS_ONLY_EXIT):
+            result.outdirs[builder] = outdir / builder
+        if index == 0:
+            stream = (
+                warnings_file.read_text(encoding="utf-8", errors="replace")
+                if warnings_file.exists()
+                else proc.stdout + proc.stderr
+            )
+            result.warnings = list(parse_warning_stream(stream, project_dir=project_dir))
+    result.log = "\n".join(logs)
+    return result
+
+
+@dataclass
 class SphinxBackend:
     """The default (and only shipped) backend: ``sphinx-build -b html -W``.
 
@@ -298,13 +384,27 @@ class SphinxBackend:
                 outdir=outdir if self.outdir else None,
                 command=args,
             )
+    def render(
+        self,
+        project_dir: Path,
+        *,
+        builders: Sequence[str] = RENDER_BUILDERS,
+        outdir: Path,
+    ) -> RenderResult:
+        """Build every builder in ``builders`` into ``outdir/<builder>`` (level 2).
+
+        Unlike :meth:`build_warnings`, the output is kept: level 2 reads it, and
+        level 3 packs it for review. The caller owns ``outdir``.
+        """
+        return _render_with_sphinx(self, project_dir, builders=builders, outdir=outdir)
 
 
 class BuildBackend(Protocol):
     """What the ``backend=`` seam requires: a name, versions, and the warning stream.
 
     :class:`SphinxBackend` is the shipped implementation; a MkDocs backend
-    implements the same two methods and inherits the whole ledger.
+    implements the same two methods and inherits the whole ledger. Level 2
+    additionally needs :class:`RenderBackend`.
     """
 
     name: str
@@ -312,6 +412,14 @@ class BuildBackend(Protocol):
     def versions(self) -> dict[str, str | None]: ...
 
     def build_warnings(self, project_dir: Path) -> BuildResult: ...
+
+
+class RenderBackend(BuildBackend, Protocol):
+    """A backend that can also render several builders into a kept directory (level 2)."""
+
+    def render(
+        self, project_dir: Path, *, builders: Sequence[str] = ..., outdir: Path
+    ) -> RenderResult: ...
 
 
 def run_build_level(

@@ -1,0 +1,27 @@
+id: DR027
+title: Link to a pruned anchor
+namespace: rendering
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: warning
+precision: very-high
+detector:
+  kind: html
+  function: dangling_anchors
+message: "dangling anchor: {match}"
+fix:
+  hint: "Fix the target label, or fix the inline markup Sphinx turned into a `problematic` span."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx]
+explanation: |
+  ## What it does
+  Reads every HTML page (level 2) and lists `href="#idN"` links whose target id
+  is not on that page (research §6.3).
+
+  ## Why is this bad?
+  Every `problematic` span links to a `#idN` system message that Sphinx prunes
+  from the page, so the link goes nowhere; a hand-written `:ref:` to a missing
+  label ends the same way.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
