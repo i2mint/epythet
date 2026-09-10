@@ -8,8 +8,11 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 
 ### Module Attributes
 
-| [`COMMANDS`](#epythet.cli.COMMANDS)   | The commands `epythet` exposes, in the order they appear in `--help`.   |
-|-------------------------------------------------------------|-------------------------------------------------------------------------|
+| [`COMMANDS`](#epythet.cli.COMMANDS)        | The commands `epythet` exposes, in the order they appear in `--help`.                                                                             |
+|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`TOOL_COMMANDS`](#epythet.cli.TOOL_COMMANDS)   | The v2 source-editing and fleet commands, by their command-line name.                                                                             |
+| [`LEDGER_COMMANDS`](#epythet.cli.LEDGER_COMMANDS) | maintenance of the artifact ledger.                                                                                                               |
+| [`CONVENTION`](#epythet.cli.CONVENTION)      | the command modules use `from __future__ import annotations`, and `list[str]` must still become `nargs="*"` (`--ignore a b`), not a single value. |
 
 ### Functions
 
@@ -17,12 +20,33 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [`check_pages`](#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                                               |
 | [`configure_pages`](#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                                                |
-| [`epythet_cli`](#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.                                         |
+| [`epythet_cli`](#epythet.cli.epythet_cli)([argv])                       | Entry point for the `epythet` console script.                                         |
+| [`mk_epythet_parser`](#epythet.cli.mk_epythet_parser)(\*\*parser_kwargs)      | The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.  |
 | [`quickstart`](#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
 ### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
+
+### epythet.cli.CONVENTION *= Convention(naming='by_name_if_has_default', short_flags=True, hyphenate_commands=True, hyphenate_groups=False, default_in_help=True, hints_when_declared=False, resolve_hints=True, decode=<function argh_decode>, egress=<function argh_egress>)*
+
+the command
+modules use `from __future__ import annotations`, and `list[str]` must
+still become `nargs="*"` (`--ignore a b`), not a single value.
+
+* **Type:**
+  cw’s argh-compatible convention, resolving string annotations
+
+### epythet.cli.LEDGER_COMMANDS *= {'propose': <function propose_command>}*
+
+maintenance of the artifact ledger.
+
+* **Type:**
+  `epythet ledger <command>`
+
+### epythet.cli.TOOL_COMMANDS *= {'migrate-style': <function migrate_style_command>, 'repair': <function repair_command>, 'sweep': <function sweep_command>}*
+
+The v2 source-editing and fleet commands, by their command-line name.
 
 ### epythet.cli.ai_artifacts(project_dir, , format='table')
 
@@ -54,9 +78,13 @@ Enable or fix GitHub Pages for a repo. Requires gh CLI or GITHUB_TOKEN.
   * **branch** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Branch to serve Pages from (default: gh-pages).
   * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Folder within the branch (default: /).
 
-### epythet.cli.epythet_cli()
+### epythet.cli.epythet_cli(argv=None)
 
 Entry point for the `epythet` console script.
+
+### epythet.cli.mk_epythet_parser(\*\*parser_kwargs)
+
+The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.
 
 ### epythet.cli.quickstart(project_dir, , ignore=None)
 

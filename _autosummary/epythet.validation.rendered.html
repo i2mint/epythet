@@ -1,0 +1,737 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="epythet.validation.rendered.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.validation.review" href="epythet.validation.review.html"><link rel="prev" title="epythet.validation.render" href="epythet.validation.render.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>epythet.validation.rendered - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sweep.html">epythet.sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.coverage.html">epythet.validation.coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.propose.html">epythet.validation.propose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.review.html">epythet.validation.review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/_autosummary/epythet.validation.rendered.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-epythet.validation.rendered">
+<span id="epythet-validation-rendered"></span><h1>epythet.validation.rendered<a class="headerlink" href="#module-epythet.validation.rendered" title="Link to this heading">¶</a></h1>
+<p>Level 2: read the <em>rendered</em> output (XML, HTML, text) and report what the build hid.</p>
+<p>A strict build is silent about most of what a reader sees wrong (research
+§2.2): an object listed with no description, a cross-reference that rendered
+as plain code, a link to an anchor Sphinx pruned, an image that is not in the
+built tree. This level renders three builders through the <code class="docutils literal notranslate"><span class="pre">backend=</span></code> seam
+(<a class="reference internal" href="epythet.validation.build.html#epythet.validation.build.SphinxBackend.render" title="epythet.validation.build.SphinxBackend.render"><code class="xref py py-meth docutils literal notranslate"><span class="pre">render()</span></code></a>) and reads each for
+what it shows best (research §5.4):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">xml</span></code> for structure: empty object descriptions and unresolved
+cross-references (a <code class="docutils literal notranslate"><span class="pre">literal</span></code> with class <code class="docutils literal notranslate"><span class="pre">xref</span></code> that no <code class="docutils literal notranslate"><span class="pre">reference</span></code>
+wraps, detectable without <code class="docutils literal notranslate"><span class="pre">-n</span></code>);</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">html</span></code> for links and assets: dangling <code class="docutils literal notranslate"><span class="pre">#idN</span></code> anchors and <code class="docutils literal notranslate"><span class="pre">&lt;img</span> <span class="pre">src&gt;</span></code>
+that resolve to nothing in the built tree;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code> for snapshots: a 4 KB page that keeps every text-leak artifact
+verbatim and none of the theme, diffed against <code class="docutils literal notranslate"><span class="pre">docsrc/_snapshots/text</span></code>
+when <code class="docutils literal notranslate"><span class="pre">snapshot=True</span></code>.</p></li>
+</ul>
+<p>Only the standard library parses the output (<code class="docutils literal notranslate"><span class="pre">xml.etree</span></code> and <code class="docutils literal notranslate"><span class="pre">html.parser</span></code>):
+the pages are Sphinx’s own, not untrusted input. Snapshots are opt-in and
+off by default; <code class="docutils literal notranslate"><span class="pre">update_snapshots=True</span></code> re-baselines.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.rendered</span><span class="w"> </span><span class="kn">import</span> <span class="n">dangling_anchors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dangling_anchors</span><span class="p">(</span><span class="s1">'&lt;a id="x"&gt;&lt;/a&gt;&lt;a href="#x"&gt;ok&lt;/a&gt;&lt;a href="#id7"&gt;gone&lt;/a&gt;'</span><span class="p">)</span>
+<span class="go">['#id7']</span>
+</pre></div>
+</div>
+<p class="rubric">Module Attributes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.SNAPSHOT_DIRNAME" title="epythet.validation.rendered.SNAPSHOT_DIRNAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SNAPSHOT_DIRNAME</span></code></a></p></td>
+<td><p>Where <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> snapshots live, relative to the Sphinx source directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.EMPTY_DESCRIPTION" title="epythet.validation.rendered.EMPTY_DESCRIPTION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMPTY_DESCRIPTION</span></code></a></p></td>
+<td><p>Rule ids this level reports under (all bundled; see <code class="docutils literal notranslate"><span class="pre">epythet/ledger/rules</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.RenderDetector" title="epythet.validation.rendered.RenderDetector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenderDetector</span></code></a></p></td>
+<td><p>A detector takes <code class="docutils literal notranslate"><span class="pre">{builder:</span> <span class="pre">outdir}</span></code> and the Sphinx source dir.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.RENDER_DETECTORS" title="epythet.validation.rendered.RENDER_DETECTORS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RENDER_DETECTORS</span></code></a></p></td>
+<td><p>Detector name (as in a rule's <code class="docutils literal notranslate"><span class="pre">detector.function</span></code>) -&gt; function.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.changed_pages" title="epythet.validation.rendered.changed_pages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">changed_pages</span></code></a>(diff)</p></td>
+<td><p>Pages level 3 should review: changed or new relative to the snapshot.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.compare_snapshots" title="epythet.validation.rendered.compare_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_snapshots</span></code></a>(text_dir, snapshot_dir)</p></td>
+<td><p>Diff every rendered text page against its stored snapshot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.dangling_anchors" title="epythet.validation.rendered.dangling_anchors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dangling_anchors</span></code></a>(html)</p></td>
+<td><p>Fragment links on a page whose target id does not exist on that page.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.dangling_anchors_detector" title="epythet.validation.rendered.dangling_anchors_detector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dangling_anchors_detector</span></code></a>(outdirs, _docsrc)</p></td>
+<td><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">html</span></code> output (DR027).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.empty_descriptions" title="epythet.validation.rendered.empty_descriptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty_descriptions</span></code></a>(outdirs, _docsrc)</p></td>
+<td><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">xml</span></code> output (DR026).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.empty_descriptions_in" title="epythet.validation.rendered.empty_descriptions_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty_descriptions_in</span></code></a>(root)</p></td>
+<td><p>Objects the page lists or describes with no text at all.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.missing_images" title="epythet.validation.rendered.missing_images"><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_images</span></code></a>(html, *, page_dir)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;img</span> <span class="pre">src&gt;</span></code> values that resolve to no file next to the page.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.missing_images_detector" title="epythet.validation.rendered.missing_images_detector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_images_detector</span></code></a>(outdirs, _docsrc)</p></td>
+<td><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">html</span></code> output (DR024 at level 2).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.render_detector" title="epythet.validation.rendered.render_detector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_detector</span></code></a>(name)</p></td>
+<td><p>Register a level-2 detector; the ledger loader validates <code class="docutils literal notranslate"><span class="pre">html</span></code> rules against it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.render_findings" title="epythet.validation.rendered.render_findings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_findings</span></code></a>(outdirs, ledger, *, docsrc)</p></td>
+<td><p>Run every <code class="docutils literal notranslate"><span class="pre">html</span></code>-kind rule of the ledger over the rendered output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.run_render_level" title="epythet.validation.rendered.run_render_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_render_level</span></code></a>(project_dir, ledger, *, ...)</p></td>
+<td><p>Level 2: render html, text and xml into <code class="docutils literal notranslate"><span class="pre">outdir</span></code> and read them.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.snapshot_findings" title="epythet.validation.rendered.snapshot_findings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">snapshot_findings</span></code></a>(diff, ledger)</p></td>
+<td><p>One DR035 finding per changed page, plus info findings for new and removed pages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.text_snapshots_detector" title="epythet.validation.rendered.text_snapshots_detector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">text_snapshots_detector</span></code></a>(_outdirs, _docsrc)</p></td>
+<td><p>DR035's detector is the snapshot diff, driven by <code class="docutils literal notranslate"><span class="pre">snapshot=</span></code>; nothing to scan here.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.unresolved_xrefs" title="epythet.validation.rendered.unresolved_xrefs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unresolved_xrefs</span></code></a>(outdirs, _docsrc)</p></td>
+<td><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">xml</span></code> output (DR023 at level 2).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.unresolved_xrefs_in" title="epythet.validation.rendered.unresolved_xrefs_in"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unresolved_xrefs_in</span></code></a>(root)</p></td>
+<td><p>Cross-references that rendered as plain code: an <code class="docutils literal notranslate"><span class="pre">xref</span></code> literal no <code class="docutils literal notranslate"><span class="pre">reference</span></code> wraps.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.update_snapshots" title="epythet.validation.rendered.update_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_snapshots</span></code></a>(text_dir, snapshot_dir)</p></td>
+<td><p>Replace the stored snapshots with the current render; returns pages written.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.RenderArtifacts" title="epythet.validation.rendered.RenderArtifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenderArtifacts</span></code></a>([outdirs, docsrc, snapshot])</p></td>
+<td><p>What level 2 leaves behind for level 3: output dirs and the snapshot diff.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenderHit</span></code></a>(page, evidence[, object])</p></td>
+<td><p>One thing a render detector found on one page.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.rendered.SnapshotDiff" title="epythet.validation.rendered.SnapshotDiff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SnapshotDiff</span></code></a>([changed, added, removed, compared])</p></td>
+<td><p>How the <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> render compares with the stored snapshots.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.validation.rendered.EMPTY_DESCRIPTION">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">EMPTY_DESCRIPTION</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DR026'</span></span><a class="headerlink" href="#epythet.validation.rendered.EMPTY_DESCRIPTION" title="Link to this definition">¶</a></dt>
+<dd><p>Rule ids this level reports under (all bundled; see <code class="docutils literal notranslate"><span class="pre">epythet/ledger/rules</span></code>).</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.validation.rendered.RENDER_DETECTORS">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">RENDER_DETECTORS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><span class="pre">RenderHit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dangling_anchors':</span> <span class="pre">&lt;function</span> <span class="pre">dangling_anchors_detector&gt;,</span> <span class="pre">'empty_descriptions':</span> <span class="pre">&lt;function</span> <span class="pre">empty_descriptions&gt;,</span> <span class="pre">'missing_images':</span> <span class="pre">&lt;function</span> <span class="pre">missing_images_detector&gt;,</span> <span class="pre">'text_snapshots':</span> <span class="pre">&lt;function</span> <span class="pre">text_snapshots_detector&gt;,</span> <span class="pre">'unresolved_xrefs':</span> <span class="pre">&lt;function</span> <span class="pre">unresolved_xrefs&gt;}</span></span><a class="headerlink" href="#epythet.validation.rendered.RENDER_DETECTORS" title="Link to this definition">¶</a></dt>
+<dd><p>Detector name (as in a rule’s <code class="docutils literal notranslate"><span class="pre">detector.function</span></code>) -&gt; function.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.rendered.RenderArtifacts">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">RenderArtifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docsrc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#RenderArtifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.RenderArtifacts" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>What level 2 leaves behind for level 3: output dirs and the snapshot diff.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.validation.rendered.RenderDetector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">RenderDetector</span></span><a class="headerlink" href="#epythet.validation.rendered.RenderDetector" title="Link to this definition">¶</a></dt>
+<dd><p>A detector takes <code class="docutils literal notranslate"><span class="pre">{builder:</span> <span class="pre">outdir}</span></code> and the Sphinx source dir.</p>
+<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.rendered.RenderHit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">RenderHit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evidence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#RenderHit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.RenderHit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One thing a render detector found on one page.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.validation.rendered.SNAPSHOT_DIRNAME">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">SNAPSHOT_DIRNAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_snapshots/text'</span></span><a class="headerlink" href="#epythet.validation.rendered.SNAPSHOT_DIRNAME" title="Link to this definition">¶</a></dt>
+<dd><p>Where <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> snapshots live, relative to the Sphinx source directory.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.rendered.SnapshotDiff">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">SnapshotDiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">changed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">added</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compared</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#SnapshotDiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.SnapshotDiff" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>How the <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> render compares with the stored snapshots.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.changed_pages">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">changed_pages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#changed_pages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.changed_pages" title="Link to this definition">¶</a></dt>
+<dd><p>Pages level 3 should review: changed or new relative to the snapshot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.compare_snapshots">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">compare_snapshots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#compare_snapshots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.compare_snapshots" title="Link to this definition">¶</a></dt>
+<dd><p>Diff every rendered text page against its stored snapshot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.validation.rendered.SnapshotDiff" title="epythet.validation.rendered.SnapshotDiff"><code class="xref py py-class docutils literal notranslate"><span class="pre">SnapshotDiff</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.dangling_anchors">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">dangling_anchors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#dangling_anchors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.dangling_anchors" title="Link to this definition">¶</a></dt>
+<dd><p>Fragment links on a page whose target id does not exist on that page.</p>
+<p>This is the research’s exact detector (§6.3): every <code class="docutils literal notranslate"><span class="pre">problematic</span></code> span
+Sphinx emits links to a <code class="docutils literal notranslate"><span class="pre">#idN</span></code> system message it then prunes, and a
+hand-written <code class="docutils literal notranslate"><span class="pre">:ref:</span></code> to a missing label ends the same way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.dangling_anchors_detector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">dangling_anchors_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#dangling_anchors_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.dangling_anchors_detector" title="Link to this definition">¶</a></dt>
+<dd><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">html</span></code> output (DR027).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.empty_descriptions">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">empty_descriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#empty_descriptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.empty_descriptions" title="Link to this definition">¶</a></dt>
+<dd><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">xml</span></code> output (DR026).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.empty_descriptions_in">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">empty_descriptions_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#empty_descriptions_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.empty_descriptions_in" title="Link to this definition">¶</a></dt>
+<dd><p>Objects the page lists or describes with no text at all.</p>
+<p>Two shapes: a <code class="docutils literal notranslate"><span class="pre">desc</span></code> whose <code class="docutils literal notranslate"><span class="pre">desc_content</span></code> holds nothing but generated
+paragraphs, index entries and nested objects; and an autosummary row
+whose summary cell is an empty paragraph (autodoc leaves undocumented
+members out of the page entirely, so the table row is all a reader sees).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.missing_images">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">missing_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#missing_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.missing_images" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">&lt;img</span> <span class="pre">src&gt;</span></code> values that resolve to no file next to the page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.missing_images_detector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">missing_images_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#missing_images_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.missing_images_detector" title="Link to this definition">¶</a></dt>
+<dd><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">html</span></code> output (DR024 at level 2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.render_detector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">render_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#render_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.render_detector" title="Link to this definition">¶</a></dt>
+<dd><p>Register a level-2 detector; the ledger loader validates <code class="docutils literal notranslate"><span class="pre">html</span></code> rules against it.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.render_findings">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">render_findings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ledger</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#render_findings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.render_findings" title="Link to this definition">¶</a></dt>
+<dd><p>Run every <code class="docutils literal notranslate"><span class="pre">html</span></code>-kind rule of the ledger over the rendered output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="epythet.validation.model.html#epythet.validation.model.Finding" title="epythet.validation.model.Finding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Finding</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.run_render_level">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">run_render_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ledger</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#run_render_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.run_render_level" title="Link to this definition">¶</a></dt>
+<dd><p>Level 2: render html, text and xml into <code class="docutils literal notranslate"><span class="pre">outdir</span></code> and read them.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">(findings,</span> <span class="pre">notes,</span> <span class="pre">artifacts)</span></code>; the artifacts hand level 3 the
+output directories and the snapshot diff so it never builds again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="epythet.validation.model.html#epythet.validation.model.Finding" title="epythet.validation.model.Finding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Finding</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>], <a class="reference internal" href="#epythet.validation.rendered.RenderArtifacts" title="epythet.validation.rendered.RenderArtifacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderArtifacts</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.snapshot_findings">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">snapshot_findings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ledger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#snapshot_findings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.snapshot_findings" title="Link to this definition">¶</a></dt>
+<dd><p>One DR035 finding per changed page, plus info findings for new and removed pages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="epythet.validation.model.html#epythet.validation.model.Finding" title="epythet.validation.model.Finding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Finding</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.text_snapshots_detector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">text_snapshots_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#text_snapshots_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.text_snapshots_detector" title="Link to this definition">¶</a></dt>
+<dd><p>DR035’s detector is the snapshot diff, driven by <code class="docutils literal notranslate"><span class="pre">snapshot=</span></code>; nothing to scan here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.unresolved_xrefs">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">unresolved_xrefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_docsrc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#unresolved_xrefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.unresolved_xrefs" title="Link to this definition">¶</a></dt>
+<dd><p>Level-2 detector over the <code class="docutils literal notranslate"><span class="pre">xml</span></code> output (DR023 at level 2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.unresolved_xrefs_in">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">unresolved_xrefs_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#unresolved_xrefs_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.unresolved_xrefs_in" title="Link to this definition">¶</a></dt>
+<dd><p>Cross-references that rendered as plain code: an <code class="docutils literal notranslate"><span class="pre">xref</span></code> literal no <code class="docutils literal notranslate"><span class="pre">reference</span></code> wraps.</p>
+<p>Autosummary rows are left out: an unwrapped name there means an
+undocumented object (reported by <a class="reference internal" href="#epythet.validation.rendered.empty_descriptions_in" title="epythet.validation.rendered.empty_descriptions_in"><code class="xref py py-func docutils literal notranslate"><span class="pre">empty_descriptions_in()</span></code></a>), not a
+bad target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.validation.rendered.RenderHit" title="epythet.validation.rendered.RenderHit"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderHit</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.rendered.update_snapshots">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.rendered.</span></span><span class="sig-name descname"><span class="pre">update_snapshots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/rendered.html#update_snapshots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.rendered.update_snapshots" title="Link to this definition">¶</a></dt>
+<dd><p>Replace the stored snapshots with the current render; returns pages written.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="epythet.validation.review.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">epythet.validation.review</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="epythet.validation.render.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">epythet.validation.render</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">epythet.validation.rendered</a><ul>
+<li><a class="reference internal" href="#epythet.validation.rendered.EMPTY_DESCRIPTION"><code class="docutils literal notranslate"><span class="pre">EMPTY_DESCRIPTION</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.RENDER_DETECTORS"><code class="docutils literal notranslate"><span class="pre">RENDER_DETECTORS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.RenderArtifacts"><code class="docutils literal notranslate"><span class="pre">RenderArtifacts</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.RenderDetector"><code class="docutils literal notranslate"><span class="pre">RenderDetector</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.RenderHit"><code class="docutils literal notranslate"><span class="pre">RenderHit</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.SNAPSHOT_DIRNAME"><code class="docutils literal notranslate"><span class="pre">SNAPSHOT_DIRNAME</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.SnapshotDiff"><code class="docutils literal notranslate"><span class="pre">SnapshotDiff</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.changed_pages"><code class="docutils literal notranslate"><span class="pre">changed_pages()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.compare_snapshots"><code class="docutils literal notranslate"><span class="pre">compare_snapshots()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.dangling_anchors"><code class="docutils literal notranslate"><span class="pre">dangling_anchors()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.dangling_anchors_detector"><code class="docutils literal notranslate"><span class="pre">dangling_anchors_detector()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.empty_descriptions"><code class="docutils literal notranslate"><span class="pre">empty_descriptions()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.empty_descriptions_in"><code class="docutils literal notranslate"><span class="pre">empty_descriptions_in()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.missing_images"><code class="docutils literal notranslate"><span class="pre">missing_images()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.missing_images_detector"><code class="docutils literal notranslate"><span class="pre">missing_images_detector()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.render_detector"><code class="docutils literal notranslate"><span class="pre">render_detector()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.render_findings"><code class="docutils literal notranslate"><span class="pre">render_findings()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.run_render_level"><code class="docutils literal notranslate"><span class="pre">run_render_level()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.snapshot_findings"><code class="docutils literal notranslate"><span class="pre">snapshot_findings()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.text_snapshots_detector"><code class="docutils literal notranslate"><span class="pre">text_snapshots_detector()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.unresolved_xrefs"><code class="docutils literal notranslate"><span class="pre">unresolved_xrefs()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.unresolved_xrefs_in"><code class="docutils literal notranslate"><span class="pre">unresolved_xrefs_in()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.rendered.update_snapshots"><code class="docutils literal notranslate"><span class="pre">update_snapshots()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=fd10adb8"></script>
+    </body>
+</html>

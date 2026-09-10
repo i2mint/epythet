@@ -1,0 +1,1467 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+<link rel="alternate" type="text/markdown" href="repair.html.md">
+<link rel="describedby" href="../../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>epythet.repair - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sweep.html">epythet.sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for epythet.repair</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""``epythet repair``: apply the normalizer's source-safe rewrites to docstrings in place.</span>
+
+<span class="sd">The build-time normalizer (:mod:`epythet.normalizer`) fixes a docstring's</span>
+<span class="sd">markup on the fly, so the rendered site is right without editing anything.</span>
+<span class="sd">This module writes the same fixes *back into the source*, for the packages</span>
+<span class="sd">that want their docstrings right at rest (decision D9). It is deliberately</span>
+<span class="sd">narrow:</span>
+
+<span class="sd">- Only the docstring literal changes. The rest of the file is copied byte</span>
+<span class="sd">  for byte (exact-span rewriting, no unparsing), and the module's AST with</span>
+<span class="sd">  docstrings blanked must be identical before and after or the file is not</span>
+<span class="sd">  written.</span>
+<span class="sd">- Only the normalizer's *source-safe* rules run (:data:`SOURCE_SAFE_RULES`):</span>
+<span class="sd">  a blank line before a doctest, list or field list; a Markdown fence to a</span>
+<span class="sd">  ``code-block`` (or a ``::`` literal block, ``fence_style="literal"``);</span>
+<span class="sd">  ``Returns: text`` one-liners to real sections; ``## Heading`` to a rubric;</span>
+<span class="sd">  ``[text](url)`` to an RST link; short underlines padded. Escaping a</span>
+<span class="sd">  prose ``*args`` is *not* source-safe (it changes what the author wrote,</span>
+<span class="sd">  and a later reader may not know why the backslash is there), so it stays a</span>
+<span class="sd">  diagnostic (DR010), like unmatched backticks and every other artifact the</span>
+<span class="sd">  normalizer cannot fix.</span>
+<span class="sd">- Every doctest keeps its source lines byte for byte (checked with</span>
+<span class="sd">  :mod:`doctest`'s own parser); a rewrite that would change one is skipped.</span>
+<span class="sd">- Every rewritten docstring is re-validated at level 0.5: a rewrite that</span>
+<span class="sd">  introduces a finding the original did not have is dropped. With</span>
+<span class="sd">  ``write=True`` the doctests of every touched file are run before and after</span>
+<span class="sd">  (the module is *imported* for that, so its top level runs; pass</span>
+<span class="sd">  ``run_doctests=False`` / ``--no-doctests`` for code that must not run), and</span>
+<span class="sd">  a file whose failures went up is restored. A module that cannot be imported</span>
+<span class="sd">  is written but reported as unverified.</span>
+<span class="sd">- Line endings (CRLF), a UTF-8 BOM and tab indentation are preserved; a file</span>
+<span class="sd">  is replaced atomically.</span>
+
+<span class="sd">Dry run is the default and prints a unified diff; ``write=True`` applies.</span>
+<span class="sd">The seam ``applier=`` swaps the rewriting substrate: :func:`apply_span_edits`</span>
+<span class="sd">(default, no dependency) or :func:`apply_with_libcst` (when LibCST is</span>
+<span class="sd">installed; it re-parses the module as a concrete syntax tree and replaces</span>
+<span class="sd">the string nodes).</span>
+
+<span class="sd">&gt;&gt;&gt; from epythet.repair import rewrite_docstring_literal</span>
+<span class="sd">&gt;&gt;&gt; literal = '\"\"\"Do it.\\n    - one\\n    - two\\n    \"\"\"'</span>
+<span class="sd">&gt;&gt;&gt; new, reason = rewrite_docstring_literal(literal)</span>
+<span class="sd">&gt;&gt;&gt; new.split("\\n"), reason</span>
+<span class="sd">(['\"\"\"Do it.', '', '    - one', '    - two', '    \"\"\"'], None)</span>
+<span class="sd">&gt;&gt;&gt; rewrite_docstring_literal('\"\"\"Has a \\\\n escape.\"\"\"')[1]</span>
+<span class="sd">'non-raw literal with backslashes: escapes would change'</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">difflib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalizer</span> <span class="k">as</span> <span class="n">N</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.docstrings</span><span class="w"> </span><span class="kn">import</span> <span class="n">Docstring</span><span class="p">,</span> <span class="n">iter_python_files</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Finding</span>
+
+<span class="c1">#: The normalizer rules whose rewrite is safe to commit to source, in normalizer order.</span>
+<span class="n">SOURCE_SAFE_RULES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+    <span class="n">rule</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">DEFAULT_RULES</span> <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">N</span><span class="o">.</span><span class="n">escape_unmatched_stars</span>
+<span class="p">)</span>
+<span class="c1">#: Normalizer rules that stay build-time only, and why.</span>
+<span class="n">UNSAFE_RULES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">N</span><span class="o">.</span><span class="n">escape_unmatched_stars</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s2">"escaping *args in prose changes what the author wrote; reported as DR010 instead"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">FENCE_STYLES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"code-block"</span><span class="p">,</span> <span class="s2">"literal"</span><span class="p">)</span>
+<span class="n">_PREFIX_CHARS</span> <span class="o">=</span> <span class="s2">"rRbBuUfF"</span>
+<span class="n">_DOCTEST_FAILURES_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\*\*\*Test Failed\*\*\* (\d+) failure"</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># One literal</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="fences_to_literal_blocks">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.fences_to_literal_blocks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fences_to_literal_blocks</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The ``fence_style="literal"`` variant: a fence becomes a ``::`` literal block.</span>
+
+<span class="sd">    A literal block needs no directive support and, unlike ``code-block``,</span>
+<span class="sd">    is safe inside a docstring that a doctest runner reads (a ``&gt;&gt;&gt;`` line</span>
+<span class="sd">    inside it is still literal, but is never mistaken for a directive body).</span>
+
+<span class="sd">    &gt;&gt;&gt; N.normalize_text("Run:\\n```bash\\npip install x\\n```\\nDone.", rules=[fences_to_literal_blocks])</span>
+<span class="sd">    'Run::\\n\\n    pip install x\\n\\nDone.'</span>
+<span class="sd">    """</span>
+    <span class="n">contexts</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">_FENCE_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">match</span> <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="o">.</span><span class="n">FENCE</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">body</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"```"</span><span class="p">):</span>
+            <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">nonblank</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">body</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="n">common</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nonblank</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">[(</span><span class="n">indent</span> <span class="o">+</span> <span class="s2">"    "</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">common</span><span class="p">:])</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">body</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">and</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"::"</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="s2">"::"</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">":"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">out</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">::"</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="rules_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.rules_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rules_for</span><span class="p">(</span><span class="n">fence_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"code-block"</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="n">SOURCE_SAFE_RULES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The rule tuple for a fence style (``literal`` swaps the fence rule)."""</span>
+    <span class="k">if</span> <span class="n">fence_style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FENCE_STYLES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"fence_style must be one of </span><span class="si">{</span><span class="n">FENCE_STYLES</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">fence_style</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fence_style</span> <span class="o">==</span> <span class="s2">"code-block"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">fences_to_literal_blocks</span> <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="n">N</span><span class="o">.</span><span class="n">fences_to_code_blocks</span> <span class="k">else</span> <span class="n">rule</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="split_literal">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.split_literal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_literal</span><span class="p">(</span><span class="n">segment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``(prefix, quote, body, closing quote)`` of a string literal's source, or ``None``.</span>
+
+<span class="sd">    &gt;&gt;&gt; split_literal('r\"\"\"x\"\"\"')</span>
+<span class="sd">    ('r', '\"\"\"', 'x', '\"\"\"')</span>
+<span class="sd">    &gt;&gt;&gt; split_literal("'y'")</span>
+<span class="sd">    ('', "'", 'y', "'")</span>
+<span class="sd">    """</span>
+    <span class="n">prefix_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="n">_PREFIX_CHARS</span><span class="p">))</span>
+    <span class="n">prefix</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[:</span><span class="n">prefix_len</span><span class="p">],</span> <span class="n">segment</span><span class="p">[</span><span class="n">prefix_len</span><span class="p">:]</span>
+    <span class="k">for</span> <span class="n">quote</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'"""'</span><span class="p">,</span> <span class="s2">"'''"</span><span class="p">,</span> <span class="s1">'"'</span><span class="p">,</span> <span class="s2">"'"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">rest</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rest</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">quote</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">quote</span><span class="p">,</span> <span class="n">rest</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span> <span class="p">:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">quote</span><span class="p">)],</span> <span class="n">quote</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_margin</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""The whitespace every non-blank line after the first starts with (tabs included).</span>
+
+<span class="sd">    &gt;&gt;&gt; _margin(["Summary.", "\t\tone", "\t\t\ttwo", ""])</span>
+<span class="sd">    '\t\t'</span>
+<span class="sd">    &gt;&gt;&gt; _margin(["one line"])</span>
+<span class="sd">    ''</span>
+<span class="sd">    """</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rest</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">margin</span><span class="p">):</span>
+            <span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">margin</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_body_indented</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether every non-blank line after the first is indented (what ``cleandoc`` flattens).</span>
+
+<span class="sd">    &gt;&gt;&gt; _body_indented(["Returns:", "    the x"]), _body_indented(["Text", "- one"])</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    """</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_doctest_sources</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Doctest example sources, or ``None`` when :mod:`doctest` cannot parse the text."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">example</span><span class="o">.</span><span class="n">source</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">doctest</span><span class="o">.</span><span class="n">DocTestParser</span><span class="p">()</span><span class="o">.</span><span class="n">get_examples</span><span class="p">(</span><span class="n">text</span><span class="p">)]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="rewrite_docstring_literal">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.rewrite_docstring_literal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rewrite_docstring_literal</span><span class="p">(</span>
+    <span class="n">segment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rules</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="n">SOURCE_SAFE_RULES</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Rewrite one docstring literal's source; returns ``(new_segment, reason_if_unsafe)``.</span>
+
+<span class="sd">    The body is dedented the way :func:`inspect.cleandoc` does (the first</span>
+<span class="sd">    line stays as written), the rules run, and the result is re-indented to</span>
+<span class="sd">    the original margin. Indentation-only lines (the closing-quote line) are</span>
+<span class="sd">    preserved.</span>
+<span class="sd">    """</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">split_literal</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"not a plain string literal"</span>
+    <span class="n">prefix</span><span class="p">,</span> <span class="n">quote</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parts</span>
+    <span class="k">if</span> <span class="s2">"b"</span> <span class="ow">in</span> <span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">"f"</span> <span class="ow">in</span> <span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"bytes or f-string literal"</span>
+    <span class="k">if</span> <span class="s2">"r"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">and</span> <span class="s2">"</span><span class="se">\\</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"non-raw literal with backslashes: escapes would change"</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">trailing</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">trailing</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>  <span class="c1"># the closing quote's own line: keep its indentation</span>
+    <span class="n">margin</span> <span class="o">=</span> <span class="n">_margin</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">dedented</span> <span class="o">=</span> <span class="p">[</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">margin</span><span class="p">):]</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]]</span>
+    <span class="n">before_sources</span> <span class="o">=</span> <span class="n">_doctest_sources</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dedented</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">before_sources</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"doctest could not parse the docstring; fix the doctest first"</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">normalize_docstring</span><span class="p">(</span><span class="n">dedented</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">normalized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">normalized</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="n">trailing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">normalized</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">normalized</span> <span class="o">==</span> <span class="n">dedented</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"single-quoted docstring would need a triple-quoted rewrite"</span>
+    <span class="k">if</span> <span class="n">_doctest_sources</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">normalized</span><span class="p">))</span> <span class="o">!=</span> <span class="n">before_sources</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"the rewrite would change a doctest's source"</span>
+    <span class="n">reindented</span> <span class="o">=</span> <span class="p">[(</span><span class="n">margin</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+    <span class="k">if</span> <span class="n">_body_indented</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_body_indented</span><span class="p">(</span><span class="n">dedented</span><span class="p">)</span> <span class="ow">and</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="c1"># The rewrite indented everything under the first line (a one-line section</span>
+        <span class="c1"># became a header with a body). ``inspect.cleandoc`` strips the common</span>
+        <span class="c1"># indentation of the lines after the first, so only the leading-newline</span>
+        <span class="c1"># form keeps the body under its header.</span>
+        <span class="n">reindented</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">,</span> <span class="n">margin</span> <span class="o">+</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reindented</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">trailing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">reindented</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trailing</span><span class="p">)</span>
+    <span class="n">new_body</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reindented</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">quote</span> <span class="ow">in</span> <span class="n">new_body</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"the rewrite would contain the quote sequence"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">quote</span><span class="si">}{</span><span class="n">new_body</span><span class="si">}{</span><span class="n">quote</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># One file</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="DocstringEdit">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.DocstringEdit">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DocstringEdit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One docstring the repair rewrote (or refused to)."""</span>
+
+    <span class="n">qualname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">line</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">start</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># character offset of the literal in the source</span>
+    <span class="n">end</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">before</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># literal source</span>
+    <span class="n">after</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># why it was not rewritten</span>
+    <span class="n">fixed</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># rule ids no longer firing</span>
+    <span class="n">remaining</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># rule ids still firing</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">applied</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">after</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span></div>
+
+
+
+<div class="viewcode-block" id="FileRepair">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.FileRepair">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileRepair</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What the repair did to one file."""</span>
+
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">original</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">repaired</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">edits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">skipped</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># the whole file was left alone, and why</span>
+    <span class="n">written</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">verification</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">repaired</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">applied</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edits</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">applied</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refused</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Docstrings left for a hand: a refused rewrite, or findings no rule fixes.</span>
+
+<span class="sd">        A docstring that was rewritten but still has findings counts too, so</span>
+<span class="sd">        the number is the same on the dry run, the write, and the run after.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edits</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span> <span class="ow">or</span> <span class="n">e</span><span class="o">.</span><span class="n">remaining</span><span class="p">]</span>
+
+<div class="viewcode-block" id="FileRepair.diff">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.FileRepair.diff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The unified diff of the file, empty when nothing changed."""</span>
+        <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">difflib</span><span class="o">.</span><span class="n">unified_diff</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">repaired</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                <span class="n">fromfile</span><span class="o">=</span><span class="sa">f</span><span class="s2">"a/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="n">tofile</span><span class="o">=</span><span class="sa">f</span><span class="s2">"b/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_line_offsets</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Character offset of the start of each line; ``\\n`` only, as ``ast`` counts lines.</span>
+
+<span class="sd">    (``str.splitlines`` would also split on form feeds and U+2028, which the</span>
+<span class="sd">    parser does not.)</span>
+<span class="sd">    """</span>
+    <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">offsets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">offsets</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_offset</span><span class="p">(</span><span class="n">offsets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lineno</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Character offset of ``(lineno, col)``; ``col`` is a UTF-8 byte offset in ``ast``."""</span>
+    <span class="n">line_start</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="n">lineno</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">line_start</span> <span class="p">:</span> <span class="n">offsets</span><span class="p">[</span><span class="n">lineno</span><span class="p">]</span> <span class="k">if</span> <span class="n">lineno</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">line_start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)[:</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="iter_docstring_nodes">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.iter_docstring_nodes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">iter_docstring_nodes</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""``(qualname, node, constant)`` for every docstring in a parsed module."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.docstrings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_docstring_node</span><span class="p">,</span> <span class="n">_iter_defs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">qualname</span><span class="p">):</span>
+        <span class="n">constant</span> <span class="o">=</span> <span class="n">_docstring_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">constant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">qualname</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">constant</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">_iter_defs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">visit</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">qualname</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">child</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">qualname</span> <span class="k">else</span> <span class="n">child</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">yield from</span> <span class="n">visit</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ast_fingerprint</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The module's AST with every docstring blanked: what a repair must not change."""</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_qualname</span><span class="p">,</span> <span class="n">_node</span><span class="p">,</span> <span class="n">constant</span> <span class="ow">in</span> <span class="n">iter_docstring_nodes</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+        <span class="n">constant</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+
+
+<span class="n">Applier</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">]],</span> <span class="nb">str</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="apply_span_edits">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.apply_span_edits">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_span_edits</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">edits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Splice each edit's ``after`` over its ``[start, end)`` span, last edit first."""</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">source</span>
+    <span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edits</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">applied</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:</span> <span class="n">edit</span><span class="o">.</span><span class="n">start</span><span class="p">]</span> <span class="o">+</span> <span class="n">edit</span><span class="o">.</span><span class="n">after</span> <span class="o">+</span> <span class="n">out</span><span class="p">[</span><span class="n">edit</span><span class="o">.</span><span class="n">end</span> <span class="p">:]</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="apply_with_libcst">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.apply_with_libcst">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_with_libcst</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">edits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">DocstringEdit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The LibCST applier: replace the matching ``SimpleString`` nodes of a concrete syntax tree."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">libcst</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cst</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">libcst.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetadataWrapper</span><span class="p">,</span> <span class="n">PositionProvider</span>
+
+    <span class="n">wanted</span> <span class="o">=</span> <span class="p">{(</span><span class="n">e</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">before</span><span class="p">):</span> <span class="n">e</span><span class="o">.</span><span class="n">after</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edits</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">applied</span><span class="p">}</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Replace</span><span class="p">(</span><span class="n">cst</span><span class="o">.</span><span class="n">CSTTransformer</span><span class="p">):</span>
+        <span class="n">METADATA_DEPENDENCIES</span> <span class="o">=</span> <span class="p">(</span><span class="n">PositionProvider</span><span class="p">,)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">leave_SimpleString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original</span><span class="p">,</span> <span class="n">updated</span><span class="p">):</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">PositionProvider</span><span class="p">,</span> <span class="n">original</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">line</span><span class="p">,</span> <span class="n">original</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">updated</span><span class="o">.</span><span class="n">with_changes</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">wanted</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">updated</span>
+
+    <span class="k">return</span> <span class="n">MetadataWrapper</span><span class="p">(</span><span class="n">cst</span><span class="o">.</span><span class="n">parse_module</span><span class="p">(</span><span class="n">source</span><span class="p">))</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">Replace</span><span class="p">())</span><span class="o">.</span><span class="n">code</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_findings_for_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">qualname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="n">napoleon</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Rule ids that fire on a docstring text at level 0.5."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">findings_for</span><span class="p">,</span> <span class="n">parse_docstring</span>
+
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">Docstring</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">def_line</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">qualname</span><span class="o">=</span><span class="n">qualname</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"function"</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">is_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">f</span><span class="o">.</span><span class="n">rule</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">findings_for</span><span class="p">(</span><span class="n">parse_docstring</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">napoleon</span><span class="o">=</span><span class="n">napoleon</span><span class="p">),</span> <span class="n">rules</span><span class="p">)})</span>
+
+
+<div class="viewcode-block" id="repair_source">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.repair_source">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">repair_source</span><span class="p">(</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">rules</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="n">SOURCE_SAFE_RULES</span><span class="p">,</span>
+    <span class="n">ledger_rules</span><span class="o">=</span><span class="p">(),</span>
+    <span class="n">napoleon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">applier</span><span class="p">:</span> <span class="n">Applier</span> <span class="o">=</span> <span class="n">apply_span_edits</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileRepair</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Repair every docstring of one module's source text; nothing is written."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+
+    <span class="n">repair</span> <span class="o">=</span> <span class="n">FileRepair</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"&lt;source&gt;"</span><span class="p">),</span> <span class="n">original</span><span class="o">=</span><span class="n">source</span><span class="p">,</span> <span class="n">repaired</span><span class="o">=</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">repair</span><span class="o">.</span><span class="n">skipped</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="n">repair</span>
+    <span class="n">offsets</span> <span class="o">=</span> <span class="n">_line_offsets</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">qualname</span><span class="p">,</span> <span class="n">_node</span><span class="p">,</span> <span class="n">constant</span> <span class="ow">in</span> <span class="n">iter_docstring_nodes</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">_offset</span><span class="p">(</span><span class="n">offsets</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">constant</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">constant</span><span class="o">.</span><span class="n">col_offset</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">_offset</span><span class="p">(</span><span class="n">offsets</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">constant</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">,</span> <span class="n">constant</span><span class="o">.</span><span class="n">end_col_offset</span><span class="p">)</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+        <span class="n">after</span><span class="p">,</span> <span class="n">reason</span> <span class="o">=</span> <span class="n">rewrite_docstring_literal</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">)</span>
+        <span class="n">edit</span> <span class="o">=</span> <span class="n">DocstringEdit</span><span class="p">(</span><span class="n">qualname</span><span class="o">=</span><span class="n">qualname</span> <span class="ow">or</span> <span class="s2">"&lt;module&gt;"</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">constant</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ledger_rules</span><span class="p">:</span>
+            <span class="n">was</span> <span class="o">=</span> <span class="n">_findings_for_text</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">constant</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">qualname</span><span class="o">=</span><span class="n">edit</span><span class="o">.</span><span class="n">qualname</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">ledger_rules</span><span class="p">,</span> <span class="n">napoleon</span><span class="o">=</span><span class="n">napoleon</span><span class="p">)</span>
+            <span class="n">edit</span><span class="o">.</span><span class="n">remaining</span> <span class="o">=</span> <span class="n">was</span>
+            <span class="k">if</span> <span class="n">edit</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+                <span class="n">new_parts</span> <span class="o">=</span> <span class="n">split_literal</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+                <span class="n">new_text</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">new_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="k">if</span> <span class="n">new_parts</span> <span class="k">else</span> <span class="n">constant</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">now</span> <span class="o">=</span> <span class="n">_findings_for_text</span><span class="p">(</span><span class="n">new_text</span><span class="p">,</span> <span class="n">qualname</span><span class="o">=</span><span class="n">edit</span><span class="o">.</span><span class="n">qualname</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">ledger_rules</span><span class="p">,</span> <span class="n">napoleon</span><span class="o">=</span><span class="n">napoleon</span><span class="p">)</span>
+                <span class="n">introduced</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">now</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">was</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">introduced</span><span class="p">:</span>
+                    <span class="n">edit</span><span class="o">.</span><span class="n">after</span><span class="p">,</span> <span class="n">edit</span><span class="o">.</span><span class="n">reason</span> <span class="o">=</span> <span class="n">before</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"the rewrite would introduce </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">introduced</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">edit</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">was</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">now</span><span class="p">))</span>
+                    <span class="n">edit</span><span class="o">.</span><span class="n">remaining</span> <span class="o">=</span> <span class="n">now</span>
+        <span class="n">repair</span><span class="o">.</span><span class="n">edits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">repair</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">repair</span>
+    <span class="n">repaired</span> <span class="o">=</span> <span class="n">applier</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">repair</span><span class="o">.</span><span class="n">edits</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_ast_fingerprint</span><span class="p">(</span><span class="n">repaired</span><span class="p">)</span> <span class="o">!=</span> <span class="n">_ast_fingerprint</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+            <span class="n">repair</span><span class="o">.</span><span class="n">skipped</span> <span class="o">=</span> <span class="s2">"the rewrite changed the module's AST outside its docstrings"</span>
+            <span class="k">return</span> <span class="n">repair</span>
+    <span class="k">except</span> <span class="ne">SyntaxError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">repair</span><span class="o">.</span><span class="n">skipped</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"the rewrite does not parse: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="n">repair</span>
+    <span class="n">repair</span><span class="o">.</span><span class="n">repaired</span> <span class="o">=</span> <span class="n">repaired</span>
+    <span class="k">return</span> <span class="n">repair</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># A package</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="RepairReport">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.RepairReport">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RepairReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Everything one ``repair`` run did."""</span>
+
+    <span class="n">root</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FileRepair</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">FileRepair</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">changed</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refused</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">FileRepair</span><span class="p">,</span> <span class="n">DocstringEdit</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">f</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">refused</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"files"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">),</span>
+            <span class="s2">"files_changed"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">),</span>
+            <span class="s2">"docstrings_rewritten"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">applied</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">),</span>
+            <span class="s2">"docstrings_refused"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refused</span><span class="p">),</span>
+            <span class="s2">"files_written"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">written</span><span class="p">),</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">)</span></div>
+
+
+
+<span class="c1">#: Runs a module's doctests by importing it under its dotted name (so relative</span>
+<span class="c1">#: imports work) and prints ``failed attempted``; exit 3 when it cannot be imported.</span>
+<span class="n">_DOCTEST_RUNNER</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<span class="s2">import doctest, importlib, sys</span>
+<span class="s2">try:</span>
+<span class="s2">    module = importlib.import_module(sys.argv[1])</span>
+<span class="s2">except BaseException as e:</span>
+<span class="s2">    print(f"import failed: {type(e).__name__}: </span><span class="si">{e}</span><span class="s2">", file=sys.stderr)</span>
+<span class="s2">    sys.exit(3)</span>
+<span class="s2">result = doctest.testmod(module)</span>
+<span class="s2">print(result.failed, result.attempted)</span>
+<span class="s2">sys.exit(1 if result.failed else 0)</span>
+<span class="s2">"""</span>
+<span class="n">IMPORT_FAILED</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_module_name</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``pkg.sub.mod`` for a file under ``project_dir`` (or ``src/``), by its ``__init__`` chain."""</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rel</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rel</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parts</span> <span class="ow">and</span> <span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"__init__"</span><span class="p">:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">parts</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">((</span><span class="n">root</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="o">*</span><span class="n">parts</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="s2">"__init__.py"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">rel</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"__init__.py"</span> <span class="k">else</span> <span class="mi">1</span><span class="p">))):</span>
+            <span class="k">return</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_doctest_failures</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``(returncode, failures, tail)`` of the file's doctests, run in a subprocess.</span>
+
+<span class="sd">    ``failures`` is :data:`IMPORT_FAILED` when the module cannot be imported,</span>
+<span class="sd">    which the caller reports as "not verified" rather than as a pass.</span>
+<span class="sd">    """</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
+    <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">project_dir</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"src"</span><span class="p">)]</span>
+    <span class="n">env</span><span class="p">[</span><span class="s2">"PYTHONPATH"</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">roots</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"PYTHONPATH"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="k">if</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">_module_name</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"doctest"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-c"</span><span class="p">,</span> <span class="n">_DOCTEST_RUNNER</span><span class="p">,</span> <span class="n">module</span><span class="p">]</span>
+    <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">stdout</span> <span class="o">+</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">output</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">if</span> <span class="n">module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="s2">"import failed"</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">IMPORT_FAILED</span><span class="p">,</span> <span class="n">tail</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">failed</span><span class="p">,</span> <span class="n">_attempted</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">failed</span><span class="p">),</span> <span class="n">tail</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">IMPORT_FAILED</span><span class="p">,</span> <span class="n">tail</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">_DOCTEST_FAILURES_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">IMPORT_FAILED</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">failures</span><span class="p">,</span> <span class="n">tail</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_source</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``(text with LF newlines, original newline, had_bom)``."""</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
+    <span class="n">bom</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">"</span><span class="se">\xef\xbb\xbf</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">if</span> <span class="n">bom</span> <span class="k">else</span> <span class="n">raw</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="k">if</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">else</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span> <span class="n">newline</span><span class="p">,</span> <span class="n">bom</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write_source</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">newline</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bom</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Write ``text`` back with the file's own newline and BOM, replacing the file atomically."""</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">newline</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bom</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\xef\xbb\xbf</span><span class="s2">"</span> <span class="o">+</span> <span class="n">data</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.epythet-tmp"</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_files_under</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""``(project_dir, files)`` for a file, a package directory or a project root."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_package</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">_find_project</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">resolved</span> <span class="o">=</span> <span class="n">resolve_package</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="c1"># A plain directory of .py files (no __init__, no pyproject): every file in it.</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*.py"</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s2">"__pycache__"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parts</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">files</span>
+    <span class="k">return</span> <span class="n">resolved</span><span class="o">.</span><span class="n">project_dir</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">iter_python_files</span><span class="p">(</span><span class="n">resolved</span><span class="o">.</span><span class="n">package_dir</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_project</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">_find_project_dir</span>
+
+    <span class="k">return</span> <span class="n">_find_project_dir</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="repair">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.repair">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">repair</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">fence_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"code-block"</span><span class="p">,</span>
+    <span class="n">rules</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">]</span> <span class="o">=</span> <span class="n">SOURCE_SAFE_RULES</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="n">ledger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">napoleon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">revalidate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">run_doctests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">applier</span><span class="p">:</span> <span class="n">Applier</span> <span class="o">=</span> <span class="n">apply_span_edits</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RepairReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Repair the docstrings under ``path`` (a file, package directory or project root).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: What to repair.</span>
+<span class="sd">        write: Apply the rewrites; the default only computes them (dry run).</span>
+<span class="sd">        fence_style: What a Markdown fence becomes: ``code-block`` or ``literal``.</span>
+<span class="sd">        rules: The normalizer rules to apply; :data:`SOURCE_SAFE_RULES` by default.</span>
+<span class="sd">        ignore: Path substrings to skip, as ``epythet validate --ignore``.</span>
+<span class="sd">        ledger: The rule catalog used to re-validate (``None`` = bundled).</span>
+<span class="sd">        napoleon: Parse docstrings with napoleon's Google/NumPy pre-processing.</span>
+<span class="sd">        revalidate: Drop a rewrite that introduces a level-0.5 finding.</span>
+<span class="sd">        run_doctests: With ``write``, run each touched file's doctests before</span>
+<span class="sd">            and after, and restore a file whose failures went up.</span>
+<span class="sd">        applier: The rewriting substrate; :func:`apply_span_edits` or</span>
+<span class="sd">            :func:`apply_with_libcst`.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.ledger</span><span class="w"> </span><span class="kn">import</span> <span class="n">PARSE_KINDS</span><span class="p">,</span> <span class="n">load_ledger</span>
+
+    <span class="n">project_dir</span><span class="p">,</span> <span class="n">files</span> <span class="o">=</span> <span class="n">_files_under</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">)</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">RepairReport</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span>
+    <span class="n">ledger_rules</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">if</span> <span class="n">revalidate</span><span class="p">:</span>
+        <span class="n">catalog</span> <span class="o">=</span> <span class="n">load_ledger</span><span class="p">(</span><span class="n">ledger</span><span class="p">)</span>
+        <span class="n">ledger_rules</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">of_kind</span><span class="p">(</span><span class="o">*</span><span class="n">PARSE_KINDS</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">applies</span><span class="p">(</span><span class="n">napoleon</span><span class="o">=</span><span class="n">napoleon</span><span class="p">)]</span>
+    <span class="n">active_rules</span> <span class="o">=</span> <span class="n">rules_for</span><span class="p">(</span><span class="n">fence_style</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">source</span><span class="p">,</span> <span class="n">newline</span><span class="p">,</span> <span class="n">bom</span> <span class="o">=</span> <span class="n">_read_source</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">UnicodeDecodeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FileRepair</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">original</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">repaired</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">skipped</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">repair_source</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">active_rules</span><span class="p">,</span> <span class="n">ledger_rules</span><span class="o">=</span><span class="n">ledger_rules</span><span class="p">,</span> <span class="n">napoleon</span><span class="o">=</span><span class="n">napoleon</span><span class="p">,</span> <span class="n">applier</span><span class="o">=</span><span class="n">applier</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">write</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">changed</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="n">_doctest_failures</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">run_doctests</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">_write_source</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">repaired</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span> <span class="n">bom</span><span class="o">=</span><span class="n">bom</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">written</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">run_doctests</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">after</span> <span class="o">=</span> <span class="n">_doctest_failures</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">before</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">IMPORT_FAILED</span> <span class="ow">and</span> <span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">IMPORT_FAILED</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">verification</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"not verified: the module could not be imported to run its doctests (</span><span class="si">{</span><span class="n">after</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">IMPORT_FAILED</span> <span class="ow">or</span> <span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">before</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">_write_source</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">,</span> <span class="n">bom</span><span class="o">=</span><span class="n">bom</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">written</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">verification</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"restored: doctest failures went from </span><span class="si">{</span><span class="n">before</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">after</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">verification</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"doctests: </span><span class="si">{</span><span class="n">before</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> failure(s) before, </span><span class="si">{</span><span class="n">after</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> after"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># CLI</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="repair_command">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.repair_command">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">repair_command</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">fence_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"code-block"</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ledger</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">no_napoleon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_doctests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">applier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"span"</span><span class="p">,</span>
+    <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Rewrite docstrings so they render right: blank lines, fences, one-liner sections, links.</span>
+
+<span class="sd">    Dry run by default: prints a unified diff of what --write would change.</span>
+<span class="sd">    Unsafe cases (prose *args, unmatched backticks, backslashes in a non-raw</span>
+<span class="sd">    docstring) are reported, never rewritten. Exit 0 when nothing is left to</span>
+<span class="sd">    do or every write was verified; 3 when a written file had to be restored.</span>
+
+<span class="sd">    :param path: A .py file, a package directory, or a project root.</span>
+<span class="sd">    :param write: Apply the changes (after re-validating each docstring and re-running doctests).</span>
+<span class="sd">    :param fence_style: What a Markdown fence becomes: code-block or literal.</span>
+<span class="sd">    :param ignore: Skip files whose path contains this string (repeat -i for several).</span>
+<span class="sd">    :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.</span>
+<span class="sd">    :param no_napoleon: Re-validate without napoleon's Google/NumPy pre-processing.</span>
+<span class="sd">    :param no_doctests: Do not run each touched file's doctests before and after writing.</span>
+<span class="sd">    :param applier: The rewriting substrate: span (default) or libcst.</span>
+<span class="sd">    :param quiet: Print the summary only, not the diff.</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cw</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.ledger</span><span class="w"> </span><span class="kn">import</span> <span class="n">LedgerError</span>
+
+    <span class="k">if</span> <span class="n">fence_style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FENCE_STYLES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--fence-style must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">FENCE_STYLES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">appliers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"span"</span><span class="p">:</span> <span class="n">apply_span_edits</span><span class="p">,</span> <span class="s2">"libcst"</span><span class="p">:</span> <span class="n">apply_with_libcst</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">applier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">appliers</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--applier must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">appliers</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">repair</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">,</span>
+            <span class="n">fence_style</span><span class="o">=</span><span class="n">fence_style</span><span class="p">,</span>
+            <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span> <span class="ow">or</span> <span class="p">(),</span>
+            <span class="n">ledger</span><span class="o">=</span><span class="n">ledger</span><span class="p">,</span>
+            <span class="n">napoleon</span><span class="o">=</span><span class="ow">not</span> <span class="n">no_napoleon</span><span class="p">,</span>
+            <span class="n">run_doctests</span><span class="o">=</span><span class="ow">not</span> <span class="n">no_doctests</span><span class="p">,</span>
+            <span class="n">applier</span><span class="o">=</span><span class="n">appliers</span><span class="p">[</span><span class="n">applier</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">LedgerError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> (pip install 'epythet[repair]')"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">render_repair</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="ow">not</span> <span class="n">quiet</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">verification</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">written</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">changed</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="s2">"a written file had to be restored; see above"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="render_repair">
+<a class="viewcode-back" href="../../_autosummary/epythet.repair.html#epythet.repair.render_repair">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">render_repair</span><span class="p">(</span><span class="n">report</span><span class="p">:</span> <span class="n">RepairReport</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">diff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The human report: the diff (dry run) or what was written, then the refusals."""</span>
+    <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">diff</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">write</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">changed</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">write</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="s2">"written"</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">written</span> <span class="k">else</span> <span class="s2">"NOT written"</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">applied</span><span class="p">)</span><span class="si">}</span><span class="s2"> docstring(s) rewritten, </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"    </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">verification</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">edit</span><span class="o">.</span><span class="n">fixed</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">edit</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">edit</span><span class="o">.</span><span class="n">qualname</span><span class="si">}</span><span class="s2">: fixed </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">edit</span><span class="o">.</span><span class="n">fixed</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">refused</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"needs a hand:"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span><span class="p">,</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">refused</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">edit</span><span class="o">.</span><span class="n">reason</span><span class="p">:</span>
+                <span class="n">why</span> <span class="o">=</span> <span class="n">edit</span><span class="o">.</span><span class="n">reason</span>
+            <span class="k">elif</span> <span class="n">edit</span><span class="o">.</span><span class="n">applied</span><span class="p">:</span>
+                <span class="n">why</span> <span class="o">=</span> <span class="s2">"rewritten, but findings remain"</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">why</span> <span class="o">=</span> <span class="s2">"no source-safe rule fixes this"</span>
+            <span class="n">still</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" [</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">edit</span><span class="o">.</span><span class="n">remaining</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span> <span class="k">if</span> <span class="n">edit</span><span class="o">.</span><span class="n">remaining</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">edit</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">edit</span><span class="o">.</span><span class="n">qualname</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">why</span><span class="si">}{</span><span class="n">still</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">skipped</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"skipped </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">skipped</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">counts</span><span class="p">()</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="s2">"written"</span> <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">write</span> <span class="k">else</span> <span class="s2">"would change (dry run; add --write)"</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">counts</span><span class="p">[</span><span class="s1">'docstrings_rewritten'</span><span class="p">]</span><span class="si">}</span><span class="s2"> docstring(s) in </span><span class="si">{</span><span class="n">counts</span><span class="p">[</span><span class="s1">'files_changed'</span><span class="p">]</span><span class="si">}</span><span class="s2"> of "</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">counts</span><span class="p">[</span><span class="s1">'files'</span><span class="p">]</span><span class="si">}</span><span class="s2"> file(s) </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">counts</span><span class="p">[</span><span class="s1">'docstrings_refused'</span><span class="p">]</span><span class="si">}</span><span class="s2"> left for a hand"</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=b557875f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=fd10adb8"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    </body>
+</html>

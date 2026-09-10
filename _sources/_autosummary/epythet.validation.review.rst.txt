@@ -1,0 +1,39 @@
+epythet.validation.review
+=========================
+
+.. automodule:: epythet.validation.review
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      PACKET_RULE
+      UNRULED
+      RUBRIC
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      load_reply
+      reply_findings
+      reviews_dir
+      rubric_text
+      run_review_level
+      select_pages
+      validate_reply
+      write_packet
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ReviewPacket
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      ReplyError
+   

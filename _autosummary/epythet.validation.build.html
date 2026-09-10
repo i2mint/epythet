@@ -211,11 +211,14 @@
 <li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -227,12 +230,16 @@
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -306,6 +313,9 @@ rules match on, because Sphinx still has no structured warning output.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.build.WARNING_LINE_RE" title="epythet.validation.build.WARNING_LINE_RE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WARNING_LINE_RE</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">path:docstring</span> <span class="pre">of</span> <span class="pre">obj:3:</span> <span class="pre">WARNING:</span> <span class="pre">message</span> <span class="pre">[type]</span></code> and the simpler <code class="docutils literal notranslate"><span class="pre">path:12:</span> <span class="pre">WARNING:</span> <span class="pre">message</span> <span class="pre">[type]</span></code> and <code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">message</span></code> shapes.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.build.RENDER_BUILDERS" title="epythet.validation.build.RENDER_BUILDERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RENDER_BUILDERS</span></code></a></p></td>
+<td><p>HTML for links and images, text for snapshots, XML for structure (research §5.4: text and xml are complementary).</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -347,6 +357,12 @@ rules match on, because Sphinx still has no structured warning output.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.build.BuildWarning" title="epythet.validation.build.BuildWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BuildWarning</span></code></a>(severity, message[, type, ...])</p></td>
 <td><p>One parsed line of the Sphinx warning stream.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.build.RenderBackend" title="epythet.validation.build.RenderBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenderBackend</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A backend that can also render several builders into a kept directory (level 2).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.build.RenderResult" title="epythet.validation.build.RenderResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RenderResult</span></code></a>([outdirs, returncodes, ...])</p></td>
+<td><p>What a multi-builder render produced: one output directory per builder.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.build.SphinxBackend" title="epythet.validation.build.SphinxBackend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphinxBackend</span></code></a>([sphinx_build, docsrc, ...])</p></td>
 <td><p>The default (and only shipped) backend: <code class="docutils literal notranslate"><span class="pre">sphinx-build</span> <span class="pre">-b</span> <span class="pre">html</span> <span class="pre">-W</span></code>.</p></td>
 </tr>
@@ -359,7 +375,8 @@ rules match on, because Sphinx still has no structured warning output.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
 <p>What the <code class="docutils literal notranslate"><span class="pre">backend=</span></code> seam requires: a name, versions, and the warning stream.</p>
 <p><a class="reference internal" href="#epythet.validation.build.SphinxBackend" title="epythet.validation.build.SphinxBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">SphinxBackend</span></code></a> is the shipped implementation; a MkDocs backend
-implements the same two methods and inherits the whole ledger.</p>
+implements the same two methods and inherits the whole ledger. Level 2
+additionally needs <a class="reference internal" href="#epythet.validation.build.RenderBackend" title="epythet.validation.build.RenderBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderBackend</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py class">
@@ -386,6 +403,44 @@ implements the same two methods and inherits the whole ledger.</p>
 <dd><p><code class="docutils literal notranslate"><span class="pre">BuildResult.returncode</span></code> when there is no Sphinx source directory to build.</p>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.validation.build.RENDER_BUILDERS">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.build.</span></span><span class="sig-name descname"><span class="pre">RENDER_BUILDERS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('html',</span> <span class="pre">'text',</span> <span class="pre">'xml')</span></span><a class="headerlink" href="#epythet.validation.build.RENDER_BUILDERS" title="Link to this definition">¶</a></dt>
+<dd><p>HTML for links and images, text for snapshots,
+XML for structure (research §5.4: text and xml are complementary).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The builders level 2 reads</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.build.RenderBackend">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.build.</span></span><span class="sig-name descname"><span class="pre">RenderBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/build.html#RenderBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.build.RenderBackend" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#epythet.validation.build.BuildBackend" title="epythet.validation.build.BuildBackend"><code class="xref py py-class docutils literal notranslate"><span class="pre">BuildBackend</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
+<p>A backend that can also render several builders into a kept directory (level 2).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.build.RenderResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.build.</span></span><span class="sig-name descname"><span class="pre">RenderResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdirs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returncodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/build.html#RenderResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.build.RenderResult" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>What a multi-builder render produced: one output directory per builder.</p>
+<p><code class="docutils literal notranslate"><span class="pre">outdirs</span></code> maps a builder name (<code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">xml</span></code>) to the
+directory holding its pages; a builder that failed is absent from it and
+its exit status is in <code class="docutils literal notranslate"><span class="pre">returncodes</span></code>. <code class="docutils literal notranslate"><span class="pre">warnings</span></code> is the parsed warning
+stream of the first builder (the others repeat it).</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="epythet.validation.build.RenderResult.ok">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ok</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#epythet.validation.build.RenderResult.ok" title="Link to this definition">¶</a></dt>
+<dd><p>Whether every builder exited 0 or with warnings only.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="epythet.validation.build.SphinxBackend">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.build.</span></span><span class="sig-name descname"><span class="pre">SphinxBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sphinx_build</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docsrc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'html'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nitpicky</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sphinx'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/build.html#SphinxBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.build.SphinxBackend" title="Link to this definition">¶</a></dt>
@@ -405,6 +460,19 @@ removed before returning; only the parsed warnings and the log survive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.validation.build.BuildResult" title="epythet.validation.build.BuildResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">BuildResult</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="epythet.validation.build.SphinxBackend.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">builders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('html',</span> <span class="pre">'text',</span> <span class="pre">'xml')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/build.html#SphinxBackend.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.build.SphinxBackend.render" title="Link to this definition">¶</a></dt>
+<dd><p>Build every builder in <code class="docutils literal notranslate"><span class="pre">builders</span></code> into <code class="docutils literal notranslate"><span class="pre">outdir/&lt;builder&gt;</span></code> (level 2).</p>
+<p>Unlike <a class="reference internal" href="#epythet.validation.build.SphinxBackend.build_warnings" title="epythet.validation.build.SphinxBackend.build_warnings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build_warnings()</span></code></a>, the output is kept: level 2 reads it, and
+level 3 packs it for review. The caller owns <code class="docutils literal notranslate"><span class="pre">outdir</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.validation.build.RenderResult" title="epythet.validation.build.RenderResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">RenderResult</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -580,8 +648,15 @@ must not gate a package whose docstrings are clean.</p>
 <li><a class="reference internal" href="#epythet.validation.build.BuildResult"><code class="docutils literal notranslate"><span class="pre">BuildResult</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.build.BuildWarning"><code class="docutils literal notranslate"><span class="pre">BuildWarning</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.build.NO_DOCSRC"><code class="docutils literal notranslate"><span class="pre">NO_DOCSRC</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.build.RENDER_BUILDERS"><code class="docutils literal notranslate"><span class="pre">RENDER_BUILDERS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.build.RenderBackend"><code class="docutils literal notranslate"><span class="pre">RenderBackend</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.build.RenderResult"><code class="docutils literal notranslate"><span class="pre">RenderResult</span></code></a><ul>
+<li><a class="reference internal" href="#epythet.validation.build.RenderResult.ok"><code class="docutils literal notranslate"><span class="pre">RenderResult.ok</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#epythet.validation.build.SphinxBackend"><code class="docutils literal notranslate"><span class="pre">SphinxBackend</span></code></a><ul>
 <li><a class="reference internal" href="#epythet.validation.build.SphinxBackend.build_warnings"><code class="docutils literal notranslate"><span class="pre">SphinxBackend.build_warnings()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.build.SphinxBackend.render"><code class="docutils literal notranslate"><span class="pre">SphinxBackend.render()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.build.SphinxBackend.resolve_docsrc"><code class="docutils literal notranslate"><span class="pre">SphinxBackend.resolve_docsrc()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.build.SphinxBackend.versions"><code class="docutils literal notranslate"><span class="pre">SphinxBackend.versions()</span></code></a></li>
 </ul>

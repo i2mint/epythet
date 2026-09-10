@@ -11,6 +11,7 @@ epythet.validation.build
       NO_DOCSRC
       WARNINGS_ONLY_EXIT
       WARNING_LINE_RE
+      RENDER_BUILDERS
    
    .. rubric:: Functions
 
@@ -30,5 +31,7 @@ epythet.validation.build
       BuildBackend
       BuildResult
       BuildWarning
+      RenderBackend
+      RenderResult
       SphinxBackend
    

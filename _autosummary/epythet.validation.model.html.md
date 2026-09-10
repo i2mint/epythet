@@ -14,8 +14,8 @@ Levels are named by *what artifact they read*, not by when they run:
 |     0   | lint   | the source text of each docstring (ruff, pydoclint)   |
 |     0.5 | parse  | the docutils doctree of each docstring, in isolation  |
 |     1   | build  | the Sphinx warning stream                             |
-|     2   | render | the built output (owned by WP3, not implemented here) |
-|     3   | review | an LLM review of rendered pages (WP3, never gates)    |
+|     2   | render | the built output: XML, HTML and text pages            |
+|     3   | review | a review packet for an in-session agent (never gates) |
 
 The CLI exposes them as a *tier index* (`--level 0` runs level 0,
 `--level 1` runs levels 0 and 0.5, `--level 2` adds the build), which is
@@ -23,13 +23,15 @@ what [`TIERS`](#epythet.validation.model.TIERS) and [`levels_for_tier()`](#epyth
 
 ### Module Attributes
 
-| [`SEVERITY_RANK`](#epythet.validation.model.SEVERITY_RANK)      | Lower rank is worse.                                                       |
-|---------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`LEVELS`](#epythet.validation.model.LEVELS)             | Level number -> level name, in run order.                                  |
-| [`TIERS`](#epythet.validation.model.TIERS)              | Run order of the levels; index into this list is the CLI `--level` tier.   |
-| [`IMPLEMENTED_TIERS`](#epythet.validation.model.IMPLEMENTED_TIERS)  | Tiers this work package implements.                                        |
-| [`IMPLEMENTED_LEVELS`](#epythet.validation.model.IMPLEMENTED_LEVELS) | The levels those tiers run.                                                |
-| [`EXIT_FOR_LEVEL`](#epythet.validation.model.EXIT_FOR_LEVEL)     | Level -> exit code when that level has findings at or above the threshold. |
+| [`SEVERITY_RANK`](#epythet.validation.model.SEVERITY_RANK)      | Lower rank is worse.                                                                    |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [`LEVELS`](#epythet.validation.model.LEVELS)             | Level number -> level name, in run order.                                               |
+| [`TIERS`](#epythet.validation.model.TIERS)              | Run order of the levels; index into this list is the CLI `--level` tier.                |
+| [`IMPLEMENTED_TIERS`](#epythet.validation.model.IMPLEMENTED_TIERS)  | 0 lint, 1 parse, 2 build, 3 render, 4 review.                                           |
+| [`IMPLEMENTED_LEVELS`](#epythet.validation.model.IMPLEMENTED_LEVELS) | The levels those tiers run.                                                             |
+| [`REVIEW_LEVEL`](#epythet.validation.model.REVIEW_LEVEL)       | The review level never gates unless the caller asks for it (decision D8).               |
+| [`REVIEW_PACKET_RULE`](#epythet.validation.model.REVIEW_PACKET_RULE) | The one level-3 finding every packet run emits; "a packet was written" is not a defect. |
+| [`EXIT_FOR_LEVEL`](#epythet.validation.model.EXIT_FOR_LEVEL)     | Level -> exit code when that level has findings at or above the threshold.              |
 
 ### Functions
 
@@ -71,17 +73,28 @@ JSON-ready dict; the JSON and JSONL renderers emit exactly this.
 * **Return type:**
   [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
-### epythet.validation.model.IMPLEMENTED_LEVELS *= (0, 0.5, 1)*
+### epythet.validation.model.IMPLEMENTED_LEVELS *= (0, 0.5, 1, 2, 3)*
 
 The levels those tiers run.
 
-### epythet.validation.model.IMPLEMENTED_TIERS *= (0, 1, 2)*
+### epythet.validation.model.IMPLEMENTED_TIERS *= (0, 1, 2, 3, 4)*
 
-Tiers this work package implements. Tiers 3 and 4 (levels 2 and 3) are WP3.
+0 lint, 1 parse, 2 build, 3 render, 4 review.
+
+* **Type:**
+  Every CLI tier is implemented
 
 ### epythet.validation.model.LEVELS *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[float](https://docs.python.org/3/library/functions.html#float), [str](https://docs.python.org/3/library/stdtypes.html#str)]* *= {0: 'lint', 0.5: 'parse', 1: 'build', 2: 'render', 3: 'review'}*
 
 Level number -> level name, in run order.
+
+### epythet.validation.model.REVIEW_LEVEL *= 3*
+
+The review level never gates unless the caller asks for it (decision D8).
+
+### epythet.validation.model.REVIEW_PACKET_RULE *= 'REVIEW'*
+
+The one level-3 finding every packet run emits; “a packet was written” is not a defect.
 
 ### *class* epythet.validation.model.Report(package, package_dir, levels_run, findings=<factory>, durations=<factory>, objects_checked=0, objects_undocumented=0, notes=<factory>, epythet_version=None, sphinx_version=None, docutils_version=None, ledger_sources=<factory>, schema_version='1')
 
@@ -96,7 +109,7 @@ Everything one `validate` run produced, plus enough context to reproduce it.
 * **Return type:**
   [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`int`](https://docs.python.org/3/library/functions.html#int)]
 
-#### exit_code(fail_on='error')
+#### exit_code(fail_on='error', , fail_on_review=False)
 
 The process exit code: `0` when clean, else the code of the first failing level.
 
@@ -116,11 +129,22 @@ gate a CI pipeline would have stopped at.
 >>> r.findings.append(Finding("D102", "warning", 0, "missing"))
 >>> r.exit_code(), r.exit_code("warning")
 (11, 10)
+>>> r = Report("p", "/p", [3], [Finding("REVIEW", "info", 3, "packet")])
+>>> r.exit_code(fail_on_review=True)
+0
+>>> r.findings.append(Finding("DR001", "warning", 3, "reviewer said so"))
+>>> r.exit_code(), r.exit_code(fail_on_review=True)
+(0, 14)
 ```
 
-#### failing_levels(fail_on='error')
+#### failing_levels(fail_on='error', , fail_on_review=False)
 
 Levels with at least one finding at or above `fail_on`, in run order.
+
+Level 3 (review) never counts unless `fail_on_review` is set, and
+then any finding a reviewer’s reply produced counts whatever its
+severity (the “packet written” finding never does): a review
+proposes, it does not gate (decision D8).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`float`](https://docs.python.org/3/library/functions.html#float)]

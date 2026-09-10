@@ -1,0 +1,36 @@
+epythet.validation.coverage
+===========================
+
+.. automodule:: epythet.validation.coverage
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      annotation_words
+      content_words
+      coverage_detector
+      entry_point_names
+      entry_point_without_example
+      evaluate_coverage_rule
+      iter_coverage_cases
+      iter_public_objects
+      meta_language_summary
+      missing_docstring
+      name_words
+      param_descriptions
+      restates_type
+      run_coverage_level
+      trivial_summary
+      trivial_summary_words
+      type_restatement
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CoverageCase
+      Param
+      PublicObject
+   

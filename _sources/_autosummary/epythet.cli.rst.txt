@@ -9,6 +9,9 @@ epythet.cli
    .. autosummary::
    
       COMMANDS
+      TOOL_COMMANDS
+      LEDGER_COMMANDS
+      CONVENTION
    
    .. rubric:: Functions
 
@@ -18,5 +21,6 @@ epythet.cli
       check_pages
       configure_pages
       epythet_cli
+      mk_epythet_parser
       quickstart
    

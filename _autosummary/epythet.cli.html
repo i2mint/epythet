@@ -211,11 +211,14 @@
 <li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -227,12 +230,16 @@
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -291,6 +298,15 @@ and writes it to <code class="docutils literal notranslate"><span class="pre">PR
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.cli.COMMANDS" title="epythet.cli.COMMANDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COMMANDS</span></code></a></p></td>
 <td><p>The commands <code class="docutils literal notranslate"><span class="pre">epythet</span></code> exposes, in the order they appear in <code class="docutils literal notranslate"><span class="pre">--help</span></code>.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.cli.TOOL_COMMANDS" title="epythet.cli.TOOL_COMMANDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TOOL_COMMANDS</span></code></a></p></td>
+<td><p>The v2 source-editing and fleet commands, by their command-line name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.cli.LEDGER_COMMANDS" title="epythet.cli.LEDGER_COMMANDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LEDGER_COMMANDS</span></code></a></p></td>
+<td><p>maintenance of the artifact ledger.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.cli.CONVENTION" title="epythet.cli.CONVENTION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONVENTION</span></code></a></p></td>
+<td><p>the command modules use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">__future__</span> <span class="pre">import</span> <span class="pre">annotations</span></code>, and <code class="docutils literal notranslate"><span class="pre">list[str]</span></code> must still become <code class="docutils literal notranslate"><span class="pre">nargs=&quot;*&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">--ignore</span> <span class="pre">a</span> <span class="pre">b</span></code>), not a single value.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -307,10 +323,13 @@ and writes it to <code class="docutils literal notranslate"><span class="pre">PR
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.cli.configure_pages" title="epythet.cli.configure_pages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_pages</span></code></a>(repo, *[, branch, path])</p></td>
 <td><p>Enable or fix GitHub Pages for a repo.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.cli.epythet_cli" title="epythet.cli.epythet_cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epythet_cli</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.cli.epythet_cli" title="epythet.cli.epythet_cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">epythet_cli</span></code></a>([argv])</p></td>
 <td><p>Entry point for the <code class="docutils literal notranslate"><span class="pre">epythet</span></code> console script.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.cli.quickstart" title="epythet.cli.quickstart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quickstart</span></code></a>(project_dir, *[, ignore])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.cli.mk_epythet_parser" title="epythet.cli.mk_epythet_parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mk_epythet_parser</span></code></a>(**parser_kwargs)</p></td>
+<td><p>The full <code class="docutils literal notranslate"><span class="pre">epythet</span></code> parser: the flat commands, the tool commands, the <code class="docutils literal notranslate"><span class="pre">ledger</span></code> group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.cli.quickstart" title="epythet.cli.quickstart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quickstart</span></code></a>(project_dir, *[, ignore])</p></td>
 <td><p>Scaffold docsrc and build the HTML documentation in one go.</p></td>
 </tr>
 </tbody>
@@ -320,6 +339,36 @@ and writes it to <code class="docutils literal notranslate"><span class="pre">PR
 <dt class="sig sig-object py" id="epythet.cli.COMMANDS">
 <span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">COMMANDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;function</span> <span class="pre">make_docsrc&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">make_autodocs&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">make&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">quickstart&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">check_pages&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">configure_pages&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">validate&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">ai_artifacts&gt;]</span></span><a class="headerlink" href="#epythet.cli.COMMANDS" title="Link to this definition">¶</a></dt>
 <dd><p>The commands <code class="docutils literal notranslate"><span class="pre">epythet</span></code> exposes, in the order they appear in <code class="docutils literal notranslate"><span class="pre">--help</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.cli.CONVENTION">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">CONVENTION</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Convention(naming='by_name_if_has_default',</span> <span class="pre">short_flags=True,</span> <span class="pre">hyphenate_commands=True,</span> <span class="pre">hyphenate_groups=False,</span> <span class="pre">default_in_help=True,</span> <span class="pre">hints_when_declared=False,</span> <span class="pre">resolve_hints=True,</span> <span class="pre">decode=&lt;function</span> <span class="pre">argh_decode&gt;,</span> <span class="pre">egress=&lt;function</span> <span class="pre">argh_egress&gt;)</span></span><a class="headerlink" href="#epythet.cli.CONVENTION" title="Link to this definition">¶</a></dt>
+<dd><p>the command
+modules use <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">__future__</span> <span class="pre">import</span> <span class="pre">annotations</span></code>, and <code class="docutils literal notranslate"><span class="pre">list[str]</span></code> must
+still become <code class="docutils literal notranslate"><span class="pre">nargs=&quot;*&quot;</span></code> (<code class="docutils literal notranslate"><span class="pre">--ignore</span> <span class="pre">a</span> <span class="pre">b</span></code>), not a single value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cw’s argh-compatible convention, resolving string annotations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.cli.LEDGER_COMMANDS">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">LEDGER_COMMANDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'propose':</span> <span class="pre">&lt;function</span> <span class="pre">propose_command&gt;}</span></span><a class="headerlink" href="#epythet.cli.LEDGER_COMMANDS" title="Link to this definition">¶</a></dt>
+<dd><p>maintenance of the artifact ledger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">ledger</span> <span class="pre">&lt;command&gt;</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.cli.TOOL_COMMANDS">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">TOOL_COMMANDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'migrate-style':</span> <span class="pre">&lt;function</span> <span class="pre">migrate_style_command&gt;,</span> <span class="pre">'repair':</span> <span class="pre">&lt;function</span> <span class="pre">repair_command&gt;,</span> <span class="pre">'sweep':</span> <span class="pre">&lt;function</span> <span class="pre">sweep_command&gt;}</span></span><a class="headerlink" href="#epythet.cli.TOOL_COMMANDS" title="Link to this definition">¶</a></dt>
+<dd><p>The v2 source-editing and fleet commands, by their command-line name.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -371,8 +420,14 @@ generated “For AI agents” documentation page.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.cli.epythet_cli">
-<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">epythet_cli</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/cli.html#epythet_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.epythet_cli" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">epythet_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/cli.html#epythet_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.epythet_cli" title="Link to this definition">¶</a></dt>
 <dd><p>Entry point for the <code class="docutils literal notranslate"><span class="pre">epythet</span></code> console script.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.cli.mk_epythet_parser">
+<span class="sig-prename descclassname"><span class="pre">epythet.cli.</span></span><span class="sig-name descname"><span class="pre">mk_epythet_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parser_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/cli.html#mk_epythet_parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.cli.mk_epythet_parser" title="Link to this definition">¶</a></dt>
+<dd><p>The full <code class="docutils literal notranslate"><span class="pre">epythet</span></code> parser: the flat commands, the tool commands, the <code class="docutils literal notranslate"><span class="pre">ledger</span></code> group.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -448,10 +503,14 @@ default”; each value may itself be comma-separated.</p>
             <ul>
 <li><a class="reference internal" href="#">epythet.cli</a><ul>
 <li><a class="reference internal" href="#epythet.cli.COMMANDS"><code class="docutils literal notranslate"><span class="pre">COMMANDS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.cli.CONVENTION"><code class="docutils literal notranslate"><span class="pre">CONVENTION</span></code></a></li>
+<li><a class="reference internal" href="#epythet.cli.LEDGER_COMMANDS"><code class="docutils literal notranslate"><span class="pre">LEDGER_COMMANDS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.cli.TOOL_COMMANDS"><code class="docutils literal notranslate"><span class="pre">TOOL_COMMANDS</span></code></a></li>
 <li><a class="reference internal" href="#epythet.cli.ai_artifacts"><code class="docutils literal notranslate"><span class="pre">ai_artifacts()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.cli.check_pages"><code class="docutils literal notranslate"><span class="pre">check_pages()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.cli.configure_pages"><code class="docutils literal notranslate"><span class="pre">configure_pages()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.cli.epythet_cli"><code class="docutils literal notranslate"><span class="pre">epythet_cli()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.cli.mk_epythet_parser"><code class="docutils literal notranslate"><span class="pre">mk_epythet_parser()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.cli.quickstart"><code class="docutils literal notranslate"><span class="pre">quickstart()</span></code></a></li>
 </ul>
 </li>

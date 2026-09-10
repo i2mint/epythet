@@ -1,0 +1,6 @@
+epythet.validation.propose
+==========================
+
+.. currentmodule:: epythet.validation
+
+.. autofunction:: propose

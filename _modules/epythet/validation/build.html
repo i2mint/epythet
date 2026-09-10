@@ -210,11 +210,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,12 +229,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -502,6 +509,95 @@
 
 
 
+<div class="viewcode-block" id="RenderResult">
+<a class="viewcode-back" href="../../../_autosummary/epythet.validation.build.html#epythet.validation.build.RenderResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RenderResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What a multi-builder render produced: one output directory per builder.</span>
+
+<span class="sd">    ``outdirs`` maps a builder name (``html``, ``text``, ``xml``) to the</span>
+<span class="sd">    directory holding its pages; a builder that failed is absent from it and</span>
+<span class="sd">    its exit status is in ``returncodes``. ``warnings`` is the parsed warning</span>
+<span class="sd">    stream of the first builder (the others repeat it).</span>
+<span class="sd">    """</span>
+
+    <span class="n">outdirs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">returncodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BuildWarning</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether every builder exited 0 or with warnings only."""</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">code</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">WARNINGS_ONLY_EXIT</span><span class="p">)</span> <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">returncodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="c1">#: The builders level 2 reads: HTML for links and images, text for snapshots,</span>
+<span class="c1">#: XML for structure (research §5.4: text and xml are complementary).</span>
+<span class="n">RENDER_BUILDERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"html"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"xml"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_render_with_sphinx</span><span class="p">(</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="s2">"SphinxBackend"</span><span class="p">,</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">builders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">outdir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Run one ``sphinx-build`` per builder into ``outdir/&lt;builder&gt;``, sharing doctrees."""</span>
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">sphinx_build</span><span class="p">)</span> <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">sphinx_build</span> <span class="k">else</span> <span class="n">default_sphinx_build</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">command</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RenderResult</span><span class="p">(</span>
+            <span class="n">returncodes</span><span class="o">=</span><span class="p">{</span><span class="n">b</span><span class="p">:</span> <span class="mi">127</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">builders</span><span class="p">},</span> <span class="n">log</span><span class="o">=</span><span class="s2">"sphinx-build not found"</span>
+        <span class="p">)</span>
+    <span class="n">docsrc</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">resolve_docsrc</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">docsrc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RenderResult</span><span class="p">(</span>
+            <span class="n">returncodes</span><span class="o">=</span><span class="p">{</span><span class="n">b</span><span class="p">:</span> <span class="n">NO_DOCSRC</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">builders</span><span class="p">},</span>
+            <span class="n">log</span><span class="o">=</span><span class="s2">"no docsrc/conf.py to build"</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
+    <span class="n">outdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">RenderResult</span><span class="p">()</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">builder</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">builders</span><span class="p">):</span>
+        <span class="n">warnings_file</span> <span class="o">=</span> <span class="n">outdir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"warnings-</span><span class="si">{</span><span class="n">builder</span><span class="si">}</span><span class="s2">.txt"</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="o">*</span><span class="n">command</span><span class="p">,</span>
+            <span class="s2">"-b"</span><span class="p">,</span>
+            <span class="n">builder</span><span class="p">,</span>
+            <span class="s2">"-q"</span><span class="p">,</span>
+            <span class="s2">"-w"</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">warnings_file</span><span class="p">),</span>
+            <span class="s2">"-d"</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">outdir</span> <span class="o">/</span> <span class="s2">".doctrees"</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">docsrc</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">outdir</span> <span class="o">/</span> <span class="n">builder</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">nitpicky</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-n"</span><span class="p">)</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"$ </span><span class="si">{</span><span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">proc</span><span class="o">.</span><span class="n">stdout</span><span class="si">}{</span><span class="n">proc</span><span class="o">.</span><span class="n">stderr</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">returncodes</span><span class="p">[</span><span class="n">builder</span><span class="p">]</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">WARNINGS_ONLY_EXIT</span><span class="p">):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">[</span><span class="n">builder</span><span class="p">]</span> <span class="o">=</span> <span class="n">outdir</span> <span class="o">/</span> <span class="n">builder</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">stream</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">warnings_file</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">warnings_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+                <span class="k">else</span> <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span> <span class="o">+</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span>
+            <span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_warning_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">))</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
 <div class="viewcode-block" id="SphinxBackend">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.build.html#epythet.validation.build.SphinxBackend">[docs]</a>
 <span class="nd">@dataclass</span>
@@ -603,6 +699,22 @@
                 <span class="n">outdir</span><span class="o">=</span><span class="n">outdir</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">command</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
             <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SphinxBackend.render">
+<a class="viewcode-back" href="../../../_autosummary/epythet.validation.build.html#epythet.validation.build.SphinxBackend.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">builders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">RENDER_BUILDERS</span><span class="p">,</span>
+        <span class="n">outdir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Build every builder in ``builders`` into ``outdir/&lt;builder&gt;`` (level 2).</span>
+
+<span class="sd">        Unlike :meth:`build_warnings`, the output is kept: level 2 reads it, and</span>
+<span class="sd">        level 3 packs it for review. The caller owns ``outdir``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_render_with_sphinx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">,</span> <span class="n">builders</span><span class="o">=</span><span class="n">builders</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="n">outdir</span><span class="p">)</span></div>
 </div>
 
 
@@ -613,7 +725,8 @@
 <span class="w">    </span><span class="sd">"""What the ``backend=`` seam requires: a name, versions, and the warning stream.</span>
 
 <span class="sd">    :class:`SphinxBackend` is the shipped implementation; a MkDocs backend</span>
-<span class="sd">    implements the same two methods and inherits the whole ledger.</span>
+<span class="sd">    implements the same two methods and inherits the whole ledger. Level 2</span>
+<span class="sd">    additionally needs :class:`RenderBackend`.</span>
 <span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -621,6 +734,17 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">versions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span> <span class="o">...</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">build_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BuildResult</span><span class="p">:</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="RenderBackend">
+<a class="viewcode-back" href="../../../_autosummary/epythet.validation.build.html#epythet.validation.build.RenderBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RenderBackend</span><span class="p">(</span><span class="n">BuildBackend</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A backend that can also render several builders into a kept directory (level 2)."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builders</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span><span class="p">,</span> <span class="n">outdir</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span> <span class="o">...</span></div>
 
 
 

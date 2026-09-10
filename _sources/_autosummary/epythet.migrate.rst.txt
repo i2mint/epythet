@@ -1,0 +1,23 @@
+epythet.migrate
+===============
+
+.. automodule:: epythet.migrate
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      CONVERTIBLE_FIELDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      convert_fields
+      field_region
+      field_regions
+      migrate_style
+      migrate_style_command
+      rst_fields_to_sections
+   

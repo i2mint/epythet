@@ -13,6 +13,8 @@ epythet.validation.model
       TIERS
       IMPLEMENTED_TIERS
       IMPLEMENTED_LEVELS
+      REVIEW_LEVEL
+      REVIEW_PACKET_RULE
       EXIT_FOR_LEVEL
    
    .. rubric:: Functions

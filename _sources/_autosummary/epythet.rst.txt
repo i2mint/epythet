@@ -25,11 +25,14 @@
    config
    config_parser
    docs_gen
+   migrate
    normalizer
+   repair
    scaffold
    setup_docsrc
    sphinx_conf
    sphinx_ext
+   sweep
    templates
    themes
    tools

@@ -1,0 +1,730 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="epythet.validation.coverage.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.validation.detectors" href="epythet.validation.detectors.html"><link rel="prev" title="epythet.validation.core" href="epythet.validation.core.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>epythet.validation.coverage - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sweep.html">epythet.sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">epythet.validation.coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.propose.html">epythet.validation.propose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.review.html">epythet.validation.review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/_autosummary/epythet.validation.coverage.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-epythet.validation.coverage">
+<span id="epythet-validation-coverage"></span><h1>epythet.validation.coverage<a class="headerlink" href="#module-epythet.validation.coverage" title="Link to this heading">¶</a></h1>
+<p>Level 0 coverage and quality smells: the queue signals, computed from the <code class="docutils literal notranslate"><span class="pre">ast</span></code> alone.</p>
+<p>The doc-quality research (<code class="docutils literal notranslate"><span class="pre">research_doc_quality.md</span></code> §2, §6) defines what
+the fleet sweep should <em>queue</em>, as opposed to gate: a public callable with
+no docstring, an entry point with no runnable example, a summary that only
+restates the name, a parameter description that only restates the type, a
+summary written as meta-language (“This function…”). None of these needs
+ruff or pydoclint, so the sweep can run them on a checkout that has neither;
+none of them changes the exit code unless <code class="docutils literal notranslate"><span class="pre">--fail-on</span> <span class="pre">info</span></code> asks for it.</p>
+<p>The public surface follows the R1 decision: <code class="docutils literal notranslate"><span class="pre">__all__</span></code> is honoured where
+present, otherwise every non-underscore name; <em>entry points</em> are the names
+the package’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> binds (its <code class="docutils literal notranslate"><span class="pre">__all__</span></code>, else what it defines and
+imports), and only those owe an example.</p>
+<p>Each detector is a function <code class="docutils literal notranslate"><span class="pre">PublicObject</span> <span class="pre">-&gt;</span> <span class="pre">list[str]</span></code> registered under
+the name a <code class="docutils literal notranslate"><span class="pre">coverage</span></code>-kind ledger rule refers to. The two text heuristics
+are the research’s, verbatim:</p>
+<ul class="simple">
+<li><p>trivial summary: split the identifier on <code class="docutils literal notranslate"><span class="pre">snake_case</span></code>/<code class="docutils literal notranslate"><span class="pre">camelCase</span></code>,
+split the summary on whitespace, strip stop words, crude lemmatisation;
+flag when the summary’s content words are a subset of the name’s;</p></li>
+<li><p>type restatement: flag a parameter description whose content words are a
+subset of the annotation’s tokens (<code class="docutils literal notranslate"><span class="pre">n:</span> <span class="pre">int</span></code> described as “an integer”).</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trivial_summary_words</span><span class="p">(</span><span class="s2">"load_config"</span><span class="p">,</span> <span class="s2">"Load the config."</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trivial_summary_words</span><span class="p">(</span><span class="s2">"load_config"</span><span class="p">,</span> <span class="s2">"Read pyproject.toml and setup.cfg into a DocsConfig."</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.annotation_words" title="epythet.validation.coverage.annotation_words"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotation_words</span></code></a>(annotation)</p></td>
+<td><p>Words a reader could use to restate an annotation: <code class="docutils literal notranslate"><span class="pre">list[int]</span></code> -&gt; int, list, integer...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.content_words" title="epythet.validation.coverage.content_words"><code class="xref py py-obj docutils literal notranslate"><span class="pre">content_words</span></code></a>(text)</p></td>
+<td><p>Content words of prose: lower-cased, stop words out, crudely lemmatised.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.coverage_detector" title="epythet.validation.coverage.coverage_detector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coverage_detector</span></code></a>(name)</p></td>
+<td><p>Register a coverage detector under the name a rule's <code class="docutils literal notranslate"><span class="pre">detector.function</span></code> uses.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.entry_point_names" title="epythet.validation.coverage.entry_point_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">entry_point_names</span></code></a>(package_dir)</p></td>
+<td><p>Names the package's <code class="docutils literal notranslate"><span class="pre">__init__</span></code> exposes: <code class="docutils literal notranslate"><span class="pre">__all__</span></code>, else what it binds without a leading underscore.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.entry_point_without_example" title="epythet.validation.coverage.entry_point_without_example"><code class="xref py py-obj docutils literal notranslate"><span class="pre">entry_point_without_example</span></code></a>(obj)</p></td>
+<td><p>An entry point (bound by the package <code class="docutils literal notranslate"><span class="pre">__init__</span></code>) whose docstring has no <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> (DQ002).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.evaluate_coverage_rule" title="epythet.validation.coverage.evaluate_coverage_rule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_coverage_rule</span></code></a>(rule, obj)</p></td>
+<td><p>Run one <code class="docutils literal notranslate"><span class="pre">coverage</span></code>-kind rule over one public object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.iter_coverage_cases" title="epythet.validation.coverage.iter_coverage_cases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_coverage_cases</span></code></a>(fixture_path)</p></td>
+<td><p>The tagged specimens of a coverage fixture (a specimen may have no docstring at all).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.iter_public_objects" title="epythet.validation.coverage.iter_public_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_public_objects</span></code></a>(package_dir, *[, ...])</p></td>
+<td><p>Every public module, class and function under <code class="docutils literal notranslate"><span class="pre">package_dir</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.meta_language_summary" title="epythet.validation.coverage.meta_language_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_language_summary</span></code></a>(obj)</p></td>
+<td><p>A summary that talks about the object instead of saying what it does (DQ005).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.missing_docstring" title="epythet.validation.coverage.missing_docstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">missing_docstring</span></code></a>(obj)</p></td>
+<td><p>A public module, class or function with no docstring at all (DQ001).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.name_words" title="epythet.validation.coverage.name_words"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name_words</span></code></a>(identifier)</p></td>
+<td><p>Content words of an identifier: <code class="docutils literal notranslate"><span class="pre">load_config</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">{&quot;load&quot;,</span> <span class="pre">&quot;config&quot;}</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.param_descriptions" title="epythet.validation.coverage.param_descriptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_descriptions</span></code></a>(docstring)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">description}</span></code> from an RST, Google or NumPy docstring, first line plus continuations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.restates_type" title="epythet.validation.coverage.restates_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">restates_type</span></code></a>(param)</p></td>
+<td><p>Whether a parameter's description only restates its annotation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.run_coverage_level" title="epythet.validation.coverage.run_coverage_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_coverage_level</span></code></a>(package_dir, ledger, *[, ...])</p></td>
+<td><p>Level 0 coverage: <code class="docutils literal notranslate"><span class="pre">(findings,</span> <span class="pre">objects_checked,</span> <span class="pre">objects_undocumented)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.trivial_summary" title="epythet.validation.coverage.trivial_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trivial_summary</span></code></a>(obj)</p></td>
+<td><p>A summary whose content words all come from the object's name (DQ003).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.trivial_summary_words" title="epythet.validation.coverage.trivial_summary_words"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trivial_summary_words</span></code></a>(identifier, summary)</p></td>
+<td><p>Whether the summary's content words are all in the identifier's (the <em>lazy</em> smell).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.type_restatement" title="epythet.validation.coverage.type_restatement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type_restatement</span></code></a>(obj)</p></td>
+<td><p>A parameter description that only restates the annotation (DQ004).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.CoverageCase" title="epythet.validation.coverage.CoverageCase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoverageCase</span></code></a>(name, line, expect_hit, ...)</p></td>
+<td><p>One tagged specimen of a coverage fixture: the object and what the tag promises.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.coverage.Param" title="epythet.validation.coverage.Param"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Param</span></code></a>(name[, annotation, description])</p></td>
+<td><p>A signature parameter and, if the docstring describes it, that description.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.coverage.PublicObject" title="epythet.validation.coverage.PublicObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PublicObject</span></code></a>(qualname, kind, file, line, ...)</p></td>
+<td><p>One public module, class or function, with what a detector needs to judge it.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.coverage.CoverageCase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">CoverageCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect_hit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#CoverageCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.CoverageCase" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One tagged specimen of a coverage fixture: the object and what the tag promises.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.coverage.Param">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">Param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#Param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.Param" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A signature parameter and, if the docstring describes it, that description.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.validation.coverage.PublicObject">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">PublicObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_entry_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#PublicObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.PublicObject" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One public module, class or function, with what a detector needs to judge it.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="epythet.validation.coverage.PublicObject.summary">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">summary</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#epythet.validation.coverage.PublicObject.summary" title="Link to this definition">¶</a></dt>
+<dd><p>The first non-blank line of the docstring, or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.annotation_words">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">annotation_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#annotation_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.annotation_words" title="Link to this definition">¶</a></dt>
+<dd><p>Words a reader could use to restate an annotation: <code class="docutils literal notranslate"><span class="pre">list[int]</span></code> -&gt; int, list, integer…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.content_words">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">content_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#content_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.content_words" title="Link to this definition">¶</a></dt>
+<dd><p>Content words of prose: lower-cased, stop words out, crudely lemmatised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.coverage_detector">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">coverage_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#coverage_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.coverage_detector" title="Link to this definition">¶</a></dt>
+<dd><p>Register a coverage detector under the name a rule’s <code class="docutils literal notranslate"><span class="pre">detector.function</span></code> uses.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.entry_point_names">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">entry_point_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#entry_point_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.entry_point_names" title="Link to this definition">¶</a></dt>
+<dd><p>Names the package’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> exposes: <code class="docutils literal notranslate"><span class="pre">__all__</span></code>, else what it binds without a leading underscore.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.entry_point_without_example">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">entry_point_without_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#entry_point_without_example"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.entry_point_without_example" title="Link to this definition">¶</a></dt>
+<dd><p>An entry point (bound by the package <code class="docutils literal notranslate"><span class="pre">__init__</span></code>) whose docstring has no <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> (DQ002).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.evaluate_coverage_rule">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">evaluate_coverage_rule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#evaluate_coverage_rule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.evaluate_coverage_rule" title="Link to this definition">¶</a></dt>
+<dd><p>Run one <code class="docutils literal notranslate"><span class="pre">coverage</span></code>-kind rule over one public object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.iter_coverage_cases">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">iter_coverage_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixture_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#iter_coverage_cases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.iter_coverage_cases" title="Link to this definition">¶</a></dt>
+<dd><p>The tagged specimens of a coverage fixture (a specimen may have no docstring at all).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a>[<a class="reference internal" href="#epythet.validation.coverage.CoverageCase" title="epythet.validation.coverage.CoverageCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoverageCase</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.iter_public_objects">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">iter_public_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_dir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_entry_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#iter_public_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.iter_public_objects" title="Link to this definition">¶</a></dt>
+<dd><p>Every public module, class and function under <code class="docutils literal notranslate"><span class="pre">package_dir</span></code>.</p>
+<p>Public means no leading underscore anywhere in the dotted name below the
+package; a module’s <code class="docutils literal notranslate"><span class="pre">__all__</span></code>, when present, narrows its public names.
+<code class="docutils literal notranslate"><span class="pre">all_entry_points</span></code> treats every top-level name as an entry point (rule
+fixtures use it: they have no package <code class="docutils literal notranslate"><span class="pre">__init__</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a>[<a class="reference internal" href="#epythet.validation.coverage.PublicObject" title="epythet.validation.coverage.PublicObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">PublicObject</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.meta_language_summary">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">meta_language_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#meta_language_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.meta_language_summary" title="Link to this definition">¶</a></dt>
+<dd><p>A summary that talks about the object instead of saying what it does (DQ005).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.missing_docstring">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">missing_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#missing_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.missing_docstring" title="Link to this definition">¶</a></dt>
+<dd><p>A public module, class or function with no docstring at all (DQ001).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.name_words">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">name_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#name_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.name_words" title="Link to this definition">¶</a></dt>
+<dd><p>Content words of an identifier: <code class="docutils literal notranslate"><span class="pre">load_config</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">{&quot;load&quot;,</span> <span class="pre">&quot;config&quot;}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"DocsConfig"</span><span class="p">)),</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"mk_parser"</span><span class="p">))</span>
+<span class="go">(['config', 'doc'], ['mk', 'parser'])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.param_descriptions">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">param_descriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#param_descriptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.param_descriptions" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">description}</span></code> from an RST, Google or NumPy docstring, first line plus continuations.</p>
+<p>Deliberately not delegated to <code class="docutils literal notranslate"><span class="pre">docstring_parser</span></code> (an optional extra):
+a detector’s verdict must not depend on what is installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_descriptions</span><span class="p">(</span><span class="s2">":param n: how many</span><span class="se">\n</span><span class="s2">    retries</span><span class="se">\n</span><span class="s2">:param delay: seconds"</span><span class="p">)</span>
+<span class="go">{'n': 'how many retries', 'delay': 'seconds'}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_descriptions</span><span class="p">(</span><span class="s2">"Args:</span><span class="se">\n</span><span class="s2">    n (int): how many</span><span class="se">\n</span><span class="s2">    delay: seconds</span><span class="se">\n\n</span><span class="s2">Returns:</span><span class="se">\n</span><span class="s2">    x"</span><span class="p">)</span>
+<span class="go">{'n': 'how many', 'delay': 'seconds'}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_descriptions</span><span class="p">(</span><span class="s2">"Parameters</span><span class="se">\n</span><span class="s2">----------</span><span class="se">\n</span><span class="s2">n : int</span><span class="se">\n</span><span class="s2">    how many</span><span class="se">\n</span><span class="s2">delay</span><span class="se">\n</span><span class="s2">    seconds</span><span class="se">\n\n</span><span class="s2">Returns</span><span class="se">\n</span><span class="s2">-------"</span><span class="p">)</span>
+<span class="go">{'n': 'how many', 'delay': 'seconds'}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.restates_type">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">restates_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#restates_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.restates_type" title="Link to this definition">¶</a></dt>
+<dd><p>Whether a parameter’s description only restates its annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">restates_type</span><span class="p">(</span><span class="n">Param</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"int"</span><span class="p">,</span> <span class="s2">"an integer"</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restates_type</span><span class="p">(</span><span class="n">Param</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"int"</span><span class="p">,</span> <span class="s2">"how many retries before giving up"</span><span class="p">))</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restates_type</span><span class="p">(</span><span class="n">Param</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"an integer"</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.run_coverage_level">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">run_coverage_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ledger</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#run_coverage_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.run_coverage_level" title="Link to this definition">¶</a></dt>
+<dd><p>Level 0 coverage: <code class="docutils literal notranslate"><span class="pre">(findings,</span> <span class="pre">objects_checked,</span> <span class="pre">objects_undocumented)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="epythet.validation.model.html#epythet.validation.model.Finding" title="epythet.validation.model.Finding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Finding</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.trivial_summary">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">trivial_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#trivial_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.trivial_summary" title="Link to this definition">¶</a></dt>
+<dd><p>A summary whose content words all come from the object’s name (DQ003).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.trivial_summary_words">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">trivial_summary_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#trivial_summary_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.trivial_summary_words" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the summary’s content words are all in the identifier’s (the <em>lazy</em> smell).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.coverage.type_restatement">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">type_restatement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#type_restatement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.type_restatement" title="Link to this definition">¶</a></dt>
+<dd><p>A parameter description that only restates the annotation (DQ004).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="epythet.validation.detectors.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">epythet.validation.detectors</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="epythet.validation.core.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">epythet.validation.core</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">epythet.validation.coverage</a><ul>
+<li><a class="reference internal" href="#epythet.validation.coverage.CoverageCase"><code class="docutils literal notranslate"><span class="pre">CoverageCase</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.Param"><code class="docutils literal notranslate"><span class="pre">Param</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.PublicObject"><code class="docutils literal notranslate"><span class="pre">PublicObject</span></code></a><ul>
+<li><a class="reference internal" href="#epythet.validation.coverage.PublicObject.summary"><code class="docutils literal notranslate"><span class="pre">PublicObject.summary</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#epythet.validation.coverage.annotation_words"><code class="docutils literal notranslate"><span class="pre">annotation_words()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.content_words"><code class="docutils literal notranslate"><span class="pre">content_words()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.coverage_detector"><code class="docutils literal notranslate"><span class="pre">coverage_detector()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.entry_point_names"><code class="docutils literal notranslate"><span class="pre">entry_point_names()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.entry_point_without_example"><code class="docutils literal notranslate"><span class="pre">entry_point_without_example()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.evaluate_coverage_rule"><code class="docutils literal notranslate"><span class="pre">evaluate_coverage_rule()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.iter_coverage_cases"><code class="docutils literal notranslate"><span class="pre">iter_coverage_cases()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.iter_public_objects"><code class="docutils literal notranslate"><span class="pre">iter_public_objects()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.meta_language_summary"><code class="docutils literal notranslate"><span class="pre">meta_language_summary()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.missing_docstring"><code class="docutils literal notranslate"><span class="pre">missing_docstring()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.name_words"><code class="docutils literal notranslate"><span class="pre">name_words()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.param_descriptions"><code class="docutils literal notranslate"><span class="pre">param_descriptions()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.restates_type"><code class="docutils literal notranslate"><span class="pre">restates_type()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.run_coverage_level"><code class="docutils literal notranslate"><span class="pre">run_coverage_level()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.trivial_summary"><code class="docutils literal notranslate"><span class="pre">trivial_summary()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.trivial_summary_words"><code class="docutils literal notranslate"><span class="pre">trivial_summary_words()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.coverage.type_restatement"><code class="docutils literal notranslate"><span class="pre">type_restatement()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=fd10adb8"></script>
+    </body>
+</html>

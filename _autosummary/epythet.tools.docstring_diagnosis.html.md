@@ -224,9 +224,16 @@ Print diagnosis of one or several files
 Diagnose and/or repair a whole pkg (given by folder or pkg module obj,
 or a store (see dol).
 
-For now, it diagnosis and repairs:
+A folder or package object is handed to [`epythet.repair.repair()`](epythet.repair.html.md#epythet.repair.repair),
+which applies every source-safe normalizer rule (blank lines before
+doctests and lists, Markdown fences, one-line `Returns:` sections,
+Markdown headings and links) and verifies each rewrite; a store (a
+`dol` mapping) keeps the original doctest-only pass, which is the only
+one that can write through an arbitrary mapping.
 
-- When there’s a space missing between doc text and doctest (code block)
+Prints one line per file with the number of docstrings that changed (or
+would change) and returns the total, exactly as it always has; wads’
+`wads-docstring-render` skill depends on that shape.
 
 ### epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines(lines)
 

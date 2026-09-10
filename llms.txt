@@ -17,11 +17,14 @@
 - [epythet.config](_autosummary/epythet.config.html.md): Single source of truth for a project’s documentation configuration.
 - [epythet.config_parser](_autosummary/epythet.config_parser.html.md): Legacy configuration accessor kept for the frozen `docsrc/conf.py` copies.
 - [epythet.docs_gen](_autosummary/epythet.docs_gen.html.md): Documentation generation entry points (re-exported for compatibility).
+- [epythet.migrate](_autosummary/epythet.migrate.html.md): `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.
 - [epythet.normalizer](_autosummary/epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
+- [epythet.repair](_autosummary/epythet.repair.html.md): `epythet repair`: apply the normalizer’s source-safe rewrites to docstrings in place.
 - [epythet.scaffold](_autosummary/epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
 - [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.html.md#epyth...
 - [epythet.sphinx_conf](_autosummary/epythet.sphinx_conf.html.md): The star-import target for a project’s `docsrc/conf.py`.
 - [epythet.sphinx_ext](_autosummary/epythet.sphinx_ext.html.md): epythet’s Sphinx extension: the normalizer, agent link relations and theme CSS.
+- [epythet.sweep](_autosummary/epythet.sweep.html.md): `epythet sweep`: validate many packages read-only and rank the queue.
 - [epythet.templates](_autosummary/epythet.templates.html.md): Text templates for the generated `docsrc` files.
 - [epythet.themes](_autosummary/epythet.themes.html.md): Theme registry, deterministic theme choice, and the OKLCH accent palette.
 - [epythet.tools](_autosummary/epythet.tools.html.md): Tools to diagnose (and sometimes, repair) documentation
@@ -31,12 +34,16 @@
 - [epythet.validation.build](_autosummary/epythet.validation.build.html.md): Level 1: run the documentation build and turn its warning stream into findings.
 - [epythet.validation.cli](_autosummary/epythet.validation.cli.html.md): The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`.
 - [epythet.validation.core](_autosummary/epythet.validation.core.html.md): The `validate` orchestrator: resolve the package, run the levels, build the report.
+- [epythet.validation.coverage](_autosummary/epythet.validation.coverage.html.md): Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone.
 - [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by `detector.function`.
 - [epythet.validation.docstrings](_autosummary/epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
 - [epythet.validation.lint](_autosummary/epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
 - [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of `epythet validate`.
 - [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
+- [epythet.validation.propose](_autosummary/epythet.validation.propose.html.md): Write every `proposed_rules` entry of a reply into `overlay` as a proposed rule.
 - [epythet.validation.render](_autosummary/epythet.validation.render.html.md): Render with the named format (`table`, `json` or `jsonl`).
+- [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.
+- [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.
 - [For AI agents](ai-agents.html.md): `epythet` ships artifacts for coding agents alongside its code. This page lists
 
 ---

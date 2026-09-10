@@ -242,6 +242,50 @@ epythet 0.2 keeps the contract the fleet depends on and changes what is behind i
 
 The publish action pins `epythet<0.2` until v2 is validated across the fleet; see the [v2 decision record](https://github.com/i2mint/epythet/discussions/15) and the [tracking issue](https://github.com/i2mint/epythet/issues/16).
 
+# Validation and repair
+
+`epythet validate` checks a package’s documentation in tiers, `epythet repair` fixes the markup slips it finds in the source, and `epythet sweep` runs the checks across many packages. Install the extras you need: `pip install 'epythet[validate]'` (ruff, pydoclint, PyYAML), `'epythet[repair]'` (LibCST, optional), `'epythet[migrate]'` (docstring-parser), `'epythet[review]'` (Playwright screenshots).
+
+```bash
+epythet validate .                  # lint + parse every docstring (no build), exit 0/10/11
+epythet validate . --level 3        # + Sphinx build + rendered-output checks, exit 12/13
+epythet repair . && epythet repair . --write   # diff first, then apply
+epythet sweep pkg1 pkg2 --manifest my_packages.pth   # read-only, many packages
+```
+
+## `validate`: five levels, one exit code per level
+
+| `--level`   | Runs     | What it reads                                                                                                                                                                                                                            | Exit code                        |
+|-------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| 0           | lint     | the docstring text: ruff `D` rules, pydoclint, and the coverage detectors (public objects without a docstring, entry points without an example, summaries that only restate the name, parameter descriptions that only restate the type) | 10                               |
+| 1 (default) | + parse  | the docutils doctree of every docstring, in isolation, against the artifact ledger (a `:param` line glued to the summary, a doctest rendered as prose, a Markdown fence, `*args` opening an emphasis, …)                                 | 11                               |
+| 2           | + build  | the Sphinx warning stream                                                                                                                                                                                                                | 12                               |
+| 3           | + render | the built pages: `-b xml` for objects described with nothing and cross-references that rendered as plain code, `-b html` for dangling `#idN` anchors and missing images, `-b text` for snapshots                                         | 13                               |
+| 4           | + review | writes a review *packet* (rendered text of the changed or sampled pages, the rubric, a strict JSON schema) for an in-session agent; never calls a model and never gates                                                                  | 14, only with `--fail-on-review` |
+
+Levels 0 to 3 gate on `--fail-on error` (default), `warning` or `info`; exit 20 means the ledger itself is broken. `--format json` and `--format jsonl` give the machine-readable report.
+
+Text snapshots are opt-in: `--update-snapshots` writes the `-b text` render of every page under `docsrc/_snapshots/text`, and `--snapshot` diffs against it (a changed page is a level-2 error; the snapshot diff is the proof that a migration changed nothing). Level 4 writes its packet under the user data dir (`~/.local/share/epythet/review/<package>/<run>/`, `EPYTHET_DATA_DIR` overrides); a reviewer answers with a `review.json` that `--review-reply` ingests, and `epythet ledger propose review.json` turns its proposed rules into `status: proposed` ledger rules in an overlay (`--ledger DIR` uses them) for a human to promote.
+
+Every finding names a rule from the ledger (`epythet/ledger/rules/`, one YAML per rule with a fixture that is also its regression test). Findings are appended, as observations, to `~/.local/share/epythet/ledger/observations.jsonl`, never inside the repository.
+
+## `repair`: the normalizer’s fixes, written back to the source
+
+The docs build already normalizes docstrings on the fly. `epythet repair` applies the same source-safe rewrites to the files: a blank line before a doctest, list or field list; a Markdown fence to a `.. code-block::` (or a `::` literal block with `--fence-style literal`); `Returns: text` to a real section; `## Heading` to a rubric; `[text](url)` to an RST link; a short title underline padded.
+
+```bash
+epythet repair path/to/pkg            # dry run: a unified diff, and what needs a hand
+epythet repair path/to/pkg --write    # apply, after verifying
+```
+
+Only the docstring literals change; the rest of the file is copied byte for byte and the module’s AST outside its docstrings must be identical or nothing is written. Doctest sources are never altered. Each rewritten docstring is re-validated at level 1 (a rewrite that would introduce a finding is dropped), and with `--write` the doctests of every touched file are run before and after, and a file whose failures went up is restored. What no rule can fix safely (a prose `*args`, unmatched backticks, a backslash in a non-raw docstring) is listed under “needs a hand”. `repair_package` from `epythet.tools` keeps working and delegates here.
+
+`epythet migrate-style path --to google` (or `numpy`) is the opt-in cousin: it rewrites an RST field list (`:param x:`, `:returns:`, `:raises:`) as a Google or NumPy section via `docstring_parser`, with the same guarantees, and leaves alone any docstring whose fields would not round-trip.
+
+## `sweep`: the fleet distribution and the work queue
+
+`epythet sweep DIR... [--manifest FILE]` validates every package at levels 0 and 0.5 without writing into any of them, prints how often each rule fires (findings, packages affected, rate per hundred public objects) and a queue of packages ranked by the work they hold, entry points first. It is what decides the severities in the ledger, and the shortest path to “which package should I document next”.
+
 <p class="epythet-aggregates">This documentation as a single file: <a href="epythet.md">epythet.md</a> (Markdown, for agents).</p>
 
 
@@ -718,8 +762,11 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 
 ### Module Attributes
 
-| [`COMMANDS`](_autosummary/epythet.cli.html.md#epythet.cli.COMMANDS)   | The commands `epythet` exposes, in the order they appear in `--help`.   |
-|-------------------------------------------------------------|-------------------------------------------------------------------------|
+| [`COMMANDS`](_autosummary/epythet.cli.html.md#epythet.cli.COMMANDS)        | The commands `epythet` exposes, in the order they appear in `--help`.                                                                             |
+|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`TOOL_COMMANDS`](_autosummary/epythet.cli.html.md#epythet.cli.TOOL_COMMANDS)   | The v2 source-editing and fleet commands, by their command-line name.                                                                             |
+| [`LEDGER_COMMANDS`](_autosummary/epythet.cli.html.md#epythet.cli.LEDGER_COMMANDS) | maintenance of the artifact ledger.                                                                                                               |
+| [`CONVENTION`](_autosummary/epythet.cli.html.md#epythet.cli.CONVENTION)      | the command modules use `from __future__ import annotations`, and `list[str]` must still become `nargs="*"` (`--ignore a b`), not a single value. |
 
 ### Functions
 
@@ -727,12 +774,33 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [`check_pages`](_autosummary/epythet.cli.html.md#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                                               |
 | [`configure_pages`](_autosummary/epythet.cli.html.md#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                                                |
-| [`epythet_cli`](_autosummary/epythet.cli.html.md#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.                                         |
+| [`epythet_cli`](_autosummary/epythet.cli.html.md#epythet.cli.epythet_cli)([argv])                       | Entry point for the `epythet` console script.                                         |
+| [`mk_epythet_parser`](_autosummary/epythet.cli.html.md#epythet.cli.mk_epythet_parser)(\*\*parser_kwargs)      | The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.  |
 | [`quickstart`](_autosummary/epythet.cli.html.md#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
 ### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
+
+### epythet.cli.CONVENTION *= Convention(naming='by_name_if_has_default', short_flags=True, hyphenate_commands=True, hyphenate_groups=False, default_in_help=True, hints_when_declared=False, resolve_hints=True, decode=<function argh_decode>, egress=<function argh_egress>)*
+
+the command
+modules use `from __future__ import annotations`, and `list[str]` must
+still become `nargs="*"` (`--ignore a b`), not a single value.
+
+* **Type:**
+  cw’s argh-compatible convention, resolving string annotations
+
+### epythet.cli.LEDGER_COMMANDS *= {'propose': <function propose_command>}*
+
+maintenance of the artifact ledger.
+
+* **Type:**
+  `epythet ledger <command>`
+
+### epythet.cli.TOOL_COMMANDS *= {'migrate-style': <function migrate_style_command>, 'repair': <function repair_command>, 'sweep': <function sweep_command>}*
+
+The v2 source-editing and fleet commands, by their command-line name.
 
 ### epythet.cli.ai_artifacts(project_dir, , format='table')
 
@@ -764,9 +832,13 @@ Enable or fix GitHub Pages for a repo. Requires gh CLI or GITHUB_TOKEN.
   * **branch** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Branch to serve Pages from (default: gh-pages).
   * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Folder within the branch (default: /).
 
-### epythet.cli.epythet_cli()
+### epythet.cli.epythet_cli(argv=None)
 
 Entry point for the `epythet` console script.
+
+### epythet.cli.mk_epythet_parser(\*\*parser_kwargs)
+
+The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.
 
 ### epythet.cli.quickstart(project_dir, , ignore=None)
 
@@ -1212,15 +1284,157 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`config`](_autosummary/epythet.config.html.md#module-epythet.config)                            | Single source of truth for a project's documentation configuration.                                                                  |
 | [`config_parser`](_autosummary/epythet.config_parser.html.md#module-epythet.config_parser)              | Legacy configuration accessor kept for the frozen `docsrc/conf.py` copies.                                                           |
 | [`docs_gen`](_autosummary/epythet.docs_gen.html.md#module-epythet.docs_gen)                        | Documentation generation entry points (re-exported for compatibility).                                                               |
+| [`migrate`](_autosummary/epythet.migrate.html.md#module-epythet.migrate)                          | `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.                                              |
 | [`normalizer`](_autosummary/epythet.normalizer.html.md#module-epythet.normalizer)                    | Build-time docstring normalizer: fix the markup artifacts people actually write.                                                     |
+| [`repair`](_autosummary/epythet.repair.html.md#module-epythet.repair)                            | `epythet repair`: apply the normalizer's source-safe rewrites to docstrings in place.                                                |
 | [`scaffold`](_autosummary/epythet.scaffold.html.md#epythet.scaffold)(config, \*[, verbose, pages]) | Write the docsrc files for an already-loaded configuration.                                                                          |
 | [`setup_docsrc`](_autosummary/epythet.setup_docsrc.html.md#module-epythet.setup_docsrc)                | Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](_autosummary/epythet.scaffold.html.md#epythet.scaffold). |
 | [`sphinx_conf`](_autosummary/epythet.sphinx_conf.html.md#module-epythet.sphinx_conf)                  | The star-import target for a project's `docsrc/conf.py`.                                                                             |
 | [`sphinx_ext`](_autosummary/epythet.sphinx_ext.html.md#module-epythet.sphinx_ext)                    | epythet's Sphinx extension: the normalizer, agent link relations and theme CSS.                                                      |
+| [`sweep`](_autosummary/epythet.sweep.html.md#module-epythet.sweep)                              | `epythet sweep`: validate many packages read-only and rank the queue.                                                                |
 | [`templates`](_autosummary/epythet.templates.html.md#module-epythet.templates)                      | Text templates for the generated `docsrc` files.                                                                                     |
 | [`themes`](_autosummary/epythet.themes.html.md#module-epythet.themes)                            | Theme registry, deterministic theme choice, and the OKLCH accent palette.                                                            |
 | [`tools`](_autosummary/epythet.tools.html.md#module-epythet.tools)                              | Tools to diagnose (and sometimes, repair) documentation                                                                              |
 | [`validation`](_autosummary/epythet.validation.html.md#module-epythet.validation)                    | `epythet validate`: tiered documentation validation with a growing artifact ledger.                                                  |
+
+
+# _autosummary/epythet.migrate.html.md
+
+# epythet.migrate
+
+`epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.
+
+The fleet keeps both conventions and napoleon renders both, so nothing here
+runs by default anywhere (maintainer decision 6: normalizer only, no mass
+style conversion). This is the tool for the one package, module or file
+whose maintainer wants `:param x:` lines to become an `Args:` section.
+
+It is built on [`epythet.repair`](_autosummary/epythet.repair.html.md#module-epythet.repair)’s machinery and inherits every one of
+its guarantees: exact-span rewriting, an unchanged AST outside docstrings,
+byte-identical doctest sources, and a level-0.5 re-validation of each
+rewritten docstring. On top of that it only converts what round-trips:
+
+- the *field region* is the first contiguous block of `:param`,
+  `:type`, `:returns`, `:rtype` and `:raises` lines (with their
+  indented continuations); prose before it and everything after it, doctests
+  included, is copied verbatim;
+- a region holding any other field (`:keyword`, `:var`, `:meta`, …)
+  is left alone, because `docstring_parser.compose` drops or mangles those;
+- the composed section is parsed back and must describe the same
+  parameters, return and exceptions as the original, or the docstring is
+  left alone.
+
+The conversion itself is `docstring_parser.parse(..., style=REST)` then
+`compose(..., style=GOOGLE)` (research §9); the substrate that writes it
+back is the `applier=` seam of [`epythet.repair.repair()`](_autosummary/epythet.repair.html.md#epythet.repair.repair).
+
+```pycon
+>>> from epythet.migrate import convert_fields
+>>> print(convert_fields(":param x: the x value\n:type x: int\n:returns: x doubled\n:rtype: int", to="google"))
+:param x: the x value
+:type x: int
+```
+
+<BLANKLINE>
+:returns: x doubled
+:rtype: int
+
+### Module Attributes
+
+| [`CONVERTIBLE_FIELDS`](_autosummary/epythet.migrate.html.md#epythet.migrate.CONVERTIBLE_FIELDS)   | Field names whose conversion round-trips through `docstring_parser`.   |
+|-----------------------------------------------------------------------|------------------------------------------------------------------------|
+
+### Functions
+
+| [`convert_fields`](_autosummary/epythet.migrate.html.md#epythet.migrate.convert_fields)(region, \*[, to])                  | Convert one RST field block to a Google or NumPy section block, or `None` if unsafe.            |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| [`field_region`](_autosummary/epythet.migrate.html.md#epythet.migrate.field_region)(lines)                               | `(start, end)` of the first RST field block, or `None`; `end` is exclusive.                     |
+| [`field_regions`](_autosummary/epythet.migrate.html.md#epythet.migrate.field_regions)(lines)                              | Every field block of a docstring, in order.                                                     |
+| [`migrate_style`](_autosummary/epythet.migrate.html.md#epythet.migrate.migrate_style)(path, \*[, to, write, ignore, ...]) | Convert the RST field lists under `path` (a file, package or project) to `to` sections.         |
+| [`migrate_style_command`](_autosummary/epythet.migrate.html.md#epythet.migrate.migrate_style_command)(path, \*[, to, write, ...]) | Rewrite RST field lists (:param x:) as Google or NumPy sections, one file or package at a time. |
+| [`rst_fields_to_sections`](_autosummary/epythet.migrate.html.md#epythet.migrate.rst_fields_to_sections)([to])                      | A normalizer-shaped rule (`lines -> lines`) converting the docstring's field block.             |
+
+### epythet.migrate.CONVERTIBLE_FIELDS *= frozenset({'arg', 'argument', 'except', 'exception', 'param', 'parameter', 'raise', 'raises', 'return', 'returns', 'rtype', 'type'})*
+
+Field names whose conversion round-trips through `docstring_parser`.
+
+### epythet.migrate.convert_fields(region, , to='google')
+
+Convert one RST field block to a Google or NumPy section block, or `None` if unsafe.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)
+
+### epythet.migrate.field_region(lines)
+
+`(start, end)` of the first RST field block, or `None`; `end` is exclusive.
+
+A block starts at a field line and takes every following field line at
+the same indentation and every continuation (a deeper-indented line, or a
+blank line followed by one of those).
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int)] | [`None`](https://docs.python.org/3/library/constants.html#None)
+
+```pycon
+>>> field_region(["Summary.", "", ":param x: the x", "    more", ":returns: y", "", "Then prose."])
+(2, 5)
+>>> field_region(["No fields."]) is None
+True
+```
+
+### epythet.migrate.field_regions(lines)
+
+Every field block of a docstring, in order.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int)]]
+
+```pycon
+>>> field_regions([":param x: x", "", "prose", "", ":returns: y"])
+[(0, 1), (4, 5)]
+```
+
+### epythet.migrate.migrate_style(path, \*, to='google', write=False, ignore=(), ledger=None, napoleon=True, run_doctests=True, applier=<function apply_span_edits>)
+
+Convert the RST field lists under `path` (a file, package or project) to `to` sections.
+
+Dry run by default; see [`epythet.repair.repair()`](_autosummary/epythet.repair.html.md#epythet.repair.repair) for the arguments,
+which are the same.
+
+* **Return type:**
+  [`RepairReport`](_autosummary/epythet.repair.html.md#epythet.repair.RepairReport)
+
+### epythet.migrate.migrate_style_command(path, , to='google', write=False, ignore=None, ledger=None, no_napoleon=False, no_doctests=False, applier='span', quiet=False)
+
+Rewrite RST field lists (:param x:) as Google or NumPy sections, one file or package at a time.
+
+Opt-in and never part of a fleet sweep. Dry run by default: prints the
+diff –write would apply. Docstrings whose fields would not round-trip
+(:keyword, :var, :meta, …) are left alone and listed.
+
+* **Parameters:**
+  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – A .py file, a package directory, or a project root.
+  * **to** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Target convention: google or numpy.
+  * **write** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
+  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
+  * **no_napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
+  * **no_doctests** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
+  * **applier** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – The rewriting substrate: span (default) or libcst.
+  * **quiet** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Print the summary only, not the diff.
+* **Return type:**
+  [`None`](https://docs.python.org/3/library/constants.html#None)
+
+### epythet.migrate.rst_fields_to_sections(to='google')
+
+A normalizer-shaped rule (`lines -> lines`) converting the docstring’s field block.
+
+A docstring with more than one field block is left alone: converting one
+would leave a mixed-style docstring behind.
+
+* **Return type:**
+  [`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]
 
 
 # _autosummary/epythet.normalizer.html.md
@@ -1401,7 +1615,8 @@ Extend a title underline that is shorter than its title.
 
 Expand `Returns: text` (and other one-line sections) into real sections.
 
-Continuation lines at the same indentation are folded into the section body.
+Continuation lines at the same indentation are folded into the section body;
+a Markdown heading or another section ends it.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
@@ -1409,6 +1624,8 @@ Continuation lines at the same indentation are folded into the section body.
 ```pycon
 >>> normalize_text("Returns: a thing that\nspans two lines.\n\nNext.", rules=[google_one_liners])
 'Returns:\n    a thing that\n    spans two lines.\n\nNext.'
+>>> normalize_text("Returns: a thing.\n## Notes\nText.", rules=[google_one_liners])
+'Returns:\n    a thing.\n\n## Notes\nText.'
 ```
 
 ### epythet.normalizer.indent_of(line)
@@ -1553,6 +1770,254 @@ deprecated in Sphinx 9). Register with `priority=400` so this runs before
 napoleon (priority 500) sees the docstring.
 
 
+# _autosummary/epythet.repair.html.md
+
+# epythet.repair
+
+`epythet repair`: apply the normalizer’s source-safe rewrites to docstrings in place.
+
+The build-time normalizer ([`epythet.normalizer`](_autosummary/epythet.normalizer.html.md#module-epythet.normalizer)) fixes a docstring’s
+markup on the fly, so the rendered site is right without editing anything.
+This module writes the same fixes *back into the source*, for the packages
+that want their docstrings right at rest (decision D9). It is deliberately
+narrow:
+
+- Only the docstring literal changes. The rest of the file is copied byte
+  for byte (exact-span rewriting, no unparsing), and the module’s AST with
+  docstrings blanked must be identical before and after or the file is not
+  written.
+- Only the normalizer’s *source-safe* rules run ([`SOURCE_SAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.SOURCE_SAFE_RULES)):
+  a blank line before a doctest, list or field list; a Markdown fence to a
+  `code-block` (or a `::` literal block, `fence_style="literal"`);
+  `Returns: text` one-liners to real sections; `## Heading` to a rubric;
+  `[text](url)` to an RST link; short underlines padded. Escaping a
+  prose `*args` is *not* source-safe (it changes what the author wrote,
+  and a later reader may not know why the backslash is there), so it stays a
+  diagnostic (DR010), like unmatched backticks and every other artifact the
+  normalizer cannot fix.
+- Every doctest keeps its source lines byte for byte (checked with
+  [`doctest`](https://docs.python.org/3/library/doctest.html#module-doctest)’s own parser); a rewrite that would change one is skipped.
+- Every rewritten docstring is re-validated at level 0.5: a rewrite that
+  introduces a finding the original did not have is dropped. With
+  `write=True` the doctests of every touched file are run before and after
+  (the module is *imported* for that, so its top level runs; pass
+  `run_doctests=False` / `--no-doctests` for code that must not run), and
+  a file whose failures went up is restored. A module that cannot be imported
+  is written but reported as unverified.
+- Line endings (CRLF), a UTF-8 BOM and tab indentation are preserved; a file
+  is replaced atomically.
+
+Dry run is the default and prints a unified diff; `write=True` applies.
+The seam `applier=` swaps the rewriting substrate: [`apply_span_edits()`](_autosummary/epythet.repair.html.md#epythet.repair.apply_span_edits)
+(default, no dependency) or [`apply_with_libcst()`](_autosummary/epythet.repair.html.md#epythet.repair.apply_with_libcst) (when LibCST is
+installed; it re-parses the module as a concrete syntax tree and replaces
+the string nodes).
+
+```pycon
+>>> from epythet.repair import rewrite_docstring_literal
+>>> literal = '"""Do it.\n    - one\n    - two\n    """'
+>>> new, reason = rewrite_docstring_literal(literal)
+>>> new.split("\n"), reason
+(['"""Do it.', '', '    - one', '    - two', '    """'], None)
+>>> rewrite_docstring_literal('"""Has a \\n escape."""')[1]
+'non-raw literal with backslashes: escapes would change'
+```
+
+### Module Attributes
+
+| [`SOURCE_SAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.SOURCE_SAFE_RULES)   | The normalizer rules whose rewrite is safe to commit to source, in normalizer order.   |
+|----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`UNSAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.UNSAFE_RULES)        | Normalizer rules that stay build-time only, and why.                                   |
+
+### Functions
+
+| [`apply_span_edits`](_autosummary/epythet.repair.html.md#epythet.repair.apply_span_edits)(source, edits)                    | Splice each edit's `after` over its `[start, end)` span, last edit first.                |
+|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| [`apply_with_libcst`](_autosummary/epythet.repair.html.md#epythet.repair.apply_with_libcst)(source, edits)                   | The LibCST applier: replace the matching `SimpleString` nodes of a concrete syntax tree. |
+| [`fences_to_literal_blocks`](_autosummary/epythet.repair.html.md#epythet.repair.fences_to_literal_blocks)(lines)                    | The `fence_style="literal"` variant: a fence becomes a `::` literal block.               |
+| [`iter_docstring_nodes`](_autosummary/epythet.repair.html.md#epythet.repair.iter_docstring_nodes)(tree)                         | `(qualname, node, constant)` for every docstring in a parsed module.                     |
+| [`render_repair`](_autosummary/epythet.repair.html.md#epythet.repair.render_repair)(report, \*[, diff])                  | The human report: the diff (dry run) or what was written, then the refusals.             |
+| [`repair`](_autosummary/epythet.repair.html.md#epythet.repair.repair)(path, \*[, write, fence_style, rules, ...]) | Repair the docstrings under `path` (a file, package directory or project root).          |
+| [`repair_command`](_autosummary/epythet.repair.html.md#epythet.repair.repair_command)(path, \*[, write, ...])             | Rewrite docstrings so they render right: blank lines, fences, one-liner sections, links. |
+| [`repair_source`](_autosummary/epythet.repair.html.md#epythet.repair.repair_source)(source, \*[, rules, ...])            | Repair every docstring of one module's source text; nothing is written.                  |
+| [`rewrite_docstring_literal`](_autosummary/epythet.repair.html.md#epythet.repair.rewrite_docstring_literal)(segment, \*[, rules])    | Rewrite one docstring literal's source; returns `(new_segment, reason_if_unsafe)`.       |
+| [`rules_for`](_autosummary/epythet.repair.html.md#epythet.repair.rules_for)([fence_style, rules])                    | The rule tuple for a fence style (`literal` swaps the fence rule).                       |
+| [`split_literal`](_autosummary/epythet.repair.html.md#epythet.repair.split_literal)(segment)                             | `(prefix, quote, body, closing quote)` of a string literal's source, or `None`.          |
+
+### Classes
+
+| [`DocstringEdit`](_autosummary/epythet.repair.html.md#epythet.repair.DocstringEdit)(qualname, line, start, end, ...)   | One docstring the repair rewrote (or refused to).   |
+|---------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+| [`FileRepair`](_autosummary/epythet.repair.html.md#epythet.repair.FileRepair)(path, original, repaired[, ...])      | What the repair did to one file.                    |
+| [`RepairReport`](_autosummary/epythet.repair.html.md#epythet.repair.RepairReport)(root[, files, write, notes])        | Everything one `repair` run did.                    |
+
+### *class* epythet.repair.DocstringEdit(qualname, line, start, end, before, after, reason=None, fixed=<factory>, remaining=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One docstring the repair rewrote (or refused to).
+
+### *class* epythet.repair.FileRepair(path, original, repaired, edits=<factory>, skipped=None, written=False, verification=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+What the repair did to one file.
+
+#### diff()
+
+The unified diff of the file, empty when nothing changed.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+#### *property* refused *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[DocstringEdit](_autosummary/epythet.repair.html.md#epythet.repair.DocstringEdit)]*
+
+a refused rewrite, or findings no rule fixes.
+
+A docstring that was rewritten but still has findings counts too, so
+the number is the same on the dry run, the write, and the run after.
+
+* **Type:**
+  Docstrings left for a hand
+
+### *class* epythet.repair.RepairReport(root, files=<factory>, write=False, notes=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+Everything one `repair` run did.
+
+### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
+
+The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
+
+### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str)]* *= {'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
+
+Normalizer rules that stay build-time only, and why.
+
+### epythet.repair.apply_span_edits(source, edits)
+
+Splice each edit’s `after` over its `[start, end)` span, last edit first.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.repair.apply_with_libcst(source, edits)
+
+The LibCST applier: replace the matching `SimpleString` nodes of a concrete syntax tree.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.repair.fences_to_literal_blocks(lines)
+
+The `fence_style="literal"` variant: a fence becomes a `::` literal block.
+
+A literal block needs no directive support and, unlike `code-block`,
+is safe inside a docstring that a doctest runner reads (a `>>>` line
+inside it is still literal, but is never mistaken for a directive body).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+```pycon
+>>> N.normalize_text("Run:\n```bash\npip install x\n```\nDone.", rules=[fences_to_literal_blocks])
+'Run::\n\n    pip install x\n\nDone.'
+```
+
+### epythet.repair.iter_docstring_nodes(tree)
+
+`(qualname, node, constant)` for every docstring in a parsed module.
+
+### epythet.repair.render_repair(report, , diff=True)
+
+The human report: the diff (dry run) or what was written, then the refusals.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
+
+Repair the docstrings under `path` (a file, package directory or project root).
+
+* **Parameters:**
+  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – What to repair.
+  * **write** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Apply the rewrites; the default only computes them (dry run).
+  * **fence_style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – What a Markdown fence becomes: `code-block` or `literal`.
+  * **rules** ([`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]]) – The normalizer rules to apply; [`SOURCE_SAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.SOURCE_SAFE_RULES) by default.
+  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – Path substrings to skip, as `epythet validate --ignore`.
+  * **ledger** – The rule catalog used to re-validate (`None` = bundled).
+  * **napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Parse docstrings with napoleon’s Google/NumPy pre-processing.
+  * **revalidate** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Drop a rewrite that introduces a level-0.5 finding.
+  * **run_doctests** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – With `write`, run each touched file’s doctests before
+    and after, and restore a file whose failures went up.
+  * **applier** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`DocstringEdit`](_autosummary/epythet.repair.html.md#epythet.repair.DocstringEdit)]], [`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – The rewriting substrate; [`apply_span_edits()`](_autosummary/epythet.repair.html.md#epythet.repair.apply_span_edits) or
+    [`apply_with_libcst()`](_autosummary/epythet.repair.html.md#epythet.repair.apply_with_libcst).
+* **Return type:**
+  [`RepairReport`](_autosummary/epythet.repair.html.md#epythet.repair.RepairReport)
+
+### epythet.repair.repair_command(path, , write=False, fence_style='code-block', ignore=None, ledger=None, no_napoleon=False, no_doctests=False, applier='span', quiet=False)
+
+Rewrite docstrings so they render right: blank lines, fences, one-liner sections, links.
+
+Dry run by default: prints a unified diff of what –write would change.
+Unsafe cases (prose \*args, unmatched backticks, backslashes in a non-raw
+docstring) are reported, never rewritten. Exit 0 when nothing is left to
+do or every write was verified; 3 when a written file had to be restored.
+
+* **Parameters:**
+  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – A .py file, a package directory, or a project root.
+  * **write** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
+  * **fence_style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – What a Markdown fence becomes: code-block or literal.
+  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
+  * **no_napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
+  * **no_doctests** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
+  * **applier** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – The rewriting substrate: span (default) or libcst.
+  * **quiet** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Print the summary only, not the diff.
+* **Return type:**
+  [`None`](https://docs.python.org/3/library/constants.html#None)
+
+### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
+
+Repair every docstring of one module’s source text; nothing is written.
+
+* **Return type:**
+  [`FileRepair`](_autosummary/epythet.repair.html.md#epythet.repair.FileRepair)
+
+### epythet.repair.rewrite_docstring_literal(segment, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+
+Rewrite one docstring literal’s source; returns `(new_segment, reason_if_unsafe)`.
+
+The body is dedented the way [`inspect.cleandoc()`](https://docs.python.org/3/library/inspect.html#inspect.cleandoc) does (the first
+line stays as written), the rules run, and the result is re-indented to
+the original margin. Indentation-only lines (the closing-quote line) are
+preserved.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)]
+
+### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+
+The rule tuple for a fence style (`literal` swaps the fence rule).
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+
+### epythet.repair.split_literal(segment)
+
+`(prefix, quote, body, closing quote)` of a string literal’s source, or `None`.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)
+
+```pycon
+>>> split_literal('r"""x"""')
+('r', '"""', 'x', '"""')
+>>> split_literal("'y'")
+('', "'", 'y', "'")
+```
+
+
 # _autosummary/epythet.scaffold.html.md
 
 # epythet.scaffold
@@ -1653,6 +2118,167 @@ Register epythet’s hooks and configuration values (idempotent).
 
 * **Return type:**
   [`None`](https://docs.python.org/3/library/constants.html#None)
+
+
+# _autosummary/epythet.sweep.html.md
+
+# epythet.sweep
+
+`epythet sweep`: validate many packages read-only and rank the queue.
+
+The fleet has some two hundred packages and one question about each rule:
+how often does it fire, and where? Severities in the ledger are decided by
+that distribution, not by intuition (decision D9). The sweep runs
+`epythet.validation.validate()` at level 0 (the coverage detectors, no
+linters unless asked) and level 0.5 (the doctree of every docstring) over
+each package, never writes into any of them, appends what it saw to the
+observations file outside the repositories, and reports two things:
+
+- the **rule distribution**: per rule, how many findings, in how many
+  packages, and the rate per hundred public objects;
+- the **queue**: packages ranked by how much documentation work they hold,
+  weighted the way the doc-quality research orders the work (entry points
+  first: an entry point without an example outranks a helper without a
+  summary; a rendering error outranks both).
+
+Packages come from directories on the command line, or from a manifest: a
+`.pth`-style file with one project directory per line (the local package
+manifest is exactly that). The manifest is read, never written.
+
+```pycon
+>>> from epythet.sweep import queue_score
+>>> queue_score({"DQ002": 3, "DR003": 1, "DQ004": 2}, severities={"DR003": "error"})
+18.0
+```
+
+### Module Attributes
+
+| [`RULE_WEIGHTS`](_autosummary/epythet.sweep.html.md#epythet.sweep.RULE_WEIGHTS)     | How much one finding of a rule weighs in the queue (research_doc_quality §4.3: examples first, then correctness, then the summary, then parameter semantics).   |
+|-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`SEVERITY_WEIGHTS`](_autosummary/epythet.sweep.html.md#epythet.sweep.SEVERITY_WEIGHTS) | Weight per severity for rendering findings (level 0.5) not listed above.                                                                                        |
+
+### Functions
+
+| [`packages_from_manifest`](_autosummary/epythet.sweep.html.md#epythet.sweep.packages_from_manifest)(path)                       | Project directories listed in a `.pth`-style manifest (one per line, `#` comments).   |
+|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`queue_score`](_autosummary/epythet.sweep.html.md#epythet.sweep.queue_score)(counts, \*, severities)                | The queue weight of a package from its per-rule finding counts.                       |
+| [`render_sweep`](_autosummary/epythet.sweep.html.md#epythet.sweep.render_sweep)(result, \*[, top])                    | The human report: distribution table, then the queue.                                 |
+| [`sweep`](_autosummary/epythet.sweep.html.md#epythet.sweep.sweep)([dirs, manifest, levels, ignore, ...])       | Validate every package under `dirs` and `manifest` read-only; return the result.      |
+| [`sweep_command`](_autosummary/epythet.sweep.html.md#epythet.sweep.sweep_command)(\*dirs[, manifest, parse_only, ...]) | Validate many packages read-only; print the rule distribution and the work queue.     |
+| [`sweeps_path`](_autosummary/epythet.sweep.html.md#epythet.sweep.sweeps_path)()                                      | Where sweep summaries are appended: `<user data dir>/ledger/sweeps.jsonl`.            |
+
+### Classes
+
+| [`PackageSweep`](_autosummary/epythet.sweep.html.md#epythet.sweep.PackageSweep)(path, name[, version, objects, ...])   | What the sweep saw in one package.                               |
+|------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| [`SweepResult`](_autosummary/epythet.sweep.html.md#epythet.sweep.SweepResult)([packages, levels, started, ...])       | Every package swept, the rule distribution and the ranked queue. |
+
+### *class* epythet.sweep.PackageSweep(path, name, version=None, objects=0, undocumented=0, counts=<factory>, severities=<factory>, duration_s=0.0, error=None, notes=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+What the sweep saw in one package.
+
+### epythet.sweep.RULE_WEIGHTS *= {'DQ001': 3.0, 'DQ002': 4.0, 'DQ003': 1.0, 'DQ004': 0.5, 'DQ005': 1.0}*
+
+How much one finding of a rule weighs in the queue (research_doc_quality §4.3:
+examples first, then correctness, then the summary, then parameter semantics).
+
+### epythet.sweep.SEVERITY_WEIGHTS *= {'error': 5.0, 'info': 0.5, 'warning': 2.0}*
+
+Weight per severity for rendering findings (level 0.5) not listed above.
+
+### *class* epythet.sweep.SweepResult(packages=<factory>, levels=(0, 0.5), started='', duration_s=0.0, ledger_severity=<factory>, ledger_title=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+Every package swept, the rule distribution and the ranked queue.
+
+#### distribution()
+
+Per rule: findings, packages affected, rate per 100 public objects; most frequent first.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]]
+
+#### queue()
+
+Packages by descending queue score.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`PackageSweep`](_autosummary/epythet.sweep.html.md#epythet.sweep.PackageSweep)]
+
+### epythet.sweep.packages_from_manifest(path)
+
+Project directories listed in a `.pth`-style manifest (one per line, `#` comments).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
+
+### epythet.sweep.queue_score(counts, , severities)
+
+The queue weight of a package from its per-rule finding counts.
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/library/functions.html#float)
+
+### epythet.sweep.render_sweep(result, , top=20)
+
+The human report: distribution table, then the queue.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.sweep.sweep(dirs=(), , manifest=None, levels=(0, 0.5), ignore=(), ledger=None, napoleon=True, linters=False, observe=True, observations_path=None, record=True, limit=None, on_package=None)
+
+Validate every package under `dirs` and `manifest` read-only; return the result.
+
+* **Parameters:**
+  * **dirs** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)]) – Project or package directories.
+  * **manifest** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – A `.pth`-style file of project directories, read only.
+  * **levels** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/library/functions.html#float)]) – The validate levels to run (`0` coverage, `0.5` parse by default).
+  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – Path substrings to skip inside each package.
+  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – The rule catalog (`None` = bundled).
+  * **napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Parse docstrings with napoleon’s pre-processing.
+  * **linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Also shell out to ruff and pydoclint at level 0.
+  * **observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Append each package’s findings to the observations file.
+  * **observations_path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Override the observations file (tests use this).
+  * **record** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Append the sweep summary to `sweeps.jsonl` under the user data dir.
+  * **limit** ([`int`](https://docs.python.org/3/library/functions.html#int) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Sweep at most this many packages.
+  * **on_package** – Called with each [`PackageSweep`](_autosummary/epythet.sweep.html.md#epythet.sweep.PackageSweep) as it completes.
+* **Return type:**
+  [`SweepResult`](_autosummary/epythet.sweep.html.md#epythet.sweep.SweepResult)
+
+### epythet.sweep.sweep_command(\*dirs, manifest=None, parse_only=False, linters=False, ignore=None, ledger=None, no_napoleon=False, no_observe=False, limit=None, format='table', top=20, output=None, quiet=False)
+
+Validate many packages read-only; print the rule distribution and the work queue.
+
+Runs level 0 (coverage detectors) and level 0.5 (every docstring’s
+doctree) over each package; never writes into a package or the manifest.
+
+* **Parameters:**
+  * **dirs** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Project or package directories to sweep.
+  * **manifest** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – A .pth-style file listing project directories, one per line (read only).
+  * **parse_only** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Run level 0.5 only (skip the coverage detectors).
+  * **linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Also run ruff and pydoclint at level 0 (slower).
+  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
+  * **no_napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Parse docstrings without napoleon’s Google/NumPy pre-processing.
+  * **no_observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not append findings (or the sweep summary) to the user data dir.
+  * **limit** ([`int`](https://docs.python.org/3/library/functions.html#int) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Sweep at most this many packages.
+  * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human) or json (the full result).
+  * **top** ([`int`](https://docs.python.org/3/library/functions.html#int)) – How many packages the queue shows.
+  * **output** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Write the report to this file instead of stdout.
+  * **quiet** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not print progress on stderr.
+* **Return type:**
+  [`None`](https://docs.python.org/3/library/constants.html#None)
+
+### epythet.sweep.sweeps_path()
+
+Where sweep summaries are appended: `<user data dir>/ledger/sweeps.jsonl`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
 
 
 # _autosummary/epythet.templates.html.md
@@ -2201,9 +2827,16 @@ Print diagnosis of one or several files
 Diagnose and/or repair a whole pkg (given by folder or pkg module obj,
 or a store (see dol).
 
-For now, it diagnosis and repairs:
+A folder or package object is handed to [`epythet.repair.repair()`](_autosummary/epythet.repair.html.md#epythet.repair.repair),
+which applies every source-safe normalizer rule (blank lines before
+doctests and lists, Markdown fences, one-line `Returns:` sections,
+Markdown headings and links) and verifies each rewrite; a store (a
+`dol` mapping) keeps the original doctest-only pass, which is the only
+one that can write through an arbitrary mapping.
 
-- When there’s a space missing between doc text and doctest (code block)
+Prints one line per file with the number of docstrings that changed (or
+would change) and returns the total, exactly as it always has; wads’
+`wads-docstring-render` skill depends on that shape.
 
 ### epythet.tools.docstring_diagnosis.tag_doctest_blocks_not_preceeded_by_new_lines(lines)
 
@@ -2591,6 +3224,7 @@ rules match on, because Sphinx still has no structured warning output.
 |---------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | [`WARNINGS_ONLY_EXIT`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.WARNINGS_ONLY_EXIT) | Sphinx's exit status when the only problem was warnings under `-W`.                                                                  |
 | [`WARNING_LINE_RE`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.WARNING_LINE_RE)    | `path:docstring of obj:3: WARNING: message [type]` and the simpler `path:12: WARNING: message [type]` and `WARNING: message` shapes. |
+| [`RENDER_BUILDERS`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RENDER_BUILDERS)    | HTML for links and images, text for snapshots, XML for structure (research §5.4: text and xml are complementary).                    |
 
 ### Functions
 
@@ -2604,11 +3238,13 @@ rules match on, because Sphinx still has no structured warning output.
 
 ### Classes
 
-| [`BuildBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildBackend)(\*args, \*\*kwargs)              | What the `backend=` seam requires: a name, versions, and the warning stream.   |
-|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`BuildResult`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildResult)(returncode[, warnings, log, ...]) | What one build produced: exit status, parsed warnings, and the raw log.        |
-| [`BuildWarning`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildWarning)(severity, message[, type, ...])  | One parsed line of the Sphinx warning stream.                                  |
-| [`SphinxBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.SphinxBackend)([sphinx_build, docsrc, ...])    | The default (and only shipped) backend: `sphinx-build -b html -W`.             |
+| [`BuildBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildBackend)(\*args, \*\*kwargs)              | What the `backend=` seam requires: a name, versions, and the warning stream.     |
+|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| [`BuildResult`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildResult)(returncode[, warnings, log, ...]) | What one build produced: exit status, parsed warnings, and the raw log.          |
+| [`BuildWarning`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildWarning)(severity, message[, type, ...])  | One parsed line of the Sphinx warning stream.                                    |
+| [`RenderBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RenderBackend)(\*args, \*\*kwargs)             | A backend that can also render several builders into a kept directory (level 2). |
+| [`RenderResult`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RenderResult)([outdirs, returncodes, ...])     | What a multi-builder render produced: one output directory per builder.          |
+| [`SphinxBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.SphinxBackend)([sphinx_build, docsrc, ...])    | The default (and only shipped) backend: `sphinx-build -b html -W`.               |
 
 ### *class* epythet.validation.build.BuildBackend(\*args, \*\*kwargs)
 
@@ -2617,7 +3253,8 @@ Bases: [`Protocol`](https://docs.python.org/3/library/typing.html#typing.Protoco
 What the `backend=` seam requires: a name, versions, and the warning stream.
 
 [`SphinxBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.SphinxBackend) is the shipped implementation; a MkDocs backend
-implements the same two methods and inherits the whole ledger.
+implements the same two methods and inherits the whole ledger. Level 2
+additionally needs [`RenderBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RenderBackend).
 
 ### *class* epythet.validation.build.BuildResult(returncode, warnings=<factory>, log='', outdir=None, command=<factory>)
 
@@ -2634,6 +3271,35 @@ One parsed line of the Sphinx warning stream.
 ### epythet.validation.build.NO_DOCSRC *= -1*
 
 `BuildResult.returncode` when there is no Sphinx source directory to build.
+
+### epythet.validation.build.RENDER_BUILDERS *= ('html', 'text', 'xml')*
+
+HTML for links and images, text for snapshots,
+XML for structure (research §5.4: text and xml are complementary).
+
+* **Type:**
+  The builders level 2 reads
+
+### *class* epythet.validation.build.RenderBackend(\*args, \*\*kwargs)
+
+Bases: [`BuildBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildBackend), [`Protocol`](https://docs.python.org/3/library/typing.html#typing.Protocol)
+
+A backend that can also render several builders into a kept directory (level 2).
+
+### *class* epythet.validation.build.RenderResult(outdirs=<factory>, returncodes=<factory>, warnings=<factory>, log='')
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+What a multi-builder render produced: one output directory per builder.
+
+`outdirs` maps a builder name (`html`, `text`, `xml`) to the
+directory holding its pages; a builder that failed is absent from it and
+its exit status is in `returncodes`. `warnings` is the parsed warning
+stream of the first builder (the others repeat it).
+
+#### *property* ok *: [bool](https://docs.python.org/3/library/functions.html#bool)*
+
+Whether every builder exited 0 or with warnings only.
 
 ### *class* epythet.validation.build.SphinxBackend(sphinx_build=None, docsrc=None, outdir=None, builder='html', nitpicky=False, name='sphinx')
 
@@ -2654,6 +3320,16 @@ removed before returning; only the parsed warnings and the log survive.
 
 * **Return type:**
   [`BuildResult`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.BuildResult)
+
+#### render(project_dir, , builders=('html', 'text', 'xml'), outdir)
+
+Build every builder in `builders` into `outdir/<builder>` (level 2).
+
+Unlike [`build_warnings()`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.SphinxBackend.build_warnings), the output is kept: level 2 reads it, and
+level 3 packs it for review. The caller owns `outdir`.
+
+* **Return type:**
+  [`RenderResult`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RenderResult)
 
 #### resolve_docsrc(project_dir)
 
@@ -2748,17 +3424,19 @@ command list; `python -m epythet.validation` dispatches it on its own.
 | [`validate`](_autosummary/epythet.validation.cli.html.md#epythet.validation.cli.validate)(package, \*[, level, format, ...])   | Check a package's docstrings for rendering artifacts and build problems.   |
 |------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
 
-### epythet.validation.cli.validate(package, , level=1, format='table', fail_on='error', ledger=None, style='google', no_napoleon=False, ignore=None, docsrc=None, no_observe=False, max_per_rule=10, output=None)
+### epythet.validation.cli.validate(package, , level=1, format='table', fail_on='error', ledger=None, style='google', no_napoleon=False, ignore=None, docsrc=None, no_observe=False, no_linters=False, max_per_rule=10, output=None, snapshot=False, update_snapshots=False, snapshot_dir=None, render_dir=None, review_pages='changed', review_sample=8, screenshots=False, packet_dir=None, review_reply=None, fail_on_review=False)
 
 Check a package’s docstrings for rendering artifacts and build problems.
 
-Exit codes: 0 clean; 10/11/12 findings at or above –fail-on at level
-0 (lint) / 0.5 (parse) / 1 (build); 20 ledger integrity failure; 1 internal error.
+Exit codes: 0 clean; 10/11/12/13 findings at or above –fail-on at level
+0 (lint) / 0.5 (parse) / 1 (build) / 2 (render); 14 review findings, only
+with –fail-on-review; 20 ledger integrity failure; 1 internal error.
 
 * **Parameters:**
   * **package** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Project root, package directory, or importable package name.
   * **level** ([`int`](https://docs.python.org/3/library/functions.html#int)) – 0 = lint (ruff D, pydoclint); 1 = lint + parse every docstring’s
-    doctree (default, no build needed); 2 = also run the Sphinx build.
+    doctree (default, no build needed); 2 = also run the Sphinx build;
+    3 = also read the rendered XML/HTML/text; 4 = also write a review packet.
   * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human), json (full report), or jsonl (one finding per line).
   * **fail_on** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Severity that makes the exit code non-zero: error, warning, or info.
   * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
@@ -2767,8 +3445,19 @@ Exit codes: 0 clean; 10/11/12 findings at or above –fail-on at level
   * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
   * **docsrc** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Sphinx source directory for level 2 (default: <project>/docsrc).
   * **no_observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not append findings to the ledger’s observations file.
+  * **no_linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 0 without ruff and pydoclint (coverage detectors only).
   * **max_per_rule** ([`int`](https://docs.python.org/3/library/functions.html#int)) – How many findings to show per rule in the table.
   * **output** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Write the report to this file instead of stdout.
+  * **snapshot** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: diff the text render against docsrc/_snapshots/text.
+  * **update_snapshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: rewrite the text snapshots from this render.
+  * **snapshot_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Where the text snapshots live (default docsrc/_snapshots/text).
+  * **render_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Keep the rendered html/text/xml here instead of a temp dir.
+  * **review_pages** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Level 4: which pages go in the packet: changed, sample, or all.
+  * **review_sample** ([`int`](https://docs.python.org/3/library/functions.html#int)) – Level 4: how many pages a sample packet holds.
+  * **screenshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 4: add Playwright screenshots to the packet if installed.
+  * **packet_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 4: write the packet here (default: the user data dir).
+  * **review_reply** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 4: a review.json written by a reviewer, to ingest.
+  * **fail_on_review** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Exit 14 when the review reply reported findings.
 * **Return type:**
   [`None`](https://docs.python.org/3/library/constants.html#None)
 
@@ -2792,8 +3481,9 @@ Seams (one keyword argument each, as in decision D8):
 - `ledger=` — the rule catalog; `None` is the bundled ledger, a directory
   is a package-local overlay.
 
-Levels 2 (render) and 3 (review) are declared in the model and reserved for
-WP3; asking for them raises [`NotImplementedError`](https://docs.python.org/3/library/exceptions.html#NotImplementedError) with a pointer.
+Level 2 (render) reuses the backend through its `render` method (a
+[`RenderBackend`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.RenderBackend)) and level 3 (review) reads
+what level 2 rendered, so a tier-4 run builds exactly once.
 
 ### Functions
 
@@ -2822,14 +3512,15 @@ package directory (contains `__init__.py`) or an importable name.
 * **Return type:**
   [`ResolvedPackage`](_autosummary/epythet.validation.core.html.md#epythet.validation.core.ResolvedPackage)
 
-### epythet.validation.core.validate(package, , level=1, levels=None, ledger=None, backend=None, fail_on='error', napoleon=True, style='google', ignore=(), observe=True, observations_path=None)
+### epythet.validation.core.validate(package, , level=1, levels=None, ledger=None, backend=None, fail_on='error', napoleon=True, style='google', ignore=(), observe=True, observations_path=None, linters=True, snapshot=False, update_snapshots=False, snapshot_dir=None, render_dir=None, review_pages='changed', review_sample=8, screenshots=False, packet_dir=None, review_reply=None)
 
 Validate a package’s documentation and return a `Report`.
 
 * **Parameters:**
   * **package** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – A project root, a package directory, or an importable name.
   * **level** ([`int`](https://docs.python.org/3/library/functions.html#int)) – The CLI tier: `0` lint only, `1` lint + parse (default),
-    `2` adds the Sphinx build. Tiers 3 and 4 belong to WP3.
+    `2` adds the Sphinx build, `3` the rendered-output checks,
+    `4` the review packet.
   * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/library/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
     overrides `level` when given.
   * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
@@ -2841,8 +3532,254 @@ Validate a package’s documentation and return a `Report`.
   * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – Path substrings to skip, as `epythet quickstart --ignore`.
   * **observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Append findings to the observations JSONL (outside the repo).
   * **observations_path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Override the observations file (tests use this).
+  * **linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 0: shell out to ruff and pydoclint (`False` keeps the
+    coverage detectors only; the fleet sweep uses it).
+  * **snapshot** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 2: diff the `-b text` render against the stored snapshots.
+  * **update_snapshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 2: re-baseline the snapshots instead of diffing.
+  * **snapshot_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Where snapshots live (default `<docsrc>/_snapshots/text`).
+  * **render_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Keep level 2’s rendered output here instead of a temp dir.
+  * **review_pages** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Level 3: `changed` (against the snapshot, else a
+    sample), `sample` or `all` pages into the packet.
+  * **review_sample** ([`int`](https://docs.python.org/3/library/functions.html#int)) – How many pages `sample` takes.
+  * **screenshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: add Playwright screenshots when it is installed.
+  * **packet_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 3: write the packet here instead of the user data dir.
+  * **review_reply** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 3: a `review.json` to ingest as level-3 findings.
 * **Return type:**
   [`Report`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Report)
+
+
+# _autosummary/epythet.validation.coverage.html.md
+
+# epythet.validation.coverage
+
+Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone.
+
+The doc-quality research (`research_doc_quality.md` §2, §6) defines what
+the fleet sweep should *queue*, as opposed to gate: a public callable with
+no docstring, an entry point with no runnable example, a summary that only
+restates the name, a parameter description that only restates the type, a
+summary written as meta-language (“This function…”). None of these needs
+ruff or pydoclint, so the sweep can run them on a checkout that has neither;
+none of them changes the exit code unless `--fail-on info` asks for it.
+
+The public surface follows the R1 decision: `__all__` is honoured where
+present, otherwise every non-underscore name; *entry points* are the names
+the package’s `__init__` binds (its `__all__`, else what it defines and
+imports), and only those owe an example.
+
+Each detector is a function `PublicObject -> list[str]` registered under
+the name a `coverage`-kind ledger rule refers to. The two text heuristics
+are the research’s, verbatim:
+
+- trivial summary: split the identifier on `snake_case`/`camelCase`,
+  split the summary on whitespace, strip stop words, crude lemmatisation;
+  flag when the summary’s content words are a subset of the name’s;
+- type restatement: flag a parameter description whose content words are a
+  subset of the annotation’s tokens (`n: int` described as “an integer”).
+
+```pycon
+>>> trivial_summary_words("load_config", "Load the config.")
+True
+>>> trivial_summary_words("load_config", "Read pyproject.toml and setup.cfg into a DocsConfig.")
+False
+```
+
+### Functions
+
+| [`annotation_words`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.annotation_words)(annotation)                       | Words a reader could use to restate an annotation: `list[int]` -> int, list, integer...             |
+|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| [`content_words`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.content_words)(text)                                | Content words of prose: lower-cased, stop words out, crudely lemmatised.                            |
+| [`coverage_detector`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.coverage_detector)(name)                            | Register a coverage detector under the name a rule's `detector.function` uses.                      |
+| [`entry_point_names`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.entry_point_names)(package_dir)                     | Names the package's `__init__` exposes: `__all__`, else what it binds without a leading underscore. |
+| [`entry_point_without_example`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.entry_point_without_example)(obj)                   | An entry point (bound by the package `__init__`) whose docstring has no `>>>` (DQ002).              |
+| [`evaluate_coverage_rule`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.evaluate_coverage_rule)(rule, obj)                  | Run one `coverage`-kind rule over one public object.                                                |
+| [`iter_coverage_cases`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.iter_coverage_cases)(fixture_path)                  | The tagged specimens of a coverage fixture (a specimen may have no docstring at all).               |
+| [`iter_public_objects`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.iter_public_objects)(package_dir, \*[, ...])        | Every public module, class and function under `package_dir`.                                        |
+| [`meta_language_summary`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.meta_language_summary)(obj)                         | A summary that talks about the object instead of saying what it does (DQ005).                       |
+| [`missing_docstring`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.missing_docstring)(obj)                             | A public module, class or function with no docstring at all (DQ001).                                |
+| [`name_words`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.name_words)(identifier)                             | Content words of an identifier: `load_config` -> `{"load", "config"}`.                              |
+| [`param_descriptions`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.param_descriptions)(docstring)                      | `{name: description}` from an RST, Google or NumPy docstring, first line plus continuations.        |
+| [`restates_type`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.restates_type)(param)                               | Whether a parameter's description only restates its annotation.                                     |
+| [`run_coverage_level`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.run_coverage_level)(package_dir, ledger, \*[, ...]) | Level 0 coverage: `(findings, objects_checked, objects_undocumented)`.                              |
+| [`trivial_summary`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.trivial_summary)(obj)                               | A summary whose content words all come from the object's name (DQ003).                              |
+| [`trivial_summary_words`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.trivial_summary_words)(identifier, summary)         | Whether the summary's content words are all in the identifier's (the *lazy* smell).                 |
+| [`type_restatement`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.type_restatement)(obj)                              | A parameter description that only restates the annotation (DQ004).                                  |
+
+### Classes
+
+| [`CoverageCase`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.CoverageCase)(name, line, expect_hit, ...)     | One tagged specimen of a coverage fixture: the object and what the tag promises.   |
+|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [`Param`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.Param)(name[, annotation, description])        | A signature parameter and, if the docstring describes it, that description.        |
+| [`PublicObject`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.PublicObject)(qualname, kind, file, line, ...) | One public module, class or function, with what a detector needs to judge it.      |
+
+### *class* epythet.validation.coverage.CoverageCase(name, line, expect_hit, rule_ids, object)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One tagged specimen of a coverage fixture: the object and what the tag promises.
+
+### *class* epythet.validation.coverage.Param(name, annotation=None, description=None)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+A signature parameter and, if the docstring describes it, that description.
+
+### *class* epythet.validation.coverage.PublicObject(qualname, kind, file, line, docstring, params=<factory>, is_entry_point=False, name='')
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One public module, class or function, with what a detector needs to judge it.
+
+#### *property* summary *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+
+The first non-blank line of the docstring, or `""`.
+
+### epythet.validation.coverage.annotation_words(annotation)
+
+Words a reader could use to restate an annotation: `list[int]` -> int, list, integer…
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.content_words(text)
+
+Content words of prose: lower-cased, stop words out, crudely lemmatised.
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.coverage_detector(name)
+
+Register a coverage detector under the name a rule’s `detector.function` uses.
+
+### epythet.validation.coverage.entry_point_names(package_dir)
+
+Names the package’s `__init__` exposes: `__all__`, else what it binds without a leading underscore.
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.entry_point_without_example(obj)
+
+An entry point (bound by the package `__init__`) whose docstring has no `>>>` (DQ002).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.evaluate_coverage_rule(rule, obj)
+
+Run one `coverage`-kind rule over one public object.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.iter_coverage_cases(fixture_path)
+
+The tagged specimens of a coverage fixture (a specimen may have no docstring at all).
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`CoverageCase`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.CoverageCase)]
+
+### epythet.validation.coverage.iter_public_objects(package_dir, , ignore=(), files=None, all_entry_points=False)
+
+Every public module, class and function under `package_dir`.
+
+Public means no leading underscore anywhere in the dotted name below the
+package; a module’s `__all__`, when present, narrows its public names.
+`all_entry_points` treats every top-level name as an entry point (rule
+fixtures use it: they have no package `__init__`).
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`PublicObject`](_autosummary/epythet.validation.coverage.html.md#epythet.validation.coverage.PublicObject)]
+
+### epythet.validation.coverage.meta_language_summary(obj)
+
+A summary that talks about the object instead of saying what it does (DQ005).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.missing_docstring(obj)
+
+A public module, class or function with no docstring at all (DQ001).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.name_words(identifier)
+
+Content words of an identifier: `load_config` -> `{"load", "config"}`.
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+```pycon
+>>> sorted(name_words("DocsConfig")), sorted(name_words("mk_parser"))
+(['config', 'doc'], ['mk', 'parser'])
+```
+
+### epythet.validation.coverage.param_descriptions(docstring)
+
+`{name: description}` from an RST, Google or NumPy docstring, first line plus continuations.
+
+Deliberately not delegated to `docstring_parser` (an optional extra):
+a detector’s verdict must not depend on what is installed.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+```pycon
+>>> param_descriptions(":param n: how many\n    retries\n:param delay: seconds")
+{'n': 'how many retries', 'delay': 'seconds'}
+>>> param_descriptions("Args:\n    n (int): how many\n    delay: seconds\n\nReturns:\n    x")
+{'n': 'how many', 'delay': 'seconds'}
+>>> param_descriptions("Parameters\n----------\nn : int\n    how many\ndelay\n    seconds\n\nReturns\n-------")
+{'n': 'how many', 'delay': 'seconds'}
+```
+
+### epythet.validation.coverage.restates_type(param)
+
+Whether a parameter’s description only restates its annotation.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+
+```pycon
+>>> restates_type(Param("n", "int", "an integer"))
+True
+>>> restates_type(Param("n", "int", "how many retries before giving up"))
+False
+>>> restates_type(Param("n", None, "an integer"))
+False
+```
+
+### epythet.validation.coverage.run_coverage_level(package_dir, ledger, , ignore=())
+
+Level 0 coverage: `(findings, objects_checked, objects_undocumented)`.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)], [`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int)]
+
+### epythet.validation.coverage.trivial_summary(obj)
+
+A summary whose content words all come from the object’s name (DQ003).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.coverage.trivial_summary_words(identifier, summary)
+
+Whether the summary’s content words are all in the identifier’s (the *lazy* smell).
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+
+### epythet.validation.coverage.type_restatement(obj)
+
+A parameter description that only restates the annotation (DQ004).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
 
 
 # _autosummary/epythet.validation.detectors.html.md
@@ -3092,10 +4029,11 @@ Every `.py` in the package tree, skipping caches, non-package dirs and `ignore` 
 
 `epythet validate`: tiered documentation validation with a growing artifact ledger.
 
-Levels 0 (lint), 0.5 (parse) and 1 (build) live here; levels 2 and 3 are
-reserved for a later work package. The ledger of known rendering artifacts is
-under `epythet/ledger/rules` (one YAML per rule with a sibling `.py`
-fixture); observations from real runs are appended outside the repository.
+Levels 0 (lint and coverage), 0.5 (parse), 1 (build), 2 (render) and 3
+(review packet) live here. The ledger of known rendering artifacts is under
+`epythet/ledger/rules` (one YAML per rule with a sibling `.py` fixture);
+observations from real runs are appended outside the repository, and rules a
+reviewer proposes go to an overlay there too (`epythet ledger propose`).
 
 ```pycon
 >>> from epythet.validation import validate
@@ -3106,16 +4044,20 @@ fixture); observations from real runs are appended outside the repository.
 
 ### Modules
 
-| [`build`](_autosummary/epythet.validation.build.html.md#module-epythet.validation.build)              | Level 1: run the documentation build and turn its warning stream into findings.       |
-|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| [`cli`](_autosummary/epythet.validation.cli.html.md#module-epythet.validation.cli)                  | The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`. |
-| [`core`](_autosummary/epythet.validation.core.html.md#module-epythet.validation.core)                | The `validate` orchestrator: resolve the package, run the levels, build the report.   |
-| [`detectors`](_autosummary/epythet.validation.detectors.html.md#module-epythet.validation.detectors)      | Named doctree detectors, referenced from ledger rules by `detector.function`.         |
-| [`docstrings`](_autosummary/epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)    | Docstring extraction from Python source, without importing anything.                  |
-| [`lint`](_autosummary/epythet.validation.lint.html.md#module-epythet.validation.lint)                | Level 0: static docstring linters, normalised into the finding model.                 |
-| [`model`](_autosummary/epythet.validation.model.html.md#module-epythet.validation.model)              | The finding and report model shared by every level of `epythet validate`.             |
-| [`parse`](_autosummary/epythet.validation.parse.html.md#module-epythet.validation.parse)              | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.    |
-| [`render`](_autosummary/epythet.validation.render.html.md#epythet.validation.render)(report[, format]) | Render with the named format (`table`, `json` or `jsonl`).                            |
+| [`build`](_autosummary/epythet.validation.build.html.md#module-epythet.validation.build)                                 | Level 1: run the documentation build and turn its warning stream into findings.        |
+|------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`cli`](_autosummary/epythet.validation.cli.html.md#module-epythet.validation.cli)                                     | The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`.  |
+| [`core`](_autosummary/epythet.validation.core.html.md#module-epythet.validation.core)                                   | The `validate` orchestrator: resolve the package, run the levels, build the report.    |
+| [`coverage`](_autosummary/epythet.validation.coverage.html.md#module-epythet.validation.coverage)                           | Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone. |
+| [`detectors`](_autosummary/epythet.validation.detectors.html.md#module-epythet.validation.detectors)                         | Named doctree detectors, referenced from ledger rules by `detector.function`.          |
+| [`docstrings`](_autosummary/epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)                       | Docstring extraction from Python source, without importing anything.                   |
+| [`lint`](_autosummary/epythet.validation.lint.html.md#module-epythet.validation.lint)                                   | Level 0: static docstring linters, normalised into the finding model.                  |
+| [`model`](_autosummary/epythet.validation.model.html.md#module-epythet.validation.model)                                 | The finding and report model shared by every level of `epythet validate`.              |
+| [`parse`](_autosummary/epythet.validation.parse.html.md#module-epythet.validation.parse)                                 | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.     |
+| [`propose`](_autosummary/epythet.validation.propose.html.md#epythet.validation.propose)(reply_path, \*[, overlay, ledger]) | Write every `proposed_rules` entry of a reply into `overlay` as a proposed rule.       |
+| [`render`](_autosummary/epythet.validation.render.html.md#epythet.validation.render)(report[, format])                    | Render with the named format (`table`, `json` or `jsonl`).                             |
+| [`rendered`](_autosummary/epythet.validation.rendered.html.md#module-epythet.validation.rendered)                           | Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.   |
+| [`review`](_autosummary/epythet.validation.review.html.md#module-epythet.validation.review)                               | Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.    |
 
 
 # _autosummary/epythet.validation.lint.html.md
@@ -3229,8 +4171,8 @@ Levels are named by *what artifact they read*, not by when they run:
 |     0   | lint   | the source text of each docstring (ruff, pydoclint)   |
 |     0.5 | parse  | the docutils doctree of each docstring, in isolation  |
 |     1   | build  | the Sphinx warning stream                             |
-|     2   | render | the built output (owned by WP3, not implemented here) |
-|     3   | review | an LLM review of rendered pages (WP3, never gates)    |
+|     2   | render | the built output: XML, HTML and text pages            |
+|     3   | review | a review packet for an in-session agent (never gates) |
 
 The CLI exposes them as a *tier index* (`--level 0` runs level 0,
 `--level 1` runs levels 0 and 0.5, `--level 2` adds the build), which is
@@ -3238,13 +4180,15 @@ what [`TIERS`](_autosummary/epythet.validation.model.html.md#epythet.validation.
 
 ### Module Attributes
 
-| [`SEVERITY_RANK`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.SEVERITY_RANK)      | Lower rank is worse.                                                       |
-|---------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`LEVELS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.LEVELS)             | Level number -> level name, in run order.                                  |
-| [`TIERS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.TIERS)              | Run order of the levels; index into this list is the CLI `--level` tier.   |
-| [`IMPLEMENTED_TIERS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.IMPLEMENTED_TIERS)  | Tiers this work package implements.                                        |
-| [`IMPLEMENTED_LEVELS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.IMPLEMENTED_LEVELS) | The levels those tiers run.                                                |
-| [`EXIT_FOR_LEVEL`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.EXIT_FOR_LEVEL)     | Level -> exit code when that level has findings at or above the threshold. |
+| [`SEVERITY_RANK`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.SEVERITY_RANK)      | Lower rank is worse.                                                                    |
+|---------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [`LEVELS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.LEVELS)             | Level number -> level name, in run order.                                               |
+| [`TIERS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.TIERS)              | Run order of the levels; index into this list is the CLI `--level` tier.                |
+| [`IMPLEMENTED_TIERS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.IMPLEMENTED_TIERS)  | 0 lint, 1 parse, 2 build, 3 render, 4 review.                                           |
+| [`IMPLEMENTED_LEVELS`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.IMPLEMENTED_LEVELS) | The levels those tiers run.                                                             |
+| [`REVIEW_LEVEL`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.REVIEW_LEVEL)       | The review level never gates unless the caller asks for it (decision D8).               |
+| [`REVIEW_PACKET_RULE`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.REVIEW_PACKET_RULE) | The one level-3 finding every packet run emits; "a packet was written" is not a defect. |
+| [`EXIT_FOR_LEVEL`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.EXIT_FOR_LEVEL)     | Level -> exit code when that level has findings at or above the threshold.              |
 
 ### Functions
 
@@ -3286,17 +4230,28 @@ JSON-ready dict; the JSON and JSONL renderers emit exactly this.
 * **Return type:**
   [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
-### epythet.validation.model.IMPLEMENTED_LEVELS *= (0, 0.5, 1)*
+### epythet.validation.model.IMPLEMENTED_LEVELS *= (0, 0.5, 1, 2, 3)*
 
 The levels those tiers run.
 
-### epythet.validation.model.IMPLEMENTED_TIERS *= (0, 1, 2)*
+### epythet.validation.model.IMPLEMENTED_TIERS *= (0, 1, 2, 3, 4)*
 
-Tiers this work package implements. Tiers 3 and 4 (levels 2 and 3) are WP3.
+0 lint, 1 parse, 2 build, 3 render, 4 review.
+
+* **Type:**
+  Every CLI tier is implemented
 
 ### epythet.validation.model.LEVELS *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[float](https://docs.python.org/3/library/functions.html#float), [str](https://docs.python.org/3/library/stdtypes.html#str)]* *= {0: 'lint', 0.5: 'parse', 1: 'build', 2: 'render', 3: 'review'}*
 
 Level number -> level name, in run order.
+
+### epythet.validation.model.REVIEW_LEVEL *= 3*
+
+The review level never gates unless the caller asks for it (decision D8).
+
+### epythet.validation.model.REVIEW_PACKET_RULE *= 'REVIEW'*
+
+The one level-3 finding every packet run emits; “a packet was written” is not a defect.
 
 ### *class* epythet.validation.model.Report(package, package_dir, levels_run, findings=<factory>, durations=<factory>, objects_checked=0, objects_undocumented=0, notes=<factory>, epythet_version=None, sphinx_version=None, docutils_version=None, ledger_sources=<factory>, schema_version='1')
 
@@ -3311,7 +4266,7 @@ Everything one `validate` run produced, plus enough context to reproduce it.
 * **Return type:**
   [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`int`](https://docs.python.org/3/library/functions.html#int)]
 
-#### exit_code(fail_on='error')
+#### exit_code(fail_on='error', , fail_on_review=False)
 
 The process exit code: `0` when clean, else the code of the first failing level.
 
@@ -3331,11 +4286,22 @@ gate a CI pipeline would have stopped at.
 >>> r.findings.append(Finding("D102", "warning", 0, "missing"))
 >>> r.exit_code(), r.exit_code("warning")
 (11, 10)
+>>> r = Report("p", "/p", [3], [Finding("REVIEW", "info", 3, "packet")])
+>>> r.exit_code(fail_on_review=True)
+0
+>>> r.findings.append(Finding("DR001", "warning", 3, "reviewer said so"))
+>>> r.exit_code(), r.exit_code(fail_on_review=True)
+(0, 14)
 ```
 
-#### failing_levels(fail_on='error')
+#### failing_levels(fail_on='error', , fail_on_review=False)
 
 Levels with at least one finding at or above `fail_on`, in run order.
+
+Level 3 (review) never counts unless `fail_on_review` is set, and
+then any finding a reviewer’s reply produced counts whatever its
+severity (the “packet written” finding never does): a review
+proposes, it does not gate (decision D8).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`float`](https://docs.python.org/3/library/functions.html#float)]
@@ -3553,6 +4519,18 @@ Whether `sphinx.ext.napoleon` can be imported.
   [`bool`](https://docs.python.org/3/library/functions.html#bool)
 
 
+# _autosummary/epythet.validation.propose.html.md
+
+# epythet.validation.propose
+
+### epythet.validation.propose(reply_path, , overlay=None, ledger=None)
+
+Write every `proposed_rules` entry of a reply into `overlay` as a proposed rule.
+
+* **Return type:**
+  `ProposalResult`
+
+
 # _autosummary/epythet.validation.render.html.md
 
 # epythet.validation.render
@@ -3563,6 +4541,388 @@ Render with the named format (`table`, `json` or `jsonl`).
 
 * **Return type:**
   [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+
+# _autosummary/epythet.validation.rendered.html.md
+
+# epythet.validation.rendered
+
+Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.
+
+A strict build is silent about most of what a reader sees wrong (research
+§2.2): an object listed with no description, a cross-reference that rendered
+as plain code, a link to an anchor Sphinx pruned, an image that is not in the
+built tree. This level renders three builders through the `backend=` seam
+([`render()`](_autosummary/epythet.validation.build.html.md#epythet.validation.build.SphinxBackend.render)) and reads each for
+what it shows best (research §5.4):
+
+- `xml` for structure: empty object descriptions and unresolved
+  cross-references (a `literal` with class `xref` that no `reference`
+  wraps, detectable without `-n`);
+- `html` for links and assets: dangling `#idN` anchors and `<img src>`
+  that resolve to nothing in the built tree;
+- `text` for snapshots: a 4 KB page that keeps every text-leak artifact
+  verbatim and none of the theme, diffed against `docsrc/_snapshots/text`
+  when `snapshot=True`.
+
+Only the standard library parses the output (`xml.etree` and `html.parser`):
+the pages are Sphinx’s own, not untrusted input. Snapshots are opt-in and
+off by default; `update_snapshots=True` re-baselines.
+
+```pycon
+>>> from epythet.validation.rendered import dangling_anchors
+>>> dangling_anchors('<a id="x"></a><a href="#x">ok</a><a href="#id7">gone</a>')
+['#id7']
+```
+
+### Module Attributes
+
+| [`SNAPSHOT_DIRNAME`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.SNAPSHOT_DIRNAME)   | Where `-b text` snapshots live, relative to the Sphinx source directory.     |
+|---------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`EMPTY_DESCRIPTION`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.EMPTY_DESCRIPTION)  | Rule ids this level reports under (all bundled; see `epythet/ledger/rules`). |
+| [`RenderDetector`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderDetector)     | A detector takes `{builder: outdir}` and the Sphinx source dir.              |
+| [`RENDER_DETECTORS`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RENDER_DETECTORS)   | Detector name (as in a rule's `detector.function`) -> function.              |
+
+### Functions
+
+| [`changed_pages`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.changed_pages)(diff)                            | Pages level 3 should review: changed or new relative to the snapshot.                 |
+|-------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`compare_snapshots`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.compare_snapshots)(text_dir, snapshot_dir)      | Diff every rendered text page against its stored snapshot.                            |
+| [`dangling_anchors`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.dangling_anchors)(html)                         | Fragment links on a page whose target id does not exist on that page.                 |
+| [`dangling_anchors_detector`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.dangling_anchors_detector)(outdirs, \_docsrc)   | Level-2 detector over the `html` output (DR027).                                      |
+| [`empty_descriptions`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.empty_descriptions)(outdirs, \_docsrc)          | Level-2 detector over the `xml` output (DR026).                                       |
+| [`empty_descriptions_in`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.empty_descriptions_in)(root)                    | Objects the page lists or describes with no text at all.                              |
+| [`missing_images`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.missing_images)(html, \*, page_dir)             | `<img src>` values that resolve to no file next to the page.                          |
+| [`missing_images_detector`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.missing_images_detector)(outdirs, \_docsrc)     | Level-2 detector over the `html` output (DR024 at level 2).                           |
+| [`render_detector`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.render_detector)(name)                          | Register a level-2 detector; the ledger loader validates `html` rules against it.     |
+| [`render_findings`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.render_findings)(outdirs, ledger, \*, docsrc)   | Run every `html`-kind rule of the ledger over the rendered output.                    |
+| [`run_render_level`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.run_render_level)(project_dir, ledger, \*, ...) | Level 2: render html, text and xml into `outdir` and read them.                       |
+| [`snapshot_findings`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.snapshot_findings)(diff, ledger)                | One DR035 finding per changed page, plus info findings for new and removed pages.     |
+| [`text_snapshots_detector`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.text_snapshots_detector)(_outdirs, \_docsrc)    | DR035's detector is the snapshot diff, driven by `snapshot=`; nothing to scan here.   |
+| [`unresolved_xrefs`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.unresolved_xrefs)(outdirs, \_docsrc)            | Level-2 detector over the `xml` output (DR023 at level 2).                            |
+| [`unresolved_xrefs_in`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.unresolved_xrefs_in)(root)                      | Cross-references that rendered as plain code: an `xref` literal no `reference` wraps. |
+| [`update_snapshots`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.update_snapshots)(text_dir, snapshot_dir)       | Replace the stored snapshots with the current render; returns pages written.          |
+
+### Classes
+
+| [`RenderArtifacts`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderArtifacts)([outdirs, docsrc, snapshot])      | What level 2 leaves behind for level 3: output dirs and the snapshot diff.   |
+|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)(page, evidence[, object])               | One thing a render detector found on one page.                               |
+| [`SnapshotDiff`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.SnapshotDiff)([changed, added, removed, compared]) | How the `-b text` render compares with the stored snapshots.                 |
+
+### epythet.validation.rendered.EMPTY_DESCRIPTION *= 'DR026'*
+
+Rule ids this level reports under (all bundled; see `epythet/ledger/rules`).
+
+### epythet.validation.rendered.RENDER_DETECTORS *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [list](https://docs.python.org/3/library/stdtypes.html#list)[[RenderHit](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]]]* *= {'dangling_anchors': <function dangling_anchors_detector>, 'empty_descriptions': <function empty_descriptions>, 'missing_images': <function missing_images_detector>, 'text_snapshots': <function text_snapshots_detector>, 'unresolved_xrefs': <function unresolved_xrefs>}*
+
+Detector name (as in a rule’s `detector.function`) -> function.
+
+### *class* epythet.validation.rendered.RenderArtifacts(outdirs=<factory>, docsrc=None, snapshot=None)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+What level 2 leaves behind for level 3: output dirs and the snapshot diff.
+
+### epythet.validation.rendered.RenderDetector
+
+A detector takes `{builder: outdir}` and the Sphinx source dir.
+
+alias of `Callable`[[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]]
+
+### *class* epythet.validation.rendered.RenderHit(page, evidence, object=None)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One thing a render detector found on one page.
+
+### epythet.validation.rendered.SNAPSHOT_DIRNAME *= '_snapshots/text'*
+
+Where `-b text` snapshots live, relative to the Sphinx source directory.
+
+### *class* epythet.validation.rendered.SnapshotDiff(changed=<factory>, added=<factory>, removed=<factory>, compared=0)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+How the `-b text` render compares with the stored snapshots.
+
+### epythet.validation.rendered.changed_pages(diff)
+
+Pages level 3 should review: changed or new relative to the snapshot.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.rendered.compare_snapshots(text_dir, snapshot_dir)
+
+Diff every rendered text page against its stored snapshot.
+
+* **Return type:**
+  [`SnapshotDiff`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.SnapshotDiff)
+
+### epythet.validation.rendered.dangling_anchors(html)
+
+Fragment links on a page whose target id does not exist on that page.
+
+This is the research’s exact detector (§6.3): every `problematic` span
+Sphinx emits links to a `#idN` system message it then prunes, and a
+hand-written `:ref:` to a missing label ends the same way.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.rendered.dangling_anchors_detector(outdirs, \_docsrc)
+
+Level-2 detector over the `html` output (DR027).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.empty_descriptions(outdirs, \_docsrc)
+
+Level-2 detector over the `xml` output (DR026).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.empty_descriptions_in(root)
+
+Objects the page lists or describes with no text at all.
+
+Two shapes: a `desc` whose `desc_content` holds nothing but generated
+paragraphs, index entries and nested objects; and an autosummary row
+whose summary cell is an empty paragraph (autodoc leaves undocumented
+members out of the page entirely, so the table row is all a reader sees).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.missing_images(html, , page_dir)
+
+`<img src>` values that resolve to no file next to the page.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+### epythet.validation.rendered.missing_images_detector(outdirs, \_docsrc)
+
+Level-2 detector over the `html` output (DR024 at level 2).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.render_detector(name)
+
+Register a level-2 detector; the ledger loader validates `html` rules against it.
+
+### epythet.validation.rendered.render_findings(outdirs, ledger, , docsrc)
+
+Run every `html`-kind rule of the ledger over the rendered output.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)]
+
+### epythet.validation.rendered.run_render_level(project_dir, ledger, , backend, outdir, snapshot=False, update=False, snapshot_dir=None)
+
+Level 2: render html, text and xml into `outdir` and read them.
+
+Returns `(findings, notes, artifacts)`; the artifacts hand level 3 the
+output directories and the snapshot diff so it never builds again.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)], [`RenderArtifacts`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderArtifacts)]
+
+### epythet.validation.rendered.snapshot_findings(diff, ledger)
+
+One DR035 finding per changed page, plus info findings for new and removed pages.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)]
+
+### epythet.validation.rendered.text_snapshots_detector(\_outdirs, \_docsrc)
+
+DR035’s detector is the snapshot diff, driven by `snapshot=`; nothing to scan here.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.unresolved_xrefs(outdirs, \_docsrc)
+
+Level-2 detector over the `xml` output (DR023 at level 2).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.unresolved_xrefs_in(root)
+
+Cross-references that rendered as plain code: an `xref` literal no `reference` wraps.
+
+Autosummary rows are left out: an unwrapped name there means an
+undocumented object (reported by [`empty_descriptions_in()`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.empty_descriptions_in)), not a
+bad target.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](_autosummary/epythet.validation.rendered.html.md#epythet.validation.rendered.RenderHit)]
+
+### epythet.validation.rendered.update_snapshots(text_dir, snapshot_dir)
+
+Replace the stored snapshots with the current render; returns pages written.
+
+* **Return type:**
+  [`int`](https://docs.python.org/3/library/functions.html#int)
+
+
+# _autosummary/epythet.validation.review.html.md
+
+# epythet.validation.review
+
+Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.
+
+Level 3 never calls a model itself and never gates (decision D8; research
+§7.3). It packs what a reviewer needs into one directory under the user data
+dir and stops:
+
+- `pages/<docname>.txt`: the `-b text` render of the pages to review
+  (changed against the snapshot when there is one, else a sample), which is
+  about nine times fewer tokens than the HTML (research §7.3);
+- `screenshots/<docname>.png`: optional, when Playwright is installed and
+  `screenshots=True`;
+- `rubric.md`: the six-dimension rubric, the ledger’s rule ids for
+  grounding, and the review controls;
+- `schema.json`: the strict JSON schema the reply must satisfy;
+- `packet.json`: the manifest (package, version, pages, prompt hash).
+
+An agent (through a skill; the maintainer’s decision 7) reads the packet and
+writes `review.json`. Passing that file back as `review_reply=` turns its
+`findings` into level-3 findings and leaves its `proposed_rules` for
+`epythet ledger propose`, which writes them as `status: proposed` rules
+into an overlay for a human to promote.
+
+```pycon
+>>> from epythet.validation.review import REPLY_SCHEMA
+>>> sorted(REPLY_SCHEMA["properties"])
+['findings', 'model', 'prompt_hash', 'proposed_rules', 'schema_version']
+```
+
+### Module Attributes
+
+| [`PACKET_RULE`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.PACKET_RULE)   | The rule id of the one finding a packet run always produces.    |
+|----------------------------------------------------------------|-----------------------------------------------------------------|
+| [`UNRULED`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.UNRULED)       | The rule id of a reply finding that names no ledger rule.       |
+| [`RUBRIC`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.RUBRIC)        | The six dimensions of research_doc_quality §3, scored 0-3 each. |
+
+### Functions
+
+| [`load_reply`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.load_reply)(path)                                   | Read and validate a `review.json`.                                                                         |
+|-----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| [`reply_findings`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.reply_findings)(reply, ledger, \*[, source])        | Turn a reply's `findings` into level-3 findings (informational by construction).                           |
+| [`reviews_dir`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.reviews_dir)()                                      | `<user data dir>/review`: one subdirectory per package, one per run below it.                              |
+| [`rubric_text`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.rubric_text)(ledger)                                | The rubric with the ledger's rule ids appended, so replies can name them.                                  |
+| [`run_review_level`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.run_review_level)(\*, package, ...[, changed, ...]) | Level 3: write the packet, then ingest `reply` when one is given.                                          |
+| [`select_pages`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.select_pages)(available, \*[, mode, changed, ...])  | Which pages go into the packet.                                                                            |
+| [`validate_reply`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.validate_reply)(reply)                              | Raise [`ReplyError`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.ReplyError) unless `reply` satisfies `REPLY_SCHEMA`. |
+| [`write_packet`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.write_packet)(\*, package, package_version, ...)    | Write a review packet and return where it is.                                                              |
+
+### Classes
+
+| [`ReviewPacket`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.ReviewPacket)(path[, pages, screenshots, ...])   | Where a packet was written and what went into it.   |
+|--------------------------------------------------------------------------------------------------|-----------------------------------------------------|
+
+### Exceptions
+
+| [`ReplyError`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.ReplyError)   | A review reply is not valid against `REPLY_SCHEMA`.   |
+|---------------------------------------------------------------|-------------------------------------------------------|
+
+### epythet.validation.review.PACKET_RULE *= 'REVIEW'*
+
+The rule id of the one finding a packet run always produces.
+
+### epythet.validation.review.RUBRIC *= '# Review rubric\\n\\nScore each documented object on the page 0-3 on the six dimensions below.\\nOnly report an object whose score is 0 or 1 on a dimension, or whose page\\nshows a rendering artifact. Never report a style preference.\\n\\n| Dimension | 0 | 1 | 2 | 3 |\\n|---|---|---|---|---|\\n| A. Summary | absent | restates the name, or meta-language ("This function...") | one verb-first sentence saying what it does | also implies when to reach for it and disambiguates siblings |\\n| B. Parameter and return semantics | absent | descriptions restate the type | meaning, units, default behaviour | plus interactions, ranges, what the return is keyed or ordered by |\\n| C. Example presence and runnability | none | present but not runnable (pseudo-code, \`...\`, no output) | one runnable doctest for the common case | plus a variation or edge case; deterministic |\\n| D. Failure modes | nothing | exceptions named without cause | each exception paired with its trigger | plus non-exception failure modes |\\n| E. Cross-references and orientation | none | related name in prose | See Also with 1-3 adjacent callables and why | plus when \*not\* to use |\\n| F. Module orientation (per module) | none | one line restating the name | purpose and named entry points | plus a minimal example and the relation to the package |\\n\\n# What to look for first (research_doc_quality §4.3)\\n\\n1. Runnable examples. 2. Correctness of every claim (ranks above completeness).\\n3. A precise, disambiguating one-line summary. 4. Parameter \*semantics\*, not types.\\n5. Failure modes. 6. When to use and when not. 7. Consistent terminology.\\n8. Cross-references, one to three, with reasons.\\n\\n# Rendering artifacts\\n\\nA \`-b text\` page keeps text leaks verbatim: a \`:param x:\` in running prose,\\na \`>>>\` inside a paragraph, a literal \`\`\`\` \`\`\` \`\`\`\` fence, \`\*args\` opening\\nan emphasis, a \`##\` heading, a \`[text](url)\` link. Each of those is a ledger\\nrule (below). Name the rule id when one fits; otherwise mark the finding\\n\`proposed\` and draft a rule under \`proposed_rules\`.\\n\\n# Controls\\n\\n- You are proposing, not gating: nothing here fails a build.\\n- Report only what is stable: re-read the page in a different order and keep\\n  the findings you would make both times.\\n- Name a \`rule\` from the list below, or write \`proposed\` and fill in\\n  \`proposed_rules\` with a detector a machine can run (a regex over the\\n  docstring text, or a doctree/html detector name), an \`example_bad\` and an\\n  \`example_good\` docstring, a \`message\` and a \`fix\` hint.\\n- Never invent behaviour: a claim about what code does must come from the\\n  code or its tests, and an example must have been executed.\\n- Put the model name in \`model\` and the packet\\'s \`prompt_hash\` in the reply.\\n\\n# Ledger rules you may name\\n'*
+
+The six dimensions of research_doc_quality §3, scored 0-3 each.
+
+### *exception* epythet.validation.review.ReplyError
+
+Bases: [`ValueError`](https://docs.python.org/3/library/exceptions.html#ValueError)
+
+A review reply is not valid against `REPLY_SCHEMA`.
+
+### *class* epythet.validation.review.ReviewPacket(path, pages=<factory>, screenshots=<factory>, prompt_hash='', notes=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+Where a packet was written and what went into it.
+
+### epythet.validation.review.UNRULED *= 'REVIEW-PROPOSED'*
+
+The rule id of a reply finding that names no ledger rule.
+
+### epythet.validation.review.load_reply(path)
+
+Read and validate a `review.json`.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+
+### epythet.validation.review.reply_findings(reply, ledger, , source='')
+
+Turn a reply’s `findings` into level-3 findings (informational by construction).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)]
+
+### epythet.validation.review.reviews_dir()
+
+`<user data dir>/review`: one subdirectory per package, one per run below it.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### epythet.validation.review.rubric_text(ledger)
+
+The rubric with the ledger’s rule ids appended, so replies can name them.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.validation.review.run_review_level(, package, package_version, outdirs, ledger, changed=None, mode='changed', sample=8, screenshots=False, packet_dir=None, reply=None)
+
+Level 3: write the packet, then ingest `reply` when one is given.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]
+
+### epythet.validation.review.select_pages(available, , mode='changed', changed=None, sample=8)
+
+Which pages go into the packet.
+
+`changed` mode uses the snapshot diff when there is one and falls back
+to `sample` (the first `sample` API pages, index first) otherwise;
+`all` takes every page.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+
+```pycon
+>>> select_pages(["index", "api", "_autosummary/p", "_autosummary/p.m"], mode="sample", sample=2)
+['index', '_autosummary/p']
+>>> select_pages(["index", "a"], mode="changed", changed=["a"])
+['a']
+```
+
+### epythet.validation.review.validate_reply(reply)
+
+Raise [`ReplyError`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.ReplyError) unless `reply` satisfies `REPLY_SCHEMA`.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/library/constants.html#None)
+
+### epythet.validation.review.write_packet(, package, package_version, outdirs, ledger, changed=None, mode='changed', sample=8, screenshots=False, packet_dir=None)
+
+Write a review packet and return where it is.
+
+* **Return type:**
+  [`ReviewPacket`](_autosummary/epythet.validation.review.html.md#epythet.validation.review.ReviewPacket)
 
 
 # ai-agents.html.md

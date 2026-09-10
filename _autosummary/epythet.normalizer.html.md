@@ -174,7 +174,8 @@ Extend a title underline that is shorter than its title.
 
 Expand `Returns: text` (and other one-line sections) into real sections.
 
-Continuation lines at the same indentation are folded into the section body.
+Continuation lines at the same indentation are folded into the section body;
+a Markdown heading or another section ends it.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
@@ -182,6 +183,8 @@ Continuation lines at the same indentation are folded into the section body.
 ```pycon
 >>> normalize_text("Returns: a thing that\nspans two lines.\n\nNext.", rules=[google_one_liners])
 'Returns:\n    a thing that\n    spans two lines.\n\nNext.'
+>>> normalize_text("Returns: a thing.\n## Notes\nText.", rules=[google_one_liners])
+'Returns:\n    a thing.\n\n## Notes\nText.'
 ```
 
 ### epythet.normalizer.indent_of(line)

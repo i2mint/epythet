@@ -210,11 +210,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,12 +229,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -287,8 +294,8 @@
 <span class="sd">0      lint     the source text of each docstring (ruff, pydoclint)</span>
 <span class="sd">0.5    parse    the docutils doctree of each docstring, in isolation</span>
 <span class="sd">1      build    the Sphinx warning stream</span>
-<span class="sd">2      render   the built output (owned by WP3, not implemented here)</span>
-<span class="sd">3      review   an LLM review of rendered pages (WP3, never gates)</span>
+<span class="sd">2      render   the built output: XML, HTML and text pages</span>
+<span class="sd">3      review   a review packet for an in-session agent (never gates)</span>
 <span class="sd">=====  =======  ==================================================</span>
 
 <span class="sd">The CLI exposes them as a *tier index* (``--level 0`` runs level 0,</span>
@@ -318,10 +325,14 @@
 <span class="p">}</span>
 <span class="c1">#: Run order of the levels; index into this list is the CLI ``--level`` tier.</span>
 <span class="n">TIERS</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">LEVELS</span><span class="p">)</span>
-<span class="c1">#: Tiers this work package implements. Tiers 3 and 4 (levels 2 and 3) are WP3.</span>
-<span class="n">IMPLEMENTED_TIERS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">#: Every CLI tier is implemented: 0 lint, 1 parse, 2 build, 3 render, 4 review.</span>
+<span class="n">IMPLEMENTED_TIERS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="c1">#: The levels those tiers run.</span>
-<span class="n">IMPLEMENTED_LEVELS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">IMPLEMENTED_LEVELS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="c1">#: The review level never gates unless the caller asks for it (decision D8).</span>
+<span class="n">REVIEW_LEVEL</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="c1">#: The one level-3 finding every packet run emits; "a packet was written" is not a defect.</span>
+<span class="n">REVIEW_PACKET_RULE</span> <span class="o">=</span> <span class="s2">"REVIEW"</span>
 
 <span class="n">EXIT_OK</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">EXIT_INTERNAL</span> <span class="o">=</span> <span class="mi">1</span>
@@ -471,19 +482,34 @@
 
 <div class="viewcode-block" id="Report.failing_levels">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.model.html#epythet.validation.model.Report.failing_levels">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">failing_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"error"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Levels with at least one finding at or above ``fail_on``, in run order."""</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">failing_levels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"error"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fail_on_review</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Levels with at least one finding at or above ``fail_on``, in run order.</span>
+
+<span class="sd">        Level 3 (review) never counts unless ``fail_on_review`` is set, and</span>
+<span class="sd">        then any finding a reviewer's reply produced counts whatever its</span>
+<span class="sd">        severity (the "packet written" finding never does): a review</span>
+<span class="sd">        proposes, it does not gate (decision D8).</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">fail_on</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SEVERITY_RANK</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"fail_on must be one of </span><span class="si">{</span><span class="n">SEVERITIES</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">fail_on</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">levels</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">level</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findings</span> <span class="k">if</span> <span class="n">severity_at_or_above</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">severity</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">level</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findings</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="n">REVIEW_LEVEL</span> <span class="ow">and</span> <span class="n">severity_at_or_above</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">severity</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">)</span>
         <span class="p">}</span>
+        <span class="k">if</span> <span class="n">fail_on_review</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">REVIEW_LEVEL</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">rule</span> <span class="o">!=</span> <span class="n">REVIEW_PACKET_RULE</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findings</span>
+        <span class="p">):</span>
+            <span class="n">levels</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">REVIEW_LEVEL</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Report.exit_code">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.model.html#epythet.validation.model.Report.exit_code">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">exit_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"error"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exit_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fail_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"error"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fail_on_review</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""The process exit code: ``0`` when clean, else the code of the first failing level.</span>
 
 <span class="sd">        The *first* (lowest) failing level is reported because it is the first</span>
@@ -498,8 +524,14 @@
 <span class="sd">        &gt;&gt;&gt; r.findings.append(Finding("D102", "warning", 0, "missing"))</span>
 <span class="sd">        &gt;&gt;&gt; r.exit_code(), r.exit_code("warning")</span>
 <span class="sd">        (11, 10)</span>
+<span class="sd">        &gt;&gt;&gt; r = Report("p", "/p", [3], [Finding("REVIEW", "info", 3, "packet")])</span>
+<span class="sd">        &gt;&gt;&gt; r.exit_code(fail_on_review=True)</span>
+<span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; r.findings.append(Finding("DR001", "warning", 3, "reviewer said so"))</span>
+<span class="sd">        &gt;&gt;&gt; r.exit_code(), r.exit_code(fail_on_review=True)</span>
+<span class="sd">        (0, 14)</span>
 <span class="sd">        """</span>
-        <span class="n">failing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">failing_levels</span><span class="p">(</span><span class="n">fail_on</span><span class="p">)</span>
+        <span class="n">failing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">failing_levels</span><span class="p">(</span><span class="n">fail_on</span><span class="p">,</span> <span class="n">fail_on_review</span><span class="o">=</span><span class="n">fail_on_review</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">EXIT_FOR_LEVEL</span><span class="p">[</span><span class="n">failing</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">if</span> <span class="n">failing</span> <span class="k">else</span> <span class="n">EXIT_OK</span></div>
 </div>
 

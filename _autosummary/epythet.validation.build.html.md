@@ -22,6 +22,7 @@ rules match on, because Sphinx still has no structured warning output.
 |---------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | [`WARNINGS_ONLY_EXIT`](#epythet.validation.build.WARNINGS_ONLY_EXIT) | Sphinx's exit status when the only problem was warnings under `-W`.                                                                  |
 | [`WARNING_LINE_RE`](#epythet.validation.build.WARNING_LINE_RE)    | `path:docstring of obj:3: WARNING: message [type]` and the simpler `path:12: WARNING: message [type]` and `WARNING: message` shapes. |
+| [`RENDER_BUILDERS`](#epythet.validation.build.RENDER_BUILDERS)    | HTML for links and images, text for snapshots, XML for structure (research §5.4: text and xml are complementary).                    |
 
 ### Functions
 
@@ -35,11 +36,13 @@ rules match on, because Sphinx still has no structured warning output.
 
 ### Classes
 
-| [`BuildBackend`](#epythet.validation.build.BuildBackend)(\*args, \*\*kwargs)              | What the `backend=` seam requires: a name, versions, and the warning stream.   |
-|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`BuildResult`](#epythet.validation.build.BuildResult)(returncode[, warnings, log, ...]) | What one build produced: exit status, parsed warnings, and the raw log.        |
-| [`BuildWarning`](#epythet.validation.build.BuildWarning)(severity, message[, type, ...])  | One parsed line of the Sphinx warning stream.                                  |
-| [`SphinxBackend`](#epythet.validation.build.SphinxBackend)([sphinx_build, docsrc, ...])    | The default (and only shipped) backend: `sphinx-build -b html -W`.             |
+| [`BuildBackend`](#epythet.validation.build.BuildBackend)(\*args, \*\*kwargs)              | What the `backend=` seam requires: a name, versions, and the warning stream.     |
+|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| [`BuildResult`](#epythet.validation.build.BuildResult)(returncode[, warnings, log, ...]) | What one build produced: exit status, parsed warnings, and the raw log.          |
+| [`BuildWarning`](#epythet.validation.build.BuildWarning)(severity, message[, type, ...])  | One parsed line of the Sphinx warning stream.                                    |
+| [`RenderBackend`](#epythet.validation.build.RenderBackend)(\*args, \*\*kwargs)             | A backend that can also render several builders into a kept directory (level 2). |
+| [`RenderResult`](#epythet.validation.build.RenderResult)([outdirs, returncodes, ...])     | What a multi-builder render produced: one output directory per builder.          |
+| [`SphinxBackend`](#epythet.validation.build.SphinxBackend)([sphinx_build, docsrc, ...])    | The default (and only shipped) backend: `sphinx-build -b html -W`.               |
 
 ### *class* epythet.validation.build.BuildBackend(\*args, \*\*kwargs)
 
@@ -48,7 +51,8 @@ Bases: [`Protocol`](https://docs.python.org/3/library/typing.html#typing.Protoco
 What the `backend=` seam requires: a name, versions, and the warning stream.
 
 [`SphinxBackend`](#epythet.validation.build.SphinxBackend) is the shipped implementation; a MkDocs backend
-implements the same two methods and inherits the whole ledger.
+implements the same two methods and inherits the whole ledger. Level 2
+additionally needs [`RenderBackend`](#epythet.validation.build.RenderBackend).
 
 ### *class* epythet.validation.build.BuildResult(returncode, warnings=<factory>, log='', outdir=None, command=<factory>)
 
@@ -65,6 +69,35 @@ One parsed line of the Sphinx warning stream.
 ### epythet.validation.build.NO_DOCSRC *= -1*
 
 `BuildResult.returncode` when there is no Sphinx source directory to build.
+
+### epythet.validation.build.RENDER_BUILDERS *= ('html', 'text', 'xml')*
+
+HTML for links and images, text for snapshots,
+XML for structure (research §5.4: text and xml are complementary).
+
+* **Type:**
+  The builders level 2 reads
+
+### *class* epythet.validation.build.RenderBackend(\*args, \*\*kwargs)
+
+Bases: [`BuildBackend`](#epythet.validation.build.BuildBackend), [`Protocol`](https://docs.python.org/3/library/typing.html#typing.Protocol)
+
+A backend that can also render several builders into a kept directory (level 2).
+
+### *class* epythet.validation.build.RenderResult(outdirs=<factory>, returncodes=<factory>, warnings=<factory>, log='')
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+What a multi-builder render produced: one output directory per builder.
+
+`outdirs` maps a builder name (`html`, `text`, `xml`) to the
+directory holding its pages; a builder that failed is absent from it and
+its exit status is in `returncodes`. `warnings` is the parsed warning
+stream of the first builder (the others repeat it).
+
+#### *property* ok *: [bool](https://docs.python.org/3/library/functions.html#bool)*
+
+Whether every builder exited 0 or with warnings only.
 
 ### *class* epythet.validation.build.SphinxBackend(sphinx_build=None, docsrc=None, outdir=None, builder='html', nitpicky=False, name='sphinx')
 
@@ -85,6 +118,16 @@ removed before returning; only the parsed warnings and the log survive.
 
 * **Return type:**
   [`BuildResult`](#epythet.validation.build.BuildResult)
+
+#### render(project_dir, , builders=('html', 'text', 'xml'), outdir)
+
+Build every builder in `builders` into `outdir/<builder>` (level 2).
+
+Unlike [`build_warnings()`](#epythet.validation.build.SphinxBackend.build_warnings), the output is kept: level 2 reads it, and
+level 3 packs it for review. The caller owns `outdir`.
+
+* **Return type:**
+  [`RenderResult`](#epythet.validation.build.RenderResult)
 
 #### resolve_docsrc(project_dir)
 

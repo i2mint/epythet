@@ -13,9 +13,13 @@ epythet.validation
    build
    cli
    core
+   coverage
    detectors
    docstrings
    lint
    model
    parse
+   propose
    render
+   rendered
+   review

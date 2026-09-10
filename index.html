@@ -211,11 +211,14 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -227,12 +230,16 @@
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -544,9 +551,77 @@ gh<span class="w"> </span>api<span class="w"> </span>repos/owner/repo/pages<span
 <li><p>URLs of API pages changed (<code class="docutils literal notranslate"><span class="pre">module_docs/&lt;pkg&gt;/&lt;mod&gt;.html</span></code> is now <code class="docutils literal notranslate"><span class="pre">_autosummary/&lt;pkg&gt;.&lt;mod&gt;.html</span></code>); <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code> keeps every symbol resolvable across sites.</p></li>
 </ul>
 <p>The publish action pins <code class="docutils literal notranslate"><span class="pre">epythet&lt;0.2</span></code> until v2 is validated across the fleet; see the <a class="reference external" href="https://github.com/i2mint/epythet/discussions/15">v2 decision record</a> and the <a class="reference external" href="https://github.com/i2mint/epythet/issues/16">tracking issue</a>.</p>
+</section>
+<section id="validation-and-repair">
+<h1>Validation and repair<a class="headerlink" href="#validation-and-repair" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">validate</span></code> checks a package’s documentation in tiers, <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">repair</span></code> fixes the markup slips it finds in the source, and <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">sweep</span></code> runs the checks across many packages. Install the extras you need: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">'epythet[validate]'</span></code> (ruff, pydoclint, PyYAML), <code class="docutils literal notranslate"><span class="pre">'epythet[repair]'</span></code> (LibCST, optional), <code class="docutils literal notranslate"><span class="pre">'epythet[migrate]'</span></code> (docstring-parser), <code class="docutils literal notranslate"><span class="pre">'epythet[review]'</span></code> (Playwright screenshots).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>epythet<span class="w"> </span>validate<span class="w"> </span>.<span class="w">                  </span><span class="c1"># lint + parse every docstring (no build), exit 0/10/11</span>
+epythet<span class="w"> </span>validate<span class="w"> </span>.<span class="w"> </span>--level<span class="w"> </span><span class="m">3</span><span class="w">        </span><span class="c1"># + Sphinx build + rendered-output checks, exit 12/13</span>
+epythet<span class="w"> </span>repair<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>epythet<span class="w"> </span>repair<span class="w"> </span>.<span class="w"> </span>--write<span class="w">   </span><span class="c1"># diff first, then apply</span>
+epythet<span class="w"> </span>sweep<span class="w"> </span>pkg1<span class="w"> </span>pkg2<span class="w"> </span>--manifest<span class="w"> </span>my_packages.pth<span class="w">   </span><span class="c1"># read-only, many packages</span>
+</pre></div>
+</div>
+<section id="validate-five-levels-one-exit-code-per-level">
+<h2><code class="docutils literal notranslate"><span class="pre">validate</span></code>: five levels, one exit code per level<a class="headerlink" href="#validate-five-levels-one-exit-code-per-level" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">--level</span></code></p></th>
+<th class="head"><p>Runs</p></th>
+<th class="head"><p>What it reads</p></th>
+<th class="head"><p>Exit code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>lint</p></td>
+<td><p>the docstring text: ruff <code class="docutils literal notranslate"><span class="pre">D</span></code> rules, pydoclint, and the coverage detectors (public objects without a docstring, entry points without an example, summaries that only restate the name, parameter descriptions that only restate the type)</p></td>
+<td><p>10</p></td>
+</tr>
+<tr class="row-odd"><td><p>1 (default)</p></td>
+<td><p>+ parse</p></td>
+<td><p>the docutils doctree of every docstring, in isolation, against the artifact ledger (a <code class="docutils literal notranslate"><span class="pre">:param</span></code> line glued to the summary, a doctest rendered as prose, a Markdown fence, <code class="docutils literal notranslate"><span class="pre">*args</span></code> opening an emphasis, …)</p></td>
+<td><p>11</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>+ build</p></td>
+<td><p>the Sphinx warning stream</p></td>
+<td><p>12</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>+ render</p></td>
+<td><p>the built pages: <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">xml</span></code> for objects described with nothing and cross-references that rendered as plain code, <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">html</span></code> for dangling <code class="docutils literal notranslate"><span class="pre">#idN</span></code> anchors and missing images, <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> for snapshots</p></td>
+<td><p>13</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>+ review</p></td>
+<td><p>writes a review <em>packet</em> (rendered text of the changed or sampled pages, the rubric, a strict JSON schema) for an in-session agent; never calls a model and never gates</p></td>
+<td><p>14, only with <code class="docutils literal notranslate"><span class="pre">--fail-on-review</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Levels 0 to 3 gate on <code class="docutils literal notranslate"><span class="pre">--fail-on</span> <span class="pre">error</span></code> (default), <code class="docutils literal notranslate"><span class="pre">warning</span></code> or <code class="docutils literal notranslate"><span class="pre">info</span></code>; exit 20 means the ledger itself is broken. <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code> and <code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">jsonl</span></code> give the machine-readable report.</p>
+<p>Text snapshots are opt-in: <code class="docutils literal notranslate"><span class="pre">--update-snapshots</span></code> writes the <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">text</span></code> render of every page under <code class="docutils literal notranslate"><span class="pre">docsrc/_snapshots/text</span></code>, and <code class="docutils literal notranslate"><span class="pre">--snapshot</span></code> diffs against it (a changed page is a level-2 error; the snapshot diff is the proof that a migration changed nothing). Level 4 writes its packet under the user data dir (<code class="docutils literal notranslate"><span class="pre">~/.local/share/epythet/review/&lt;package&gt;/&lt;run&gt;/</span></code>, <code class="docutils literal notranslate"><span class="pre">EPYTHET_DATA_DIR</span></code> overrides); a reviewer answers with a <code class="docutils literal notranslate"><span class="pre">review.json</span></code> that <code class="docutils literal notranslate"><span class="pre">--review-reply</span></code> ingests, and <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">ledger</span> <span class="pre">propose</span> <span class="pre">review.json</span></code> turns its proposed rules into <code class="docutils literal notranslate"><span class="pre">status:</span> <span class="pre">proposed</span></code> ledger rules in an overlay (<code class="docutils literal notranslate"><span class="pre">--ledger</span> <span class="pre">DIR</span></code> uses them) for a human to promote.</p>
+<p>Every finding names a rule from the ledger (<code class="docutils literal notranslate"><span class="pre">epythet/ledger/rules/</span></code>, one YAML per rule with a fixture that is also its regression test). Findings are appended, as observations, to <code class="docutils literal notranslate"><span class="pre">~/.local/share/epythet/ledger/observations.jsonl</span></code>, never inside the repository.</p>
+</section>
+<section id="repair-the-normalizer-s-fixes-written-back-to-the-source">
+<h2><code class="docutils literal notranslate"><span class="pre">repair</span></code>: the normalizer’s fixes, written back to the source<a class="headerlink" href="#repair-the-normalizer-s-fixes-written-back-to-the-source" title="Link to this heading">¶</a></h2>
+<p>The docs build already normalizes docstrings on the fly. <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">repair</span></code> applies the same source-safe rewrites to the files: a blank line before a doctest, list or field list; a Markdown fence to a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">code-block::</span></code> (or a <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block with <code class="docutils literal notranslate"><span class="pre">--fence-style</span> <span class="pre">literal</span></code>); <code class="docutils literal notranslate"><span class="pre">Returns:</span> <span class="pre">text</span></code> to a real section; <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">Heading</span></code> to a rubric; <code class="docutils literal notranslate"><span class="pre">[text](url)</span></code> to an RST link; a short title underline padded.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>epythet<span class="w"> </span>repair<span class="w"> </span>path/to/pkg<span class="w">            </span><span class="c1"># dry run: a unified diff, and what needs a hand</span>
+epythet<span class="w"> </span>repair<span class="w"> </span>path/to/pkg<span class="w"> </span>--write<span class="w">    </span><span class="c1"># apply, after verifying</span>
+</pre></div>
+</div>
+<p>Only the docstring literals change; the rest of the file is copied byte for byte and the module’s AST outside its docstrings must be identical or nothing is written. Doctest sources are never altered. Each rewritten docstring is re-validated at level 1 (a rewrite that would introduce a finding is dropped), and with <code class="docutils literal notranslate"><span class="pre">--write</span></code> the doctests of every touched file are run before and after, and a file whose failures went up is restored. What no rule can fix safely (a prose <code class="docutils literal notranslate"><span class="pre">*args</span></code>, unmatched backticks, a backslash in a non-raw docstring) is listed under “needs a hand”. <code class="docutils literal notranslate"><span class="pre">repair_package</span></code> from <code class="docutils literal notranslate"><span class="pre">epythet.tools</span></code> keeps working and delegates here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">migrate-style</span> <span class="pre">path</span> <span class="pre">--to</span> <span class="pre">google</span></code> (or <code class="docutils literal notranslate"><span class="pre">numpy</span></code>) is the opt-in cousin: it rewrites an RST field list (<code class="docutils literal notranslate"><span class="pre">:param</span> <span class="pre">x:</span></code>, <code class="docutils literal notranslate"><span class="pre">:returns:</span></code>, <code class="docutils literal notranslate"><span class="pre">:raises:</span></code>) as a Google or NumPy section via <code class="docutils literal notranslate"><span class="pre">docstring_parser</span></code>, with the same guarantees, and leaves alone any docstring whose fields would not round-trip.</p>
+</section>
+<section id="sweep-the-fleet-distribution-and-the-work-queue">
+<h2><code class="docutils literal notranslate"><span class="pre">sweep</span></code>: the fleet distribution and the work queue<a class="headerlink" href="#sweep-the-fleet-distribution-and-the-work-queue" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">sweep</span> <span class="pre">DIR...</span> <span class="pre">[--manifest</span> <span class="pre">FILE]</span></code> validates every package at levels 0 and 0.5 without writing into any of them, prints how often each rule fires (findings, packages affected, rate per hundred public objects) and a queue of packages ranked by the work they hold, entry points first. It is what decides the severities in the ledger, and the shortest path to “which package should I document next”.</p>
 <p class="epythet-aggregates">This documentation as a single file: <a href="epythet.md">epythet.md</a> (Markdown, for agents).</p>
 <div class="toctree-wrapper compound">
 </div>
+</section>
 </section>
 
         </article>

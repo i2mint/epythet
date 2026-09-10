@@ -210,11 +210,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config.html">epythet.config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.sweep.html">epythet.sweep</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.templates.html">epythet.templates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/epythet.themes.html">epythet.themes</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,12 +229,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
 </ul>
 </li>
 </ul>
@@ -305,17 +312,30 @@
     <span class="n">ignore</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">docsrc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">no_observe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_linters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">max_per_rule</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">snapshot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">update_snapshots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">snapshot_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">render_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">review_pages</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"changed"</span><span class="p">,</span>
+    <span class="n">review_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">screenshots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">packet_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">review_reply</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fail_on_review</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Check a package's docstrings for rendering artifacts and build problems.</span>
 
-<span class="sd">    Exit codes: 0 clean; 10/11/12 findings at or above --fail-on at level</span>
-<span class="sd">    0 (lint) / 0.5 (parse) / 1 (build); 20 ledger integrity failure; 1 internal error.</span>
+<span class="sd">    Exit codes: 0 clean; 10/11/12/13 findings at or above --fail-on at level</span>
+<span class="sd">    0 (lint) / 0.5 (parse) / 1 (build) / 2 (render); 14 review findings, only</span>
+<span class="sd">    with --fail-on-review; 20 ledger integrity failure; 1 internal error.</span>
 
 <span class="sd">    :param package: Project root, package directory, or importable package name.</span>
 <span class="sd">    :param level: 0 = lint (ruff D, pydoclint); 1 = lint + parse every docstring's</span>
-<span class="sd">        doctree (default, no build needed); 2 = also run the Sphinx build.</span>
+<span class="sd">        doctree (default, no build needed); 2 = also run the Sphinx build;</span>
+<span class="sd">        3 = also read the rendered XML/HTML/text; 4 = also write a review packet.</span>
 <span class="sd">    :param format: table (human), json (full report), or jsonl (one finding per line).</span>
 <span class="sd">    :param fail_on: Severity that makes the exit code non-zero: error, warning, or info.</span>
 <span class="sd">    :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.</span>
@@ -324,13 +344,25 @@
 <span class="sd">    :param ignore: Skip files whose path contains this string (repeat -i for several).</span>
 <span class="sd">    :param docsrc: Sphinx source directory for level 2 (default: &lt;project&gt;/docsrc).</span>
 <span class="sd">    :param no_observe: Do not append findings to the ledger's observations file.</span>
+<span class="sd">    :param no_linters: Level 0 without ruff and pydoclint (coverage detectors only).</span>
 <span class="sd">    :param max_per_rule: How many findings to show per rule in the table.</span>
 <span class="sd">    :param output: Write the report to this file instead of stdout.</span>
+<span class="sd">    :param snapshot: Level 3: diff the text render against docsrc/_snapshots/text.</span>
+<span class="sd">    :param update_snapshots: Level 3: rewrite the text snapshots from this render.</span>
+<span class="sd">    :param snapshot_dir: Where the text snapshots live (default docsrc/_snapshots/text).</span>
+<span class="sd">    :param render_dir: Keep the rendered html/text/xml here instead of a temp dir.</span>
+<span class="sd">    :param review_pages: Level 4: which pages go in the packet: changed, sample, or all.</span>
+<span class="sd">    :param review_sample: Level 4: how many pages a sample packet holds.</span>
+<span class="sd">    :param screenshots: Level 4: add Playwright screenshots to the packet if installed.</span>
+<span class="sd">    :param packet_dir: Level 4: write the packet here (default: the user data dir).</span>
+<span class="sd">    :param review_reply: Level 4: a review.json written by a reviewer, to ingest.</span>
+<span class="sd">    :param fail_on_review: Exit 14 when the review reply reported findings.</span>
 <span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.build</span><span class="w"> </span><span class="kn">import</span> <span class="n">SphinxBackend</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">_validate</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.ledger</span><span class="w"> </span><span class="kn">import</span> <span class="n">LedgerError</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">render</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.review</span><span class="w"> </span><span class="kn">import</span> <span class="n">PAGE_MODES</span><span class="p">,</span> <span class="n">ReplyError</span>
 
     <span class="k">if</span> <span class="n">level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">IMPLEMENTED_TIERS</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span>
@@ -342,6 +374,10 @@
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--fail-on must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">SEVERITIES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">STYLES</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--style must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">STYLES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">review_pages</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PAGE_MODES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"--review-pages must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">PAGE_MODES</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">report</span> <span class="o">=</span> <span class="n">_validate</span><span class="p">(</span>
             <span class="n">package</span><span class="p">,</span>
@@ -353,10 +389,20 @@
             <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
             <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span> <span class="ow">or</span> <span class="p">(),</span>
             <span class="n">observe</span><span class="o">=</span><span class="ow">not</span> <span class="n">no_observe</span><span class="p">,</span>
+            <span class="n">linters</span><span class="o">=</span><span class="ow">not</span> <span class="n">no_linters</span><span class="p">,</span>
+            <span class="n">snapshot</span><span class="o">=</span><span class="n">snapshot</span><span class="p">,</span>
+            <span class="n">update_snapshots</span><span class="o">=</span><span class="n">update_snapshots</span><span class="p">,</span>
+            <span class="n">snapshot_dir</span><span class="o">=</span><span class="n">snapshot_dir</span><span class="p">,</span>
+            <span class="n">render_dir</span><span class="o">=</span><span class="n">render_dir</span><span class="p">,</span>
+            <span class="n">review_pages</span><span class="o">=</span><span class="n">review_pages</span><span class="p">,</span>
+            <span class="n">review_sample</span><span class="o">=</span><span class="n">review_sample</span><span class="p">,</span>
+            <span class="n">screenshots</span><span class="o">=</span><span class="n">screenshots</span><span class="p">,</span>
+            <span class="n">packet_dir</span><span class="o">=</span><span class="n">packet_dir</span><span class="p">,</span>
+            <span class="n">review_reply</span><span class="o">=</span><span class="n">review_reply</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="n">LedgerError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ledger integrity failure: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="n">ReplyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">render</span><span class="p">(</span>
         <span class="n">report</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="p">({</span><span class="s2">"max_per_rule"</span><span class="p">:</span> <span class="n">max_per_rule</span><span class="p">}</span> <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">"table"</span> <span class="k">else</span> <span class="p">{})</span>
@@ -365,9 +411,12 @@
         <span class="n">Path</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="n">fail_on</span><span class="p">)</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">exit_code</span><span class="p">(</span><span class="n">fail_on</span><span class="p">,</span> <span class="n">fail_on_review</span><span class="o">=</span><span class="n">fail_on_review</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">code</span><span class="p">:</span>
-        <span class="n">failing</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">lv</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">lv</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">failing_levels</span><span class="p">(</span><span class="n">fail_on</span><span class="p">))</span>
+        <span class="n">failing</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">lv</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">for</span> <span class="n">lv</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">failing_levels</span><span class="p">(</span><span class="n">fail_on</span><span class="p">,</span> <span class="n">fail_on_review</span><span class="o">=</span><span class="n">fail_on_review</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">"findings at or above </span><span class="si">{</span><span class="n">fail_on</span><span class="si">}</span><span class="s2"> at level(s) </span><span class="si">{</span><span class="n">failing</span><span class="si">}</span><span class="s2"> (exit </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
             <span class="n">code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>

@@ -1,0 +1,37 @@
+epythet.repair
+==============
+
+.. automodule:: epythet.repair
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SOURCE_SAFE_RULES
+      UNSAFE_RULES
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      apply_span_edits
+      apply_with_libcst
+      fences_to_literal_blocks
+      iter_docstring_nodes
+      render_repair
+      repair
+      repair_command
+      repair_source
+      rewrite_docstring_literal
+      rules_for
+      split_literal
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DocstringEdit
+      FileRepair
+      RepairReport
+   

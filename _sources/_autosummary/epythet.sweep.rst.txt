@@ -1,0 +1,31 @@
+epythet.sweep
+=============
+
+.. automodule:: epythet.sweep
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      RULE_WEIGHTS
+      SEVERITY_WEIGHTS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      packages_from_manifest
+      queue_score
+      render_sweep
+      sweep
+      sweep_command
+      sweeps_path
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PackageSweep
+      SweepResult
+   
