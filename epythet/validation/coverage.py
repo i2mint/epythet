@@ -246,24 +246,98 @@ def entry_point_names(package_dir: Path) -> set[str]:
     return {n for n in names if not n.startswith("_")}
 
 
-def _param_descriptions(docstring: str) -> dict[str, str]:
-    """``{name: description}`` from an RST, Google or NumPy docstring, best effort."""
-    try:
-        from docstring_parser import DocstringStyle, parse
-    except ImportError:
-        return {}
-    style = DocstringStyle.REST if ":param" in docstring or ":type" in docstring else DocstringStyle.AUTO
-    try:
-        parsed = parse(docstring, style=style)
-    except Exception:
-        return {}
-    return {p.arg_name: p.description or "" for p in parsed.params if p.arg_name}
+_RST_PARAM_RE = re.compile(
+    r"^\s*:(?:param|parameter|arg|argument|key|keyword)\s+(?:[^:]*?\s)?(\*{0,2}\w+)\s*:\s*(.*)$"
+)
+_GOOGLE_ARGS_HEADER_RE = re.compile(
+    r"^\s*(?:args|arguments|parameters|keyword args|keyword arguments|other parameters)\s*:\s*$",
+    re.IGNORECASE,
+)
+_GOOGLE_PARAM_RE = re.compile(r"^(\s+)(\*{0,2}\w+)\s*(?:\([^)]*\))?\s*:\s*(.*)$")
+_NUMPY_PARAM_RE = re.compile(r"^(\*{0,2}\w+)(?:\s*:\s*.*)?$")
+_NUMPY_HEADER = ("parameters", "other parameters")
+
+
+def _indent(line: str) -> int:
+    return len(line) - len(line.lstrip())
+
+
+def param_descriptions(docstring: str) -> dict[str, str]:
+    """``{name: description}`` from an RST, Google or NumPy docstring, first line plus continuations.
+
+    Deliberately not delegated to ``docstring_parser`` (an optional extra):
+    a detector's verdict must not depend on what is installed.
+
+    >>> param_descriptions(":param n: how many\\n    retries\\n:param delay: seconds")
+    {'n': 'how many retries', 'delay': 'seconds'}
+    >>> param_descriptions("Args:\\n    n (int): how many\\n    delay: seconds\\n\\nReturns:\\n    x")
+    {'n': 'how many', 'delay': 'seconds'}
+    >>> param_descriptions("Parameters\\n----------\\nn : int\\n    how many\\ndelay\\n    seconds\\n\\nReturns\\n-------")
+    {'n': 'how many', 'delay': 'seconds'}
+    """
+    lines = docstring.replace("\t", "    ").splitlines()
+    found: dict[str, list[str]] = {}
+    current: str | None = None
+    current_indent = -1
+    mode: str | None = None  # "rst" | "google" | "numpy"
+    section_indent = -1
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if not stripped:
+            if mode == "rst":
+                current = None
+            continue
+        rst = _RST_PARAM_RE.match(line)
+        if rst:
+            mode, current, current_indent = "rst", rst.group(1).lstrip("*"), _indent(line)
+            found[current] = [rst.group(2).strip()]
+            continue
+        if _GOOGLE_ARGS_HEADER_RE.match(line):
+            mode, section_indent, current = "google", _indent(line), None
+            continue
+        if (
+            stripped.lower() in _NUMPY_HEADER
+            and index + 1 < len(lines)
+            and set(lines[index + 1].strip()) <= {"-", "="}
+            and lines[index + 1].strip()
+        ):
+            mode, section_indent, current = "numpy", _indent(line), None
+            continue
+        if mode == "google":
+            if _indent(line) <= section_indent:
+                mode, current = None, None
+                continue
+            google = _GOOGLE_PARAM_RE.match(line)
+            if google and (current is None or _indent(line) <= current_indent):
+                current, current_indent = google.group(2).lstrip("*"), _indent(line)
+                found[current] = [google.group(3).strip()]
+                continue
+        elif mode == "numpy":
+            if _indent(line) == section_indent:
+                following = lines[index + 1].strip() if index + 1 < len(lines) else ""
+                if following and set(following) <= {"-", "="}:
+                    mode, current = None, None  # the next section's header
+                    continue
+                numpy = _NUMPY_PARAM_RE.match(stripped)
+                if numpy:
+                    current, current_indent = numpy.group(1).lstrip("*"), _indent(line)
+                    found[current] = []
+                continue
+            if _indent(line) < section_indent:
+                mode, current = None, None
+                continue
+        if current is not None and _indent(line) > current_indent:
+            found[current].append(stripped)
+            continue
+        if mode == "rst":
+            current = None
+    return {name: " ".join(" ".join(parts).split()) for name, parts in found.items()}
 
 
 def _params_of(node: ast.AST, source: str, docstring: str | None) -> list[Param]:
     if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
         return []
-    described = _param_descriptions(docstring) if docstring else {}
+    described = param_descriptions(docstring) if docstring else {}
     params = []
     args = node.args
     for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs, *filter(None, (args.vararg, args.kwarg))]:
