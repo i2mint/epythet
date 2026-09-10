@@ -61,7 +61,6 @@ def _usage(argv):
 EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
-        "usage: epythet [-h] "
         "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,"
         "ai-artifacts,repair,migrate-style,sweep,ledger} ..."
     ),
@@ -114,7 +113,6 @@ def test_command_set_and_order():
         "quickstart",
         "check-pages",
         "configure-pages",
-        "validate",
         "validate",
         "ai-artifacts",
         "repair",
