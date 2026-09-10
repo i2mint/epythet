@@ -79,7 +79,7 @@ gh api repos/OWNER/REPO/pages -X PUT -f 'source[branch]=gh-pages' -f 'source[pat
 ## Setting up publishing from scratch
 
 1. Build locally once to check the project configures: `epythet quickstart . --ignore tests/ scrap/ examples/`.
-2. Add `.github/workflows/publish-docs.yml` using `i2mint/epythet/actions/publish-github-pages@master` (the `epythet-setup` skill has the file). Inputs: `github-token` (required), `ignore`, `python-version` (default `3.12`), `epythet-spec` (the pip requirement for the epythet that builds the docs; the default is the fleet-wide pin, pass `"epythet>=0.2,<0.3"` to opt into v2 early), `docs-branch` (default `gh-pages`), `docs-dir` (default `./docsrc/_build/html/`).
+2. Add `.github/workflows/publish-docs.yml` using `i2mint/epythet/actions/publish-github-pages@master` (the `epythet-setup` skill has the file). Inputs: `github-token` (required), `ignore`, `python-version` (default `3.12`), `epythet-spec` (the pip requirement for the epythet that builds the docs; default `epythet>=0.2,<0.3`, pass `"epythet<0.2"` to stay on the 0.1.x layout), `docs-branch` (default `gh-pages`), `docs-dir` (default `./docsrc/_build/html/`).
 3. Push; after the workflow runs, `epythet check-pages owner/repo`. The action also calls the Pages API itself, so usually nothing more is needed.
 4. The site is at `https://OWNER.github.io/REPO/`. Its agent outputs are at `/llms.txt` and `/<package>.md`.
 
