@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "epythet"
-version = "0.2.0"
+version = "0.2.1"
 description = "Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages"
 readme = "README.md"
 requires-python = ">=3.11"

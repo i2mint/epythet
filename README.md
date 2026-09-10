@@ -95,11 +95,20 @@ Set `agent_outputs = false` to skip the second (Markdown) build pass.
 # Python API
 
 ```python
-from epythet import quickstart, make_docsrc, make, load_config, sphinx_settings, normalize_text
+from epythet import (
+    quickstart,
+    make_docsrc,
+    make,
+    load_config,
+    sphinx_settings,
+    normalize_text,
+)
 
-quickstart("/path/to/project", ignore=["tests/"])   # scaffold + build; returns the html dir
-cfg = load_config("/path/to/project")               # the resolved DocsConfig
-sphinx_settings(cfg)                                 # the conf.py namespace as a dict
+quickstart(
+    "/path/to/project", ignore=["tests/"]
+)  # scaffold + build; returns the html dir
+cfg = load_config("/path/to/project")  # the resolved DocsConfig
+sphinx_settings(cfg)  # the conf.py namespace as a dict
 ```
 
 Diagnosis and repair of docstring formatting in *source* files (missing blank lines before doctests) is unchanged: `epythet.diagnose_doctest_code_blocks`, `epythet.repair_package`.
