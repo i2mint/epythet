@@ -1,0 +1,32 @@
+id: DR001
+title: RST field list leaked into prose
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    :(?:param|parameter|arg|argument|key|keyword|type|returns?|rtype|raises?|except|exception|var|ivar|cvar|vartype|yields?|ytype)\b[^:\n]{0,40}:
+message: "RST field list leaked into prose: {match!r}"
+fix:
+  hint: "Insert a blank line between the summary line and the first ':param' line."
+  autofixable: true
+  strategy: insert-blank-line-before-first-field
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a docstring whose `:param:`/`:returns:` field list is not preceded by a
+  blank line, so docutils parses it as continuation text of the summary paragraph.
+
+  ## Why is this bad?
+  The field list never becomes a field list. Every `:param x:` marker is shown to
+  the reader as literal text in the middle of a sentence, and the parameter table
+  is absent from the page. No warning is emitted at any Sphinx verbosity, so this
+  survives a `-W -n` build indefinitely.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/domains/python.html#info-field-lists
+  - https://github.com/i2mint/epythet/discussions/15

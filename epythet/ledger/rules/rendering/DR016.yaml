@@ -1,0 +1,28 @@
+id: DR016
+title: Unexpected indentation became a block quote
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: info
+precision: high
+detector:
+  kind: doctree
+  function: blockquote_with_unexpected_indent
+message: "stray indentation rendered as a block quote: {match!r}"
+fix:
+  hint: "De-indent the block, or end the previous paragraph with '::' to make it a literal block."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a block quote *together with* an "Unexpected indentation" message from
+  docutils. A block quote alone is how an intentional quotation is written, so it
+  is not a signal by itself; gated on the message it is reliable.
+
+  ## Why is this bad?
+  Code or wrapped prose is rendered as an indented quotation in a proportional
+  font with smart quotes, and a wrapped continuation line can float off as its own
+  quote.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#block-quotes

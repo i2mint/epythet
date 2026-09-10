@@ -1,0 +1,27 @@
+id: DR018
+title: Directive content silently deleted
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: doctree
+  function: directive_content_lost
+message: "directive produced nothing; its content is gone from the page: {match!r}"
+fix:
+  hint: "Fix the directive name or its arguments (e.g. '.. code-block:: python' followed by a blank line)."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a directive written in the source that left no content node in the
+  doctree: an unknown directive name (`.. codeblock::`) or a body docutils
+  rejected.
+
+  ## Why is this bad?
+  The build warns, but the page silently loses a whole section. Anyone treating
+  warnings as advisory is shipping pages with holes.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#directives

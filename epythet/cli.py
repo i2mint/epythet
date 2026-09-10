@@ -10,6 +10,7 @@ import cw
 from epythet.build import build, make
 from epythet.config import load_config
 from epythet.scaffold import make_autodocs, make_docsrc, scaffold
+from epythet.validation.cli import validate
 
 
 def quickstart(project_dir, *, ignore: list[str] = None):
@@ -96,6 +97,7 @@ COMMANDS = [
     quickstart,
     check_pages,
     configure_pages,
+    validate,
 ]
 
 

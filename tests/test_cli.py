@@ -59,7 +59,7 @@ def _usage(argv):
 EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
-        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages} ..."
+        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate} ..."
     ),
     (
         "make-docsrc",
@@ -84,7 +84,7 @@ def test_usage_line_is_unchanged(argv, expected):
 
 
 def test_command_set_and_order():
-    """The six commands, in the order ``--help`` lists them."""
+    """The commands, in the order ``--help`` lists them."""
     parser = _parser()
     subparsers = next(a for a in parser._actions if hasattr(a, "choices") and a.choices)
     assert list(subparsers.choices) == [
@@ -94,6 +94,7 @@ def test_command_set_and_order():
         "quickstart",
         "check-pages",
         "configure-pages",
+        "validate",
     ]
 
 

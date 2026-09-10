@@ -1,0 +1,29 @@
+id: DR028
+title: Field with no closing colon
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: regex
+  node: paragraph
+  pattern: |
+    ^:(?:param|parameter|arg|argument|type|returns?|rtype|raises?|yields?|var|ivar|cvar)(?:\s+[^:\n]*)?$
+message: "field marker without its closing colon: {match!r}"
+fix:
+  hint: "Close the field name with a colon: ':returns:' not ':returns'."
+  autofixable: true
+  strategy: close-field-colon
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a line that starts like an info field (`:returns`, `:raises ValueError`) but
+  has no closing colon, rendered as plain text.
+
+  ## Why is this bad?
+  The field is shown literally, and a malformed field name poisons every field
+  below it in the same list.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/domains/python.html#info-field-lists

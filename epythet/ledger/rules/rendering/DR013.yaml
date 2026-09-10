@@ -1,0 +1,27 @@
+id: DR013
+title: Near-miss section name
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: high
+detector:
+  kind: doctree
+  function: near_miss_section_term
+message: "{match!r} is not a section name napoleon recognises, so it renders as a definition list"
+fix:
+  hint: "Spell the section as Args:, Returns:, Raises:, Attributes:, Examples: etc."
+  autofixable: true
+  strategy: rename-section
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a definition-list term such as `Arg`, `Param`, `Params` or `Kwargs` that is
+  a misspelling or near-miss of a napoleon section name.
+
+  ## Why is this bad?
+  napoleon ignores the section entirely, so it renders as a definition list
+  instead of a parameter table, with no warning.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html

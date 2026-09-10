@@ -1,0 +1,27 @@
+id: DR017
+title: Parameter list written as a definition list
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: info
+precision: low
+detector:
+  kind: doctree
+  function: param_definition_list
+message: "top-level definition list with one-word terms may be a parameter list: {match!r}"
+fix:
+  hint: "Use ':param x:' fields or a Google 'Args:' section so parameters get a table."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a top-level definition list whose terms are single words.
+
+  ## Why is this bad?
+  A two-line `x` / `    the x value` block is identical in the doctree whether the
+  author meant a definition list or a parameter list, so this is inherently
+  ambiguous and ships at `info`. When it is a parameter list, the parameters get no
+  table and no cross-references.
+references:
+  - https://www.sphinx-doc.org/en/master/usage/domains/python.html#info-field-lists

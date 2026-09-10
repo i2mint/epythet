@@ -1,0 +1,28 @@
+id: DR031
+title: Commented-out doctest
+namespace: source
+status: {stable_since: "0.2.0"}
+severity: info
+precision: high
+detector:
+  kind: source
+  skip_doctest_lines: true
+  pattern: |
+    ^\s*#\s*>>>
+message: "commented-out doctest renders as prose with literal '# >>>': {match!r}"
+fix:
+  hint: "Delete it, move it to an issue, or put it in a literal block ('::' + blank line + indent)."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a line of the form `# >>> ...` inside a docstring.
+
+  ## Why is this bad?
+  A doctest disabled by prefixing `#` is ordinary text to docutils: it renders as
+  a paragraph with a literal `#`, `>>>`, smart quotes and ellipses, and the reader
+  cannot tell it is intentionally disabled code (wads audit, pattern 7).
+references:
+  - https://github.com/i2mint/wads

@@ -1,0 +1,27 @@
+id: DR032
+title: docutils reported a problem while parsing the docstring
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: high
+detector:
+  kind: doctree
+  function: system_messages
+message: "docutils: {match}"
+fix:
+  hint: "Read the message; it names the line inside the docstring."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Reports every message docutils emitted while parsing the docstring in isolation
+  (report level WARNING and above). It is the parse-level twin of DR015, so a
+  package gets docutils' own diagnostics without running a Sphinx build.
+
+  ## Why is this bad?
+  Each message is a construct docutils could not parse as intended; several other
+  rules (DR010, DR016, DR018) are specific shapes of these.
+references:
+  - https://docutils.sourceforge.io/docs/user/config.html#report-level

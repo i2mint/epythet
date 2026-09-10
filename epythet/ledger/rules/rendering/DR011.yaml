@@ -1,0 +1,31 @@
+id: DR011
+title: Single backticks render as italics, not code
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: warning
+precision: very-high
+detector:
+  kind: doctree
+  function: title_references
+message: "single backticks are a title reference (italics), not code: {match!r}"
+fix:
+  hint: "Use double backticks for code (``x``), or an explicit role such as :func:`x`."
+  autofixable: true
+  strategy: double-the-backticks
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags every `title_reference` node: in RST a single-backtick span is the default
+  role, which Sphinx renders as `<cite>` (italics).
+
+  ## Why is this bad?
+  Markdown habit makes this by far the most frequent defect in the fleet (about 70%
+  of everything the wads audit counted, 597 occurrences on 24 of 29 pages). Code
+  looks like emphasis, and a pair of backticks spanning lines swallows every word
+  between into one italic run. Note: epythet v2 sets `default_role = "code"`,
+  which makes single backticks render as code and turns this rule into a no-op
+  for packages built with v2.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#interpreted-text

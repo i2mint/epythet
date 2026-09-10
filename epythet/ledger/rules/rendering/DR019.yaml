@@ -1,0 +1,26 @@
+id: DR019
+title: Table collapsed to nothing
+namespace: rendering
+status: {stable_since: "0.2.0"}
+severity: error
+precision: high
+detector:
+  kind: doctree
+  function: collapsed_table
+message: "simple-table border found but no table was built: {match!r}"
+fix:
+  hint: "Make every border row the same width and align the columns."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a simple-table border (a line of two or more `=` runs) in the source with
+  no `table` node in the doctree.
+
+  ## Why is this bad?
+  Border rows of unequal width make docutils reject the table; the build warns and
+  the table is deleted from the page.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#simple-tables

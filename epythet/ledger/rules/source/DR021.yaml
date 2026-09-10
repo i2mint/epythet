@@ -1,0 +1,27 @@
+id: DR021
+title: Admonition or directive written with a single colon becomes a comment
+namespace: source
+status: {stable_since: "0.2.0"}
+severity: error
+precision: very-high
+detector:
+  kind: source
+  pattern: |
+    ^\s*\.\.\s+(?:note|warning|tip|important|hint|caution|danger|attention|seealso|admonition|code-block|code|math|image|figure|versionadded|versionchanged|deprecated|todo):(?!:)
+message: "single colon makes this an RST comment, not a directive: {match!r}"
+fix:
+  hint: "Use two colons: '.. note::'."
+  autofixable: true
+  strategy: double-the-colon
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags `.. note:` (one colon) and the same mistake for other common directives.
+
+  ## Why is this bad?
+  `.. anything:` with one colon is an RST *comment*: the admonition and everything
+  indented under it vanish from the page, and no warning is emitted.
+references:
+  - https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#comments
