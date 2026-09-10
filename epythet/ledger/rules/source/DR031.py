@@ -12,8 +12,8 @@ def bad_commented_doctest():  # ruleid: DR031
 def good_literal_block():  # ok: DR031
     """Do a thing. Currently disabled::
 
-        >>> f(1)
-        1
+    >>> f(1)
+    1
     """
 
 

@@ -31,7 +31,7 @@ def good_code_block():  # ok: DR006
 def good_literal_block():  # ok: DR006
     """Do a thing::
 
-        result = f(1)
+    result = f(1)
     """
 
 
