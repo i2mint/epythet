@@ -43,7 +43,8 @@ runs:
     - name: Install Epythet
       run: |
         python -m pip install --upgrade pip
-        pip -q install epythet
+        # Pinned to 0.1.x: v2 is being developed as 0.2.x and the fleet stays on 0.1.x until validated (see #16)
+        pip -q install "epythet<0.2"
       shell: bash
 
     - name: Install Repo Project
