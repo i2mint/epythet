@@ -17,6 +17,7 @@
    :recursive:
 
    agent_outputs
+   ai_artifacts
    build
    call_make
    cli

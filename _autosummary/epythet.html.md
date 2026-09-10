@@ -31,6 +31,10 @@ it, a Markdown fence, `Returns: text` on one line, a stray `*args`) are
 applied at build time by [`epythet.normalizer`](epythet.normalizer.html.md#module-epythet.normalizer), so existing docstrings
 render correctly without edits.
 
+A repository’s agent artifacts (skills, subagents, `CLAUDE.md` and friends)
+are discovered by convention and rendered as a “For AI agents” page, see
+[`epythet.ai_artifacts`](epythet.ai_artifacts.html.md#module-epythet.ai_artifacts); epythet’s own skills ship in `epythet/data/skills`.
+
 GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
 docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
 `repair_package()`) live in [`epythet.tools`](epythet.tools.html.md#module-epythet.tools).
@@ -52,6 +56,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 
 | [`agent_outputs`](epythet.agent_outputs.html.md#module-epythet.agent_outputs)              | Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.                                                        |
 |----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| [`ai_artifacts`](epythet.ai_artifacts.html.md#module-epythet.ai_artifacts)                | Discover a repository's AI agent artifacts and render the "For AI agents" page.                                                      |
 | [`build`](epythet.build.html.md#epythet.build)(config[, target, overrides])        | Run one build target for a loaded configuration; returns the output directory.                                                       |
 | [`call_make`](epythet.call_make.html.md#module-epythet.call_make)                      | Compatibility module: `make` now lives in [`epythet.build`](epythet.build.html.md#epythet.build).              |
 | [`cli`](epythet.cli.html.md#module-epythet.cli)                                  | Command line access to epythet.                                                                                                      |

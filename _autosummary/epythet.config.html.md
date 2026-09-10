@@ -30,6 +30,8 @@ ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
 api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
 agent_outputs = true          # llms.txt + .md twins of every page
 aggregates = ["md"]           # flat single-document twins at the site root
+ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
+ai_artifacts_template = ""    # project-relative file overriding that page's template
 package_dir = "src/dol"       # default: found by convention
 docs_dir = "docsrc"           # where the Sphinx sources live
 
@@ -93,7 +95,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
 

@@ -9,6 +9,7 @@
 - [API reference](api.html.md): | [`epythet`](_autosummary/epythet.html.md#module-epythet)   | Beautiful, correct documentation from...
 - [epythet](_autosummary/epythet.html.md): Beautiful, correct documentation from a Python package, with no boilerplate.
 - [epythet.agent_outputs](_autosummary/epythet.agent_outputs.html.md): Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.
+- [epythet.ai_artifacts](_autosummary/epythet.ai_artifacts.html.md): Discover a repository’s AI agent artifacts and render the “For AI agents” page.
 - [epythet.build](_autosummary/epythet.build.html.md): Run one build target for a loaded configuration; returns the output directory.
 - [epythet.call_make](_autosummary/epythet.call_make.html.md): Compatibility module: `make` now lives in [`epythet.build`](epythet.build.html.md#epythet.build).
 - [epythet.cli](_autosummary/epythet.cli.html.md): Command line access to epythet.
@@ -37,6 +38,7 @@
 - [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of `epythet validate`.
 - [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
 - [epythet.validation.render](_autosummary/epythet.validation.render.html.md): Render with the named format (`table`, `json` or `jsonl`).
+- [For AI agents](ai-agents.html.md): `epythet` ships artifacts for coding agents alongside its code. This page lists
 
 ---
 

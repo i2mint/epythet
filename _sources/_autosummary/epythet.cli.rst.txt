@@ -14,6 +14,7 @@ epythet.cli
 
    .. autosummary::
    
+      ai_artifacts
       check_pages
       configure_pages
       epythet_cli

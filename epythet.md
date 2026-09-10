@@ -24,6 +24,28 @@ Open `/path/to/project/docsrc/_build/html/index.html`. You get:
 
 Nothing has to be added to the package. Everything is read from `pyproject.toml` (or `setup.cfg`), the README and the docstrings.
 
+# AI agents
+
+epythet ships skills and subagents for coding agents, and documents them on every site it builds.
+
+```bash
+gh skill install i2mint/epythet epythet-setup --agent claude-code   # or copilot, cursor, codex, gemini
+```
+
+| Skill                     | Use it to                                                                                                      |
+|---------------------------|----------------------------------------------------------------------------------------------------------------|
+| `epythet-setup`           | set up docs for a package: quickstart, `[tool.epythet]`, the Pages workflow                                    |
+| `epythet-pages`           | diagnose and fix GitHub Pages publishing (the 404 after the first CI run)                                      |
+| `epythet-docstring-style` | write docstrings that render and that help agents: the dialect, the quality rubric, the behaviour-claim policy |
+| `epythet-validate`        | run `epythet validate`, read its findings and exit codes, propose ledger rules                                 |
+| `epythet-repair-migrate`  | the per-repository documentation sweep, step by step                                                           |
+| `epythet-theme`           | choose and parametrize a theme, set a brand colour                                                             |
+| `epythet-ai-artifacts`    | find a repository’s skills, agents and instruction files; read a site as an agent                              |
+
+Subagents `docs-reviewer` (reviews rendered pages and proposes ledger rules) and `docs-migrator` (runs the sweep on one repository) are in `epythet/data/agents/`; copy one into your project’s `.claude/agents/`. The same skills are inside the wheel (`epythet/data/skills/`), so `pip install epythet` already has them offline.
+
+For agents reading the documentation: every epythet site serves `llms.txt`, a `.md` twin of every page, the whole documentation as one file at `<site>/<package>.md`, and `objects.inv`. epythet’s own are at [i2mint.github.io/epythet/epythet.md](https://i2mint.github.io/epythet/epythet.md); the full list, with install commands, is on the site’s [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page, which epythet generates for any repository that has such artifacts (see below).
+
 # What it fixes without touching your docstrings
 
 Docstrings in real packages mix reStructuredText, Google sections and Markdown habits, and a few recurring slips render wrongly, often silently. epythet rewrites those at build time (the *normalizer*), so the rendered site is right even when the source is not:
@@ -58,6 +80,8 @@ ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignor
 api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
+ai_artifacts = true             # "For AI agents" page when the repo has skills, agents or CLAUDE.md
+ai_artifacts_template = ""      # project-relative file overriding that page's template
 package_dir = "src/dol"         # default: found by convention (<name>/ or src/<name>/)
 docs_dir = "docsrc"             # where the Sphinx sources are generated
 
@@ -95,6 +119,8 @@ Every site also serves, next to the HTML:
 - `objects.inv`: the Sphinx inventory, a machine-readable symbol-to-URL index (`sphobjinv convert plain objects.inv -`).
 
 Set `agent_outputs = false` to skip the second (Markdown) build pass.
+
+**The “For AI agents” page.** When the repository ships anything for agents, epythet adds an `ai-agents` page to the site listing it: skills (`<pkg>/data/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`) with their `gh skill install` lines and source folders, subagents (`<pkg>/data/agents/*.md`, `.claude/agents/*.md`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules`, `.codex`), and the outputs above with their URLs. Symlinks are followed and duplicates removed. `epythet ai-artifacts PROJECT_DIR` prints the same inventory (`--format json` for machines). Turn the page off with `ai_artifacts = false` (or, for a whole CI fleet, the environment variable `EPYTHET_AI_ARTIFACTS=0`), or replace its template with `ai_artifacts_template = "path/to/template.md"` (a `str.format` template; see `epythet.ai_artifacts`). A hand-written `docsrc/ai-agents.md` is left alone. A malformed `SKILL.md` never fails the build: the skill is listed by folder name.
 
 # Python API
 
@@ -327,6 +353,334 @@ from the `.md` one by [`markdown_to_pdf()`](_autosummary/epythet.agent_outputs.h
 renderer; when none is installed the PDF is skipped with a notice.
 
 
+# _autosummary/epythet.ai_artifacts.html.md
+
+# epythet.ai_artifacts
+
+Discover a repository’s AI agent artifacts and render the “For AI agents” page.
+
+A repository that ships tooling for coding agents does so by convention, not
+registration: skills are folders holding a `SKILL.md` (the Agent Skills spec),
+subagents are Markdown files with a frontmatter, and instruction files carry
+fixed names. This module reads those conventions and, when anything is found,
+renders one page for the documentation site that says what exists, where it
+lives, how to install it, and which machine-readable outputs the site itself
+publishes (`llms.txt`, the `.md` twins, the flat `<package>.md`,
+`objects.inv`).
+
+Where epythet looks (relative to the project root; `{pkg}` is the package
+directory):
+
+| artifact          | locations, in order of preference                                                                                                                                |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| skills            | `{pkg}/data/skills/*/SKILL.md` (shipped in the wheel,<br/>`gh skill`-installable), `skills/*/SKILL.md`<br/>(`gh skill`-installable), `.claude/skills/*/SKILL.md` |
+| subagents         | `{pkg}/data/agents/*.md`, `.claude/agents/*.md`                                                                                                                  |
+| instruction files | `CLAUDE.md`, `.claude/CLAUDE.md`, `AGENTS.md`,<br/>`.github/copilot-instructions.md`, `.cursor/rules`,<br/>`.codex/`                                             |
+
+Symlinks are followed and duplicates removed, so the `.claude/skills/` bridge
+that points into `{pkg}/data/skills/` yields one skill, attributed to its real
+location. The page is a `PageSpec` (`ai-agents.md`),
+produced by [`ai_artifacts_page()`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.ai_artifacts_page) and added to the scaffold by default when
+`[tool.epythet] ai_artifacts` is on (the default) and at least one artifact
+exists. The default template is [`DEFAULT_TEMPLATE`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.DEFAULT_TEMPLATE); a project can point
+`ai_artifacts_template` at its own file, and a hand-written `docsrc/ai-agents.md`
+without the epythet marker is never overwritten.
+
+```pycon
+>>> import tempfile, pathlib
+>>> root = pathlib.Path(tempfile.mkdtemp())
+>>> skill = root / "pkg" / "data" / "skills" / "pkg-quickstart"
+>>> skill.mkdir(parents=True)
+>>> _ = (skill / "SKILL.md").write_text(
+...     "---\nname: pkg-quickstart\ndescription: Use pkg.\n---\n\n# Body\n"
+... )
+>>> found = discover_artifacts(root, package_dir=root / "pkg")
+>>> [s.name for s in found.skills], found.skills[0].shipped
+(['pkg-quickstart'], True)
+>>> found.skills[0].install_command("org/pkg")
+'gh skill install org/pkg pkg-quickstart --agent claude-code'
+```
+
+### Module Attributes
+
+| [`SKILL_LOCATIONS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.SKILL_LOCATIONS)           | Skill folders relative to the project root; `{pkg}` is the package directory.                                                                 |
+|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| [`AGENT_LOCATIONS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AGENT_LOCATIONS)           | Subagent definition folders (one Markdown file per agent).                                                                                    |
+| [`INSTRUCTION_LOCATIONS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.INSTRUCTION_LOCATIONS)     | Instruction files and directories agents read, with the audience each serves.                                                                 |
+| [`PAGE_FILENAME`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.PAGE_FILENAME)             | The generated page's filename under `docsrc`.                                                                                                 |
+| [`DEFAULT_AGENT_HOST`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.DEFAULT_AGENT_HOST)        | The agent host named in generated `gh skill install` lines.                                                                                   |
+| [`DISABLE_ENV`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.DISABLE_ENV)               | Environment variable that switches the page off for a whole fleet build (`0` / `false` / `no` / `off`) without touching any `pyproject.toml`. |
+| [`AGENT_OUTPUT_KINDS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AGENT_OUTPUT_KINDS)        | The machine-readable outputs every epythet site publishes, in display order.                                                                  |
+| [`TEMPLATE_FIELDS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.TEMPLATE_FIELDS)           | The fields a page template may use.                                                                                                           |
+| [`DEFAULT_TEMPLATE`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.DEFAULT_TEMPLATE)          | The default page template; `str.format` fields are the section renders.                                                                       |
+| [`AGENT_OUTPUT_DESCRIPTIONS`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AGENT_OUTPUT_DESCRIPTIONS) | Descriptions of the machine-readable outputs, keyed by kind.                                                                                  |
+
+### Functions
+
+| [`agent_outputs_for`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.agent_outputs_for)(config)                          | The machine-readable outputs a configuration produces, with URLs when known.   |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`ai_artifacts_page`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.ai_artifacts_page)(config, \*[, artifacts])         | The "For AI agents" `PageSpec` for a project, or `None`.                       |
+| [`artifacts_json`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.artifacts_json)(artifacts)                          | `artifacts` as indented JSON (the `--format json` CLI output).                 |
+| [`artifacts_table`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.artifacts_table)(artifacts, \*[, repo_stub])        | A plain-text listing of `artifacts` (the default CLI output).                  |
+| [`default_pages`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.default_pages)(config)                              | The generated pages a scaffold gets when the caller passes none.               |
+| [`discover_artifacts`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.discover_artifacts)(project_dir, \*[, package_dir]) | Find the skills, subagents and instruction files of a project by convention.   |
+| [`enabled_by_environment`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.enabled_by_environment)()                           | False when `EPYTHET_AI_ARTIFACTS` is set to `0`, `false`, `no` or `off`.       |
+| [`parse_frontmatter`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.parse_frontmatter)(text)                            | The YAML frontmatter of a Markdown file as a dict (`{}` when absent).          |
+| [`render_ai_artifacts_page`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.render_ai_artifacts_page)(artifacts, config, \*)    | Render the "For AI agents" page for `artifacts` and a `DocsConfig`.            |
+| [`repo_stub_for`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.repo_stub_for)(repo_url)                            | `owner/repo` from a GitHub URL ('' when it is not one).                        |
+| [`site_url_for`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.site_url_for)(repo_url)                             | The GitHub Pages URL a GitHub repository publishes to ('' when unknown).       |
+
+### Classes
+
+| [`AIArtifacts`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AIArtifacts)(project_dir[, skills, ...])           | Everything [`discover_artifacts()`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.discover_artifacts) found for one project.   |
+|----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| [`AgentOutput`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AgentOutput)(kind, filename, description[, url])   | A machine-readable output of the built site, with its URL when known.                                     |
+| [`InstructionFile`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.InstructionFile)(source, audience[, is_dir])       | An instruction file or directory (`CLAUDE.md`, `AGENTS.md`, ...).                                         |
+| [`Skill`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.Skill)(name, source[, description, audience, ...]) | One skill folder: its `name`, description, and where the real files live.                                 |
+| [`Subagent`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.Subagent)(name, source[, description, tools, ...]) | One subagent definition file (`name`, description, tools, source path).                                   |
+
+### epythet.ai_artifacts.AGENT_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('{pkg}/data/agents', '.claude/agents')*
+
+Subagent definition folders (one Markdown file per agent).
+
+### epythet.ai_artifacts.AGENT_OUTPUT_DESCRIPTIONS *= {'aggregate_md': 'the whole documentation as one Markdown file', 'aggregate_pdf': 'the whole documentation as one PDF, for reading', 'llms': 'an index of every page with a one-line description ([llms.txt](https://llmstxt.org) format)', 'md_twins': 'a rendered Markdown twin of every page, advertised from each page\\'s \`<head>\` with \`<link rel="alternate" type="text/markdown">\`', 'objects_inv': 'the Sphinx inventory: a symbol-to-URL index (\`sphobjinv convert plain objects.inv -\`)'}*
+
+Descriptions of the machine-readable outputs, keyed by kind.
+
+### epythet.ai_artifacts.AGENT_OUTPUT_KINDS *= ('llms', 'aggregate_md', 'aggregate_pdf', 'md_twins', 'objects_inv')*
+
+The machine-readable outputs every epythet site publishes, in display order.
+
+### *class* epythet.ai_artifacts.AIArtifacts(project_dir, skills=(), subagents=(), instruction_files=())
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+Everything [`discover_artifacts()`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.discover_artifacts) found for one project.
+
+#### to_dict()
+
+A JSON-ready view (paths relative to the project root).
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
+
+### *class* epythet.ai_artifacts.AgentOutput(kind, filename, description, url='')
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+A machine-readable output of the built site, with its URL when known.
+
+### epythet.ai_artifacts.DEFAULT_AGENT_HOST *= 'claude-code'*
+
+The agent host named in generated `gh skill install` lines.
+
+### epythet.ai_artifacts.DEFAULT_TEMPLATE *= '{marker}\\n\\n# For AI agents\\n\\n\`{name}\` ships artifacts for coding agents alongside its code. This page lists\\nthem, says where each lives in the repository, and points at the\\nmachine-readable copies of this documentation.\\n{skills_section}{subagents_section}{instructions_section}{outputs_section}'*
+
+The default page template; `str.format` fields are the section renders.
+
+### epythet.ai_artifacts.DISABLE_ENV *= 'EPYTHET_AI_ARTIFACTS'*
+
+Environment variable that switches the page off for a whole fleet build
+(`0` / `false` / `no` / `off`) without touching any `pyproject.toml`.
+
+### epythet.ai_artifacts.INSTRUCTION_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str)], ...]* *= (('CLAUDE.md', 'Claude Code'), ('.claude/CLAUDE.md', 'Claude Code'), ('AGENTS.md', 'Codex, Copilot, Cursor and other agents'), ('.github/copilot-instructions.md', 'GitHub Copilot'), ('.cursor/rules', 'Cursor'), ('.codex', 'Codex'))*
+
+Instruction files and directories agents read, with the audience each serves.
+
+### *class* epythet.ai_artifacts.InstructionFile(source, audience, is_dir=False)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+An instruction file or directory (`CLAUDE.md`, `AGENTS.md`, …).
+
+### epythet.ai_artifacts.PAGE_FILENAME *= 'ai-agents.md'*
+
+The generated page’s filename under `docsrc`.
+
+### epythet.ai_artifacts.SKILL_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('{pkg}/data/skills', 'skills', '.claude/skills')*
+
+Skill folders relative to the project root; `{pkg}` is the package directory.
+
+### *class* epythet.ai_artifacts.Skill(name, source, description='', audience='', shipped=False, installable=True)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One skill folder: its `name`, description, and where the real files live.
+
+`source` is the project-relative POSIX path of the folder that holds the
+files (a symlink in `.claude/skills/` is attributed to its target).
+`shipped` is true when that folder is under the package directory, so the
+skill is inside the wheel; `installable` when `gh skill` can see it (a
+non-hidden path).
+
+#### install_command(repo_stub, , agent='claude-code')
+
+The `gh skill install` line, or `None` when `gh skill` cannot see it.
+
+```pycon
+>>> Skill("x", "pkg/data/skills/x").install_command("org/repo")
+'gh skill install org/repo x --agent claude-code'
+>>> Skill("x", ".claude/skills/x", installable=False).install_command("o/r")
+```
+
+### *class* epythet.ai_artifacts.Subagent(name, source, description='', tools='', shipped=False)
+
+Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+
+One subagent definition file (`name`, description, tools, source path).
+
+### epythet.ai_artifacts.TEMPLATE_FIELDS *= frozenset({'display_name', 'instructions_section', 'marker', 'name', 'outputs_section', 'repo_stub', 'site_url', 'skills_section', 'subagents_section'})*
+
+The fields a page template may use.
+
+### epythet.ai_artifacts.agent_outputs_for(config)
+
+The machine-readable outputs a configuration produces, with URLs when known.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`AgentOutput`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AgentOutput)]
+
+```pycon
+>>> from epythet.config import DocsConfig
+>>> cfg = DocsConfig(project_dir="/tmp/x", name="x", repo_url="https://github.com/o/x")
+>>> [o.filename for o in agent_outputs_for(cfg)]
+['llms.txt', 'x.md', '<page>.html.md', 'objects.inv']
+>>> agent_outputs_for(cfg)[0].url
+'https://o.github.io/x/llms.txt'
+```
+
+### epythet.ai_artifacts.ai_artifacts_page(config, , artifacts=None)
+
+The “For AI agents” `PageSpec` for a project, or `None`.
+
+`None` when `config.ai_artifacts` is off, when the `EPYTHET_AI_ARTIFACTS`
+environment variable is `0`/`false` (the fleet-wide switch), or when no
+artifact was found. The template is `config.ai_artifacts_template` (a
+file, relative to the project root) when set, else [`DEFAULT_TEMPLATE`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.DEFAULT_TEMPLATE).
+
+* **Raises:**
+  [**ConfigError**](_autosummary/epythet.config.html.md#epythet.config.ConfigError) – when the template file is missing or has a field the
+  renderer does not provide (literal braces must be doubled: `{{`).
+
+### epythet.ai_artifacts.artifacts_json(artifacts)
+
+`artifacts` as indented JSON (the `--format json` CLI output).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.ai_artifacts.artifacts_table(artifacts, , repo_stub='')
+
+A plain-text listing of `artifacts` (the default CLI output).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.ai_artifacts.default_pages(config)
+
+The generated pages a scaffold gets when the caller passes none.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/library/stdtypes.html#list)
+
+### epythet.ai_artifacts.discover_artifacts(project_dir, , package_dir=None)
+
+Find the skills, subagents and instruction files of a project by convention.
+
+* **Parameters:**
+  * **project_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the repository root
+  * **package_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/library/constants.html#None)) – the importable package directory, for `{pkg}/data/...`
+    (skipped when `None`)
+* **Return type:**
+  [`AIArtifacts`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AIArtifacts)
+
+### epythet.ai_artifacts.enabled_by_environment()
+
+False when `EPYTHET_AI_ARTIFACTS` is set to `0`, `false`, `no` or `off`.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+
+```pycon
+>>> os.environ[DISABLE_ENV] = "0"; enabled_by_environment()
+False
+>>> del os.environ[DISABLE_ENV]; enabled_by_environment()
+True
+```
+
+### epythet.ai_artifacts.parse_frontmatter(text)
+
+The YAML frontmatter of a Markdown file as a dict (`{}` when absent).
+
+Uses PyYAML when installed; otherwise, or when PyYAML rejects the block (an
+unquoted `description: Use when x: y` is a common slip), a small reader
+that understands the subset skills and agents use: `key: value` scalars,
+`>`/`|` block scalars, one level of nested mapping, `[a, b]` flow
+lists and trailing comments. A malformed frontmatter never raises.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
+
+```pycon
+>>> parse_frontmatter("---\ndescription: Use when a: b\nname: x\n---\n")
+{'description': 'Use when a: b', 'name': 'x'}
+```
+
+```pycon
+>>> parse_frontmatter("---\nname: x\nmetadata:\n  audience: users\n---\nbody")
+{'name': 'x', 'metadata': {'audience': 'users'}}
+>>> parse_frontmatter("no frontmatter")
+{}
+```
+
+### epythet.ai_artifacts.render_ai_artifacts_page(artifacts, config, , template='{marker}\\\\n\\\\n# For AI agents\\\\n\\\\n\`{name}\` ships artifacts for coding agents alongside its code. This page lists\\\\nthem, says where each lives in the repository, and points at the\\\\nmachine-readable copies of this documentation.\\\\n{skills_section}{subagents_section}{instructions_section}{outputs_section}', agent='claude-code')
+
+Render the “For AI agents” page for `artifacts` and a `DocsConfig`.
+
+* **Parameters:**
+  * **template** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – a `str.format` template with the fields `marker`,
+    `name`, `display_name`, `repo_stub`, `site_url`, `skills_section`,
+    `subagents_section`, `instructions_section`, `outputs_section`
+  * **agent** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – the host named in the `gh skill install` lines
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.ai_artifacts.repo_stub_for(repo_url)
+
+`owner/repo` from a GitHub URL (’’ when it is not one).
+
+Deeper paths, fragments and queries are dropped, so an `Issues` URL in
+`[project.urls]` still names the repository.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+```pycon
+>>> repo_stub_for("https://github.com/i2mint/epythet.git")
+'i2mint/epythet'
+>>> repo_stub_for("https://github.com/i2mint/epythet/issues#readme")
+'i2mint/epythet'
+>>> repo_stub_for("git@github.com:i2mint/epythet.git")
+'i2mint/epythet'
+>>> repo_stub_for("https://gitlab.com/o/r")
+''
+```
+
+### epythet.ai_artifacts.site_url_for(repo_url)
+
+The GitHub Pages URL a GitHub repository publishes to (’’ when unknown).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+```pycon
+>>> site_url_for("https://github.com/i2mint/epythet")
+'https://i2mint.github.io/epythet/'
+>>> site_url_for("")
+''
+```
+
+
 # _autosummary/epythet.build.html.md
 
 # epythet.build
@@ -367,15 +721,29 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 
 ### Functions
 
-| [`check_pages`](_autosummary/epythet.cli.html.md#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                     |
-|--------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| [`configure_pages`](_autosummary/epythet.cli.html.md#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                      |
-| [`epythet_cli`](_autosummary/epythet.cli.html.md#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.               |
-| [`quickstart`](_autosummary/epythet.cli.html.md#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go. |
+| [`ai_artifacts`](_autosummary/epythet.cli.html.md#epythet.cli.ai_artifacts)(project_dir, \*[, format])   | List the AI agent artifacts a project ships (skills, subagents, instruction files).   |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`check_pages`](_autosummary/epythet.cli.html.md#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                                               |
+| [`configure_pages`](_autosummary/epythet.cli.html.md#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                                                |
+| [`epythet_cli`](_autosummary/epythet.cli.html.md#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.                                         |
+| [`quickstart`](_autosummary/epythet.cli.html.md#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
-### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>]*
+### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
+
+### epythet.cli.ai_artifacts(project_dir, , format='table')
+
+List the AI agent artifacts a project ships (skills, subagents, instruction files).
+
+Looks where agents and `gh skill` look: `<pkg>/data/skills`, `skills/`,
+`.claude/skills`, `<pkg>/data/agents`, `.claude/agents`, `CLAUDE.md`,
+`AGENTS.md`, `.cursor/rules`, `.codex`. The same discovery feeds the
+generated “For AI agents” documentation page.
+
+* **Parameters:**
+  * **project_dir** – the project root
+  * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human) or json
 
 ### epythet.cli.check_pages(repo, , no_url_check=False)
 
@@ -522,6 +890,8 @@ ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
 api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
 agent_outputs = true          # llms.txt + .md twins of every page
 aggregates = ["md"]           # flat single-document twins at the site root
+ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
+ai_artifacts_template = ""    # project-relative file overriding that page's template
 package_dir = "src/dol"       # default: found by convention
 docs_dir = "docsrc"           # where the Sphinx sources live
 
@@ -585,7 +955,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
 
@@ -737,6 +1107,10 @@ it, a Markdown fence, `Returns: text` on one line, a stray `*args`) are
 applied at build time by [`epythet.normalizer`](_autosummary/epythet.normalizer.html.md#module-epythet.normalizer), so existing docstrings
 render correctly without edits.
 
+A repository’s agent artifacts (skills, subagents, `CLAUDE.md` and friends)
+are discovered by convention and rendered as a “For AI agents” page, see
+[`epythet.ai_artifacts`](_autosummary/epythet.ai_artifacts.html.md#module-epythet.ai_artifacts); epythet’s own skills ship in `epythet/data/skills`.
+
 GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
 docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
 `repair_package()`) live in [`epythet.tools`](_autosummary/epythet.tools.html.md#module-epythet.tools).
@@ -758,6 +1132,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 
 | [`agent_outputs`](_autosummary/epythet.agent_outputs.html.md#module-epythet.agent_outputs)              | Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.                                                        |
 |----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| [`ai_artifacts`](_autosummary/epythet.ai_artifacts.html.md#module-epythet.ai_artifacts)                | Discover a repository's AI agent artifacts and render the "For AI agents" page.                                                      |
 | [`build`](_autosummary/epythet.build.html.md#epythet.build)(config[, target, overrides])        | Run one build target for a loaded configuration; returns the output directory.                                                       |
 | [`call_make`](_autosummary/epythet.call_make.html.md#module-epythet.call_make)                      | Compatibility module: `make` now lives in [`epythet.build`](_autosummary/epythet.build.html.md#epythet.build).              |
 | [`cli`](_autosummary/epythet.cli.html.md#module-epythet.cli)                                  | Command line access to epythet.                                                                                                      |
@@ -1110,14 +1485,16 @@ napoleon (priority 500) sees the docstring.
 
 # epythet.scaffold
 
-### epythet.scaffold(config, , verbose=True, pages=())
+### epythet.scaffold(config, , verbose=True, pages=None)
 
 Write the docsrc files for an already-loaded configuration.
 
 * **Parameters:**
-  **pages** ([`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[`PageSpec`]) – extra generated pages, written next to `index.md` and added
-  to its toctree after the API entry (the seam for e.g. a “For AI agents”
-  page).
+  **pages** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[`PageSpec`]]) – extra generated pages, written next to `index.md` and added
+  to its toctree after the API entry. `None` (the default) means the
+  conventional pages, i.e. the “For AI agents” page that
+  `epythet.ai_artifacts.default_pages` produces when the project has
+  agent artifacts and `ai_artifacts` is on; pass `()` for none.
 * **Return type:**
   [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
 
@@ -1165,7 +1542,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.1', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, ignore=('tests/,scrap/,examples/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.2', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, ignore=('tests/,scrap/,examples/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -3353,6 +3730,124 @@ Render with the named format (`table`, `json` or `jsonl`).
 
 * **Return type:**
   [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+
+# ai-agents.html.md
+
+<!-- generated by epythet -->
+
+# For AI agents
+
+`epythet` ships artifacts for coding agents alongside its code. This page lists
+them, says where each lives in the repository, and points at the
+machine-readable copies of this documentation.
+
+## Skills
+
+Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.io) format): a description that tells an agent when to use it and a body with the procedure. Install one into your agent with `gh skill` (any host: `--agent claude-code`, `copilot`, `cursor`, `codex`, `gemini`), or use the copy bundled in the wheel.
+
+### `epythet-ai-artifacts`
+
+Find, install and document a repository’s AI agent artifacts: skills (`SKILL.md` folders under `<pkg>/data/skills`, `skills/`, `.claude/skills`), subagents (`.claude/agents`, `<pkg>/data/agents`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules`, `.codex`), and the machine-readable documentation a site publishes (`llms.txt`, `<package>.md`, `.md` page twins, `objects.inv`). Use when arriving in an unfamiliar repo and asking “does this project ship skills or agents”, “how do I install this package’s skill”, “where is the agent-readable version of these docs”, or when adding artifacts to a package so that epythet documents them.
+
+```bash
+gh skill install i2mint/epythet epythet-ai-artifacts --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-ai-artifacts`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-ai-artifacts) (bundled with the pip package).
+
+### `epythet-docstring-style`
+
+Write and improve Python docstrings that render correctly in epythet/Sphinx and that help both humans and AI agents: the epythet docstring dialect (Google sections, doctests, types in annotations), the quality rubric, the behaviour-claim policy (never document behaviour you have not verified), and the anti-patterns to avoid. Use when writing or editing docstrings, when asked to “document this function/module/package”, “improve the docstrings”, “add examples”, “fix the docstring style”, or when reviewing a docstring sweep. Also use before answering “should the type go in the docstring”.
+
+```bash
+gh skill install i2mint/epythet epythet-docstring-style --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-docstring-style`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-docstring-style) (bundled with the pip package).
+
+### `epythet-pages`
+
+Diagnose and fix GitHub Pages publishing for Python documentation built with epythet (or any Sphinx site pushed to a gh-pages branch). Use when docs give a 404, the site does not update, Pages is not enabled, the gh-pages branch is missing, the docs CI fails, or when enabling Pages for one repo or every repo in an organisation. Covers `epythet check-pages`, `epythet configure-pages`, the Python API, the raw `gh api` equivalent, and batch operations.
+
+```bash
+gh skill install i2mint/epythet epythet-pages --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-pages`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-pages) (bundled with the pip package).
+
+### `epythet-repair-migrate`
+
+The per-repository documentation sweep for packages documented with epythet: baseline, validate, repair rendering artifacts in source, improve coverage, correctness and completeness of docstrings, choose a theme, remove a committed docsrc/, and land the change. Use when asked to “migrate the docs to epythet 0.2”, “fix the docstrings across this repo”, “run the docs sweep”, “repair the rendering artifacts”, “upgrade docsrc”, or “clean up this package’s documentation”. Marks which commands exist today and which are coming in a later epythet release.
+
+```bash
+gh skill install i2mint/epythet epythet-repair-migrate --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-repair-migrate`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-repair-migrate) (bundled with the pip package).
+
+### `epythet-setup`
+
+Set up documentation for a Python package with epythet: run the quickstart, read what it produces, configure `[tool.epythet]` in pyproject.toml, add the GitHub Pages publishing workflow, and upgrade a 0.1.x docsrc. Use when asked to “add docs”, “generate documentation”, “set up Sphinx”, “publish docs to GitHub Pages”, “configure epythet”, “what does [tool.epythet] accept”, or when a project has docstrings but no documentation site. Convention over configuration: nothing needs to be added to the package.
+
+```bash
+gh skill install i2mint/epythet epythet-setup --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-setup`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-setup) (bundled with the pip package).
+
+### `epythet-theme`
+
+Choose and parametrize the Sphinx theme of an epythet documentation site: the curated pool (furo, shibuya, pydata-sphinx-theme, sphinxawesome-theme, sphinx-book-theme, alabaster, sphinx_rtd_theme), rules of thumb for picking one, the `theme` / `accent` / `mode` / `theme_options` keys, the derived OKLCH accent colour, and where to browse themes. Use when asked to change, choose or improve a docs theme, set a brand colour, force light or dark mode, why the docs look dated, or “make the docs look like X”.
+
+```bash
+gh skill install i2mint/epythet epythet-theme --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-theme`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-theme) (bundled with the pip package).
+
+### `epythet-validate`
+
+Check a Python package’s docstrings for rendering artifacts and build problems with `epythet validate`: the validation levels (lint, parse, build, render, review), the exit codes, output formats, the artifact ledger of rules (DR001…), how findings are recorded, and how to propose a new rule. Use when asked to “validate the docs”, “check docstrings before publishing”, “why does this docstring render wrong”, “gate docs in CI”, “what does DR003 mean”, or when reading or extending epythet’s ledger of documentation problems.
+
+```bash
+gh skill install i2mint/epythet epythet-validate --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-validate`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-validate) (bundled with the pip package).
+
+The bundled skills are also on disk after `pip install epythet`, under the package’s `data/skills/` directory; link them into an agent without network access with `skill link-skills <that directory>`.
+
+## Subagents
+
+Subagents are Markdown files with a frontmatter (`name`, `description`, `tools`) and a system prompt as the body. Copy one into your project’s `.claude/agents/` (or your agent host’s equivalent) to delegate the task it describes.
+
+### `docs-migrator`
+
+Runs the epythet documentation sweep on one repository end to end, baseline, validate, repair rendering artifacts, improve coverage, correctness and completeness of docstrings under the behaviour-claim policy, choose the theme, remove a committed docsrc/, and open a pull request with a before/after report. Use when asked to “sweep the docs of this repo”, “migrate this package to epythet 0.2”, “fix and improve the docstrings across this package”, or to run one repository of a fleet documentation migration.
+
+Source: [`epythet/data/agents/docs-migrator.md`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/agents/docs-migrator.md); tools: `Bash, Read, Edit, Write, Grep, Glob`.
+
+### `docs-reviewer`
+
+Reviews the rendered documentation of a Python package (Level 3 of epythet validate) and returns a review packet of findings that each name a ledger rule or propose a new one, as strict JSON plus draft rule files. Use after a docs build or a docstring sweep when asked to “review the rendered docs”, “look at the built pages for problems”, “find rendering artifacts validate missed”, or “propose ledger rules”. Advisory only, it never gates.
+
+Source: [`epythet/data/agents/docs-reviewer.md`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/agents/docs-reviewer.md); tools: `Bash, Read, Grep, Glob, Write`.
+
+## Instruction files
+
+Files agents read before working in this repository.
+
+- [`.claude/CLAUDE.md`](https://github.com/i2mint/epythet/tree/HEAD/.claude/CLAUDE.md): read by Claude Code
+
+## Machine-readable documentation
+
+This site publishes the same documentation in forms that fit an agent’s context window:
+
+- [`llms.txt`](https://i2mint.github.io/epythet/llms.txt): an index of every page with a one-line description ([llms.txt](https://llmstxt.org) format)
+- [`epythet.md`](https://i2mint.github.io/epythet/epythet.md): the whole documentation as one Markdown file
+- `<page>.html.md`: a rendered Markdown twin of every page, advertised from each page’s `<head>` with `<link rel="alternate" type="text/markdown">`
+- [`objects.inv`](https://i2mint.github.io/epythet/objects.inv): the Sphinx inventory: a symbol-to-URL index (`sphobjinv convert plain objects.inv -`)
 
 
 # api.html.md

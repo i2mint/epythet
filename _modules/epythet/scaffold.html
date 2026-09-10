@@ -202,6 +202,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.build.html">epythet.build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.call_make.html">epythet.call_make</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.cli.html">epythet.cli</a></li>
@@ -238,6 +239,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-agents.html">For AI agents</a></li>
 </ul>
 
 </div>
@@ -339,14 +341,20 @@
 <div class="viewcode-block" id="scaffold">
 <a class="viewcode-back" href="../../_autosummary/epythet.scaffold.html#epythet.scaffold">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scaffold</span><span class="p">(</span>
-    <span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">pages</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PageSpec</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">pages</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PageSpec</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write the docsrc files for an already-loaded configuration.</span>
 
 <span class="sd">    :param pages: extra generated pages, written next to ``index.md`` and added</span>
-<span class="sd">        to its toctree after the API entry (the seam for e.g. a "For AI agents"</span>
-<span class="sd">        page).</span>
+<span class="sd">        to its toctree after the API entry. ``None`` (the default) means the</span>
+<span class="sd">        conventional pages, i.e. the "For AI agents" page that</span>
+<span class="sd">        ``epythet.ai_artifacts.default_pages`` produces when the project has</span>
+<span class="sd">        agent artifacts and ``ai_artifacts`` is on; pass ``()`` for none.</span>
 <span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">pages</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.ai_artifacts</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_pages</span>
+
+        <span class="n">pages</span> <span class="o">=</span> <span class="n">default_pages</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">package_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">"Cannot find the package directory for </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> under "</span>
@@ -383,6 +391,7 @@
         <span class="n">_write_if_generated</span><span class="p">(</span>
             <span class="n">docsrc</span> <span class="o">/</span> <span class="n">page</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">page</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">marker</span><span class="p">,),</span> <span class="n">say</span><span class="o">=</span><span class="n">say</span>
         <span class="p">)</span>
+    <span class="n">_remove_stale_generated_pages</span><span class="p">(</span><span class="n">docsrc</span><span class="p">,</span> <span class="n">pages</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">api_generator</span> <span class="o">==</span> <span class="s2">"autosummary"</span><span class="p">:</span>
         <span class="p">(</span><span class="n">docsrc</span> <span class="o">/</span> <span class="s2">"api.rst"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
             <span class="n">templates</span><span class="o">.</span><span class="n">api_rst_autosummary</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">package_name</span><span class="p">),</span>
@@ -512,6 +521,27 @@
             <span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removed legacy </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_remove_stale_generated_pages</span><span class="p">(</span><span class="n">docsrc</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pages</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Delete a generated conventional page that this run did not produce.</span>
+
+<span class="sd">    The "For AI agents" page is written when a project has agent artifacts; when</span>
+<span class="sd">    they are gone (or ``ai_artifacts`` is turned off) the old file would stay in</span>
+<span class="sd">    a committed ``docsrc``, be built, and be listed in ``llms.txt`` while no</span>
+<span class="sd">    longer being in the toctree. Only files carrying the epythet marker are</span>
+<span class="sd">    removed; a hand-written page of the same name is kept.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.ai_artifacts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PAGE_FILENAME</span>
+
+    <span class="n">produced</span> <span class="o">=</span> <span class="p">{</span><span class="n">page</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">pages</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">(</span><span class="n">PAGE_FILENAME</span><span class="p">,):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">docsrc</span> <span class="o">/</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">produced</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">templates</span><span class="o">.</span><span class="n">INDEX_MARKER</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">):</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+            <span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removed stale generated </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_write_if_generated</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">markers</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">existing</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
@@ -550,7 +580,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=3ca669d2"></script>
+</div><script src="../../_static/documentation_options.js?v=1c17f339"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

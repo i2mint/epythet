@@ -1,0 +1,47 @@
+epythet.ai\_artifacts
+=====================
+
+.. automodule:: epythet.ai_artifacts
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SKILL_LOCATIONS
+      AGENT_LOCATIONS
+      INSTRUCTION_LOCATIONS
+      PAGE_FILENAME
+      DEFAULT_AGENT_HOST
+      DISABLE_ENV
+      AGENT_OUTPUT_KINDS
+      TEMPLATE_FIELDS
+      DEFAULT_TEMPLATE
+      AGENT_OUTPUT_DESCRIPTIONS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      agent_outputs_for
+      ai_artifacts_page
+      artifacts_json
+      artifacts_table
+      default_pages
+      discover_artifacts
+      enabled_by_environment
+      parse_frontmatter
+      render_ai_artifacts_page
+      repo_stub_for
+      site_url_for
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AIArtifacts
+      AgentOutput
+      InstructionFile
+      Skill
+      Subagent
+   

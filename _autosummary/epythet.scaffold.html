@@ -203,6 +203,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.build.html">epythet.build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.call_make.html">epythet.call_make</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.cli.html">epythet.cli</a></li>
@@ -239,6 +240,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../ai-agents.html">For AI agents</a></li>
 </ul>
 
 </div>
@@ -281,13 +283,15 @@
 <h1>epythet.scaffold<a class="headerlink" href="#epythet-scaffold" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.scaffold">
-<span class="sig-prename descclassname"><span class="pre">epythet.</span></span><span class="sig-name descname"><span class="pre">scaffold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/scaffold.html#scaffold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.scaffold" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.</span></span><span class="sig-name descname"><span class="pre">scaffold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/scaffold.html#scaffold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.scaffold" title="Link to this definition">¶</a></dt>
 <dd><p>Write the docsrc files for an already-loaded configuration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>pages</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PageSpec</span></code>]</span>) – extra generated pages, written next to <code class="docutils literal notranslate"><span class="pre">index.md</span></code> and added
-to its toctree after the API entry (the seam for e.g. a “For AI agents”
-page).</p>
+<dd class="field-odd"><p><strong>pages</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">PageSpec</span></code>]]</span>) – extra generated pages, written next to <code class="docutils literal notranslate"><span class="pre">index.md</span></code> and added
+to its toctree after the API entry. <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default) means the
+conventional pages, i.e. the “For AI agents” page that
+<code class="docutils literal notranslate"><span class="pre">epythet.ai_artifacts.default_pages</span></code> produces when the project has
+agent artifacts and <code class="docutils literal notranslate"><span class="pre">ai_artifacts</span></code> is on; pass <code class="docutils literal notranslate"><span class="pre">()</span></code> for none.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
@@ -361,7 +365,7 @@ page).</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3ca669d2"></script>
+</div><script src="../_static/documentation_options.js?v=1c17f339"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

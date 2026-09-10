@@ -22,6 +22,28 @@ Open `/path/to/project/docsrc/_build/html/index.html`. You get:
 
 Nothing has to be added to the package. Everything is read from `pyproject.toml` (or `setup.cfg`), the README and the docstrings.
 
+# AI agents
+
+epythet ships skills and subagents for coding agents, and documents them on every site it builds.
+
+```bash
+gh skill install i2mint/epythet epythet-setup --agent claude-code   # or copilot, cursor, codex, gemini
+```
+
+| Skill                     | Use it to                                                                                                      |
+|---------------------------|----------------------------------------------------------------------------------------------------------------|
+| `epythet-setup`           | set up docs for a package: quickstart, `[tool.epythet]`, the Pages workflow                                    |
+| `epythet-pages`           | diagnose and fix GitHub Pages publishing (the 404 after the first CI run)                                      |
+| `epythet-docstring-style` | write docstrings that render and that help agents: the dialect, the quality rubric, the behaviour-claim policy |
+| `epythet-validate`        | run `epythet validate`, read its findings and exit codes, propose ledger rules                                 |
+| `epythet-repair-migrate`  | the per-repository documentation sweep, step by step                                                           |
+| `epythet-theme`           | choose and parametrize a theme, set a brand colour                                                             |
+| `epythet-ai-artifacts`    | find a repository’s skills, agents and instruction files; read a site as an agent                              |
+
+Subagents `docs-reviewer` (reviews rendered pages and proposes ledger rules) and `docs-migrator` (runs the sweep on one repository) are in `epythet/data/agents/`; copy one into your project’s `.claude/agents/`. The same skills are inside the wheel (`epythet/data/skills/`), so `pip install epythet` already has them offline.
+
+For agents reading the documentation: every epythet site serves `llms.txt`, a `.md` twin of every page, the whole documentation as one file at `<site>/<package>.md`, and `objects.inv`. epythet’s own are at [i2mint.github.io/epythet/epythet.md](https://i2mint.github.io/epythet/epythet.md); the full list, with install commands, is on the site’s [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page, which epythet generates for any repository that has such artifacts (see below).
+
 # What it fixes without touching your docstrings
 
 Docstrings in real packages mix reStructuredText, Google sections and Markdown habits, and a few recurring slips render wrongly, often silently. epythet rewrites those at build time (the *normalizer*), so the rendered site is right even when the source is not:
@@ -56,6 +78,8 @@ ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignor
 api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
+ai_artifacts = true             # "For AI agents" page when the repo has skills, agents or CLAUDE.md
+ai_artifacts_template = ""      # project-relative file overriding that page's template
 package_dir = "src/dol"         # default: found by convention (<name>/ or src/<name>/)
 docs_dir = "docsrc"             # where the Sphinx sources are generated
 
@@ -93,6 +117,8 @@ Every site also serves, next to the HTML:
 - `objects.inv`: the Sphinx inventory, a machine-readable symbol-to-URL index (`sphobjinv convert plain objects.inv -`).
 
 Set `agent_outputs = false` to skip the second (Markdown) build pass.
+
+**The “For AI agents” page.** When the repository ships anything for agents, epythet adds an `ai-agents` page to the site listing it: skills (`<pkg>/data/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`) with their `gh skill install` lines and source folders, subagents (`<pkg>/data/agents/*.md`, `.claude/agents/*.md`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules`, `.codex`), and the outputs above with their URLs. Symlinks are followed and duplicates removed. `epythet ai-artifacts PROJECT_DIR` prints the same inventory (`--format json` for machines). Turn the page off with `ai_artifacts = false` (or, for a whole CI fleet, the environment variable `EPYTHET_AI_ARTIFACTS=0`), or replace its template with `ai_artifacts_template = "path/to/template.md"` (a `str.format` template; see `epythet.ai_artifacts`). A hand-written `docsrc/ai-agents.md` is left alone. A malformed `SKILL.md` never fails the build: the skill is listed by folder name.
 
 # Python API
 

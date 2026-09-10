@@ -203,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.build.html">epythet.build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.call_make.html">epythet.call_make</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.cli.html">epythet.cli</a></li>
@@ -239,6 +240,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ai-agents.html">For AI agents</a></li>
 </ul>
 
 </div>
@@ -296,6 +298,47 @@ epythet<span class="w"> </span>quickstart<span class="w"> </span>/path/to/projec
 <li><p><strong>agent-facing twins</strong>: <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code>, a <code class="docutils literal notranslate"><span class="pre">.md</span></code> twin of every page, a flat <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>, and <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code>.</p></li>
 </ul>
 <p>Nothing has to be added to the package. Everything is read from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> (or <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>), the README and the docstrings.</p>
+</section>
+<section id="ai-agents">
+<h1>AI agents<a class="headerlink" href="#ai-agents" title="Link to this heading">¶</a></h1>
+<p>epythet ships skills and subagents for coding agents, and documents them on every site it builds.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>i2mint/epythet<span class="w"> </span>epythet-setup<span class="w"> </span>--agent<span class="w"> </span>claude-code<span class="w">   </span><span class="c1"># or copilot, cursor, codex, gemini</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Skill</p></th>
+<th class="head"><p>Use it to</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-setup</span></code></p></td>
+<td><p>set up docs for a package: quickstart, <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span></code>, the Pages workflow</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-pages</span></code></p></td>
+<td><p>diagnose and fix GitHub Pages publishing (the 404 after the first CI run)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-docstring-style</span></code></p></td>
+<td><p>write docstrings that render and that help agents: the dialect, the quality rubric, the behaviour-claim policy</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-validate</span></code></p></td>
+<td><p>run <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">validate</span></code>, read its findings and exit codes, propose ledger rules</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-repair-migrate</span></code></p></td>
+<td><p>the per-repository documentation sweep, step by step</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-theme</span></code></p></td>
+<td><p>choose and parametrize a theme, set a brand colour</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">epythet-ai-artifacts</span></code></p></td>
+<td><p>find a repository’s skills, agents and instruction files; read a site as an agent</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Subagents <code class="docutils literal notranslate"><span class="pre">docs-reviewer</span></code> (reviews rendered pages and proposes ledger rules) and <code class="docutils literal notranslate"><span class="pre">docs-migrator</span></code> (runs the sweep on one repository) are in <code class="docutils literal notranslate"><span class="pre">epythet/data/agents/</span></code>; copy one into your project’s <code class="docutils literal notranslate"><span class="pre">.claude/agents/</span></code>. The same skills are inside the wheel (<code class="docutils literal notranslate"><span class="pre">epythet/data/skills/</span></code>), so <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">epythet</span></code> already has them offline.</p>
+<p>For agents reading the documentation: every epythet site serves <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code>, a <code class="docutils literal notranslate"><span class="pre">.md</span></code> twin of every page, the whole documentation as one file at <code class="docutils literal notranslate"><span class="pre">&lt;site&gt;/&lt;package&gt;.md</span></code>, and <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code>. epythet’s own are at <a class="reference external" href="https://i2mint.github.io/epythet/epythet.md">i2mint.github.io/epythet/epythet.md</a>; the full list, with install commands, is on the site’s <a class="reference external" href="https://i2mint.github.io/epythet/ai-agents.html">For AI agents</a> page, which epythet generates for any repository that has such artifacts (see below).</p>
 </section>
 <section id="what-it-fixes-without-touching-your-docstrings">
 <h1>What it fixes without touching your docstrings<a class="headerlink" href="#what-it-fixes-without-touching-your-docstrings" title="Link to this heading">¶</a></h1>
@@ -360,6 +403,8 @@ epythet<span class="w"> </span>quickstart<span class="w"> </span>/path/to/projec
 <span class="n">api_generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"autosummary"</span><span class="w">   </span><span class="c1"># "autosummary" (imports the package) | "autoapi" (static parsing, no import)</span>
 <span class="n">agent_outputs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">            </span><span class="c1"># llms.txt, .md twins, &lt;link rel="alternate"&gt; relations</span>
 <span class="n">aggregates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"md"</span><span class="p">]</span><span class="w">             </span><span class="c1"># flat single-document twins at the site root: "md", "pdf"</span>
+<span class="n">ai_artifacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">             </span><span class="c1"># "For AI agents" page when the repo has skills, agents or CLAUDE.md</span>
+<span class="n">ai_artifacts_template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="w">      </span><span class="c1"># project-relative file overriding that page's template</span>
 <span class="n">package_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"src/dol"</span><span class="w">         </span><span class="c1"># default: found by convention (&lt;name&gt;/ or src/&lt;name&gt;/)</span>
 <span class="n">docs_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"docsrc"</span><span class="w">             </span><span class="c1"># where the Sphinx sources are generated</span>
 
@@ -391,6 +436,7 @@ epythet<span class="w"> </span>quickstart<span class="w"> </span>/path/to/projec
 <li><p><code class="docutils literal notranslate"><span class="pre">objects.inv</span></code>: the Sphinx inventory, a machine-readable symbol-to-URL index (<code class="docutils literal notranslate"><span class="pre">sphobjinv</span> <span class="pre">convert</span> <span class="pre">plain</span> <span class="pre">objects.inv</span> <span class="pre">-</span></code>).</p></li>
 </ul>
 <p>Set <code class="docutils literal notranslate"><span class="pre">agent_outputs</span> <span class="pre">=</span> <span class="pre">false</span></code> to skip the second (Markdown) build pass.</p>
+<p><strong>The “For AI agents” page.</strong> When the repository ships anything for agents, epythet adds an <code class="docutils literal notranslate"><span class="pre">ai-agents</span></code> page to the site listing it: skills (<code class="docutils literal notranslate"><span class="pre">&lt;pkg&gt;/data/skills/*/SKILL.md</span></code>, <code class="docutils literal notranslate"><span class="pre">skills/*/SKILL.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.claude/skills/*/SKILL.md</span></code>) with their <code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">skill</span> <span class="pre">install</span></code> lines and source folders, subagents (<code class="docutils literal notranslate"><span class="pre">&lt;pkg&gt;/data/agents/*.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.claude/agents/*.md</span></code>), instruction files (<code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>, <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.github/copilot-instructions.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.cursor/rules</span></code>, <code class="docutils literal notranslate"><span class="pre">.codex</span></code>), and the outputs above with their URLs. Symlinks are followed and duplicates removed. <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">ai-artifacts</span> <span class="pre">PROJECT_DIR</span></code> prints the same inventory (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code> for machines). Turn the page off with <code class="docutils literal notranslate"><span class="pre">ai_artifacts</span> <span class="pre">=</span> <span class="pre">false</span></code> (or, for a whole CI fleet, the environment variable <code class="docutils literal notranslate"><span class="pre">EPYTHET_AI_ARTIFACTS=0</span></code>), or replace its template with <code class="docutils literal notranslate"><span class="pre">ai_artifacts_template</span> <span class="pre">=</span> <span class="pre">&quot;path/to/template.md&quot;</span></code> (a <code class="docutils literal notranslate"><span class="pre">str.format</span></code> template; see <code class="docutils literal notranslate"><span class="pre">epythet.ai_artifacts</span></code>). A hand-written <code class="docutils literal notranslate"><span class="pre">docsrc/ai-agents.md</span></code> is left alone. A malformed <code class="docutils literal notranslate"><span class="pre">SKILL.md</span></code> never fails the build: the skill is listed by folder name.</p>
 </section>
 <section id="python-api">
 <h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading">¶</a></h1>
@@ -537,7 +583,7 @@ gh<span class="w"> </span>api<span class="w"> </span>repos/owner/repo/pages<span
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=3ca669d2"></script>
+</div><script src="_static/documentation_options.js?v=1c17f339"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

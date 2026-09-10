@@ -1,0 +1,1470 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+<link rel="alternate" type="text/markdown" href="ai_artifacts.html.md">
+<link rel="describedby" href="../../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+
+    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>epythet.ai_artifacts - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.ledger.html">epythet.validation.ledger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for epythet.ai_artifacts</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">"""Discover a repository's AI agent artifacts and render the "For AI agents" page.</span>
+
+<span class="sd">A repository that ships tooling for coding agents does so by convention, not</span>
+<span class="sd">registration: skills are folders holding a ``SKILL.md`` (the Agent Skills spec),</span>
+<span class="sd">subagents are Markdown files with a frontmatter, and instruction files carry</span>
+<span class="sd">fixed names. This module reads those conventions and, when anything is found,</span>
+<span class="sd">renders one page for the documentation site that says what exists, where it</span>
+<span class="sd">lives, how to install it, and which machine-readable outputs the site itself</span>
+<span class="sd">publishes (``llms.txt``, the ``.md`` twins, the flat ``&lt;package&gt;.md``,</span>
+<span class="sd">``objects.inv``).</span>
+
+<span class="sd">Where epythet looks (relative to the project root; ``{pkg}`` is the package</span>
+<span class="sd">directory):</span>
+
+<span class="sd">=========================  ==========================================================</span>
+<span class="sd">artifact                   locations, in order of preference</span>
+<span class="sd">=========================  ==========================================================</span>
+<span class="sd">skills                     ``{pkg}/data/skills/*/SKILL.md`` (shipped in the wheel,</span>
+<span class="sd">                           ``gh skill``-installable), ``skills/*/SKILL.md``</span>
+<span class="sd">                           (``gh skill``-installable), ``.claude/skills/*/SKILL.md``</span>
+<span class="sd">subagents                  ``{pkg}/data/agents/*.md``, ``.claude/agents/*.md``</span>
+<span class="sd">instruction files          ``CLAUDE.md``, ``.claude/CLAUDE.md``, ``AGENTS.md``,</span>
+<span class="sd">                           ``.github/copilot-instructions.md``, ``.cursor/rules``,</span>
+<span class="sd">                           ``.codex/``</span>
+<span class="sd">=========================  ==========================================================</span>
+
+<span class="sd">Symlinks are followed and duplicates removed, so the ``.claude/skills/`` bridge</span>
+<span class="sd">that points into ``{pkg}/data/skills/`` yields one skill, attributed to its real</span>
+<span class="sd">location. The page is a :class:`~epythet.scaffold.PageSpec` (``ai-agents.md``),</span>
+<span class="sd">produced by :func:`ai_artifacts_page` and added to the scaffold by default when</span>
+<span class="sd">``[tool.epythet] ai_artifacts`` is on (the default) and at least one artifact</span>
+<span class="sd">exists. The default template is :data:`DEFAULT_TEMPLATE`; a project can point</span>
+<span class="sd">``ai_artifacts_template`` at its own file, and a hand-written ``docsrc/ai-agents.md``</span>
+<span class="sd">without the epythet marker is never overwritten.</span>
+
+<span class="sd">&gt;&gt;&gt; import tempfile, pathlib</span>
+<span class="sd">&gt;&gt;&gt; root = pathlib.Path(tempfile.mkdtemp())</span>
+<span class="sd">&gt;&gt;&gt; skill = root / "pkg" / "data" / "skills" / "pkg-quickstart"</span>
+<span class="sd">&gt;&gt;&gt; skill.mkdir(parents=True)</span>
+<span class="sd">&gt;&gt;&gt; _ = (skill / "SKILL.md").write_text(</span>
+<span class="sd">...     "---\nname: pkg-quickstart\ndescription: Use pkg.\n---\n\n# Body\n"</span>
+<span class="sd">... )</span>
+<span class="sd">&gt;&gt;&gt; found = discover_artifacts(root, package_dir=root / "pkg")</span>
+<span class="sd">&gt;&gt;&gt; [s.name for s in found.skills], found.skills[0].shipped</span>
+<span class="sd">(['pkg-quickstart'], True)</span>
+<span class="sd">&gt;&gt;&gt; found.skills[0].install_command("org/pkg")</span>
+<span class="sd">'gh skill install org/pkg pkg-quickstart --agent claude-code'</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet</span><span class="w"> </span><span class="kn">import</span> <span class="n">templates</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigError</span>
+
+<span class="c1">#: Skill folders relative to the project root; ``{pkg}`` is the package directory.</span>
+<span class="n">SKILL_LOCATIONS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"</span><span class="si">{pkg}</span><span class="s2">/data/skills"</span><span class="p">,</span> <span class="s2">"skills"</span><span class="p">,</span> <span class="s2">".claude/skills"</span><span class="p">)</span>
+<span class="c1">#: Subagent definition folders (one Markdown file per agent).</span>
+<span class="n">AGENT_LOCATIONS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"</span><span class="si">{pkg}</span><span class="s2">/data/agents"</span><span class="p">,</span> <span class="s2">".claude/agents"</span><span class="p">)</span>
+<span class="c1">#: Instruction files and directories agents read, with the audience each serves.</span>
+<span class="n">INSTRUCTION_LOCATIONS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s2">"CLAUDE.md"</span><span class="p">,</span> <span class="s2">"Claude Code"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">".claude/CLAUDE.md"</span><span class="p">,</span> <span class="s2">"Claude Code"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"AGENTS.md"</span><span class="p">,</span> <span class="s2">"Codex, Copilot, Cursor and other agents"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">".github/copilot-instructions.md"</span><span class="p">,</span> <span class="s2">"GitHub Copilot"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">".cursor/rules"</span><span class="p">,</span> <span class="s2">"Cursor"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">".codex"</span><span class="p">,</span> <span class="s2">"Codex"</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="c1">#: The generated page's filename under ``docsrc``.</span>
+<span class="n">PAGE_FILENAME</span> <span class="o">=</span> <span class="s2">"ai-agents.md"</span>
+<span class="c1">#: The agent host named in generated ``gh skill install`` lines.</span>
+<span class="n">DEFAULT_AGENT_HOST</span> <span class="o">=</span> <span class="s2">"claude-code"</span>
+<span class="c1">#: Environment variable that switches the page off for a whole fleet build</span>
+<span class="c1">#: (``0`` / ``false`` / ``no`` / ``off``) without touching any ``pyproject.toml``.</span>
+<span class="n">DISABLE_ENV</span> <span class="o">=</span> <span class="s2">"EPYTHET_AI_ARTIFACTS"</span>
+<span class="c1">#: The machine-readable outputs every epythet site publishes, in display order.</span>
+<span class="n">AGENT_OUTPUT_KINDS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"llms"</span><span class="p">,</span>
+    <span class="s2">"aggregate_md"</span><span class="p">,</span>
+    <span class="s2">"aggregate_pdf"</span><span class="p">,</span>
+    <span class="s2">"md_twins"</span><span class="p">,</span>
+    <span class="s2">"objects_inv"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_FRONTMATTER_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\A---\s*\n(.*?)\n---\s*(?:\n|\Z)"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Model</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="Skill">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.Skill">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Skill</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One skill folder: its ``name``, description, and where the real files live.</span>
+
+<span class="sd">    ``source`` is the project-relative POSIX path of the folder that holds the</span>
+<span class="sd">    files (a symlink in ``.claude/skills/`` is attributed to its target).</span>
+<span class="sd">    ``shipped`` is true when that folder is under the package directory, so the</span>
+<span class="sd">    skill is inside the wheel; ``installable`` when ``gh skill`` can see it (a</span>
+<span class="sd">    non-hidden path).</span>
+<span class="sd">    """</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">audience</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">shipped</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">installable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Skill.install_command">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.Skill.install_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">install_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_AGENT_HOST</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The ``gh skill install`` line, or ``None`` when ``gh skill`` cannot see it.</span>
+
+<span class="sd">        &gt;&gt;&gt; Skill("x", "pkg/data/skills/x").install_command("org/repo")</span>
+<span class="sd">        'gh skill install org/repo x --agent claude-code'</span>
+<span class="sd">        &gt;&gt;&gt; Skill("x", ".claude/skills/x", installable=False).install_command("o/r")</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">installable</span> <span class="ow">and</span> <span class="n">repo_stub</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"gh skill install </span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> --agent </span><span class="si">{</span><span class="n">agent</span><span class="si">}</span><span class="s2">"</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Subagent">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.Subagent">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Subagent</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One subagent definition file (``name``, description, tools, source path)."""</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">tools</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">shipped</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="InstructionFile">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.InstructionFile">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstructionFile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""An instruction file or directory (``CLAUDE.md``, ``AGENTS.md``, ...)."""</span>
+
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">audience</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">is_dir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="AgentOutput">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.AgentOutput">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AgentOutput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A machine-readable output of the built site, with its URL when known."""</span>
+
+    <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
+
+
+
+<div class="viewcode-block" id="AIArtifacts">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.AIArtifacts">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AIArtifacts</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Everything :func:`discover_artifacts` found for one project."""</span>
+
+    <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">skills</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Skill</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">subagents</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Subagent</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">instruction_files</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">InstructionFile</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""True when at least one artifact of any kind was found."""</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skills</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">subagents</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AIArtifacts.to_dict">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.AIArtifacts.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""A JSON-ready view (paths relative to the project root)."""</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"project_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="p">),</span>
+            <span class="s2">"skills"</span><span class="p">:</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skills</span><span class="p">],</span>
+            <span class="s2">"subagents"</span><span class="p">:</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subagents</span><span class="p">],</span>
+            <span class="s2">"instruction_files"</span><span class="p">:</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">],</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Discovery</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="discover_artifacts">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.discover_artifacts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">discover_artifacts</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">package_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AIArtifacts</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Find the skills, subagents and instruction files of a project by convention.</span>
+
+<span class="sd">    :param project_dir: the repository root</span>
+<span class="sd">    :param package_dir: the importable package directory, for ``{pkg}/data/...``</span>
+<span class="sd">        (skipped when ``None``)</span>
+<span class="sd">    """</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+    <span class="n">pkg</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span> <span class="k">if</span> <span class="n">package_dir</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">AIArtifacts</span><span class="p">(</span>
+        <span class="n">project_dir</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+        <span class="n">skills</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_discover_skills</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">pkg</span><span class="p">)),</span>
+        <span class="n">subagents</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_discover_subagents</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">pkg</span><span class="p">)),</span>
+        <span class="n">instruction_files</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_discover_instruction_files</span><span class="p">(</span><span class="n">root</span><span class="p">)),</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_candidate_dirs</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pkg</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">locations</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"</span><span class="si">{pkg}</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">location</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pkg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span> <span class="n">pkg</span> <span class="o">/</span> <span class="n">location</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="si">{pkg}</span><span class="s2">/"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">root</span> <span class="o">/</span> <span class="n">location</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_discover_skills</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pkg</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Skill</span><span class="p">]:</span>
+    <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">_candidate_dirs</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">pkg</span><span class="p">,</span> <span class="n">SKILL_LOCATIONS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">folder</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+            <span class="n">skill_md</span> <span class="o">=</span> <span class="n">entry</span> <span class="o">/</span> <span class="s2">"SKILL.md"</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">skill_md</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="n">real</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">real</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">real</span><span class="p">)</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">_frontmatter_of</span><span class="p">(</span><span class="n">skill_md</span><span class="p">)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">)</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="n">_relative_source</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="n">entry</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Skill</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">))</span> <span class="ow">or</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"description"</span><span class="p">)),</span>
+                <span class="n">audience</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"audience"</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                <span class="k">else</span> <span class="s2">""</span><span class="p">,</span>
+                <span class="n">shipped</span><span class="o">=</span><span class="n">_is_under</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">pkg</span><span class="p">),</span>
+                <span class="n">installable</span><span class="o">=</span><span class="ow">not</span> <span class="n">_is_hidden</span><span class="p">(</span><span class="n">source</span><span class="p">),</span>
+            <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_discover_subagents</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pkg</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Subagent</span><span class="p">]:</span>
+    <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">_candidate_dirs</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">pkg</span><span class="p">,</span> <span class="n">AGENT_LOCATIONS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">folder</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">folder</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*.md"</span><span class="p">)):</span>
+            <span class="n">real</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">real</span> <span class="ow">in</span> <span class="n">seen</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">real</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">real</span><span class="p">)</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">_frontmatter_of</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">Subagent</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">))</span> <span class="ow">or</span> <span class="n">entry</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
+                <span class="n">source</span><span class="o">=</span><span class="n">_relative_source</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="n">entry</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"description"</span><span class="p">)),</span>
+                <span class="n">tools</span><span class="o">=</span><span class="n">_tools_string</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tools"</span><span class="p">)),</span>
+                <span class="n">shipped</span><span class="o">=</span><span class="n">_is_under</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">pkg</span><span class="p">),</span>
+            <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_discover_instruction_files</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">InstructionFile</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">relative</span><span class="p">,</span> <span class="n">audience</span> <span class="ow">in</span> <span class="n">INSTRUCTION_LOCATIONS</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="n">relative</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())):</span>
+            <span class="k">yield</span> <span class="n">InstructionFile</span><span class="p">(</span><span class="n">relative</span><span class="p">,</span> <span class="n">audience</span><span class="p">,</span> <span class="n">is_dir</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_frontmatter_of</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The frontmatter of a file, tolerating bad encodings and unreadable files."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parse_frontmatter</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_text</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A frontmatter scalar as one stripped string ('' for anything that is not text).</span>
+
+<span class="sd">    &gt;&gt;&gt; _text(" x "), _text(["a"]), _text(None), _text(3)</span>
+<span class="sd">    ('x', '', '', '3')</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_relative_source</span><span class="p">(</span><span class="n">real</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">fallback</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">fallback</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">candidate</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">candidate</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+    <span class="k">return</span> <span class="n">fallback</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_under</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_hidden</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_tools_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Frontmatter</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="parse_frontmatter">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.parse_frontmatter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_frontmatter</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""The YAML frontmatter of a Markdown file as a dict (``{}`` when absent).</span>
+
+<span class="sd">    Uses PyYAML when installed; otherwise, or when PyYAML rejects the block (an</span>
+<span class="sd">    unquoted ``description: Use when x: y`` is a common slip), a small reader</span>
+<span class="sd">    that understands the subset skills and agents use: ``key: value`` scalars,</span>
+<span class="sd">    ``&gt;``/``|`` block scalars, one level of nested mapping, ``[a, b]`` flow</span>
+<span class="sd">    lists and trailing comments. A malformed frontmatter never raises.</span>
+
+<span class="sd">    &gt;&gt;&gt; parse_frontmatter("---\ndescription: Use when a: b\nname: x\n---\n")</span>
+<span class="sd">    {'description': 'Use when a: b', 'name': 'x'}</span>
+
+<span class="sd">    &gt;&gt;&gt; parse_frontmatter("---\nname: x\nmetadata:\n  audience: users\n---\nbody")</span>
+<span class="sd">    {'name': 'x', 'metadata': {'audience': 'users'}}</span>
+<span class="sd">    &gt;&gt;&gt; parse_frontmatter("no frontmatter")</span>
+<span class="sd">    {}</span>
+<span class="sd">    """</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">_FRONTMATTER_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>  <span class="c1"># type: ignore</span>
+
+        <span class="n">loaded</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loaded</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_parse_simple_yaml</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># yaml.YAMLError: degrade to the tolerant reader</span>
+        <span class="k">return</span> <span class="n">_parse_simple_yaml</span><span class="p">(</span><span class="n">block</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_simple_yaml</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">" "</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&gt;-"</span><span class="p">,</span> <span class="s2">"|"</span><span class="p">,</span> <span class="s2">"|-"</span><span class="p">):</span>
+            <span class="n">folded</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">_block_scalar</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folded</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folded</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">nested</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">_nested_mapping</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nested</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_block_scalar</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">collected</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+        <span class="n">collected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collected</span> <span class="k">if</span> <span class="n">c</span><span class="p">],</span> <span class="n">i</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_nested_mapping</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">nested</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
+            <span class="n">nested</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">_scalar</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">nested</span><span class="p">,</span> <span class="n">i</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s+#.*$"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"["</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"]"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"'</span><span class="se">\"</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s2">"'</span><span class="se">\"</span><span class="s2">"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Rendering</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+<span class="c1">#: The fields a page template may use.</span>
+<span class="n">TEMPLATE_FIELDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"marker"</span><span class="p">,</span>
+        <span class="s2">"name"</span><span class="p">,</span>
+        <span class="s2">"display_name"</span><span class="p">,</span>
+        <span class="s2">"repo_stub"</span><span class="p">,</span>
+        <span class="s2">"site_url"</span><span class="p">,</span>
+        <span class="s2">"skills_section"</span><span class="p">,</span>
+        <span class="s2">"subagents_section"</span><span class="p">,</span>
+        <span class="s2">"instructions_section"</span><span class="p">,</span>
+        <span class="s2">"outputs_section"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1">#: The default page template; ``str.format`` fields are the section renders.</span>
+<span class="n">DEFAULT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"""</span><span class="se">\</span>
+<span class="si">{marker}</span>
+
+<span class="s2"># For AI agents</span>
+
+<span class="s2">`</span><span class="si">{name}</span><span class="s2">` ships artifacts for coding agents alongside its code. This page lists</span>
+<span class="s2">them, says where each lives in the repository, and points at the</span>
+<span class="s2">machine-readable copies of this documentation.</span>
+<span class="si">{skills_section}{subagents_section}{instructions_section}{outputs_section}</span><span class="s2">"""</span>
+
+<span class="n">SKILLS_HEADER</span> <span class="o">=</span> <span class="s2">"""</span>
+
+<span class="s2">## Skills</span>
+
+<span class="s2">Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.io) format): a description that tells an agent when to use it and a body with the procedure. Install one into your agent with `gh skill` (any host: `--agent claude-code`, `copilot`, `cursor`, `codex`, `gemini`), or use the copy bundled in the wheel.</span>
+<span class="s2">"""</span>
+
+<span class="n">SUBAGENTS_HEADER</span> <span class="o">=</span> <span class="s2">"""</span>
+
+<span class="s2">## Subagents</span>
+
+<span class="s2">Subagents are Markdown files with a frontmatter (`name`, `description`, `tools`) and a system prompt as the body. Copy one into your project's `.claude/agents/` (or your agent host's equivalent) to delegate the task it describes.</span>
+<span class="s2">"""</span>
+
+<span class="n">INSTRUCTIONS_HEADER</span> <span class="o">=</span> <span class="s2">"""</span>
+
+<span class="s2">## Instruction files</span>
+
+<span class="s2">Files agents read before working in this repository.</span>
+<span class="s2">"""</span>
+
+<span class="n">OUTPUTS_HEADER</span> <span class="o">=</span> <span class="s2">"""</span>
+
+<span class="s2">## Machine-readable documentation</span>
+
+<span class="s2">This site publishes the same documentation in forms that fit an agent's context window:</span>
+<span class="s2">"""</span>
+
+<span class="c1">#: Descriptions of the machine-readable outputs, keyed by kind.</span>
+<span class="n">AGENT_OUTPUT_DESCRIPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"llms"</span><span class="p">:</span> <span class="s2">"an index of every page with a one-line description ([llms.txt](https://llmstxt.org) format)"</span><span class="p">,</span>
+    <span class="s2">"aggregate_md"</span><span class="p">:</span> <span class="s2">"the whole documentation as one Markdown file"</span><span class="p">,</span>
+    <span class="s2">"aggregate_pdf"</span><span class="p">:</span> <span class="s2">"the whole documentation as one PDF, for reading"</span><span class="p">,</span>
+    <span class="s2">"md_twins"</span><span class="p">:</span> <span class="s1">'a rendered Markdown twin of every page, advertised from each page</span><span class="se">\'</span><span class="s1">s `&lt;head&gt;` with `&lt;link rel="alternate" type="text/markdown"&gt;`'</span><span class="p">,</span>
+    <span class="s2">"objects_inv"</span><span class="p">:</span> <span class="s2">"the Sphinx inventory: a symbol-to-URL index (`sphobjinv convert plain objects.inv -`)"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="agent_outputs_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.agent_outputs_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">agent_outputs_for</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AgentOutput</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The machine-readable outputs a configuration produces, with URLs when known.</span>
+
+<span class="sd">    &gt;&gt;&gt; from epythet.config import DocsConfig</span>
+<span class="sd">    &gt;&gt;&gt; cfg = DocsConfig(project_dir="/tmp/x", name="x", repo_url="https://github.com/o/x")</span>
+<span class="sd">    &gt;&gt;&gt; [o.filename for o in agent_outputs_for(cfg)]</span>
+<span class="sd">    ['llms.txt', 'x.md', '&lt;page&gt;.html.md', 'objects.inv']</span>
+<span class="sd">    &gt;&gt;&gt; agent_outputs_for(cfg)[0].url</span>
+<span class="sd">    'https://o.github.io/x/llms.txt'</span>
+<span class="sd">    """</span>
+    <span class="n">site</span> <span class="o">=</span> <span class="n">site_url_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span>
+    <span class="n">outputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AgentOutput</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">site</span><span class="si">}{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">site</span> <span class="ow">and</span> <span class="s2">"&lt;"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filename</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">AgentOutput</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">AGENT_OUTPUT_DESCRIPTIONS</span><span class="p">[</span><span class="n">kind</span><span class="p">],</span> <span class="n">url</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">agent_outputs</span><span class="p">:</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"llms"</span><span class="p">,</span> <span class="s2">"llms.txt"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"md"</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">aggregates</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="s2">"aggregate_md"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.md"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"pdf"</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">aggregates</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">(</span><span class="s2">"aggregate_pdf"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.pdf"</span><span class="p">)</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">"md_twins"</span><span class="p">,</span> <span class="s2">"&lt;page&gt;.html.md"</span><span class="p">)</span>
+    <span class="n">add</span><span class="p">(</span><span class="s2">"objects_inv"</span><span class="p">,</span> <span class="s2">"objects.inv"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outputs</span></div>
+
+
+
+<div class="viewcode-block" id="site_url_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.site_url_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">site_url_for</span><span class="p">(</span><span class="n">repo_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The GitHub Pages URL a GitHub repository publishes to ('' when unknown).</span>
+
+<span class="sd">    &gt;&gt;&gt; site_url_for("https://github.com/i2mint/epythet")</span>
+<span class="sd">    'https://i2mint.github.io/epythet/'</span>
+<span class="sd">    &gt;&gt;&gt; site_url_for("")</span>
+<span class="sd">    ''</span>
+<span class="sd">    """</span>
+    <span class="n">stub</span> <span class="o">=</span> <span class="n">repo_stub_for</span><span class="p">(</span><span class="n">repo_url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stub</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">owner</span><span class="p">,</span> <span class="n">repo</span> <span class="o">=</span> <span class="n">stub</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"https://</span><span class="si">{</span><span class="n">owner</span><span class="si">}</span><span class="s2">.github.io/</span><span class="si">{</span><span class="n">repo</span><span class="si">}</span><span class="s2">/"</span></div>
+
+
+
+<div class="viewcode-block" id="repo_stub_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.repo_stub_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">repo_stub_for</span><span class="p">(</span><span class="n">repo_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``owner/repo`` from a GitHub URL ('' when it is not one).</span>
+
+<span class="sd">    Deeper paths, fragments and queries are dropped, so an ``Issues`` URL in</span>
+<span class="sd">    ``[project.urls]`` still names the repository.</span>
+
+<span class="sd">    &gt;&gt;&gt; repo_stub_for("https://github.com/i2mint/epythet.git")</span>
+<span class="sd">    'i2mint/epythet'</span>
+<span class="sd">    &gt;&gt;&gt; repo_stub_for("https://github.com/i2mint/epythet/issues#readme")</span>
+<span class="sd">    'i2mint/epythet'</span>
+<span class="sd">    &gt;&gt;&gt; repo_stub_for("git@github.com:i2mint/epythet.git")</span>
+<span class="sd">    'i2mint/epythet'</span>
+<span class="sd">    &gt;&gt;&gt; repo_stub_for("https://gitlab.com/o/r")</span>
+<span class="sd">    ''</span>
+<span class="sd">    """</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">"github\.com[/:]([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+?)(?:\.git)?(?:[/#?]|$)"</span><span class="p">,</span>
+        <span class="n">repo_url</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="s2">""</span></div>
+
+
+
+<div class="viewcode-block" id="render_ai_artifacts_page">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.render_ai_artifacts_page">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">render_ai_artifacts_page</span><span class="p">(</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_TEMPLATE</span><span class="p">,</span>
+    <span class="n">agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_AGENT_HOST</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Render the "For AI agents" page for ``artifacts`` and a :class:`DocsConfig`.</span>
+
+<span class="sd">    :param template: a ``str.format`` template with the fields ``marker``,</span>
+<span class="sd">        ``name``, ``display_name``, ``repo_stub``, ``site_url``, ``skills_section``,</span>
+<span class="sd">        ``subagents_section``, ``instructions_section``, ``outputs_section``</span>
+<span class="sd">    :param agent: the host named in the ``gh skill install`` lines</span>
+<span class="sd">    """</span>
+    <span class="n">repo_stub</span> <span class="o">=</span> <span class="n">repo_stub_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span>
+    <span class="n">source_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://github.com/</span><span class="si">{</span><span class="n">repo_stub</span><span class="si">}</span><span class="s2">/tree/HEAD/"</span> <span class="k">if</span> <span class="n">repo_stub</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">marker</span><span class="o">=</span><span class="n">templates</span><span class="o">.</span><span class="n">INDEX_MARKER</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span>
+        <span class="n">repo_stub</span><span class="o">=</span><span class="n">repo_stub</span><span class="p">,</span>
+        <span class="n">site_url</span><span class="o">=</span><span class="n">site_url_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">),</span>
+        <span class="n">skills_section</span><span class="o">=</span><span class="n">_render_skills</span><span class="p">(</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">,</span> <span class="n">source_base</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">agent</span>
+        <span class="p">),</span>
+        <span class="n">subagents_section</span><span class="o">=</span><span class="n">_render_subagents</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span><span class="p">,</span> <span class="n">source_base</span><span class="p">),</span>
+        <span class="n">instructions_section</span><span class="o">=</span><span class="n">_render_instructions</span><span class="p">(</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">,</span> <span class="n">source_base</span>
+        <span class="p">),</span>
+        <span class="n">outputs_section</span><span class="o">=</span><span class="n">_render_outputs</span><span class="p">(</span><span class="n">agent_outputs_for</span><span class="p">(</span><span class="n">config</span><span class="p">)),</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_source_link</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"[`</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">`](</span><span class="si">{</span><span class="n">base</span><span class="si">}{</span><span class="n">source</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">base</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">`"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_render_skills</span><span class="p">(</span><span class="n">skills</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">,</span> <span class="n">source_base</span><span class="p">,</span> <span class="n">package_name</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skills</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">SKILLS_HEADER</span><span class="p">]</span>
+    <span class="n">shipped_any</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">shipped</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">### `</span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">skill</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">skill</span><span class="o">.</span><span class="n">install_command</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="n">agent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">```bash</span><span class="se">\n</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="se">\n</span><span class="s2">```</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="n">_source_link</span><span class="p">(</span><span class="n">skill</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">source_base</span><span class="p">)</span>
+        <span class="n">note</span> <span class="o">=</span> <span class="s2">" (bundled with the pip package)"</span> <span class="k">if</span> <span class="n">skill</span><span class="o">.</span><span class="n">shipped</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Source: </span><span class="si">{</span><span class="n">where</span><span class="si">}{</span><span class="n">note</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shipped_any</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">The bundled skills are also on disk after `pip install </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s2">`,"</span>
+            <span class="sa">f</span><span class="s2">" under the package's `data/skills/` directory; link them into an agent"</span>
+            <span class="sa">f</span><span class="s2">" without network access with `skill link-skills &lt;that directory&gt;`.</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_render_subagents</span><span class="p">(</span><span class="n">subagents</span><span class="p">,</span> <span class="n">source_base</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">subagents</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUBAGENTS_HEADER</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">subagents</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">### `</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Source: </span><span class="si">{</span><span class="n">_source_link</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">source_base</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">agent</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"tools: `</span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">tools</span><span class="si">}</span><span class="s2">`"</span><span class="p">)</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">details</span><span class="p">)</span> <span class="o">+</span> <span class="s2">".</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_render_instructions</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">source_base</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">INSTRUCTIONS_HEADER</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">"/"</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_dir</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"- </span><span class="si">{</span><span class="n">_source_link</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">source</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">source_base</span><span class="p">)</span><span class="si">}</span><span class="s2">: read by </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">audience</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_render_outputs</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">outputs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">OUTPUTS_HEADER</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"[`</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">`](</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="k">elif</span> <span class="s2">"&lt;"</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">`"</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Raw HTML: MyST would read a relative .md/.txt link as a missing page.</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;a href="</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s1">"&gt;&lt;code&gt;</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s1">&lt;/code&gt;&lt;/a&gt;'</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"- </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># The PageSpec seam</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="ai_artifacts_page">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.ai_artifacts_page">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ai_artifacts_page</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The "For AI agents" :class:`~epythet.scaffold.PageSpec` for a project, or ``None``.</span>
+
+<span class="sd">    ``None`` when ``config.ai_artifacts`` is off, when the ``EPYTHET_AI_ARTIFACTS``</span>
+<span class="sd">    environment variable is ``0``/``false`` (the fleet-wide switch), or when no</span>
+<span class="sd">    artifact was found. The template is ``config.ai_artifacts_template`` (a</span>
+<span class="sd">    file, relative to the project root) when set, else :data:`DEFAULT_TEMPLATE`.</span>
+
+<span class="sd">    :raises ConfigError: when the template file is missing or has a field the</span>
+<span class="sd">        renderer does not provide (literal braces must be doubled: ``{{``).</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.scaffold</span><span class="w"> </span><span class="kn">import</span> <span class="n">PageSpec</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"ai_artifacts"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">enabled_by_environment</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">artifacts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="n">discover_artifacts</span><span class="p">(</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">package_dir</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">artifacts</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">DEFAULT_TEMPLATE</span>
+    <span class="n">template_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"ai_artifacts_template"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">template_path</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="n">template_path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"[tool.epythet] ai_artifacts_template points at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">, "</span>
+                <span class="s2">"which does not exist"</span>
+            <span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">templates</span><span class="o">.</span><span class="n">INDEX_MARKER</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">template</span> <span class="ow">and</span> <span class="s2">"</span><span class="si">{marker}</span><span class="s2">"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">template</span><span class="p">:</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{marker}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">template</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">render_ai_artifacts_page</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"ai_artifacts_template </span><span class="si">{</span><span class="n">template_path</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'(default)'</span><span class="si">}</span><span class="s2">: unknown field "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">; the fields are </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">TEMPLATE_FIELDS</span><span class="p">)</span><span class="si">}</span><span class="s2"> and literal braces "</span>
+            <span class="s2">"must be doubled ({{ and }})"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">return</span> <span class="n">PageSpec</span><span class="p">(</span><span class="n">PAGE_FILENAME</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">templates</span><span class="o">.</span><span class="n">INDEX_MARKER</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="enabled_by_environment">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.enabled_by_environment">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">enabled_by_environment</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""False when ``EPYTHET_AI_ARTIFACTS`` is set to ``0``, ``false``, ``no`` or ``off``.</span>
+
+<span class="sd">    &gt;&gt;&gt; os.environ[DISABLE_ENV] = "0"; enabled_by_environment()</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; del os.environ[DISABLE_ENV]; enabled_by_environment()</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DISABLE_ENV</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">"0"</span><span class="p">,</span>
+        <span class="s2">"false"</span><span class="p">,</span>
+        <span class="s2">"no"</span><span class="p">,</span>
+        <span class="s2">"off"</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="default_pages">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.default_pages">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_pages</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The generated pages a scaffold gets when the caller passes none."""</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">ai_artifacts_page</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">page</span><span class="p">]</span> <span class="k">if</span> <span class="n">page</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span></div>
+
+
+
+<div class="viewcode-block" id="artifacts_json">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.artifacts_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">artifacts_json</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``artifacts`` as indented JSON (the ``--format json`` CLI output)."""</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="artifacts_table">
+<a class="viewcode-back" href="../../_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.artifacts_table">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">artifacts_table</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A plain-text listing of ``artifacts`` (the default CLI output)."""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"AI artifacts under </span><span class="si">{</span><span class="n">artifacts</span><span class="o">.</span><span class="n">project_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Skills (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span><span class="p">:</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">f</span>
+            <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">on</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"shipped"</span><span class="p">,</span> <span class="n">skill</span><span class="o">.</span><span class="n">shipped</span><span class="p">),</span> <span class="p">(</span><span class="s2">"gh skill"</span><span class="p">,</span> <span class="n">skill</span><span class="o">.</span><span class="n">installable</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">on</span>
+        <span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;32</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2">  [</span><span class="si">{</span><span class="n">flags</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">skill</span><span class="o">.</span><span class="n">install_command</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="s1">''</span><span class="si">:</span><span class="s2">&lt;32</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Subagents (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;32</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">agent</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Instruction files (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">source</span><span class="si">:</span><span class="s2">&lt;32</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">audience</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=1c17f339"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=fd10adb8"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    </body>
+</html>

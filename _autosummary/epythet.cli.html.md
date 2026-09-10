@@ -13,15 +13,29 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 
 ### Functions
 
-| [`check_pages`](#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                     |
-|--------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| [`configure_pages`](#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                      |
-| [`epythet_cli`](#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.               |
-| [`quickstart`](#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go. |
+| [`ai_artifacts`](#epythet.cli.ai_artifacts)(project_dir, \*[, format])   | List the AI agent artifacts a project ships (skills, subagents, instruction files).   |
+|--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`check_pages`](#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                                               |
+| [`configure_pages`](#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                                                |
+| [`epythet_cli`](#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.                                         |
+| [`quickstart`](#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
-### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>]*
+### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
+
+### epythet.cli.ai_artifacts(project_dir, , format='table')
+
+List the AI agent artifacts a project ships (skills, subagents, instruction files).
+
+Looks where agents and `gh skill` look: `<pkg>/data/skills`, `skills/`,
+`.claude/skills`, `<pkg>/data/agents`, `.claude/agents`, `CLAUDE.md`,
+`AGENTS.md`, `.cursor/rules`, `.codex`. The same discovery feeds the
+generated “For AI agents” documentation page.
+
+* **Parameters:**
+  * **project_dir** – the project root
+  * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human) or json
 
 ### epythet.cli.check_pages(repo, , no_url_check=False)
 
