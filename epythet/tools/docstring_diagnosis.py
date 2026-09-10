@@ -350,26 +350,51 @@ def add_newlines_before_doctests_when_missing(src: str):
     return "\n".join(lines_with_two_new_lines_before_doctests(lines))
 
 
+def _package_directory(pkg) -> str | None:
+    """The directory a folder path or an imported package object points at, else ``None``."""
+    if isinstance(pkg, str) and os.path.isdir(pkg):
+        return pkg
+    path = getattr(pkg, "__path__", None)
+    if path:
+        return next(iter(path))
+    return None
+
+
 def repair_package(pkg, write_to_files=False):
     """Diagnose and/or repair a whole pkg (given by folder or pkg module obj,
     or a store (see dol).
 
-    For now, it diagnosis and repairs:
-    - When there's a space missing between doc text and doctest (code block)
+    A folder or package object is handed to :func:`epythet.repair.repair`,
+    which applies every source-safe normalizer rule (blank lines before
+    doctests and lists, Markdown fences, one-line ``Returns:`` sections,
+    Markdown headings and links) and verifies each rewrite; a store (a
+    ``dol`` mapping) keeps the original doctest-only pass, which is the only
+    one that can write through an arbitrary mapping.
+
+    Prints one line per file with the number of docstrings that changed (or
+    would change) and returns the total, exactly as it always has; wads'
+    ``wads-docstring-render`` skill depends on that shape.
     """
+    directory = None if isinstance(pkg, Mapping) else _package_directory(pkg)
+    if directory is not None:
+        from epythet.repair import repair
+
+        if not write_to_files:
+            print("---> This is just a diagnosis: No files are being written to")
+        report = repair(directory, write=write_to_files)
+        num_of_problems = 0
+        for file in report.files:
+            problems = len(file.applied)
+            num_of_problems += problems
+            print(f"{file.path.name:<42s}: #problems: {problems}")
+        return num_of_problems
 
     if not isinstance(pkg, Mapping):
-        # If pkg is not already a store
+        # not a directory, not a package: try tec's flexible reader
         from dol.filesys import RelPathFileStringPersister
+        from tec import PyFilesReader  # pylint: disable=E0401
 
-        if isinstance(pkg, str) and os.path.isdir(pkg):
-            reader = RelPathFileStringPersister(pkg)
-        else:
-            # try a more flexible store
-            from tec import PyFilesReader  # pylint: disable=E0401
-
-            reader = PyFilesReader(pkg)
-
+        reader = PyFilesReader(pkg)
         writer = RelPathFileStringPersister(reader.rootdir)
     else:
         reader = pkg

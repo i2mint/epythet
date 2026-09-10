@@ -5,12 +5,18 @@
 and writes it to ``PROJECT_DIR/docsrc/_build/html``.
 """
 
+import dataclasses
+
 import cw
 
 from epythet.build import build, make
 from epythet.config import load_config, split_ignore
 from epythet.scaffold import make_autodocs, make_docsrc, scaffold
 from epythet.validation.cli import validate
+from epythet.validation.propose import propose_command as propose
+from epythet.repair import repair_command as repair
+from epythet.migrate import migrate_style_command as migrate_style
+from epythet.sweep import sweep_command as sweep
 
 
 def quickstart(project_dir, *, ignore: list[str] = None):
@@ -136,10 +142,36 @@ COMMANDS = [
     ai_artifacts,
 ]
 
+#: The v2 source-editing and fleet commands, by their command-line name.
+TOOL_COMMANDS = {"repair": repair, "migrate-style": migrate_style, "sweep": sweep}
 
-def epythet_cli():
+#: ``epythet ledger <command>``: maintenance of the artifact ledger.
+LEDGER_COMMANDS = {"propose": propose}
+
+
+#: cw's argh-compatible convention, resolving string annotations: the command
+#: modules use ``from __future__ import annotations``, and ``list[str]`` must
+#: still become ``nargs="*"`` (``--ignore a b``), not a single value.
+CONVENTION = dataclasses.replace(cw.ARGH, resolve_hints=True)
+
+
+def mk_epythet_parser(**parser_kwargs):
+    """The full ``epythet`` parser: the flat commands, the tool commands, the ``ledger`` group."""
+    parser = cw.mk_parser(COMMANDS, convention=CONVENTION, **parser_kwargs)
+    cw.add_commands(parser, TOOL_COMMANDS, convention=CONVENTION)
+    cw.add_commands(
+        parser,
+        LEDGER_COMMANDS,
+        group_name="ledger",
+        group_kwargs={"title": "Artifact ledger maintenance"},
+        convention=CONVENTION,
+    )
+    return parser
+
+
+def epythet_cli(argv=None):
     """Entry point for the ``epythet`` console script."""
-    raise SystemExit(cw.dispatch(COMMANDS))
+    raise SystemExit(cw.run(mk_epythet_parser(), argv, convention=CONVENTION))
 
 
 if __name__ == "__main__":

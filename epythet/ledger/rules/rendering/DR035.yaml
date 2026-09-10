@@ -1,0 +1,27 @@
+id: DR035
+title: Rendered text drifted from its snapshot
+namespace: rendering
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: error
+precision: very-high
+detector:
+  kind: html
+  function: text_snapshots
+message: "{match}"
+fix:
+  hint: "Review the diff; if the change is intended, re-baseline with --update-snapshots."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx]
+explanation: |
+  ## What it does
+  Diffs the `-b text` render of every page against the snapshot stored under
+  `docsrc/_snapshots/text` (opt-in with --snapshot; level 2).
+
+  ## Why is this bad?
+  A text render is 4 KB where the HTML is 36 KB, strips the theme and keeps
+  every text-leak artifact verbatim (research §6.4). A migration that changed
+  nothing is exactly one whose snapshot diff is empty.
+references:
+  - https://github.com/i2mint/epythet/discussions/15

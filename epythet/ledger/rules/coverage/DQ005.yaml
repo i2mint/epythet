@@ -1,0 +1,27 @@
+id: DQ005
+title: Summary written as meta-language
+namespace: coverage
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: info
+precision: high
+detector:
+  kind: coverage
+  function: meta_language_summary
+message: "meta-language summary: {match!r}"
+fix:
+  hint: "Start with the verb (Return ..., Build ...), not with This function returns ..."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx, mkdocs]
+explanation: |
+  ## What it does
+  Flags a summary that opens with "This function ...", "A method that ...",
+  "Function to ..." and the like.
+
+  ## Why is this bad?
+  The words spent on naming the kind of object are words not spent on what it
+  does; the rubric scores such a summary 1 of 3. Queue item.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://github.com/i2mint/epythet/issues/16

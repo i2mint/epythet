@@ -255,10 +255,13 @@ def fix_short_underlines(lines: list[str]) -> list[str]:
 def google_one_liners(lines: list[str]) -> list[str]:
     """Expand ``Returns: text`` (and other one-line sections) into real sections.
 
-    Continuation lines at the same indentation are folded into the section body.
+    Continuation lines at the same indentation are folded into the section body;
+    a Markdown heading or another section ends it.
 
     >>> normalize_text("Returns: a thing that\\nspans two lines.\\n\\nNext.", rules=[google_one_liners])
     'Returns:\\n    a thing that\\n    spans two lines.\\n\\nNext.'
+    >>> normalize_text("Returns: a thing.\\n## Notes\\nText.", rules=[google_one_liners])
+    'Returns:\\n    a thing.\\n\\n## Notes\\nText.'
     """
     contexts = line_contexts(lines)
     out: list[str] = []
@@ -282,6 +285,7 @@ def google_one_liners(lines: list[str]) -> list[str]:
             and indent_of(lines[j]) == len(indent)
             and not _SECTION_ONE_LINER_RE.match(lines[j])
             and not _is_section_header(lines[j])
+            and not _MD_HEADING_RE.match(lines[j])
         ):
             out.append(f"{indent}    {lines[j].strip()}")
             j += 1

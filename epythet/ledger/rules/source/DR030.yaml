@@ -2,7 +2,7 @@ id: DR030
 title: Docstring starts directly with a doctest
 namespace: source
 status: {stable_since: "0.2.0"}
-severity: warning
+severity: info
 precision: medium
 detector:
   kind: source
@@ -22,6 +22,10 @@ explanation: |
   #11).
 
   ## Why is this bad?
+  Severity was lowered from warning to info after the 2026-09 fleet sweep (29 hits in
+  3 of 5 packages): the page still shows a working doctest block; what is missing is
+  the summary line, which is queue work, not a rendering artifact.
+
   The object has no summary line: autosummary tables and the "short description"
   of every tool that reads the first line show `>>> ...` or nothing, and some
   renderers mis-handle a doctest block that is also the first paragraph.

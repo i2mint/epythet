@@ -1,0 +1,27 @@
+id: DR036
+title: Cross-reference rendered as plain code
+namespace: rendering
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: warning
+precision: high
+detector:
+  kind: html
+  function: unresolved_xrefs
+message: "cross-reference did not resolve: {match}"
+fix:
+  hint: "Fix the target (or its import path), or write it as plain ``code`` if no link was meant."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx]
+explanation: |
+  ## What it does
+  Reads the `-b xml` render (level 2) for a `literal` of class `xref` that no
+  `reference` node wraps: the role was written, the target was never found.
+
+  ## Why is this bad?
+  The reader sees code styling but no link. The build-warning twin (DR023)
+  only fires under `-n`; this rule needs no flag.
+references:
+  - https://github.com/i2mint/epythet/discussions/15
+  - https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-nitpicky

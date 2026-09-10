@@ -23,15 +23,17 @@ import textwrap
 import pytest
 
 import cw
-from epythet.cli import COMMANDS
+from epythet.cli import COMMANDS, mk_epythet_parser
 
 
 def _parser():
     """The real CLI parser, with ``prog`` pinned so goldens are OS-independent.
 
     Pinning ``prog`` keeps Windows' ``epythet.exe`` out of the recorded text.
+    ``mk_epythet_parser`` is what the console script builds: the flat
+    ``COMMANDS`` plus the tool commands and the ``ledger`` group.
     """
-    return cw.mk_parser(COMMANDS, prog="epythet")
+    return mk_epythet_parser(prog="epythet")
 
 
 def _usage(argv):
@@ -59,7 +61,8 @@ def _usage(argv):
 EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
-        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,ai-artifacts} ..."
+        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,"
+        "ai-artifacts,repair,migrate-style,sweep,ledger} ..."
     ),
     (
         "make-docsrc",
@@ -75,6 +78,21 @@ EXPECTED_USAGE = {
         "usage: epythet configure-pages [-h] [-b BRANCH] [-p PATH] repo"
     ),
     ("ai-artifacts",): "usage: epythet ai-artifacts [-h] [-f FORMAT] project-dir",
+    # v2 (0.2.3): the source-editing and fleet commands, and the ledger group.
+    ("repair",): (
+        "usage: epythet repair [-h] [-w] [-f FENCE_STYLE] [-i [IGNORE ...]] [-l LEDGER] "
+        "[--no-napoleon] [--no-doctests] [-a APPLIER] [-q] path"
+    ),
+    ("migrate-style",): (
+        "usage: epythet migrate-style [-h] [-t TO] [-w] [-i [IGNORE ...]] [-l LEDGER] "
+        "[--no-napoleon] [--no-doctests] [-a APPLIER] [-q] path"
+    ),
+    ("sweep",): (
+        "usage: epythet sweep [-h] [-m MANIFEST] [-p] [--linters] [-i [IGNORE ...]] "
+        "[--ledger LEDGER] [--no-napoleon] [--no-observe] [--limit LIMIT] [-f FORMAT] "
+        "[-t TOP] [-o OUTPUT] [-q] [dirs ...]"
+    ),
+    ("ledger",): "usage: epythet ledger [-h] {propose} ...",
 }
 
 
@@ -97,6 +115,10 @@ def test_command_set_and_order():
         "configure-pages",
         "validate",
         "ai-artifacts",
+        "repair",
+        "migrate-style",
+        "sweep",
+        "ledger",
     ]
 
 

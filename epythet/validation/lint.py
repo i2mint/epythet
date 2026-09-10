@@ -66,6 +66,7 @@ def run_ruff(
         "--output-format",
         "json",
         "--exit-zero",
+        "--no-cache",
         "--config",
         f"lint.pydocstyle.convention = '{style}'",
         str(package_dir),

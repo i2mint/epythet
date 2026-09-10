@@ -1,0 +1,25 @@
+id: DR037
+title: Image missing from the built site
+namespace: rendering
+status: {proposed_in: "0.2.3", stable_since: "0.2.3"}
+severity: error
+precision: very-high
+detector:
+  kind: html
+  function: missing_images
+message: "image not in the built tree: {match}"
+fix:
+  hint: "Fix the image path (relative to the docstring's page) or drop the directive."
+  autofixable: false
+applies_to:
+  styles: [rest, google, numpy]
+  backends: [sphinx]
+explanation: |
+  ## What it does
+  Resolves every `<img src>` of every HTML page against the built tree (level 2).
+
+  ## Why is this bad?
+  A broken image is a hole in the page; the build-warning twin (DR024)
+  covers the same case when Sphinx notices it at read time.
+references:
+  - https://github.com/i2mint/epythet/discussions/15

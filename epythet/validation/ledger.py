@@ -7,6 +7,10 @@ Storage is split by mutability, as decided in the v2 decision record (D8):
   ``build/`` is dropped from wheels by the project's ``.gitignore``)
   with a sibling ``.py`` fixture that doubles as the regression test. They are
   human-edited, rarely, and ship inside epythet.
+- **Proposals** (rules level 3 or a human drafted, ``status: {proposed: ...}``)
+  are written by ``epythet ledger propose`` into an overlay directory under the
+  user data dir (:func:`proposed_rules_dir`) and never gate anyone until a
+  maintainer moves them into the bundled tree.
 - **Observations** (occurrences with file paths and snippets from real repos)
   are append-only JSONL under the user data dir, never inside the repo, because
   they are derived from repositories that are not all public. Occurrence counts
@@ -32,9 +36,11 @@ from epythet.validation.model import SEVERITIES, Finding
 
 BUNDLED_RULES_DIR = Path(__file__).resolve().parent.parent / "ledger" / "rules"
 
-DETECTOR_KINDS = ("regex", "source", "doctree", "build-warning", "html", "llm")
+DETECTOR_KINDS = ("regex", "source", "doctree", "build-warning", "html", "coverage", "llm")
 #: Detector kinds evaluated per docstring at level 0.5.
 PARSE_KINDS = ("regex", "source", "doctree")
+#: Detector kinds that carry a sibling ``.py`` fixture with tagged specimens.
+FIXTURE_KINDS = PARSE_KINDS + ("coverage",)
 PRECISIONS = ("very-high", "high", "medium", "low")
 NAMESPACES = ("rendering", "source", "semantics", "build", "links", "coverage")
 RULE_ID_RE = re.compile(r"^[A-Z]{2,4}\d{3,4}$")
@@ -230,6 +236,9 @@ def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
     elif kind == "doctree":
         if not detector.get("function"):
             raise LedgerError(f"{path}: a doctree detector needs a function name")
+    elif kind in ("html", "coverage"):
+        if not detector.get("function"):
+            raise LedgerError(f"{path}: a {kind} detector needs a function name")
     elif kind == "build-warning":
         if not (detector.get("warning_type") or detector.get("message_pattern")):
             raise LedgerError(
@@ -237,13 +246,18 @@ def _validate_rule_data(data: dict[str, Any], path: Path) -> None:
             )
         if not detector.get("example_warning"):
             raise LedgerError(f"{path}: a build-warning rule needs an example_warning")
-    if kind in PARSE_KINDS and not path.with_suffix(".py").exists():
+    if kind in FIXTURE_KINDS and not path.with_suffix(".py").exists():
         raise LedgerError(f"{path}: a {kind} rule needs a sibling .py fixture")
 
 
 def _validate_fixture(rule: "Rule") -> None:
-    """A parse-level fixture must carry at least one ``ruleid`` and one ``ok`` tag for its rule."""
-    cases = [c for c in iter_fixture_cases(rule.fixture_path) if rule.id in c.rule_ids]
+    """A fixture must carry at least one ``ruleid`` and one ``ok`` tag for its rule."""
+    if rule.kind == "coverage":
+        from epythet.validation.coverage import iter_coverage_cases
+
+        cases = [c for c in iter_coverage_cases(rule.fixture_path) if rule.id in c.rule_ids]
+    else:
+        cases = [c for c in iter_fixture_cases(rule.fixture_path) if rule.id in c.rule_ids]
     if not any(c.expect_hit for c in cases):
         raise LedgerError(f"{rule.fixture_path}: no '# ruleid: {rule.id}' specimen")
     if not any(not c.expect_hit for c in cases):
@@ -266,7 +280,23 @@ def load_rule(path: Path) -> Rule:
                 f"{path}: unknown doctree detector {rule.detector['function']!r}; "
                 f"known: {sorted(DETECTORS)}"
             )
-    if rule.kind in PARSE_KINDS:
+    if rule.kind == "html":
+        from epythet.validation.rendered import RENDER_DETECTORS
+
+        if rule.detector.get("function") not in RENDER_DETECTORS:
+            raise LedgerError(
+                f"{path}: unknown render detector {rule.detector.get('function')!r}; "
+                f"known: {sorted(RENDER_DETECTORS)}"
+            )
+    if rule.kind == "coverage":
+        from epythet.validation.coverage import COVERAGE_DETECTORS
+
+        if rule.detector["function"] not in COVERAGE_DETECTORS:
+            raise LedgerError(
+                f"{path}: unknown coverage detector {rule.detector['function']!r}; "
+                f"known: {sorted(COVERAGE_DETECTORS)}"
+            )
+    if rule.kind in FIXTURE_KINDS:
         _validate_fixture(rule)
     return rule
 
@@ -413,6 +443,11 @@ def user_data_dir() -> Path:
     xdg = os.environ.get("XDG_DATA_HOME")
     base = Path(xdg).expanduser() if xdg else Path.home() / ".local" / "share"
     return base / "epythet"
+
+
+def proposed_rules_dir() -> Path:
+    """Where ``epythet ledger propose`` writes: ``<user data dir>/ledger/proposed``."""
+    return user_data_dir() / "ledger" / "proposed"
 
 
 def observations_path() -> Path:

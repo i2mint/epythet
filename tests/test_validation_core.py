@@ -125,10 +125,12 @@ def test_fail_on_threshold_changes_exit_code():
     assert report.exit_code("info") == 10
 
 
-def test_levels_2_and_3_are_reserved(tmp_path):
+def test_unknown_tier_or_level_is_a_value_error(tmp_path):
     project = _project(tmp_path, "later", CLEAN_MODULE)
-    with pytest.raises(NotImplementedError, match="WP3"):
-        validate(project, level=3, observe=False)
+    with pytest.raises(ValueError, match="level must be one of"):
+        validate(project, level=5, observe=False)
+    with pytest.raises(ValueError, match="do not exist"):
+        validate(project, levels=[7], observe=False)
     assert levels_for_tier(4) == [0, 0.5, 1, 2, 3]
 
 
