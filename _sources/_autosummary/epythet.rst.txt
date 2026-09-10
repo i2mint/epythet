@@ -1,0 +1,34 @@
+﻿epythet
+=======
+
+.. automodule:: epythet
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      quickstart
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   agent_outputs
+   build
+   call_make
+   cli
+   confgen
+   config
+   config_parser
+   docs_gen
+   normalizer
+   scaffold
+   setup_docsrc
+   sphinx_conf
+   sphinx_ext
+   templates
+   themes
+   tools

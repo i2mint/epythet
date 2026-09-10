@@ -1,0 +1,6 @@
+epythet.build
+=============
+
+.. currentmodule:: epythet
+
+.. autofunction:: build

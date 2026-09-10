@@ -1,0 +1,32 @@
+# epythet
+
+> Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages
+
+
+## Pages
+
+- [epythet](index.html.md): Beautiful, correct documentation from a Python package, with no boilerplate in the package.
+- [API reference](api.html.md): | [`epythet`](_autosummary/epythet.html.md#module-epythet)   | Beautiful, correct documentation from...
+- [epythet](_autosummary/epythet.html.md): Beautiful, correct documentation from a Python package, with no boilerplate.
+- [epythet.agent_outputs](_autosummary/epythet.agent_outputs.html.md): Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.
+- [epythet.build](_autosummary/epythet.build.html.md): Run one build target for a loaded configuration; returns the output directory.
+- [epythet.call_make](_autosummary/epythet.call_make.html.md): Compatibility module: `make` now lives in [`epythet.build`](epythet.build.html.md#epythet.build).
+- [epythet.cli](_autosummary/epythet.cli.html.md): Command line access to epythet.
+- [epythet.confgen](_autosummary/epythet.confgen.html.md): Generate the Sphinx configuration from a [`DocsConfig`](epythet.config.html.md#epythet.config.DocsCo...
+- [epythet.config](_autosummary/epythet.config.html.md): Single source of truth for a project’s documentation configuration.
+- [epythet.config_parser](_autosummary/epythet.config_parser.html.md): Legacy configuration accessor kept for the frozen `docsrc/conf.py` copies.
+- [epythet.docs_gen](_autosummary/epythet.docs_gen.html.md): Documentation generation entry points (re-exported for compatibility).
+- [epythet.normalizer](_autosummary/epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
+- [epythet.scaffold](_autosummary/epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
+- [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.html.md#epyth...
+- [epythet.sphinx_conf](_autosummary/epythet.sphinx_conf.html.md): The star-import target for a project’s `docsrc/conf.py`.
+- [epythet.sphinx_ext](_autosummary/epythet.sphinx_ext.html.md): epythet’s Sphinx extension: the normalizer, agent link relations and theme CSS.
+- [epythet.templates](_autosummary/epythet.templates.html.md): Text templates for the generated `docsrc` files.
+- [epythet.themes](_autosummary/epythet.themes.html.md): Theme registry, deterministic theme choice, and the OKLCH accent palette.
+- [epythet.tools](_autosummary/epythet.tools.html.md): Tools to diagnose (and sometimes, repair) documentation
+- [epythet.tools.docstring_diagnosis](_autosummary/epythet.tools.docstring_diagnosis.html.md): Tools to manipulate documentation elements
+- [epythet.tools.published_docs](_autosummary/epythet.tools.published_docs.html.md): Elements for a tool to setup docs and check if docs are published, and if not, why.
+
+---
+
+For more comprehensive documentation, see [epythet.md](epythet.md)

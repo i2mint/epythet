@@ -1,0 +1,21 @@
+epythet.cli
+===========
+
+.. automodule:: epythet.cli
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      COMMANDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_pages
+      configure_pages
+      epythet_cli
+      quickstart
+   

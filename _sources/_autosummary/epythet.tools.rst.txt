@@ -1,0 +1,20 @@
+epythet.tools
+=============
+
+.. automodule:: epythet.tools
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      print_diagnosis
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   docstring_diagnosis
+   published_docs

@@ -1,0 +1,38 @@
+epythet.tools.published\_docs
+=============================
+
+.. automodule:: epythet.tools.published_docs
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      branch_exists
+      check_pages_setup
+      check_token_scopes
+      clog
+      commit_data
+      configure_github_pages
+      configure_github_pages_for_repo_stubs
+      default_branch_and_commit_sha
+      dflt_headers
+      enable_pages
+      ensure_branch
+      github_org_and_repo
+      github_token
+      is_a_github_repo_root_url
+      is_valid_response
+      pages_config
+      published_doc_diagnosis_df
+      repo_data
+      repo_stub_from_local_dir
+      repo_stubs_for_org
+      repo_url_to_docs_url
+      repo_url_to_repo_docs_url
+      table_url_to_df
+      token_user_info
+      url_exists
+      url_of_urls_csv_to_urls
+      verify_repo_access
+   

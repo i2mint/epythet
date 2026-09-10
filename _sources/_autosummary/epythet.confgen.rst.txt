@@ -1,0 +1,21 @@
+epythet.confgen
+===============
+
+.. automodule:: epythet.confgen
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      BASE_EXTENSIONS
+      API_ROOT
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      api_toctree_entry
+      merge_settings
+      sphinx_settings
+   

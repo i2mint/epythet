@@ -1,0 +1,20 @@
+epythet.tools.docstring\_diagnosis
+==================================
+
+.. automodule:: epythet.tools.docstring_diagnosis
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      add_newlines_before_doctests_when_missing
+      binary_transition
+      diagnose_doctest_code_blocks
+      diagnosis_snippets
+      lines_with_two_new_lines_before_doctests
+      print_diagnosis
+      repair_package
+      tag_doctest_blocks_not_preceeded_by_new_lines
+      tag_doctest_blocks_not_preceeded_by_new_lines_alt_2
+   

@@ -1,0 +1,6 @@
+epythet.setup\_docsrc
+=====================
+
+.. automodule:: epythet.setup_docsrc
+
+   

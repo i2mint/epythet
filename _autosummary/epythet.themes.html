@@ -1,0 +1,722 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="epythet.themes.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.tools" href="epythet.tools.html"><link rel="prev" title="epythet.templates" href="epythet.templates.html">
+
+    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>epythet.themes - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/_autosummary/epythet.themes.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-epythet.themes">
+<span id="epythet-themes"></span><h1>epythet.themes<a class="headerlink" href="#module-epythet.themes" title="Link to this heading">¶</a></h1>
+<p>Theme registry, deterministic theme choice, and the OKLCH accent palette.</p>
+<p>epythet exposes three semantic knobs (<code class="docutils literal notranslate"><span class="pre">theme</span></code>, <code class="docutils literal notranslate"><span class="pre">accent</span></code>, <code class="docutils literal notranslate"><span class="pre">mode</span></code>) and a
+verbatim <code class="docutils literal notranslate"><span class="pre">theme_options</span></code> passthrough. This module translates the three knobs
+into each theme’s own vocabulary, so a project never needs to know that furo
+wants <code class="docutils literal notranslate"><span class="pre">light_css_variables</span></code> while shibuya wants a Radix colour <em>name</em> and
+pydata wants a CSS variable in a stylesheet.</p>
+<p>Themes are chosen from the curated registry <code class="xref py py-data docutils literal notranslate"><span class="pre">THEMES</span></code>. <code class="docutils literal notranslate"><span class="pre">theme</span> <span class="pre">=</span> <span class="pre">&quot;auto&quot;</span></code>
+(the default) hashes the package name into <a class="reference internal" href="#epythet.themes.AUTO_POOL" title="epythet.themes.AUTO_POOL"><code class="xref py py-data docutils literal notranslate"><span class="pre">AUTO_POOL</span></code></a>, so the fleet gets
+variety while every package keeps the same look across rebuilds. A name that is
+not in the registry is passed straight to Sphinx as <code class="docutils literal notranslate"><span class="pre">html_theme</span></code>.</p>
+<p>The accent colour, when not configured, is derived from the package name in
+OKLCH with fixed lightness and chroma, so any hue clears WCAG AA against white
+(light mode) and AAA against a dark background. Same name, same colour, forever;
+change <a class="reference internal" href="#epythet.themes.ACCENT_SALT" title="epythet.themes.ACCENT_SALT"><code class="xref py py-data docutils literal notranslate"><span class="pre">ACCENT_SALT</span></code></a> to reshuffle the whole fleet.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">accent_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span> <span class="o">==</span> <span class="n">accent_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">light</span><span class="p">,</span> <span class="n">dark</span> <span class="o">=</span> <span class="n">accent_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">light</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">light</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">choose_theme</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">,</span> <span class="s2">"furo"</span><span class="p">)</span>
+<span class="go">'furo'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">choose_theme</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">,</span> <span class="s2">"auto"</span><span class="p">)</span> <span class="ow">in</span> <span class="n">AUTO_POOL</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p class="rubric">Module Attributes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.ACCENT_SALT" title="epythet.themes.ACCENT_SALT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ACCENT_SALT</span></code></a></p></td>
+<td><p>Changing the salt reshuffles every derived hue in the fleet at once.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.LIGHT_L" title="epythet.themes.LIGHT_L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIGHT_L</span></code></a></p></td>
+<td><p>1 on white at C=0.13).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.DARK_L" title="epythet.themes.DARK_L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DARK_L</span></code></a></p></td>
+<td><p>1 on #131415 at C=0.13).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.ACCENT_C" title="epythet.themes.ACCENT_C"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ACCENT_C</span></code></a></p></td>
+<td><p>OKLCH chroma for both modes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.THEME_ALIASES" title="epythet.themes.THEME_ALIASES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">THEME_ALIASES</span></code></a></p></td>
+<td><p>Aliases accepted in <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">theme</span></code> for registry entries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.AUTO_POOL" title="epythet.themes.AUTO_POOL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AUTO_POOL</span></code></a></p></td>
+<td><p>the modern, brand-neutral themes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.BUNDLED_THEMES" title="epythet.themes.BUNDLED_THEMES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BUNDLED_THEMES</span></code></a></p></td>
+<td><p>Themes epythet depends on and therefore can always use.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.accent_for" title="epythet.themes.accent_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accent_for</span></code></a>(name)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(light_hex,</span> <span class="pre">dark_hex)</span></code> accents for a package name: same hue, per-mode lightness.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.choose_theme" title="epythet.themes.choose_theme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">choose_theme</span></code></a>(package_name[, theme])</p></td>
+<td><p>Resolve the configured <code class="docutils literal notranslate"><span class="pre">theme</span></code> to a registry key or a raw theme name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.contrast_ratio" title="epythet.themes.contrast_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contrast_ratio</span></code></a>(hex_a, hex_b)</p></td>
+<td><p>WCAG 2 contrast ratio between two colours.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.dark_variant" title="epythet.themes.dark_variant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dark_variant</span></code></a>(hex_color)</p></td>
+<td><p>The dark-mode twin of an accent: same hue, lightness lifted to <a class="reference internal" href="#epythet.themes.DARK_L" title="epythet.themes.DARK_L"><code class="xref py py-data docutils literal notranslate"><span class="pre">DARK_L</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.hex_to_oklch" title="epythet.themes.hex_to_oklch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hex_to_oklch</span></code></a>(hex_color)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(L,</span> <span class="pre">C,</span> <span class="pre">h)</span></code> in OKLCH for an sRGB hex colour.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.hex_to_rgb" title="epythet.themes.hex_to_rgb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hex_to_rgb</span></code></a>(hex_color)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'#3661ac'</span></code> to <code class="docutils literal notranslate"><span class="pre">(54,</span> <span class="pre">97,</span> <span class="pre">172)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.hue_for" title="epythet.themes.hue_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hue_for</span></code></a>(name, *[, salt])</p></td>
+<td><p>A stable hue in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> for a package name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.nearest_radix_name" title="epythet.themes.nearest_radix_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest_radix_name</span></code></a>(hue)</p></td>
+<td><p>The Radix colour whose hue is closest (circularly) to <code class="docutils literal notranslate"><span class="pre">hue</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.oklch_to_hex" title="epythet.themes.oklch_to_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oklch_to_hex</span></code></a>(L, C, h)</p></td>
+<td><p>Convert an OKLCH colour to an sRGB hex string (gamut-clipped).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.resolve_theme" title="epythet.themes.resolve_theme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_theme</span></code></a>(package_name, *[, theme, ...])</p></td>
+<td><p>Translate the semantic knobs into a concrete Sphinx theme configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.theme_spec" title="epythet.themes.theme_spec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">theme_spec</span></code></a>(name)</p></td>
+<td><p>The registry entry for <code class="docutils literal notranslate"><span class="pre">name</span></code>, or a bare passthrough spec for unknown themes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.themes.ResolvedTheme" title="epythet.themes.ResolvedTheme"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResolvedTheme</span></code></a>(html_theme, ...)</p></td>
+<td><p>Everything the Sphinx configuration needs for the chosen theme.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.themes.ThemeSpec" title="epythet.themes.ThemeSpec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ThemeSpec</span></code></a>(html_theme, pip_name[, options, ...])</p></td>
+<td><p>How one Sphinx theme expresses epythet's three semantic knobs.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.ACCENT_C">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">ACCENT_C</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.13</span></span><a class="headerlink" href="#epythet.themes.ACCENT_C" title="Link to this definition">¶</a></dt>
+<dd><p>OKLCH chroma for both modes.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.ACCENT_SALT">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">ACCENT_SALT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'epythet-accent-v1'</span></span><a class="headerlink" href="#epythet.themes.ACCENT_SALT" title="Link to this definition">¶</a></dt>
+<dd><p>Changing the salt reshuffles every derived hue in the fleet at once.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.AUTO_POOL">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">AUTO_POOL</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('furo',</span> <span class="pre">'shibuya',</span> <span class="pre">'pydata_sphinx_theme',</span> <span class="pre">'sphinxawesome_theme')</span></span><a class="headerlink" href="#epythet.themes.AUTO_POOL" title="Link to this definition">¶</a></dt>
+<dd><p>the modern, brand-neutral themes.
+Order matters (it is what the hash indexes); append, never reorder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>What <code class="docutils literal notranslate"><span class="pre">theme</span> <span class="pre">=</span> <span class="pre">&quot;auto&quot;</span></code> chooses from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.BUNDLED_THEMES">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">BUNDLED_THEMES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('furo',</span> <span class="pre">'shibuya',</span> <span class="pre">'pydata_sphinx_theme',</span> <span class="pre">'sphinxawesome_theme')</span></span><a class="headerlink" href="#epythet.themes.BUNDLED_THEMES" title="Link to this definition">¶</a></dt>
+<dd><p>Themes epythet depends on and therefore can always use.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.DARK_L">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">DARK_L</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.78</span></span><a class="headerlink" href="#epythet.themes.DARK_L" title="Link to this definition">¶</a></dt>
+<dd><p>1 on #131415 at C=0.13).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OKLCH lightness for the dark-mode accent (&gt;= 8.6</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.LIGHT_L">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">LIGHT_L</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.46</span></span><a class="headerlink" href="#epythet.themes.LIGHT_L" title="Link to this definition">¶</a></dt>
+<dd><p>1 on white at C=0.13).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OKLCH lightness for the light-mode accent (&gt;= 6.2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.themes.ResolvedTheme">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">ResolvedTheme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_theme</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_theme_options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">css</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent_light</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent_dark</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#ResolvedTheme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.ResolvedTheme" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Everything the Sphinx configuration needs for the chosen theme.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.themes.THEME_ALIASES">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">THEME_ALIASES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'awesome':</span> <span class="pre">'sphinxawesome_theme',</span> <span class="pre">'book':</span> <span class="pre">'sphinx_book_theme',</span> <span class="pre">'pydata':</span> <span class="pre">'pydata_sphinx_theme',</span> <span class="pre">'pydata-sphinx-theme':</span> <span class="pre">'pydata_sphinx_theme',</span> <span class="pre">'rtd':</span> <span class="pre">'sphinx_rtd_theme',</span> <span class="pre">'sphinx-book-theme':</span> <span class="pre">'sphinx_book_theme',</span> <span class="pre">'sphinx-rtd-theme':</span> <span class="pre">'sphinx_rtd_theme',</span> <span class="pre">'sphinxawesome':</span> <span class="pre">'sphinxawesome_theme',</span> <span class="pre">'sphinxawesome-theme':</span> <span class="pre">'sphinxawesome_theme'}</span></span><a class="headerlink" href="#epythet.themes.THEME_ALIASES" title="Link to this definition">¶</a></dt>
+<dd><p>Aliases accepted in <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">theme</span></code> for registry entries.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="epythet.themes.ThemeSpec">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">ThemeSpec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_theme</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pip_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">ThemeSpec.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">ThemeSpec.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">css</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">ThemeSpec.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">ThemeSpec.&lt;lambda&gt;&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#ThemeSpec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.ThemeSpec" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>How one Sphinx theme expresses epythet’s three semantic knobs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">options</span></code> are the “beautiful default” <code class="docutils literal notranslate"><span class="pre">html_theme_options</span></code>; strings may
+contain <code class="docutils literal notranslate"><span class="pre">{repo_url}</span></code>, <code class="docutils literal notranslate"><span class="pre">{description}</span></code> and <code class="docutils literal notranslate"><span class="pre">{docs_dir}</span></code> placeholders.
+<code class="docutils literal notranslate"><span class="pre">accent</span></code> maps <code class="docutils literal notranslate"><span class="pre">(light_hex,</span> <span class="pre">dark_hex)</span></code> to extra theme options and <code class="docutils literal notranslate"><span class="pre">mode</span></code>
+maps <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span> <span class="pre">|</span> <span class="pre">&quot;light&quot;</span> <span class="pre">|</span> <span class="pre">&quot;dark&quot;</span></code> likewise. <code class="docutils literal notranslate"><span class="pre">css</span></code> returns stylesheet text
+for themes whose colours are CSS variables rather than options. <code class="docutils literal notranslate"><span class="pre">context</span></code>
+maps the mode to <code class="docutils literal notranslate"><span class="pre">html_context</span></code> entries.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.accent_for">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">accent_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#accent_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.accent_for" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(light_hex,</span> <span class="pre">dark_hex)</span></code> accents for a package name: same hue, per-mode lightness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.choose_theme">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">choose_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#choose_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.choose_theme" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve the configured <code class="docutils literal notranslate"><span class="pre">theme</span></code> to a registry key or a raw theme name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">choose_theme</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"pydata"</span><span class="p">)</span>
+<span class="go">'pydata_sphinx_theme'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">choose_theme</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"my_custom_theme"</span><span class="p">)</span>
+<span class="go">'my_custom_theme'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.contrast_ratio">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">contrast_ratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hex_b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#contrast_ratio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.contrast_ratio" title="Link to this definition">¶</a></dt>
+<dd><p>WCAG 2 contrast ratio between two colours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">contrast_ratio</span><span class="p">(</span><span class="s2">"#000000"</span><span class="p">,</span> <span class="s2">"#ffffff"</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">21.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.dark_variant">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">dark_variant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#dark_variant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.dark_variant" title="Link to this definition">¶</a></dt>
+<dd><p>The dark-mode twin of an accent: same hue, lightness lifted to <a class="reference internal" href="#epythet.themes.DARK_L" title="epythet.themes.DARK_L"><code class="xref py py-data docutils literal notranslate"><span class="pre">DARK_L</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">contrast_ratio</span><span class="p">(</span><span class="n">dark_variant</span><span class="p">(</span><span class="s2">"#3661ac"</span><span class="p">),</span> <span class="s2">"#131415"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">7</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.hex_to_oklch">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">hex_to_oklch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#hex_to_oklch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.hex_to_oklch" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(L,</span> <span class="pre">C,</span> <span class="pre">h)</span></code> in OKLCH for an sRGB hex colour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hex_to_oklch</span><span class="p">(</span><span class="n">oklch_to_hex</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="go">(0.5, 0.13, 200)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.hex_to_rgb">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">hex_to_rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#hex_to_rgb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.hex_to_rgb" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">'#3661ac'</span></code> to <code class="docutils literal notranslate"><span class="pre">(54,</span> <span class="pre">97,</span> <span class="pre">172)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="s2">"#ffffff"</span><span class="p">)</span>
+<span class="go">(255, 255, 255)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.hue_for">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">hue_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">salt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'epythet-accent-v1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#hue_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.hue_for" title="Link to this definition">¶</a></dt>
+<dd><p>A stable hue in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> for a package name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">hue_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">360</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hue_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span> <span class="o">==</span> <span class="n">hue_for</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.nearest_radix_name">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">nearest_radix_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#nearest_radix_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.nearest_radix_name" title="Link to this definition">¶</a></dt>
+<dd><p>The Radix colour whose hue is closest (circularly) to <code class="docutils literal notranslate"><span class="pre">hue</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nearest_radix_name</span><span class="p">(</span><span class="mi">206</span><span class="p">)</span>
+<span class="go">'blue'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nearest_radix_name</span><span class="p">(</span><span class="mi">359</span><span class="p">)</span>
+<span class="go">'red'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.oklch_to_hex">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">oklch_to_hex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#oklch_to_hex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.oklch_to_hex" title="Link to this definition">¶</a></dt>
+<dd><p>Convert an OKLCH colour to an sRGB hex string (gamut-clipped).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">oklch_to_hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">'#000000'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">oklch_to_hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">'#ffffff'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.resolve_theme">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">resolve_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docs_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'docsrc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#resolve_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.resolve_theme" title="Link to this definition">¶</a></dt>
+<dd><p>Translate the semantic knobs into a concrete Sphinx theme configuration.</p>
+<p><code class="docutils literal notranslate"><span class="pre">theme_options</span></code> is merged last and wins over every default. Options whose
+placeholder could not be filled (no <code class="docutils literal notranslate"><span class="pre">repo_url</span></code>) are dropped rather than
+rendered as an empty string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.themes.ResolvedTheme" title="epythet.themes.ResolvedTheme"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResolvedTheme</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rt</span> <span class="o">=</span> <span class="n">resolve_theme</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"furo"</span><span class="p">,</span> <span class="n">accent</span><span class="o">=</span><span class="s2">"#3661ac"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rt</span><span class="o">.</span><span class="n">html_theme</span><span class="p">,</span> <span class="n">rt</span><span class="o">.</span><span class="n">html_theme_options</span><span class="p">[</span><span class="s2">"light_css_variables"</span><span class="p">][</span><span class="s2">"color-brand-primary"</span><span class="p">]</span>
+<span class="go">('furo', '#3661ac')</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolve_theme</span><span class="p">(</span><span class="s2">"dol"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"furo"</span><span class="p">,</span> <span class="n">theme_options</span><span class="o">=</span><span class="p">{</span><span class="s2">"sidebar_hide_name"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="gp">... </span>    <span class="p">)</span><span class="o">.</span><span class="n">html_theme_options</span><span class="p">[</span><span class="s2">"sidebar_hide_name"</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.themes.theme_spec">
+<span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">theme_spec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#theme_spec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.theme_spec" title="Link to this definition">¶</a></dt>
+<dd><p>The registry entry for <code class="docutils literal notranslate"><span class="pre">name</span></code>, or a bare passthrough spec for unknown themes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.themes.ThemeSpec" title="epythet.themes.ThemeSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThemeSpec</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="epythet.tools.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">epythet.tools</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="epythet.templates.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">epythet.templates</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">epythet.themes</a><ul>
+<li><a class="reference internal" href="#epythet.themes.ACCENT_C"><code class="docutils literal notranslate"><span class="pre">ACCENT_C</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.ACCENT_SALT"><code class="docutils literal notranslate"><span class="pre">ACCENT_SALT</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.AUTO_POOL"><code class="docutils literal notranslate"><span class="pre">AUTO_POOL</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.BUNDLED_THEMES"><code class="docutils literal notranslate"><span class="pre">BUNDLED_THEMES</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.DARK_L"><code class="docutils literal notranslate"><span class="pre">DARK_L</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.LIGHT_L"><code class="docutils literal notranslate"><span class="pre">LIGHT_L</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.ResolvedTheme"><code class="docutils literal notranslate"><span class="pre">ResolvedTheme</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.THEME_ALIASES"><code class="docutils literal notranslate"><span class="pre">THEME_ALIASES</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.ThemeSpec"><code class="docutils literal notranslate"><span class="pre">ThemeSpec</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.accent_for"><code class="docutils literal notranslate"><span class="pre">accent_for()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.choose_theme"><code class="docutils literal notranslate"><span class="pre">choose_theme()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.contrast_ratio"><code class="docutils literal notranslate"><span class="pre">contrast_ratio()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.dark_variant"><code class="docutils literal notranslate"><span class="pre">dark_variant()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.hex_to_oklch"><code class="docutils literal notranslate"><span class="pre">hex_to_oklch()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.hex_to_rgb"><code class="docutils literal notranslate"><span class="pre">hex_to_rgb()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.hue_for"><code class="docutils literal notranslate"><span class="pre">hue_for()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.nearest_radix_name"><code class="docutils literal notranslate"><span class="pre">nearest_radix_name()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.oklch_to_hex"><code class="docutils literal notranslate"><span class="pre">oklch_to_hex()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.resolve_theme"><code class="docutils literal notranslate"><span class="pre">resolve_theme()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.themes.theme_spec"><code class="docutils literal notranslate"><span class="pre">theme_spec()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=fd10adb8"></script>
+    </body>
+</html>

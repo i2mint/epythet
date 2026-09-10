@@ -1,0 +1,35 @@
+epythet.normalizer
+==================
+
+.. automodule:: epythet.normalizer
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      GOOGLE_SECTIONS
+      DEFAULT_RULES
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      bare_headers_to_rubrics
+      blank_lines_between_blocks
+      escape_unmatched_stars
+      fences_to_code_blocks
+      fix_short_underlines
+      google_one_liners
+      indent_of
+      line_contexts
+      literal_block_after_colon
+      markdown_headings_to_rubrics
+      markdown_links_to_rst
+      normalize_docstring
+      normalize_text
+      reflow_list_continuations
+      resolve_rules
+      setup
+      sphinx_process_docstring
+   

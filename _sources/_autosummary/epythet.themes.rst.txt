@@ -1,0 +1,41 @@
+epythet.themes
+==============
+
+.. automodule:: epythet.themes
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      ACCENT_SALT
+      LIGHT_L
+      DARK_L
+      ACCENT_C
+      THEME_ALIASES
+      AUTO_POOL
+      BUNDLED_THEMES
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      accent_for
+      choose_theme
+      contrast_ratio
+      dark_variant
+      hex_to_oklch
+      hex_to_rgb
+      hue_for
+      nearest_radix_name
+      oklch_to_hex
+      resolve_theme
+      theme_spec
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ResolvedTheme
+      ThemeSpec
+   

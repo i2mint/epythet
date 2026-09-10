@@ -1,0 +1,23 @@
+epythet.agent\_outputs
+======================
+
+.. automodule:: epythet.agent_outputs
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      LLMS_FULL_TXT
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      inject_link_relations
+      inject_link_relations_into_site
+      link_relation_tags
+      markdown_to_pdf
+      sphinx_settings
+      write_aggregates
+   

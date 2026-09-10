@@ -1,0 +1,13 @@
+epythet.sphinx\_ext
+===================
+
+.. automodule:: epythet.sphinx_ext
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      setup
+      write_theme_css
+   

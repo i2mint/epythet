@@ -1,0 +1,6 @@
+epythet.docs\_gen
+=================
+
+.. automodule:: epythet.docs_gen
+
+   

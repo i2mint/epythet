@@ -1,0 +1,14 @@
+epythet.sphinx\_conf
+====================
+
+.. automodule:: epythet.sphinx_conf
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      PROJECT_DIR_ENV
+      OVERRIDES_ENV
+      epythet_config
+   

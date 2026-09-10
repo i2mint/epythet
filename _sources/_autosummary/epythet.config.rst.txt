@@ -1,0 +1,34 @@
+epythet.config
+==============
+
+.. automodule:: epythet.config
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DEFAULT_IGNORE
+      DEFAULT_DOCS_DIR
+      PACKAGE_DIR_CANDIDATES
+      NON_PACKAGE_DIRS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_package_dir
+      load_config
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DocsConfig
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      ConfigError
+   

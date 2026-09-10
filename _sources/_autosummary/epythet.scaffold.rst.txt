@@ -1,0 +1,6 @@
+epythet.scaffold
+================
+
+.. currentmodule:: epythet
+
+.. autofunction:: scaffold

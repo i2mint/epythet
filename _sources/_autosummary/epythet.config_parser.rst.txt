@@ -1,0 +1,12 @@
+epythet.config\_parser
+======================
+
+.. automodule:: epythet.config_parser
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      parse_config
+   

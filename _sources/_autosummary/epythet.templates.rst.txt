@@ -1,0 +1,17 @@
+epythet.templates
+=================
+
+.. automodule:: epythet.templates
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      CONF_SHIM_MARKER
+      LEGACY_CONF_MARKER
+      INDEX_MARKER
+      aggregates_block
+      LEGACY_DOCSRC_GITIGNORES
+      autosummary_module_rst
+   
