@@ -80,9 +80,12 @@ def build(
         str(docsrc),
         str(outdir),
     ]
+    # The Sphinx process gets the generator already resolved ("auto" probes the
+    # import once, here), so conf.py never re-probes or disagrees with the scaffold.
+    overrides = {"api_generator": config.resolved_api_generator, **(overrides or {})}
     env = dict(os.environ)
     env["EPYTHET_PROJECT_DIR"] = str(config.project_dir)
-    env["EPYTHET_OVERRIDES"] = json.dumps(overrides or {})
+    env["EPYTHET_OVERRIDES"] = json.dumps(overrides)
     result = subprocess.run(command, cwd=str(docsrc), env=env)
     if result.returncode != 0:
         raise BuildError(

@@ -8,7 +8,7 @@ and writes it to ``PROJECT_DIR/docsrc/_build/html``.
 import cw
 
 from epythet.build import build, make
-from epythet.config import load_config
+from epythet.config import load_config, split_ignore
 from epythet.scaffold import make_autodocs, make_docsrc, scaffold
 from epythet.validation.cli import validate
 
@@ -18,11 +18,14 @@ def quickstart(project_dir, *, ignore: list[str] = None):
 
     Equivalent to ``make-docsrc`` then ``make html``, with ``ignore`` applied
     to the API generator. An empty ``ignore`` (the action passes ``--ignore``
-    with no values when its input is unset) means "use the configured default".
+    with no values when its input is unset, or ``""``) means "use the configured
+    default"; each value may itself be comma-separated.
 
     :param project_dir: Path to root project directory (pyproject.toml or setup.cfg)
     :param ignore: skip file if path contains any ignore strings
     """
+    # No values (the action's unset input) or only empty strings: keep the default.
+    ignore = split_ignore(ignore or ())
     overrides = {"ignore": list(ignore)} if ignore else {}
     config = load_config(project_dir, **overrides)
     scaffold(config, verbose=True)

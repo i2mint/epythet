@@ -56,7 +56,7 @@ def test_defaults(tmp_path):
     assert cfg.mode == "auto"
     assert cfg.accent == ""
     assert cfg.ignore == ("tests/", "scrap/", "examples/")
-    assert cfg.api_generator == "autosummary"
+    assert cfg.api_generator == "auto"
     assert cfg.agent_outputs is True
     assert cfg.aggregates == ("md",)
 
@@ -194,3 +194,35 @@ def test_docs_config_is_frozen(tmp_path):
     with pytest.raises(Exception):
         cfg.name = "y"
     assert cfg.with_overrides(name="y", theme=None).name == "y"
+
+
+def test_auto_generator_resolves_by_import_probe(tmp_path, capsys):
+    from epythet.config import DocsConfig
+
+    good = tmp_path / "good"
+    (good / "goodpkg").mkdir(parents=True)
+    (good / "goodpkg" / "__init__.py").write_text('"""Imports fine."""\n')
+    cfg = DocsConfig(project_dir=good, name="goodpkg", package_dir="goodpkg")
+    assert cfg.api_generator == "auto"
+    assert cfg.resolved_api_generator == "autosummary"
+
+    bad = tmp_path / "bad"
+    (bad / "badpkg").mkdir(parents=True)
+    (bad / "badpkg" / "__init__.py").write_text("import a_dependency_that_is_missing\n")
+    cfg = DocsConfig(project_dir=bad, name="badpkg", package_dir="badpkg")
+    assert cfg.resolved_api_generator == "autoapi"
+    assert "a_dependency_that_is_missing" in capsys.readouterr().err
+
+    pinned = DocsConfig(
+        project_dir=bad, name="badpkg", package_dir="badpkg", api_generator="autosummary"
+    )
+    assert pinned.resolved_api_generator == "autosummary"
+
+
+def test_empty_ignore_override_keeps_default(tmp_path):
+    from epythet.cli import quickstart  # the orchestrator applies the rule
+    from epythet.config import DEFAULT_IGNORE, split_ignore
+
+    assert split_ignore([""]) == ()
+    assert split_ignore(["", " , "]) == ()
+    assert DocsConfig(project_dir="/tmp/x", name="x").ignore == DEFAULT_IGNORE

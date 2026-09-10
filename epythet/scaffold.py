@@ -92,7 +92,7 @@ def scaffold(
     _remove_legacy_files(docsrc, say)
     for name in GENERATED_API_DIRS:
         if (docsrc / name).is_dir() and (
-            name != "api" or config.api_generator == "autoapi"
+            name != "api" or config.resolved_api_generator == "autoapi"
         ):
             shutil.rmtree(docsrc / name)
     _write_if_generated(
@@ -115,7 +115,7 @@ def scaffold(
             docsrc / page.filename, page.content, markers=(page.marker,), say=say
         )
     _remove_stale_generated_pages(docsrc, pages, say)
-    if config.api_generator == "autosummary":
+    if config.resolved_api_generator == "autosummary":
         (docsrc / "api.rst").write_text(
             templates.api_rst_autosummary.format(package_name=config.package_name),
             encoding="utf-8",
@@ -123,7 +123,7 @@ def scaffold(
         template_dir = docsrc / "_templates" / "autosummary"
         template_dir.mkdir(parents=True, exist_ok=True)
         (template_dir / "module.rst").write_text(
-            render_autosummary_module_template(config.ignore), encoding="utf-8"
+            render_autosummary_module_template(config.api_ignore), encoding="utf-8"
         )
     gitignore = docsrc / ".gitignore"
     if (

@@ -59,7 +59,7 @@ theme = "auto"                  # "auto" | "furo" | "shibuya" | "pydata" | "sphi
 accent = "#3661ac"              # default: derived from the package name (OKLCH, WCAG AA on white by construction)
 mode = "auto"                   # "auto" | "light" | "dark"  (where the theme supports forcing it)
 ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignore` on the CLI overrides
-api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
+api_generator = "auto"          # "auto" (autosummary if the package imports, else autoapi) | "autosummary" | "autoapi"
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
 ai_artifacts = true             # "For AI agents" page when skills / subagents / CLAUDE.md exist
@@ -111,6 +111,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "tests/,scrap/,examples/"
           python-version: "3.12"
+          # v2 opt-in until the action's default flips (i2mint/epythet#16)
+          epythet-spec: "epythet>=0.2,<0.3"
 ```
 
 The action installs epythet and the project, runs `epythet quickstart . --ignore ...`, pushes `docsrc/_build/html/` to the `gh-pages` branch, and enables Pages. If the site 404s after the first run, Pages was not enabled: run `epythet configure-pages owner/repo` (the `epythet-pages` skill covers diagnosis).
