@@ -1,0 +1,6 @@
+epythet.validation.render
+=========================
+
+.. currentmodule:: epythet.validation
+
+.. autofunction:: render

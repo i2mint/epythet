@@ -26,6 +26,17 @@
 - [epythet.tools](_autosummary/epythet.tools.html.md): Tools to diagnose (and sometimes, repair) documentation
 - [epythet.tools.docstring_diagnosis](_autosummary/epythet.tools.docstring_diagnosis.html.md): Tools to manipulate documentation elements
 - [epythet.tools.published_docs](_autosummary/epythet.tools.published_docs.html.md): Elements for a tool to setup docs and check if docs are published, and if not, why.
+- [epythet.validation](_autosummary/epythet.validation.html.md): `epythet validate`: tiered documentation validation with a growing artifact ledger.
+- [epythet.validation.build](_autosummary/epythet.validation.build.html.md): Level 1: run the documentation build and turn its warning stream into findings.
+- [epythet.validation.cli](_autosummary/epythet.validation.cli.html.md): The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`.
+- [epythet.validation.core](_autosummary/epythet.validation.core.html.md): The `validate` orchestrator: resolve the package, run the levels, build the report.
+- [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by `detector.function`.
+- [epythet.validation.docstrings](_autosummary/epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
+- [epythet.validation.ledger](_autosummary/epythet.validation.ledger.html.md): The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
+- [epythet.validation.lint](_autosummary/epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
+- [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of `epythet validate`.
+- [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
+- [epythet.validation.render](_autosummary/epythet.validation.render.html.md): Render with the named format (`table`, `json` or `jsonl`).
 
 ---
 

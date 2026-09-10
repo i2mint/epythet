@@ -1,0 +1,19 @@
+epythet.validation.core
+=======================
+
+.. automodule:: epythet.validation.core
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      resolve_package
+      validate
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ResolvedPackage
+   

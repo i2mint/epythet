@@ -1,0 +1,12 @@
+epythet.validation.cli
+======================
+
+.. automodule:: epythet.validation.cli
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      validate
+   

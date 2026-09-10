@@ -1,0 +1,32 @@
+epythet.validation.detectors
+============================
+
+.. automodule:: epythet.validation.detectors
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DETECTORS
+      NAPOLEON_SECTIONS
+      NEAR_SECTIONS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      blockquote_with_unexpected_indent
+      collapsed_table
+      detector
+      directive_content_lost
+      markdown_fence_literal
+      mixed_bullet_markers
+      near_miss_section_term
+      param_definition_list
+      problematic_nodes
+      prose_definition_term
+      section_as_definition_list
+      system_messages
+      title_references
+   

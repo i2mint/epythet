@@ -1,0 +1,22 @@
+epythet.validation.docstrings
+=============================
+
+.. automodule:: epythet.validation.docstrings
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      count_public_objects
+      iter_docstrings
+      iter_file_docstrings
+      iter_python_files
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Coverage
+      Docstring
+   

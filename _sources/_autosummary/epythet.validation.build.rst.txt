@@ -1,0 +1,34 @@
+epythet.validation.build
+========================
+
+.. automodule:: epythet.validation.build
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      NO_DOCSRC
+      WARNINGS_ONLY_EXIT
+      WARNING_LINE_RE
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      classify_warning
+      default_sphinx_build
+      parse_warning_line
+      parse_warning_stream
+      run_build_level
+      warnings_to_findings
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BuildBackend
+      BuildResult
+      BuildWarning
+      SphinxBackend
+   

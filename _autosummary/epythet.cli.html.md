@@ -19,7 +19,7 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 | [`epythet_cli`](#epythet.cli.epythet_cli)()                             | Entry point for the `epythet` console script.               |
 | [`quickstart`](#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go. |
 
-### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>]*
+### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
 

@@ -67,3 +67,4 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`templates`](epythet.templates.html.md#module-epythet.templates)                      | Text templates for the generated `docsrc` files.                                                                                     |
 | [`themes`](epythet.themes.html.md#module-epythet.themes)                            | Theme registry, deterministic theme choice, and the OKLCH accent palette.                                                            |
 | [`tools`](epythet.tools.html.md#module-epythet.tools)                              | Tools to diagnose (and sometimes, repair) documentation                                                                              |
+| [`validation`](epythet.validation.html.md#module-epythet.validation)                    | `epythet validate`: tiered documentation validation with a growing artifact ledger.                                                  |

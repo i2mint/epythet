@@ -1,0 +1,33 @@
+epythet.validation.model
+========================
+
+.. automodule:: epythet.validation.model
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SEVERITY_RANK
+      LEVELS
+      TIERS
+      IMPLEMENTED_TIERS
+      IMPLEMENTED_LEVELS
+      EXIT_FOR_LEVEL
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      levels_for_tier
+      severity_at_or_above
+      sort_findings
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Finding
+      Report
+      Timer
+   
