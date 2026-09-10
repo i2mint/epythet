@@ -77,7 +77,7 @@ theme = "auto"                  # "auto" | "furo" | "shibuya" | "pydata" | "sphi
 accent = "#3661ac"              # default: derived from the package name (OKLCH, WCAG AA on white by construction)
 mode = "auto"                   # "auto" | "light" | "dark"  (where the theme supports forcing it)
 ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignore` on the CLI overrides
-api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
+api_generator = "auto"          # "auto" (autosummary if the package imports, else autoapi) | "autosummary" | "autoapi"
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
 ai_artifacts = true             # "For AI agents" page when the repo has skills, agents or CLAUDE.md
@@ -93,7 +93,7 @@ announcement = "v2 is in beta"
 
 **Themes.** `theme = "auto"` (the default) hashes the package name into a curated pool (furo, shibuya, pydata-sphinx-theme, sphinxawesome-theme) so a fleet of packages gets variety while every package keeps the same look across rebuilds. The pool’s themes are installed with epythet; `sphinx-book-theme` and `sphinx_rtd_theme` come with `pip install "epythet[themes]"`. The accent is one hue per package, at a fixed perceptual lightness, so every possible colour clears WCAG AA against white and AAA on a dark background; an explicit `accent` is used as given in light mode and lifted to the same dark-mode lightness for dark mode.
 
-**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import: use it when the package cannot be imported in CI. Both give the nested tree; both run the normalizer. Under `autosummary`, `ignore` keeps the ignored modules out of the tree, but Python still imports them once while discovering the package.
+**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import. The default `auto` probes the import once and picks `autosummary` when it succeeds, `autoapi` otherwise (a missing optional dependency in CI then costs you the aliases, not the whole API section). Both give the nested tree; both run the normalizer; both skip `__main__`. Under `autosummary`, `ignore` keeps the ignored modules out of the tree, but Python still imports them once while discovering the package.
 
 **PDF aggregate.** `aggregates = ["md", "pdf"]` renders `<package>.pdf` from the Markdown aggregate with Playwright (`pip install "epythet[pdf]" && playwright install chromium`) or WeasyPrint, whichever is installed. No LaTeX.
 
@@ -167,6 +167,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "tests/,scrap/,examples/"
           python-version: "3.12"
+          # v2 opt-in until the action's default flips (i2mint/epythet#16)
+          epythet-spec: "epythet>=0.2,<0.3"
 ```
 
 The action installs epythet, installs your project, runs `epythet quickstart . --ignore ...` and pushes `./docsrc/_build/html/` to the `gh-pages` branch.
@@ -772,7 +774,8 @@ Scaffold docsrc and build the HTML documentation in one go.
 
 Equivalent to `make-docsrc` then `make html`, with `ignore` applied
 to the API generator. An empty `ignore` (the action passes `--ignore`
-with no values when its input is unset) means “use the configured default”.
+with no values when its input is unset, or `""`) means “use the configured
+default”; each value may itself be comma-separated.
 
 * **Parameters:**
   * **project_dir** – Path to root project directory (pyproject.toml or setup.cfg)
@@ -794,7 +797,7 @@ consequence of the decision record.
 
 ```pycon
 >>> from epythet.config import DocsConfig
->>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo")
+>>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo", api_generator="autosummary")
 >>> s = sphinx_settings(cfg)
 >>> s["html_theme"], s["default_role"], "sphinx.ext.autosummary" in s["extensions"]
 ('furo', 'code', True)
@@ -830,7 +833,7 @@ The document `index.md`’s toctree points at for the API pages.
 
 ```pycon
 >>> from epythet.config import DocsConfig
->>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x"))
+>>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autosummary"))
 'api'
 >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autoapi"))
 'api/index'
@@ -887,7 +890,7 @@ theme = "auto"                # "auto" | "furo" | "shibuya" | ... | any installe
 accent = "#3661ac"            # default: derived from the package name (OKLCH)
 mode = "auto"                 # "auto" | "light" | "dark"
 ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
-api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
+api_generator = "auto"        # "auto" | "autosummary" (imports the package) | "autoapi" (static)
 agent_outputs = true          # llms.txt + .md twins of every page
 aggregates = ["md"]           # flat single-document twins at the site root
 ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
@@ -921,15 +924,19 @@ announcement = "v2 is in beta"
 
 | [`DEFAULT_IGNORE`](_autosummary/epythet.config.html.md#epythet.config.DEFAULT_IGNORE)         | Path substrings skipped by default when discovering modules to document.       |
 |-------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`ALWAYS_IGNORE`](_autosummary/epythet.config.html.md#epythet.config.ALWAYS_IGNORE)          | a `__main__` is a command line, not an API.                                    |
 | [`DEFAULT_DOCS_DIR`](_autosummary/epythet.config.html.md#epythet.config.DEFAULT_DOCS_DIR)       | Directory under the project root holding the Sphinx sources.                   |
 | [`PACKAGE_DIR_CANDIDATES`](_autosummary/epythet.config.html.md#epythet.config.PACKAGE_DIR_CANDIDATES) | Directory candidates (relative to the project root) that may hold the package. |
 | [`NON_PACKAGE_DIRS`](_autosummary/epythet.config.html.md#epythet.config.NON_PACKAGE_DIRS)       | Top-level directories never taken for the package when guessing by convention. |
+| [`IMPORT_PROBE_TIMEOUT`](_autosummary/epythet.config.html.md#epythet.config.IMPORT_PROBE_TIMEOUT)   | Seconds allowed for the import probe behind `api_generator = "auto"`.          |
 
 ### Functions
 
-| [`find_package_dir`](_autosummary/epythet.config.html.md#epythet.config.find_package_dir)(project_dir, name)     | Locate the package directory for `name` under `project_dir` by convention.   |
-|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`load_config`](_autosummary/epythet.config.html.md#epythet.config.load_config)(project_dir, \*\*overrides) | Read a project's documentation configuration.                                |
+| [`find_package_dir`](_autosummary/epythet.config.html.md#epythet.config.find_package_dir)(project_dir, name)     | Locate the package directory for `name` under `project_dir` by convention.    |
+|------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| [`load_config`](_autosummary/epythet.config.html.md#epythet.config.load_config)(project_dir, \*\*overrides) | Read a project's documentation configuration.                                 |
+| [`resolve_api_generator`](_autosummary/epythet.config.html.md#epythet.config.resolve_api_generator)(config)           | The generator to run: `autosummary` when the package imports, else `autoapi`. |
+| [`split_ignore`](_autosummary/epythet.config.html.md#epythet.config.split_ignore)(ignore)                    | Normalise ignore patterns: each item may itself be a comma-separated list.    |
 
 ### Classes
 
@@ -940,6 +947,17 @@ announcement = "v2 is in beta"
 
 | [`ConfigError`](_autosummary/epythet.config.html.md#epythet.config.ConfigError)   | A project's documentation configuration is missing or invalid.   |
 |----------------------------------------------------------------|------------------------------------------------------------------|
+
+### epythet.config.ALWAYS_IGNORE *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('_\_main_\_',)*
+
+a `__main__` is a
+command line, not an API. (autosummary still imports it once while
+discovering the package, as it does every submodule; a `__main__` that
+runs argparse at import survives that because Sphinx turns its `SystemExit`
+into a skipped import.)
+
+* **Type:**
+  Modules that never get a page, whatever `ignore` says
 
 ### *exception* epythet.config.ConfigError
 
@@ -955,7 +973,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
 
@@ -963,6 +981,18 @@ Everything needed to generate a project’s documentation.
 
 Attributes mirror the `[tool.epythet]` keys; see the module docstring.
 `project_dir` and `package_dir` are absolute paths.
+
+#### *property* api_ignore *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]*
+
+what the API generators skip.
+
+```pycon
+>>> DocsConfig(project_dir="/tmp/x", name="x", ignore=["tests/"]).api_ignore
+('tests/', '__main__')
+```
+
+* **Type:**
+  `ignore` plus [`ALWAYS_IGNORE`](_autosummary/epythet.config.html.md#epythet.config.ALWAYS_IGNORE)
 
 #### *property* docsrc_dir *: [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)*
 
@@ -976,12 +1006,23 @@ The 5-tuple that [`epythet.config_parser.parse_config()`](_autosummary/epythet.c
 
 The importable package name (`my-pkg` becomes `my_pkg`).
 
+#### *property* resolved_api_generator *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+
+see [`resolve_api_generator()`](_autosummary/epythet.config.html.md#epythet.config.resolve_api_generator).
+
+* **Type:**
+  `api_generator` with `"auto"` resolved
+
 #### with_overrides(\*\*changes)
 
 A copy with some fields replaced (`None` values are ignored).
 
 * **Return type:**
   [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig)
+
+### epythet.config.IMPORT_PROBE_TIMEOUT *= 120*
+
+Seconds allowed for the import probe behind `api_generator = "auto"`.
 
 ### epythet.config.NON_PACKAGE_DIRS *= frozenset({'docs', 'docsrc', 'examples', 'misc', 'scrap', 'test', 'tests'})*
 
@@ -1019,6 +1060,37 @@ Read a project’s documentation configuration.
   [**ConfigError**](_autosummary/epythet.config.html.md#epythet.config.ConfigError) – when neither configuration file is found.
 * **Return type:**
   [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig)
+
+### epythet.config.resolve_api_generator(config)
+
+The generator to run: `autosummary` when the package imports, else `autoapi`.
+
+`autosummary` imports the package and documents what it finds (aliases,
+partials, re-exports); when the import fails, in CI typically because an
+optional dependency is missing, it produces an *empty* API section and a
+successful build. `auto` probes the import once, in a subprocess with the
+project root on `sys.path` (as the build has it), and falls back to the
+static `autoapi` generator, printing why. An explicit value is returned as
+is, and so is `"auto"` when the package directory is unknown.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.config.split_ignore(ignore)
+
+Normalise ignore patterns: each item may itself be a comma-separated list.
+
+The publish action passes its `ignore` input verbatim as one argument,
+`--ignore tests/,scrap/,examples/`, and `setup.cfg` values are strings;
+both must mean three patterns, not one that never matches.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+
+```pycon
+>>> split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])
+('tests/', 'scrap/', 'examples/')
+```
 
 
 # _autosummary/epythet.config_parser.html.md
@@ -1542,7 +1614,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.2', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, ignore=('tests/,scrap/,examples/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.3', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -1595,13 +1667,13 @@ extensions at build time.
 
 ### Module Attributes
 
-| [`CONF_SHIM_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.CONF_SHIM_MARKER)         | Marker line present in every conf.py epythet generated (v2), used to decide whether an existing file may be overwritten.                                        |
-|---------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`LEGACY_CONF_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_CONF_MARKER)       | The old (0.1.x) template's signature line, also safe to overwrite.                                                                                              |
-| [`INDEX_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.INDEX_MARKER)             | Marker in the generated index.md, used to decide whether to overwrite it.                                                                                       |
-| [`aggregates_block`](_autosummary/epythet.templates.html.md#epythet.templates.aggregates_block)         | Footer of the landing page pointing at the single-document twins.                                                                                               |
-| [`LEGACY_DOCSRC_GITIGNORES`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_DOCSRC_GITIGNORES) | What 0.1.x wrote to docsrc/.gitignore; safe to replace.                                                                                                         |
-| [`autosummary_module_rst`](_autosummary/epythet.templates.html.md#epythet.templates.autosummary_module_rst)   | submodules matching the ignore fragments are left out of the recursion, so no stub is generated (and no second import attempted) for tests/, scrap/, examples/. |
+| [`CONF_SHIM_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.CONF_SHIM_MARKER)         | Marker line present in every conf.py epythet generated (v2), used to decide whether an existing file may be overwritten.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`LEGACY_CONF_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_CONF_MARKER)       | The old (0.1.x) template's signature line, also safe to overwrite.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [`INDEX_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.INDEX_MARKER)             | Marker in the generated index.md, used to decide whether to overwrite it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [`aggregates_block`](_autosummary/epythet.templates.html.md#epythet.templates.aggregates_block)         | Footer of the landing page pointing at the single-document twins.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| [`LEGACY_DOCSRC_GITIGNORES`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_DOCSRC_GITIGNORES) | What 0.1.x wrote to docsrc/.gitignore; safe to replace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [`autosummary_module_rst`](_autosummary/epythet.templates.html.md#epythet.templates.autosummary_module_rst)   | autosummary's stock `module.rst` (Sphinx 9) with two changes to the `modules` block: (1) the recursion runs over `all_modules` (every submodule, minus `_`-prefixed ones unless `__all__` names them) rather than `modules`, because with `autosummary_ignore_module_all = False` a package whose `__init__` declares an `__all__` of *objects* would otherwise get no submodule pages at all (a third of the fleet declares one); (2) submodules matching the ignore fragments are left out of the recursion, so no stub is generated (and no second import attempted) for tests/, scrap/, examples/. |
 
 ### epythet.templates.CONF_SHIM_MARKER *= 'from epythet.sphinx_conf import \*'*
 
@@ -1625,14 +1697,17 @@ What 0.1.x wrote to docsrc/.gitignore; safe to replace.
 Footer of the landing page pointing at the single-document twins. Raw HTML,
 because MyST would read a relative `.md` link as a (missing) page reference.
 
-### epythet.templates.autosummary_module_rst *= '{{{{ fullname | escape | underline}}}}\\n\\n.. automodule:: {{{{ fullname }}}}\\n\\n   {{% block attributes %}}\\n   {{%- if attributes %}}\\n   .. rubric:: {{{{ \_(\\'Module Attributes\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in attributes %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block functions %}}\\n   {{%- if functions %}}\\n   .. rubric:: {{{{ \_(\\'Functions\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in functions %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block classes %}}\\n   {{%- if classes %}}\\n   .. rubric:: {{{{ \_(\\'Classes\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in classes %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block exceptions %}}\\n   {{%- if exceptions %}}\\n   .. rubric:: {{{{ \_(\\'Exceptions\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in exceptions %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n{{%- block modules %}}\\n{{%- set ignored = {ignored_fragments} %}}\\n{{%- set ns = namespace(kept=[]) %}}\\n{{%- for item in modules %}}\\n{{%- if not (ignored | select("in", \\'.\\' ~ item ~ \\'.\\') | list) %}}\\n{{%- set ns.kept = ns.kept + [item] %}}\\n{{%- endif %}}\\n{{%- endfor %}}\\n{{%- if ns.kept %}}\\n.. rubric:: Modules\\n\\n.. autosummary::\\n   :toctree:\\n   :recursive:\\n{{% for item in ns.kept %}}\\n   {{{{ item }}}}\\n{{%- endfor %}}\\n{{% endif %}}\\n{{%- endblock %}}\\n'*
+### epythet.templates.autosummary_module_rst *= '{{{{ fullname | escape | underline}}}}\\n\\n.. automodule:: {{{{ fullname }}}}\\n\\n   {{% block attributes %}}\\n   {{%- if attributes %}}\\n   .. rubric:: {{{{ \_(\\'Module Attributes\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in attributes %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block functions %}}\\n   {{%- if functions %}}\\n   .. rubric:: {{{{ \_(\\'Functions\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in functions %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block classes %}}\\n   {{%- if classes %}}\\n   .. rubric:: {{{{ \_(\\'Classes\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in classes %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n   {{%- block exceptions %}}\\n   {{%- if exceptions %}}\\n   .. rubric:: {{{{ \_(\\'Exceptions\\') }}}}\\n\\n   .. autosummary::\\n   {{% for item in exceptions %}}\\n      {{{{ item }}}}\\n   {{%- endfor %}}\\n   {{% endif %}}\\n   {{%- endblock %}}\\n\\n{{%- block modules %}}\\n{{%- set ignored = {ignored_fragments} %}}\\n{{%- set ns = namespace(kept=[]) %}}\\n{{%- for item in all_modules %}}\\n{{%- if (item in modules or not item.startswith(\\'_\\')) and not (ignored | select("in", \\'.\\' ~ item ~ \\'.\\') | list) %}}\\n{{%- set ns.kept = ns.kept + [item] %}}\\n{{%- endif %}}\\n{{%- endfor %}}\\n{{%- if ns.kept %}}\\n.. rubric:: Modules\\n\\n.. autosummary::\\n   :toctree:\\n   :recursive:\\n{{% for item in ns.kept %}}\\n   {{{{ item }}}}\\n{{%- endfor %}}\\n{{% endif %}}\\n{{%- endblock %}}\\n'*
 
-submodules
+autosummary’s stock `module.rst` (Sphinx 9) with two changes to the
+`modules` block: (1) the recursion runs over `all_modules` (every
+submodule, minus `_`-prefixed ones unless `__all__` names them) rather
+than `modules`,
+because with `autosummary_ignore_module_all = False` a package whose
+`__init__` declares an `__all__` of *objects* would otherwise get no
+submodule pages at all (a third of the fleet declares one); (2) submodules
 matching the ignore fragments are left out of the recursion, so no stub is
 generated (and no second import attempted) for tests/, scrap/, examples/.
-
-* **Type:**
-  autosummary’s stock `module.rst` (Sphinx 9) with one addition
 
 
 # _autosummary/epythet.themes.html.md
@@ -2389,12 +2464,12 @@ Configure Pages for an iterable of repo stubs, or all repos in an organization.
 Retrieves the default branch and current commit SHA for a given GitHub repository.
 
 * **Parameters:**
-  * **repo_stub** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – The GitHub repository in “owner/repo” format.
-  * **headers** ([*dict*](https://docs.python.org/3/library/stdtypes.html#dict)) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **repo_stub** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – The GitHub repository in “owner/repo” format.
+  * **headers** (`Union`[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   A dictionary containing ‘default_branch’ and ‘commit_sha’.
 * **Return type:**
-  [*dict*](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
 
 ### epythet.tools.published_docs.enable_pages(repo_stub, , branch='gh-pages', path='/')
 
@@ -2415,15 +2490,15 @@ Returns the API response dict on success, or None on failure.
 Ensures a branch exists. Does nothing if it already does, and creates it if not.
 
 * **Parameters:**
-  * **repo_stub** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Owner and name of the GitHub repository, e.g., ‘owner/repo’.
-  * **branch** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Name of the branch to be created if it doesn’t exist
-  * **commit_sha** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Commit SHA to base the new branch on. By default,
+  * **repo_stub** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Owner and name of the GitHub repository, e.g., ‘owner/repo’.
+  * **branch** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Name of the branch to be created if it doesn’t exist
+  * **commit_sha** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Commit SHA to base the new branch on. By default,
     it’s the SHA of the most recent commit of the default branch.
-  * **headers** ([*dict*](https://docs.python.org/3/library/stdtypes.html#dict)) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **headers** (`Union`[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   Response from GitHub API as a dictionary.
 * **Return type:**
-  [*dict*](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
 
 ### epythet.tools.published_docs.github_org_and_repo(github_url)
 
@@ -2608,7 +2683,7 @@ Sphinx’s exit status when the only problem was warnings under `-W`.
 The first build-warning rule that matches, most specific first.
 
 * **Return type:**
-  [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  `Rule` | [`None`](https://docs.python.org/3/library/constants.html#None)
 
 ### epythet.validation.build.default_sphinx_build()
 
@@ -2757,7 +2832,7 @@ Validate a package’s documentation and return a `Report`.
     `2` adds the Sphinx build. Tiers 3 and 4 belong to WP3.
   * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/library/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
     overrides `level` when given.
-  * **ledger** ([`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) | [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
+  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
   * **backend** – The build backend for level 1 (default: `SphinxBackend()`).
   * **fail_on** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Severity threshold recorded on the report for exit codes.
   * **napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Pre-process Google/NumPy sections the way the fleet’s
@@ -3031,258 +3106,16 @@ fixture); observations from real runs are appended outside the repository.
 
 ### Modules
 
-| [`build`](_autosummary/epythet.validation.build.html.md#module-epythet.validation.build)              | Level 1: run the documentation build and turn its warning stream into findings.        |
-|-----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| [`cli`](_autosummary/epythet.validation.cli.html.md#module-epythet.validation.cli)                  | The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`.  |
-| [`core`](_autosummary/epythet.validation.core.html.md#module-epythet.validation.core)                | The `validate` orchestrator: resolve the package, run the levels, build the report.    |
-| [`detectors`](_autosummary/epythet.validation.detectors.html.md#module-epythet.validation.detectors)      | Named doctree detectors, referenced from ledger rules by `detector.function`.          |
-| [`docstrings`](_autosummary/epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)    | Docstring extraction from Python source, without importing anything.                   |
-| [`ledger`](_autosummary/epythet.validation.ledger.html.md#module-epythet.validation.ledger)            | The artifact ledger: rule definitions (bundled YAML) and observations (user data dir). |
-| [`lint`](_autosummary/epythet.validation.lint.html.md#module-epythet.validation.lint)                | Level 0: static docstring linters, normalised into the finding model.                  |
-| [`model`](_autosummary/epythet.validation.model.html.md#module-epythet.validation.model)              | The finding and report model shared by every level of `epythet validate`.              |
-| [`parse`](_autosummary/epythet.validation.parse.html.md#module-epythet.validation.parse)              | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.     |
-| [`render`](_autosummary/epythet.validation.render.html.md#epythet.validation.render)(report[, format]) | Render with the named format (`table`, `json` or `jsonl`).                             |
-
-
-# _autosummary/epythet.validation.ledger.html.md
-
-# epythet.validation.ledger
-
-The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
-
-Storage is split by mutability, as decided in the v2 decision record (D8):
-
-- **Rules** are one YAML file per rule under `epythet/ledger/rules/<group>/`
-  (the `build` namespace lives in `build_warnings/`: a directory named
-  `build/` is dropped from wheels by the project’s `.gitignore`)
-  with a sibling `.py` fixture that doubles as the regression test. They are
-  human-edited, rarely, and ship inside epythet.
-- **Observations** (occurrences with file paths and snippets from real repos)
-  are append-only JSONL under the user data dir, never inside the repo, because
-  they are derived from repositories that are not all public. Occurrence counts
-  are a *derived view* over that file, computed on read.
-
-The `ledger=` seam of `epythet.validation.validate()` accepts `None`
-(bundled rules), a directory (bundled rules plus a package-local overlay,
-same id overrides) or a ready [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger).
-
-### Module Attributes
-
-| [`PARSE_KINDS`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.PARSE_KINDS)   | Detector kinds evaluated per docstring at level 0.5.   |
-|----------------------------------------------------------------|--------------------------------------------------------|
-
-### Functions
-
-| [`append_observations`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.append_observations)(findings, \*, package[, ...])   | Append one JSONL line per finding; returns how many were written.                        |
-|------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| [`iter_fixture_cases`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.iter_fixture_cases)(fixture_path)                    | Yield the tagged specimens of a fixture file.                                            |
-| [`iter_rule_files`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.iter_rule_files)(rules_dir)                          | Every `*.yaml` under `rules_dir`, in a stable order.                                     |
-| [`load_ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.load_ledger)([ledger])                               | Resolve the `ledger=` seam to a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger). |
-| [`load_rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.load_rule)(path)                                     | Load and validate one rule file.                                                         |
-| [`observation_record`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.observation_record)(finding, \*, package, ...)       | The JSONL line written for one finding.                                                  |
-| [`observations_path`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.observations_path)()                                 | Where observations are appended: `<user data dir>/ledger/observations.jsonl`.            |
-| [`occurrence_counts`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.occurrence_counts)([path])                           | Occurrences per rule id over the whole observations file (empty if absent).              |
-| [`user_data_dir`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir)()                                     | `$EPYTHET_DATA_DIR`, else `$XDG_DATA_HOME/epythet`, else `~/.local/share/epythet`.       |
-
-### Classes
-
-| [`FixtureCase`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.FixtureCase)(name, line, expect_hit, ...)         | One specimen function in a fixture: its docstring and what the tag promises.   |
-|---------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger)([rules, sources])                         | The loaded rule catalog: bundled rules plus any overlay, keyed by id.          |
-| [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)(id, title, namespace, severity, ...[, ...]) | One ledger rule, loaded from its YAML file and validated.                      |
-
-### Exceptions
-
-| [`LedgerError`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.LedgerError)   | A rule file is schema-invalid, a rule id is duplicated, or a fixture is missing.   |
-|----------------------------------------------------------------|------------------------------------------------------------------------------------|
-
-### *class* epythet.validation.ledger.FixtureCase(name, line, expect_hit, rule_ids, docstring)
-
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
-
-One specimen function in a fixture: its docstring and what the tag promises.
-
-### *class* epythet.validation.ledger.Ledger(rules=<factory>, sources=<factory>)
-
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
-
-The loaded rule catalog: bundled rules plus any overlay, keyed by id.
-
-#### add_dir(rules_dir, , allow_override=False)
-
-Load every rule under `rules_dir`; duplicates are an error unless overriding.
-
-* **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
-
-#### check_build_examples()
-
-Every build-warning rule’s `example_warning` must classify to that rule.
-
-* **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
-
-#### of_kind(\*kinds, include_proposed=False)
-
-Rules whose detector kind is one of `kinds`, in id order.
-
-Proposed rules (`status: {proposed: ...}`) are left out unless asked
-for: a proposal from level 3 must not gate anyone until a maintainer
-promotes it.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)]
-
-### *exception* epythet.validation.ledger.LedgerError
-
-Bases: [`Exception`](https://docs.python.org/3/library/exceptions.html#Exception)
-
-A rule file is schema-invalid, a rule id is duplicated, or a fixture is missing.
-
-`epythet validate` maps this to exit code 20 so CI can tell “the catalog is
-broken” apart from “the package has problems”.
-
-### epythet.validation.ledger.PARSE_KINDS *= ('regex', 'source', 'doctree')*
-
-Detector kinds evaluated per docstring at level 0.5.
-
-### *class* epythet.validation.ledger.Rule(id, title, namespace, severity, precision, detector, message, fix=<factory>, status=<factory>, applies_to=<factory>, explanation='', references=<factory>, path=None)
-
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
-
-One ledger rule, loaded from its YAML file and validated.
-
-`detector` is the raw mapping from the YAML; the compiled regex (for
-`regex` and `source` kinds) is available as [`pattern`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule.pattern).
-
-#### applies(, napoleon)
-
-Whether the rule is live under the given napoleon setting.
-
-A rule that declares `applies_to: {napoleon: false}` only makes sense
-when Google/NumPy sections are *not* pre-processed (DR012 is the case).
-
-* **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
-
-#### *property* autofixable *: [bool](https://docs.python.org/3/library/functions.html#bool)*
-
-Whether `epythet repair` (WP3) can rewrite this one mechanically.
-
-#### finding(, level, evidence='', file=None, line=None, object=None, message=None)
-
-A `Finding` for this rule at one location.
-
-* **Return type:**
-  [`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)
-
-#### *property* fix_hint *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
-
-The one-line fix hint shown next to each finding.
-
-#### *property* fixture_path *: [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [None](https://docs.python.org/3/library/constants.html#None)*
-
-The sibling `.py` fixture, when the rule has one.
-
-#### format_message(match)
-
-Fill the rule’s message template with the matched evidence.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
-
-#### *property* is_proposed *: [bool](https://docs.python.org/3/library/functions.html#bool)*
-
-Whether the rule is still a proposal (level 3 or a human wrote it, nobody promoted it).
-
-#### *property* kind *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
-
-one of `DETECTOR_KINDS`.
-
-* **Type:**
-  The detector kind
-
-#### *property* pattern *: [Pattern](https://docs.python.org/3/library/re.html#re.Pattern) | [None](https://docs.python.org/3/library/constants.html#None)*
-
-Compiled `detector.pattern` (multiline; case-insensitive on request).
-
-### epythet.validation.ledger.append_observations(findings, , package, package_version=None, path=None)
-
-Append one JSONL line per finding; returns how many were written.
-
-* **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
-
-### epythet.validation.ledger.iter_fixture_cases(fixture_path)
-
-Yield the tagged specimens of a fixture file.
-
-A specimen is a `def` (or `class`) whose header line carries a
-`# ruleid: DR001` (must fire) or `# ok: DR001` (must not fire) comment,
-Semgrep style. Several ids may be listed, comma-separated.
-
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`FixtureCase`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.FixtureCase)]
-
-### epythet.validation.ledger.iter_rule_files(rules_dir)
-
-Every `*.yaml` under `rules_dir`, in a stable order.
-
-* **Return type:**
-  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
-
-### epythet.validation.ledger.load_ledger(ledger=None)
-
-Resolve the `ledger=` seam to a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger).
-
-`None` loads the bundled rules; a path loads the bundled rules and then
-overlays the directory (same id overrides); a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) is returned
-as is.
-
-* **Return type:**
-  [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger)
-
-### epythet.validation.ledger.load_rule(path)
-
-Load and validate one rule file.
-
-* **Return type:**
-  [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)
-
-### epythet.validation.ledger.observation_record(finding, , package, package_version, run_id)
-
-The JSONL line written for one finding.
-
-* **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
-
-### epythet.validation.ledger.observations_path()
-
-Where observations are appended: `<user data dir>/ledger/observations.jsonl`.
-
-* **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
-
-### epythet.validation.ledger.occurrence_counts(path=None)
-
-Occurrences per rule id over the whole observations file (empty if absent).
-
-This is the derived view that replaces an `occurrences` field in the rule
-files; a malformed line is skipped rather than failing the run.
-
-* **Return type:**
-  [`Counter`](https://docs.python.org/3/library/collections.html#collections.Counter)
-
-### epythet.validation.ledger.user_data_dir()
-
-`$EPYTHET_DATA_DIR`, else `$XDG_DATA_HOME/epythet`, else `~/.local/share/epythet`.
-
-Deliberately XDG-style on every platform (not `platformdirs`’s macOS
-`Application Support`): it matches where the rest of epythet’s local
-data already lives, and it is what the decision record names.
-
-* **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+| [`build`](_autosummary/epythet.validation.build.html.md#module-epythet.validation.build)              | Level 1: run the documentation build and turn its warning stream into findings.       |
+|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`cli`](_autosummary/epythet.validation.cli.html.md#module-epythet.validation.cli)                  | The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`. |
+| [`core`](_autosummary/epythet.validation.core.html.md#module-epythet.validation.core)                | The `validate` orchestrator: resolve the package, run the levels, build the report.   |
+| [`detectors`](_autosummary/epythet.validation.detectors.html.md#module-epythet.validation.detectors)      | Named doctree detectors, referenced from ledger rules by `detector.function`.         |
+| [`docstrings`](_autosummary/epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)    | Docstring extraction from Python source, without importing anything.                  |
+| [`lint`](_autosummary/epythet.validation.lint.html.md#module-epythet.validation.lint)                | Level 0: static docstring linters, normalised into the finding model.                 |
+| [`model`](_autosummary/epythet.validation.model.html.md#module-epythet.validation.model)              | The finding and report model shared by every level of `epythet validate`.             |
+| [`parse`](_autosummary/epythet.validation.parse.html.md#module-epythet.validation.parse)              | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.    |
+| [`render`](_autosummary/epythet.validation.render.html.md#epythet.validation.render)(report[, format]) | Render with the named format (`table`, `json` or `jsonl`).                            |
 
 
 # _autosummary/epythet.validation.lint.html.md

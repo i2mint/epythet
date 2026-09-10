@@ -7,7 +7,7 @@
 <link rel="alternate" type="text/markdown" href="epythet.confgen.html.md">
 <link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.config" href="epythet.config.html"><link rel="prev" title="epythet.cli" href="epythet.cli.html">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.confgen - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -229,7 +229,6 @@
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -289,7 +288,7 @@ directly. Every value here is either verified in the v2 research (README
 include, nested API tree, typed cross-references, agent twins) or a direct
 consequence of the decision record.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"furo"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="s2">"furo"</span><span class="p">,</span> <span class="n">api_generator</span><span class="o">=</span><span class="s2">"autosummary"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">sphinx_settings</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="s2">"html_theme"</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">"default_role"</span><span class="p">],</span> <span class="s2">"sphinx.ext.autosummary"</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">"extensions"</span><span class="p">]</span>
 <span class="go">('furo', 'code', True)</span>
@@ -346,7 +345,7 @@ consequence of the decision record.</p>
 </dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">api_toctree_entry</span><span class="p">(</span><span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">api_toctree_entry</span><span class="p">(</span><span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">api_generator</span><span class="o">=</span><span class="s2">"autosummary"</span><span class="p">))</span>
 <span class="go">'api'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">api_toctree_entry</span><span class="p">(</span><span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">api_generator</span><span class="o">=</span><span class="s2">"autoapi"</span><span class="p">))</span>
 <span class="go">'api/index'</span>
@@ -450,7 +449,7 @@ consequence of the decision record.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=1c17f339"></script>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

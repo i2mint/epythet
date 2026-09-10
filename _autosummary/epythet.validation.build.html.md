@@ -114,7 +114,7 @@ Sphinx’s exit status when the only problem was warnings under `-W`.
 The first build-warning rule that matches, most specific first.
 
 * **Return type:**
-  [`Rule`](epythet.validation.ledger.html.md#epythet.validation.ledger.Rule) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  `Rule` | [`None`](https://docs.python.org/3/library/constants.html#None)
 
 ### epythet.validation.build.default_sphinx_build()
 

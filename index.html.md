@@ -75,7 +75,7 @@ theme = "auto"                  # "auto" | "furo" | "shibuya" | "pydata" | "sphi
 accent = "#3661ac"              # default: derived from the package name (OKLCH, WCAG AA on white by construction)
 mode = "auto"                   # "auto" | "light" | "dark"  (where the theme supports forcing it)
 ignore = ["tests/", "scrap/", "examples/"]   # path substrings to skip; `--ignore` on the CLI overrides
-api_generator = "autosummary"   # "autosummary" (imports the package) | "autoapi" (static parsing, no import)
+api_generator = "auto"          # "auto" (autosummary if the package imports, else autoapi) | "autosummary" | "autoapi"
 agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> relations
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
 ai_artifacts = true             # "For AI agents" page when the repo has skills, agents or CLAUDE.md
@@ -91,7 +91,7 @@ announcement = "v2 is in beta"
 
 **Themes.** `theme = "auto"` (the default) hashes the package name into a curated pool (furo, shibuya, pydata-sphinx-theme, sphinxawesome-theme) so a fleet of packages gets variety while every package keeps the same look across rebuilds. The pool’s themes are installed with epythet; `sphinx-book-theme` and `sphinx_rtd_theme` come with `pip install "epythet[themes]"`. The accent is one hue per package, at a fixed perceptual lightness, so every possible colour clears WCAG AA against white and AAA on a dark background; an explicit `accent` is used as given in light mode and lifted to the same dark-mode lightness for dark mode.
 
-**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import: use it when the package cannot be imported in CI. Both give the nested tree; both run the normalizer. Under `autosummary`, `ignore` keeps the ignored modules out of the tree, but Python still imports them once while discovering the package.
+**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import. The default `auto` probes the import once and picks `autosummary` when it succeeds, `autoapi` otherwise (a missing optional dependency in CI then costs you the aliases, not the whole API section). Both give the nested tree; both run the normalizer; both skip `__main__`. Under `autosummary`, `ignore` keeps the ignored modules out of the tree, but Python still imports them once while discovering the package.
 
 **PDF aggregate.** `aggregates = ["md", "pdf"]` renders `<package>.pdf` from the Markdown aggregate with Playwright (`pip install "epythet[pdf]" && playwright install chromium`) or WeasyPrint, whichever is installed. No LaTeX.
 
@@ -165,6 +165,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "tests/,scrap/,examples/"
           python-version: "3.12"
+          # v2 opt-in until the action's default flips (i2mint/epythet#16)
+          epythet-spec: "epythet>=0.2,<0.3"
 ```
 
 The action installs epythet, installs your project, runs `epythet quickstart . --ignore ...` and pushes `./docsrc/_build/html/` to the `gh-pages` branch.

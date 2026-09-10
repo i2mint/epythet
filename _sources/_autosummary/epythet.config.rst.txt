@@ -9,9 +9,11 @@ epythet.config
    .. autosummary::
    
       DEFAULT_IGNORE
+      ALWAYS_IGNORE
       DEFAULT_DOCS_DIR
       PACKAGE_DIR_CANDIDATES
       NON_PACKAGE_DIRS
+      IMPORT_PROBE_TIMEOUT
    
    .. rubric:: Functions
 
@@ -19,6 +21,8 @@ epythet.config
    
       find_package_dir
       load_config
+      resolve_api_generator
+      split_ignore
    
    .. rubric:: Classes
 

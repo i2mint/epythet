@@ -11,7 +11,7 @@ consequence of the decision record.
 
 ```pycon
 >>> from epythet.config import DocsConfig
->>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo")
+>>> cfg = DocsConfig(project_dir="/tmp/x", name="x", package_dir="x", theme="furo", api_generator="autosummary")
 >>> s = sphinx_settings(cfg)
 >>> s["html_theme"], s["default_role"], "sphinx.ext.autosummary" in s["extensions"]
 ('furo', 'code', True)
@@ -47,7 +47,7 @@ The document `index.md`’s toctree points at for the API pages.
 
 ```pycon
 >>> from epythet.config import DocsConfig
->>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x"))
+>>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autosummary"))
 'api'
 >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autoapi"))
 'api/index'

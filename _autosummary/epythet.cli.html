@@ -7,7 +7,7 @@
 <link rel="alternate" type="text/markdown" href="epythet.cli.html.md">
 <link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.confgen" href="epythet.confgen.html"><link rel="prev" title="epythet.call_make" href="epythet.call_make.html">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.cli - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -229,7 +229,6 @@
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -382,7 +381,8 @@ generated “For AI agents” documentation page.</p>
 <dd><p>Scaffold docsrc and build the HTML documentation in one go.</p>
 <p>Equivalent to <code class="docutils literal notranslate"><span class="pre">make-docsrc</span></code> then <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>, with <code class="docutils literal notranslate"><span class="pre">ignore</span></code> applied
 to the API generator. An empty <code class="docutils literal notranslate"><span class="pre">ignore</span></code> (the action passes <code class="docutils literal notranslate"><span class="pre">--ignore</span></code>
-with no values when its input is unset) means “use the configured default”.</p>
+with no values when its input is unset, or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>) means “use the configured
+default”; each value may itself be comma-separated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -464,7 +464,7 @@ with no values when its input is unset) means “use the configured default”.<
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=1c17f339"></script>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

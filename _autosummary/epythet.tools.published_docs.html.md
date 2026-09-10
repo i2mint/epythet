@@ -117,12 +117,12 @@ Configure Pages for an iterable of repo stubs, or all repos in an organization.
 Retrieves the default branch and current commit SHA for a given GitHub repository.
 
 * **Parameters:**
-  * **repo_stub** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – The GitHub repository in “owner/repo” format.
-  * **headers** ([*dict*](https://docs.python.org/3/library/stdtypes.html#dict)) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **repo_stub** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – The GitHub repository in “owner/repo” format.
+  * **headers** (`Union`[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   A dictionary containing ‘default_branch’ and ‘commit_sha’.
 * **Return type:**
-  [*dict*](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
 
 ### epythet.tools.published_docs.enable_pages(repo_stub, , branch='gh-pages', path='/')
 
@@ -143,15 +143,15 @@ Returns the API response dict on success, or None on failure.
 Ensures a branch exists. Does nothing if it already does, and creates it if not.
 
 * **Parameters:**
-  * **repo_stub** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Owner and name of the GitHub repository, e.g., ‘owner/repo’.
-  * **branch** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Name of the branch to be created if it doesn’t exist
-  * **commit_sha** ([*str*](https://docs.python.org/3/library/stdtypes.html#str)) – Commit SHA to base the new branch on. By default,
+  * **repo_stub** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Owner and name of the GitHub repository, e.g., ‘owner/repo’.
+  * **branch** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Name of the branch to be created if it doesn’t exist
+  * **commit_sha** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Commit SHA to base the new branch on. By default,
     it’s the SHA of the most recent commit of the default branch.
-  * **headers** ([*dict*](https://docs.python.org/3/library/stdtypes.html#dict)) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **headers** (`Union`[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   Response from GitHub API as a dictionary.
 * **Return type:**
-  [*dict*](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
 
 ### epythet.tools.published_docs.github_org_and_repo(github_url)
 

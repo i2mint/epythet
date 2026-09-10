@@ -27,7 +27,7 @@ theme = "auto"                # "auto" | "furo" | "shibuya" | ... | any installe
 accent = "#3661ac"            # default: derived from the package name (OKLCH)
 mode = "auto"                 # "auto" | "light" | "dark"
 ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
-api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
+api_generator = "auto"        # "auto" | "autosummary" (imports the package) | "autoapi" (static)
 agent_outputs = true          # llms.txt + .md twins of every page
 aggregates = ["md"]           # flat single-document twins at the site root
 ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
@@ -61,15 +61,19 @@ announcement = "v2 is in beta"
 
 | [`DEFAULT_IGNORE`](#epythet.config.DEFAULT_IGNORE)         | Path substrings skipped by default when discovering modules to document.       |
 |-------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`ALWAYS_IGNORE`](#epythet.config.ALWAYS_IGNORE)          | a `__main__` is a command line, not an API.                                    |
 | [`DEFAULT_DOCS_DIR`](#epythet.config.DEFAULT_DOCS_DIR)       | Directory under the project root holding the Sphinx sources.                   |
 | [`PACKAGE_DIR_CANDIDATES`](#epythet.config.PACKAGE_DIR_CANDIDATES) | Directory candidates (relative to the project root) that may hold the package. |
 | [`NON_PACKAGE_DIRS`](#epythet.config.NON_PACKAGE_DIRS)       | Top-level directories never taken for the package when guessing by convention. |
+| [`IMPORT_PROBE_TIMEOUT`](#epythet.config.IMPORT_PROBE_TIMEOUT)   | Seconds allowed for the import probe behind `api_generator = "auto"`.          |
 
 ### Functions
 
-| [`find_package_dir`](#epythet.config.find_package_dir)(project_dir, name)     | Locate the package directory for `name` under `project_dir` by convention.   |
-|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`load_config`](#epythet.config.load_config)(project_dir, \*\*overrides) | Read a project's documentation configuration.                                |
+| [`find_package_dir`](#epythet.config.find_package_dir)(project_dir, name)     | Locate the package directory for `name` under `project_dir` by convention.    |
+|------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| [`load_config`](#epythet.config.load_config)(project_dir, \*\*overrides) | Read a project's documentation configuration.                                 |
+| [`resolve_api_generator`](#epythet.config.resolve_api_generator)(config)           | The generator to run: `autosummary` when the package imports, else `autoapi`. |
+| [`split_ignore`](#epythet.config.split_ignore)(ignore)                    | Normalise ignore patterns: each item may itself be a comma-separated list.    |
 
 ### Classes
 
@@ -80,6 +84,17 @@ announcement = "v2 is in beta"
 
 | [`ConfigError`](#epythet.config.ConfigError)   | A project's documentation configuration is missing or invalid.   |
 |----------------------------------------------------------------|------------------------------------------------------------------|
+
+### epythet.config.ALWAYS_IGNORE *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('_\_main_\_',)*
+
+a `__main__` is a
+command line, not an API. (autosummary still imports it once while
+discovering the package, as it does every submodule; a `__main__` that
+runs argparse at import survives that because Sphinx turns its `SystemExit`
+into a skipped import.)
+
+* **Type:**
+  Modules that never get a page, whatever `ignore` says
 
 ### *exception* epythet.config.ConfigError
 
@@ -95,7 +110,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
 
@@ -103,6 +118,18 @@ Everything needed to generate a project’s documentation.
 
 Attributes mirror the `[tool.epythet]` keys; see the module docstring.
 `project_dir` and `package_dir` are absolute paths.
+
+#### *property* api_ignore *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]*
+
+what the API generators skip.
+
+```pycon
+>>> DocsConfig(project_dir="/tmp/x", name="x", ignore=["tests/"]).api_ignore
+('tests/', '__main__')
+```
+
+* **Type:**
+  `ignore` plus [`ALWAYS_IGNORE`](#epythet.config.ALWAYS_IGNORE)
 
 #### *property* docsrc_dir *: [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)*
 
@@ -116,12 +143,23 @@ The 5-tuple that [`epythet.config_parser.parse_config()`](epythet.config_parser.
 
 The importable package name (`my-pkg` becomes `my_pkg`).
 
+#### *property* resolved_api_generator *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+
+see [`resolve_api_generator()`](#epythet.config.resolve_api_generator).
+
+* **Type:**
+  `api_generator` with `"auto"` resolved
+
 #### with_overrides(\*\*changes)
 
 A copy with some fields replaced (`None` values are ignored).
 
 * **Return type:**
   [`DocsConfig`](#epythet.config.DocsConfig)
+
+### epythet.config.IMPORT_PROBE_TIMEOUT *= 120*
+
+Seconds allowed for the import probe behind `api_generator = "auto"`.
 
 ### epythet.config.NON_PACKAGE_DIRS *= frozenset({'docs', 'docsrc', 'examples', 'misc', 'scrap', 'test', 'tests'})*
 
@@ -159,3 +197,34 @@ Read a project’s documentation configuration.
   [**ConfigError**](#epythet.config.ConfigError) – when neither configuration file is found.
 * **Return type:**
   [`DocsConfig`](#epythet.config.DocsConfig)
+
+### epythet.config.resolve_api_generator(config)
+
+The generator to run: `autosummary` when the package imports, else `autoapi`.
+
+`autosummary` imports the package and documents what it finds (aliases,
+partials, re-exports); when the import fails, in CI typically because an
+optional dependency is missing, it produces an *empty* API section and a
+successful build. `auto` probes the import once, in a subprocess with the
+project root on `sys.path` (as the build has it), and falls back to the
+static `autoapi` generator, printing why. An explicit value is returned as
+is, and so is `"auto"` when the package directory is unknown.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+
+### epythet.config.split_ignore(ignore)
+
+Normalise ignore patterns: each item may itself be a comma-separated list.
+
+The publish action passes its `ignore` input verbatim as one argument,
+`--ignore tests/,scrap/,examples/`, and `setup.cfg` values are strings;
+both must mean three patterns, not one that never matches.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+
+```pycon
+>>> split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])
+('tests/', 'scrap/', 'examples/')
+```

@@ -7,7 +7,7 @@
 <link rel="alternate" type="text/markdown" href="epythet.validation.core.html.md">
 <link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.validation.detectors" href="epythet.validation.detectors.html"><link rel="prev" title="epythet.validation.cli" href="epythet.validation.cli.html">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.validation.core - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -229,7 +229,6 @@
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">epythet.validation.core</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -356,7 +355,7 @@ package directory (contains <code class="docutils literal notranslate"><span cla
 <code class="docutils literal notranslate"><span class="pre">2</span></code> adds the Sphinx build. Tiers 3 and 4 belong to WP3.</p></li>
 <li><p><strong>levels</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]</span>) – An explicit set of levels (<code class="docutils literal notranslate"><span class="pre">[0.5]</span></code> for a parse-only sweep);
 overrides <code class="docutils literal notranslate"><span class="pre">level</span></code> when given.</p></li>
-<li><p><strong>ledger</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="epythet.validation.ledger.html#epythet.validation.ledger.Ledger" title="epythet.validation.ledger.Ledger"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ledger</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – <code class="docutils literal notranslate"><span class="pre">None</span></code> for the bundled rules, or a directory overlay.</p></li>
+<li><p><strong>ledger</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ledger</span></code> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathLike</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – <code class="docutils literal notranslate"><span class="pre">None</span></code> for the bundled rules, or a directory overlay.</p></li>
 <li><p><strong>backend</strong> – The build backend for level 1 (default: <code class="docutils literal notranslate"><span class="pre">SphinxBackend()</span></code>).</p></li>
 <li><p><strong>fail_on</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Severity threshold recorded on the report for exit codes.</p></li>
 <li><p><strong>napoleon</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Pre-process Google/NumPy sections the way the fleet’s
@@ -441,7 +440,7 @@ overrides <code class="docutils literal notranslate"><span class="pre">level</sp
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=1c17f339"></script>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

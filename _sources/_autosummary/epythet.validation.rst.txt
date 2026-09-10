@@ -15,7 +15,6 @@ epythet.validation
    core
    detectors
    docstrings
-   ledger
    lint
    model
    parse

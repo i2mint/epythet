@@ -6,7 +6,7 @@
 <link rel="alternate" type="text/markdown" href="config.html.md">
 <link rel="describedby" href="../../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.config - epythet</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
@@ -228,7 +228,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -299,7 +298,7 @@
 <span class="sd">    accent = "#3661ac"            # default: derived from the package name (OKLCH)</span>
 <span class="sd">    mode = "auto"                 # "auto" | "light" | "dark"</span>
 <span class="sd">    ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip</span>
-<span class="sd">    api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)</span>
+<span class="sd">    api_generator = "auto"        # "auto" | "autosummary" (imports the package) | "autoapi" (static)</span>
 <span class="sd">    agent_outputs = true          # llms.txt + .md twins of every page</span>
 <span class="sd">    aggregates = ["md"]           # flat single-document twins at the site root</span>
 <span class="sd">    ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist</span>
@@ -329,14 +328,24 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">configparser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">replace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="c1">#: Path substrings skipped by default when discovering modules to document.</span>
 <span class="n">DEFAULT_IGNORE</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"tests/"</span><span class="p">,</span> <span class="s2">"scrap/"</span><span class="p">,</span> <span class="s2">"examples/"</span><span class="p">)</span>
+
+<span class="c1">#: Modules that never get a page, whatever ``ignore`` says: a ``__main__`` is a</span>
+<span class="c1">#: command line, not an API. (autosummary still imports it once while</span>
+<span class="c1">#: discovering the package, as it does every submodule; a ``__main__`` that</span>
+<span class="c1">#: runs argparse at import survives that because Sphinx turns its ``SystemExit``</span>
+<span class="c1">#: into a skipped import.)</span>
+<span class="n">ALWAYS_IGNORE</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"__main__"</span><span class="p">,)</span>
 
 <span class="c1">#: Directory under the project root holding the Sphinx sources.</span>
 <span class="n">DEFAULT_DOCS_DIR</span> <span class="o">=</span> <span class="s2">"docsrc"</span>
@@ -350,7 +359,9 @@
 <span class="p">)</span>
 
 <span class="n">VALID_MODES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"auto"</span><span class="p">,</span> <span class="s2">"light"</span><span class="p">,</span> <span class="s2">"dark"</span><span class="p">)</span>
-<span class="n">VALID_API_GENERATORS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"autosummary"</span><span class="p">,</span> <span class="s2">"autoapi"</span><span class="p">)</span>
+<span class="n">VALID_API_GENERATORS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"auto"</span><span class="p">,</span> <span class="s2">"autosummary"</span><span class="p">,</span> <span class="s2">"autoapi"</span><span class="p">)</span>
+<span class="c1">#: Seconds allowed for the import probe behind ``api_generator = "auto"``.</span>
+<span class="n">IMPORT_PROBE_TIMEOUT</span> <span class="o">=</span> <span class="mi">120</span>
 <span class="n">VALID_AGGREGATES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"md"</span><span class="p">,</span> <span class="s2">"pdf"</span><span class="p">)</span>
 
 
@@ -384,7 +395,7 @@
     <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"auto"</span>
     <span class="n">theme_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">ignore</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_IGNORE</span>
-    <span class="n">api_generator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"autosummary"</span>
+    <span class="n">api_generator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"auto"</span>
     <span class="n">agent_outputs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">aggregates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"md"</span><span class="p">,)</span>
     <span class="n">ai_artifacts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -407,13 +418,27 @@
             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"aggregates may only contain </span><span class="si">{</span><span class="n">VALID_AGGREGATES</span><span class="si">}</span><span class="s2">; got </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"ignore"</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">))</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"ignore"</span><span class="p">,</span> <span class="n">split_ignore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">))</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"aggregates"</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregates</span><span class="p">))</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"project_dir"</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="s2">"package_dir"</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
             <span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resolved_api_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``api_generator`` with ``"auto"`` resolved: see :func:`resolve_api_generator`."""</span>
+        <span class="k">return</span> <span class="n">resolve_api_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">api_ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""``ignore`` plus :data:`ALWAYS_IGNORE`: what the API generators skip.</span>
+
+<span class="sd">        &gt;&gt;&gt; DocsConfig(project_dir="/tmp/x", name="x", ignore=["tests/"]).api_ignore</span>
+<span class="sd">        ('tests/', '__main__')</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">,</span> <span class="o">*</span><span class="n">ALWAYS_IGNORE</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">docsrc_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
@@ -464,6 +489,84 @@
     <span class="k">if</span> <span class="n">package_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">package_dir</span> <span class="o">=</span> <span class="n">find_package_dir</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="n">package_dir</span><span class="p">,</span> <span class="o">**</span><span class="n">raw</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="resolve_api_generator">
+<a class="viewcode-back" href="../../_autosummary/epythet.config.html#epythet.config.resolve_api_generator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">resolve_api_generator</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The generator to run: ``autosummary`` when the package imports, else ``autoapi``.</span>
+
+<span class="sd">    ``autosummary`` imports the package and documents what it finds (aliases,</span>
+<span class="sd">    partials, re-exports); when the import fails, in CI typically because an</span>
+<span class="sd">    optional dependency is missing, it produces an *empty* API section and a</span>
+<span class="sd">    successful build. ``auto`` probes the import once, in a subprocess with the</span>
+<span class="sd">    project root on ``sys.path`` (as the build has it), and falls back to the</span>
+<span class="sd">    static ``autoapi`` generator, printing why. An explicit value is returned as</span>
+<span class="sd">    is, and so is ``"auto"`` when the package directory is unknown.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">api_generator</span> <span class="o">!=</span> <span class="s2">"auto"</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">package_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">api_generator</span>  <span class="c1"># nothing to probe; scaffold reports the missing dir</span>
+    <span class="n">ok</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">_import_probe</span><span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">package_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">project_dir</span><span class="p">),</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"autosummary"</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"epythet: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">package_name</span><span class="si">!r}</span><span class="s2"> does not import (</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">); documenting "</span>
+        <span class="s2">"it statically with autoapi (aliases and re-exports are not followed). "</span>
+        <span class="s2">"Install the package's dependencies in the docs environment to get the "</span>
+        <span class="s2">"full API pages."</span><span class="p">,</span>
+        <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"autoapi"</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_probe</span><span class="p">(</span><span class="n">package_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">python</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``(imported, last error line)`` for importing ``package_name`` in a subprocess.</span>
+
+<span class="sd">    Not cached here: :attr:`DocsConfig.resolved_api_generator` caches per config</span>
+<span class="sd">    instance, and :func:`epythet.build.build` hands the resolved value to the</span>
+<span class="sd">    Sphinx process, so a build probes once.</span>
+<span class="sd">    """</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"import importlib, sys; "</span>
+        <span class="sa">f</span><span class="s2">"sys.path[:0] = [</span><span class="si">{</span><span class="n">project_dir</span><span class="si">!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">project_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">'/src'</span><span class="si">!r}</span><span class="s2">]; "</span>
+        <span class="sa">f</span><span class="s2">"importlib.import_module(</span><span class="si">{</span><span class="n">package_name</span><span class="si">!r}</span><span class="s2">)"</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">python</span><span class="p">,</span> <span class="s2">"-c"</span><span class="p">,</span> <span class="n">code</span><span class="p">],</span>
+            <span class="n">cwd</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span>
+            <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">IMPORT_PROBE_TIMEOUT</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">TimeoutExpired</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">lines</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"exit status </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="split_ignore">
+<a class="viewcode-back" href="../../_autosummary/epythet.config.html#epythet.config.split_ignore">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_ignore</span><span class="p">(</span><span class="n">ignore</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Normalise ignore patterns: each item may itself be a comma-separated list.</span>
+
+<span class="sd">    The publish action passes its ``ignore`` input verbatim as one argument,</span>
+<span class="sd">    ``--ignore tests/,scrap/,examples/``, and ``setup.cfg`` values are strings;</span>
+<span class="sd">    both must mean three patterns, not one that never matches.</span>
+
+<span class="sd">    &gt;&gt;&gt; split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])</span>
+<span class="sd">    ('tests/', 'scrap/', 'examples/')</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ignore</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="n">ignore</span><span class="p">]</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">ignore</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">part</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">part</span><span class="p">))</span></div>
 
 
 
@@ -610,7 +713,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=1c17f339"></script>
+</div><script src="../../_static/documentation_options.js?v=b557875f"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

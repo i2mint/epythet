@@ -64,7 +64,8 @@ Scaffold docsrc and build the HTML documentation in one go.
 
 Equivalent to `make-docsrc` then `make html`, with `ignore` applied
 to the API generator. An empty `ignore` (the action passes `--ignore`
-with no values when its input is unset) means “use the configured default”.
+with no values when its input is unset, or `""`) means “use the configured
+default”; each value may itself be comma-separated.
 
 * **Parameters:**
   * **project_dir** – Path to root project directory (pyproject.toml or setup.cfg)

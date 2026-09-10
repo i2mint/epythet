@@ -7,7 +7,7 @@
 <link rel="alternate" type="text/markdown" href="epythet.config.html.md">
 <link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.config_parser" href="epythet.config_parser.html"><link rel="prev" title="epythet.confgen" href="epythet.confgen.html">
 
-    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.config - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
@@ -229,7 +229,6 @@
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -303,7 +302,7 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 <span class="n">accent</span> <span class="o">=</span> <span class="s2">"#3661ac"</span>            <span class="c1"># default: derived from the package name (OKLCH)</span>
 <span class="n">mode</span> <span class="o">=</span> <span class="s2">"auto"</span>                 <span class="c1"># "auto" | "light" | "dark"</span>
 <span class="n">ignore</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tests/"</span><span class="p">,</span> <span class="s2">"scrap/"</span><span class="p">,</span> <span class="s2">"examples/"</span><span class="p">]</span>  <span class="c1"># path substrings to skip</span>
-<span class="n">api_generator</span> <span class="o">=</span> <span class="s2">"autosummary"</span> <span class="c1"># "autosummary" (imports the package) | "autoapi" (static)</span>
+<span class="n">api_generator</span> <span class="o">=</span> <span class="s2">"auto"</span>        <span class="c1"># "auto" | "autosummary" (imports the package) | "autoapi" (static)</span>
 <span class="n">agent_outputs</span> <span class="o">=</span> <span class="n">true</span>          <span class="c1"># llms.txt + .md twins of every page</span>
 <span class="n">aggregates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"md"</span><span class="p">]</span>           <span class="c1"># flat single-document twins at the site root</span>
 <span class="n">ai_artifacts</span> <span class="o">=</span> <span class="n">true</span>           <span class="c1"># "For AI agents" page when skills/agents/CLAUDE.md exist</span>
@@ -339,14 +338,20 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.config.DEFAULT_IGNORE" title="epythet.config.DEFAULT_IGNORE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_IGNORE</span></code></a></p></td>
 <td><p>Path substrings skipped by default when discovering modules to document.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.DEFAULT_DOCS_DIR" title="epythet.config.DEFAULT_DOCS_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DOCS_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.ALWAYS_IGNORE" title="epythet.config.ALWAYS_IGNORE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALWAYS_IGNORE</span></code></a></p></td>
+<td><p>a <code class="docutils literal notranslate"><span class="pre">__main__</span></code> is a command line, not an API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.config.DEFAULT_DOCS_DIR" title="epythet.config.DEFAULT_DOCS_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DOCS_DIR</span></code></a></p></td>
 <td><p>Directory under the project root holding the Sphinx sources.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.config.PACKAGE_DIR_CANDIDATES" title="epythet.config.PACKAGE_DIR_CANDIDATES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PACKAGE_DIR_CANDIDATES</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.PACKAGE_DIR_CANDIDATES" title="epythet.config.PACKAGE_DIR_CANDIDATES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PACKAGE_DIR_CANDIDATES</span></code></a></p></td>
 <td><p>Directory candidates (relative to the project root) that may hold the package.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.NON_PACKAGE_DIRS" title="epythet.config.NON_PACKAGE_DIRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NON_PACKAGE_DIRS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.config.NON_PACKAGE_DIRS" title="epythet.config.NON_PACKAGE_DIRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NON_PACKAGE_DIRS</span></code></a></p></td>
 <td><p>Top-level directories never taken for the package when guessing by convention.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.IMPORT_PROBE_TIMEOUT" title="epythet.config.IMPORT_PROBE_TIMEOUT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IMPORT_PROBE_TIMEOUT</span></code></a></p></td>
+<td><p>Seconds allowed for the import probe behind <code class="docutils literal notranslate"><span class="pre">api_generator</span> <span class="pre">=</span> <span class="pre">&quot;auto&quot;</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -360,6 +365,12 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.load_config" title="epythet.config.load_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_config</span></code></a>(project_dir, **overrides)</p></td>
 <td><p>Read a project's documentation configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.config.resolve_api_generator" title="epythet.config.resolve_api_generator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_api_generator</span></code></a>(config)</p></td>
+<td><p>The generator to run: <code class="docutils literal notranslate"><span class="pre">autosummary</span></code> when the package imports, else <code class="docutils literal notranslate"><span class="pre">autoapi</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.config.split_ignore" title="epythet.config.split_ignore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_ignore</span></code></a>(ignore)</p></td>
+<td><p>Normalise ignore patterns: each item may itself be a comma-separated list.</p></td>
 </tr>
 </tbody>
 </table>
@@ -384,6 +395,21 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 </tbody>
 </table>
 </div>
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.config.ALWAYS_IGNORE">
+<span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">ALWAYS_IGNORE</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('__main__',)</span></span><a class="headerlink" href="#epythet.config.ALWAYS_IGNORE" title="Link to this definition">¶</a></dt>
+<dd><p>a <code class="docutils literal notranslate"><span class="pre">__main__</span></code> is a
+command line, not an API. (autosummary still imports it once while
+discovering the package, as it does every submodule; a <code class="docutils literal notranslate"><span class="pre">__main__</span></code> that
+runs argparse at import survives that because Sphinx turns its <code class="docutils literal notranslate"><span class="pre">SystemExit</span></code>
+into a skipped import.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Modules that never get a page, whatever <code class="docutils literal notranslate"><span class="pre">ignore</span></code> says</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py exception">
 <dt class="sig sig-object py" id="epythet.config.ConfigError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">ConfigError</span></span><a class="reference internal" href="../_modules/epythet/config.html#ConfigError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.ConfigError" title="Link to this definition">¶</a></dt>
@@ -405,13 +431,28 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py class">
 <dt class="sig sig-object py" id="epythet.config.DocsConfig">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">DocsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copyright</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('tests/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'scrap/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'examples/')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'autosummary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent_outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('md'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_artifacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_artifacts_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docs_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'docsrc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/config.html#DocsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.DocsConfig" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">DocsConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copyright</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('tests/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'scrap/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'examples/')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent_outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('md'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_artifacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ai_artifacts_template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docs_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'docsrc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/config.html#DocsConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.DocsConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Everything needed to generate a project’s documentation.</p>
 <p>Attributes mirror the <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span></code> keys; see the module docstring.
 <code class="docutils literal notranslate"><span class="pre">project_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">package_dir</span></code> are absolute paths.</p>
 <dl class="field-list simple">
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="epythet.config.DocsConfig.api_ignore">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">api_ignore</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#epythet.config.DocsConfig.api_ignore" title="Link to this definition">¶</a></dt>
+<dd><p>what the API generators skip.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s2">"tests/"</span><span class="p">])</span><span class="o">.</span><span class="n">api_ignore</span>
+<span class="go">('tests/', '__main__')</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">ignore</span></code> plus <a class="reference internal" href="#epythet.config.ALWAYS_IGNORE" title="epythet.config.ALWAYS_IGNORE"><code class="xref py py-data docutils literal notranslate"><span class="pre">ALWAYS_IGNORE</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="epythet.config.DocsConfig.docsrc_dir">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">docsrc_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span><a class="headerlink" href="#epythet.config.DocsConfig.docsrc_dir" title="Link to this definition">¶</a></dt>
@@ -430,6 +471,17 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 <dd><p>The importable package name (<code class="docutils literal notranslate"><span class="pre">my-pkg</span></code> becomes <code class="docutils literal notranslate"><span class="pre">my_pkg</span></code>).</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="epythet.config.DocsConfig.resolved_api_generator">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">resolved_api_generator</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#epythet.config.DocsConfig.resolved_api_generator" title="Link to this definition">¶</a></dt>
+<dd><p>see <a class="reference internal" href="#epythet.config.resolve_api_generator" title="epythet.config.resolve_api_generator"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_api_generator()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">api_generator</span></code> with <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> resolved</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="epythet.config.DocsConfig.with_overrides">
 <span class="sig-name descname"><span class="pre">with_overrides</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">changes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/config.html#DocsConfig.with_overrides"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.DocsConfig.with_overrides" title="Link to this definition">¶</a></dt>
@@ -441,6 +493,12 @@ its signature, so old <code class="docutils literal notranslate"><span class="pr
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.config.IMPORT_PROBE_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">IMPORT_PROBE_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">120</span></span><a class="headerlink" href="#epythet.config.IMPORT_PROBE_TIMEOUT" title="Link to this definition">¶</a></dt>
+<dd><p>Seconds allowed for the import probe behind <code class="docutils literal notranslate"><span class="pre">api_generator</span> <span class="pre">=</span> <span class="pre">&quot;auto&quot;</span></code>.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -492,6 +550,42 @@ e.g. <code class="docutils literal notranslate"><span class="pre">ignore=[&quot;
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.config.DocsConfig" title="epythet.config.DocsConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocsConfig</span></code></a></span></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.config.resolve_api_generator">
+<span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">resolve_api_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/config.html#resolve_api_generator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.resolve_api_generator" title="Link to this definition">¶</a></dt>
+<dd><p>The generator to run: <code class="docutils literal notranslate"><span class="pre">autosummary</span></code> when the package imports, else <code class="docutils literal notranslate"><span class="pre">autoapi</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">autosummary</span></code> imports the package and documents what it finds (aliases,
+partials, re-exports); when the import fails, in CI typically because an
+optional dependency is missing, it produces an <em>empty</em> API section and a
+successful build. <code class="docutils literal notranslate"><span class="pre">auto</span></code> probes the import once, in a subprocess with the
+project root on <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> (as the build has it), and falls back to the
+static <code class="docutils literal notranslate"><span class="pre">autoapi</span></code> generator, printing why. An explicit value is returned as
+is, and so is <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> when the package directory is unknown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.config.split_ignore">
+<span class="sig-prename descclassname"><span class="pre">epythet.config.</span></span><span class="sig-name descname"><span class="pre">split_ignore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/config.html#split_ignore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.config.split_ignore" title="Link to this definition">¶</a></dt>
+<dd><p>Normalise ignore patterns: each item may itself be a comma-separated list.</p>
+<p>The publish action passes its <code class="docutils literal notranslate"><span class="pre">ignore</span></code> input verbatim as one argument,
+<code class="docutils literal notranslate"><span class="pre">--ignore</span> <span class="pre">tests/,scrap/,examples/</span></code>, and <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> values are strings;
+both must mean three patterns, not one that never matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">split_ignore</span><span class="p">([</span><span class="s2">"tests/,scrap/"</span><span class="p">,</span> <span class="s2">" examples/ "</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"tests/"</span><span class="p">])</span>
+<span class="go">('tests/', 'scrap/', 'examples/')</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -548,20 +642,26 @@ e.g. <code class="docutils literal notranslate"><span class="pre">ignore=[&quot;
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">epythet.config</a><ul>
+<li><a class="reference internal" href="#epythet.config.ALWAYS_IGNORE"><code class="docutils literal notranslate"><span class="pre">ALWAYS_IGNORE</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.ConfigError"><code class="docutils literal notranslate"><span class="pre">ConfigError</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DEFAULT_DOCS_DIR"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DOCS_DIR</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DEFAULT_IGNORE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_IGNORE</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DocsConfig"><code class="docutils literal notranslate"><span class="pre">DocsConfig</span></code></a><ul>
+<li><a class="reference internal" href="#epythet.config.DocsConfig.api_ignore"><code class="docutils literal notranslate"><span class="pre">DocsConfig.api_ignore</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DocsConfig.docsrc_dir"><code class="docutils literal notranslate"><span class="pre">DocsConfig.docsrc_dir</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DocsConfig.legacy_tuple"><code class="docutils literal notranslate"><span class="pre">DocsConfig.legacy_tuple</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DocsConfig.package_name"><code class="docutils literal notranslate"><span class="pre">DocsConfig.package_name</span></code></a></li>
+<li><a class="reference internal" href="#epythet.config.DocsConfig.resolved_api_generator"><code class="docutils literal notranslate"><span class="pre">DocsConfig.resolved_api_generator</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.DocsConfig.with_overrides"><code class="docutils literal notranslate"><span class="pre">DocsConfig.with_overrides()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#epythet.config.IMPORT_PROBE_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">IMPORT_PROBE_TIMEOUT</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.NON_PACKAGE_DIRS"><code class="docutils literal notranslate"><span class="pre">NON_PACKAGE_DIRS</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.PACKAGE_DIR_CANDIDATES"><code class="docutils literal notranslate"><span class="pre">PACKAGE_DIR_CANDIDATES</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.find_package_dir"><code class="docutils literal notranslate"><span class="pre">find_package_dir()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.config.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.config.resolve_api_generator"><code class="docutils literal notranslate"><span class="pre">resolve_api_generator()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.config.split_ignore"><code class="docutils literal notranslate"><span class="pre">split_ignore()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -573,7 +673,7 @@ e.g. <code class="docutils literal notranslate"><span class="pre">ignore=[&quot;
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=1c17f339"></script>
+</div><script src="../_static/documentation_options.js?v=b557875f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

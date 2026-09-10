@@ -33,7 +33,6 @@
 - [epythet.validation.core](_autosummary/epythet.validation.core.html.md): The `validate` orchestrator: resolve the package, run the levels, build the report.
 - [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by `detector.function`.
 - [epythet.validation.docstrings](_autosummary/epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
-- [epythet.validation.ledger](_autosummary/epythet.validation.ledger.html.md): The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
 - [epythet.validation.lint](_autosummary/epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
 - [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of `epythet validate`.
 - [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
