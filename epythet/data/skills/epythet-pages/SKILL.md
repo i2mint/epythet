@@ -31,6 +31,7 @@ epythet check-pages owner/repo        # or a local checkout: epythet check-pages
 
 ```python
 from epythet import check_pages_setup
+
 result = check_pages_setup("owner/repo")
 print(result["diagnosis"])
 ```
@@ -54,6 +55,7 @@ epythet configure-pages owner/repo -b docs -p /site   # other branch or folder
 
 ```python
 from epythet import enable_pages
+
 enable_pages("owner/repo")
 ```
 
@@ -86,7 +88,11 @@ gh api repos/OWNER/REPO/pages -X PUT -f 'source[branch]=gh-pages' -f 'source[pat
 Requires `pip install hubcap` for the org listing.
 
 ```python
-from epythet.tools.published_docs import check_pages_setup, enable_pages, repo_stubs_for_org
+from epythet.tools.published_docs import (
+    check_pages_setup,
+    enable_pages,
+    repo_stubs_for_org,
+)
 
 for stub in repo_stubs_for_org("myorg"):
     result = check_pages_setup(stub, check_url=False)

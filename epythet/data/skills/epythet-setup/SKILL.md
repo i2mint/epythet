@@ -36,7 +36,8 @@ Same from Python:
 
 ```python
 from epythet import quickstart
-quickstart("/path/to/project", ignore=["tests/"])   # returns the html directory
+
+quickstart("/path/to/project", ignore=["tests/"])  # returns the html directory
 ```
 
 ## What epythet reads (in this order)

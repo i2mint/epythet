@@ -68,8 +68,9 @@ An explicit `accent = "#hex"` is used as given in light mode and lifted to the d
 
 ```python
 from epythet.themes import contrast_ratio, dark_variant
-contrast_ratio("#3661ac", "#ffffff")   # >= 4.5 is WCAG AA for text
-dark_variant("#3661ac")                 # what dark mode will use
+
+contrast_ratio("#3661ac", "#ffffff")  # >= 4.5 is WCAG AA for text
+dark_variant("#3661ac")  # what dark mode will use
 ```
 
 Per theme, the accent becomes: furo `light_css_variables` / `dark_css_variables` (`color-brand-primary`, `color-brand-content`); shibuya `accent_color` (the nearest Radix colour *name*, since shibuya takes names, not hex); pydata and sphinx-book-theme `--pst-color-primary` in a generated `_static/epythet.css`; sphinxawesome `--color-brand` / `--color-accent` in the same stylesheet. You never write those yourself.

@@ -27,8 +27,13 @@ epythet ai-artifacts /path/to/repo --format json
 
 ```python
 from epythet import discover_artifacts
+
 found = discover_artifacts("/path/to/repo", package_dir="/path/to/repo/pkg")
-[s.name for s in found.skills], [a.name for a in found.subagents], [f.source for f in found.instruction_files]
+(
+    [s.name for s in found.skills],
+    [a.name for a in found.subagents],
+    [f.source for f in found.instruction_files],
+)
 ```
 
 Works on any repository, Python or not (without `pyproject.toml` the `<pkg>/data/...` locations are skipped).

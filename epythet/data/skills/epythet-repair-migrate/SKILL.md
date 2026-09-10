@@ -54,8 +54,11 @@ Record the public surface: `__all__` in `__init__.py` when present; otherwise ev
 
 ```python
 from epythet import repair_package
-repair_package("PKG")                        # dry run: prints what would change
-repair_package("PKG", write_to_files=True)   # inserts the blank line before glued doctests
+
+repair_package("PKG")  # dry run: prints what would change
+repair_package(
+    "PKG", write_to_files=True
+)  # inserts the blank line before glued doctests
 ```
 
 Then work through `epythet validate .` findings by rule, most frequent first. Each finding's `fix` says what to change. Safe edits (formatting only): blank lines before lists, doctests and field lists; `Returns: text` one-liners to a section; Markdown fences to indented literal blocks; `## Heading` to a bold phrase. Keep RST field lists as RST; do not convert styles in this step.

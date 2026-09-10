@@ -32,9 +32,10 @@ python -m epythet.validation PROJECT_DIR # same command without the console scri
 
 ```python
 from epythet.validation import validate
+
 report = validate("path/to/project", level=1)
-report.exit_code()          # 0 when clean at the default threshold
-report.findings             # list of Finding (rule, severity, level, object, file, line, message, fix, ...)
+report.exit_code()  # 0 when clean at the default threshold
+report.findings  # list of Finding (rule, severity, level, object, file, line, message, fix, ...)
 ```
 
 ## Levels: named by what they read
