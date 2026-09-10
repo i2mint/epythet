@@ -36,7 +36,15 @@ from epythet.validation.model import SEVERITIES, Finding
 
 BUNDLED_RULES_DIR = Path(__file__).resolve().parent.parent / "ledger" / "rules"
 
-DETECTOR_KINDS = ("regex", "source", "doctree", "build-warning", "html", "coverage", "llm")
+DETECTOR_KINDS = (
+    "regex",
+    "source",
+    "doctree",
+    "build-warning",
+    "html",
+    "coverage",
+    "llm",
+)
 #: Detector kinds evaluated per docstring at level 0.5.
 PARSE_KINDS = ("regex", "source", "doctree")
 #: Detector kinds that carry a sibling ``.py`` fixture with tagged specimens.
@@ -255,9 +263,13 @@ def _validate_fixture(rule: "Rule") -> None:
     if rule.kind == "coverage":
         from epythet.validation.coverage import iter_coverage_cases
 
-        cases = [c for c in iter_coverage_cases(rule.fixture_path) if rule.id in c.rule_ids]
+        cases = [
+            c for c in iter_coverage_cases(rule.fixture_path) if rule.id in c.rule_ids
+        ]
     else:
-        cases = [c for c in iter_fixture_cases(rule.fixture_path) if rule.id in c.rule_ids]
+        cases = [
+            c for c in iter_fixture_cases(rule.fixture_path) if rule.id in c.rule_ids
+        ]
     if not any(c.expect_hit for c in cases):
         raise LedgerError(f"{rule.fixture_path}: no '# ruleid: {rule.id}' specimen")
     if not any(not c.expect_hit for c in cases):

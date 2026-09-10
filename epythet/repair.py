@@ -108,9 +108,13 @@ def fences_to_literal_blocks(lines: list[str]) -> list[str]:
             j += 1
         nonblank = [line for line in body if line.strip()]
         common = min((N.indent_of(line) for line in nonblank), default=0)
-        body = [(indent + "    " + line[common:]) if line.strip() else "" for line in body]
+        body = [
+            (indent + "    " + line[common:]) if line.strip() else "" for line in body
+        ]
         if out and out[-1].strip() and not out[-1].rstrip().endswith("::"):
-            out[-1] = out[-1].rstrip() + ("::" if not out[-1].rstrip().endswith(":") else ":")
+            out[-1] = out[-1].rstrip() + (
+                "::" if not out[-1].rstrip().endswith(":") else ":"
+            )
         elif not out or not out[-1].strip():
             out.append(f"{indent}::")
         out.append("")
@@ -120,10 +124,14 @@ def fences_to_literal_blocks(lines: list[str]) -> list[str]:
     return out
 
 
-def rules_for(fence_style: str = "code-block", rules: Sequence[N.Rule] = SOURCE_SAFE_RULES) -> tuple[N.Rule, ...]:
+def rules_for(
+    fence_style: str = "code-block", rules: Sequence[N.Rule] = SOURCE_SAFE_RULES
+) -> tuple[N.Rule, ...]:
     """The rule tuple for a fence style (``literal`` swaps the fence rule)."""
     if fence_style not in FENCE_STYLES:
-        raise ValueError(f"fence_style must be one of {FENCE_STYLES}, got {fence_style!r}")
+        raise ValueError(
+            f"fence_style must be one of {FENCE_STYLES}, got {fence_style!r}"
+        )
     if fence_style == "code-block":
         return tuple(rules)
     return tuple(
@@ -143,7 +151,11 @@ def split_literal(segment: str) -> tuple[str, str, str, str] | None:
     prefix_len = len(segment) - len(segment.lstrip(_PREFIX_CHARS))
     prefix, rest = segment[:prefix_len], segment[prefix_len:]
     for quote in ('"""', "'''", '"', "'"):
-        if rest.startswith(quote) and rest.endswith(quote) and len(rest) >= 2 * len(quote):
+        if (
+            rest.startswith(quote)
+            and rest.endswith(quote)
+            and len(rest) >= 2 * len(quote)
+        ):
             return prefix, quote, rest[len(quote) : -len(quote)], quote
     return None
 
@@ -179,7 +191,9 @@ def _body_indented(lines: Sequence[str]) -> bool:
 def _doctest_sources(text: str) -> list[str] | None:
     """Doctest example sources, or ``None`` when :mod:`doctest` cannot parse the text."""
     try:
-        return [example.source for example in doctest.DocTestParser().get_examples(text)]
+        return [
+            example.source for example in doctest.DocTestParser().get_examples(text)
+        ]
     except ValueError:
         return None
 
@@ -207,7 +221,10 @@ def rewrite_docstring_literal(
     if len(lines) > 1 and not lines[-1].strip():
         trailing = lines.pop()  # the closing quote's own line: keep its indentation
     margin = _margin(lines)
-    dedented = [lines[0], *[line[len(margin):] if line.strip() else "" for line in lines[1:]]]
+    dedented = [
+        lines[0],
+        *[line[len(margin) :] if line.strip() else "" for line in lines[1:]],
+    ]
     before_sources = _doctest_sources("\n".join(dedented))
     if before_sources is None:
         return segment, "doctest could not parse the docstring; fix the doctest first"
@@ -221,7 +238,11 @@ def rewrite_docstring_literal(
     if _doctest_sources("\n".join(normalized)) != before_sources:
         return segment, "the rewrite would change a doctest's source"
     reindented = [(margin + line) if line.strip() else "" for line in normalized[1:]]
-    if _body_indented(normalized) and not _body_indented(dedented) and normalized[0].strip():
+    if (
+        _body_indented(normalized)
+        and not _body_indented(dedented)
+        and normalized[0].strip()
+    ):
         # The rewrite indented everything under the first line (a one-line section
         # became a header with a body). ``inspect.cleandoc`` strips the common
         # indentation of the lines after the first, so only the leading-newline
@@ -318,7 +339,9 @@ def _line_offsets(source: str) -> list[int]:
 def _offset(offsets: list[int], source: str, lineno: int, col: int) -> int:
     """Character offset of ``(lineno, col)``; ``col`` is a UTF-8 byte offset in ``ast``."""
     line_start = offsets[lineno - 1]
-    line = source[line_start : offsets[lineno] if lineno < len(offsets) else len(source)]
+    line = source[
+        line_start : offsets[lineno] if lineno < len(offsets) else len(source)
+    ]
     return line_start + len(line.encode("utf-8")[:col].decode("utf-8", errors="ignore"))
 
 
@@ -331,7 +354,9 @@ def iter_docstring_nodes(tree: ast.Module):
         if constant is not None:
             yield qualname, node, constant
         for child in _iter_defs(node):
-            yield from visit(child, f"{qualname}.{child.name}" if qualname else child.name)
+            yield from visit(
+                child, f"{qualname}.{child.name}" if qualname else child.name
+            )
 
     yield from visit(tree, "")
 
@@ -350,7 +375,9 @@ Applier = Callable[[str, Sequence[DocstringEdit]], str]
 def apply_span_edits(source: str, edits: Sequence[DocstringEdit]) -> str:
     """Splice each edit's ``after`` over its ``[start, end)`` span, last edit first."""
     out = source
-    for edit in sorted((e for e in edits if e.applied), key=lambda e: e.start, reverse=True):
+    for edit in sorted(
+        (e for e in edits if e.applied), key=lambda e: e.start, reverse=True
+    ):
         out = out[: edit.start] + edit.after + out[edit.end :]
     return out
 
@@ -379,8 +406,19 @@ def _findings_for_text(text: str, *, qualname: str, rules, napoleon: bool) -> li
     """Rule ids that fire on a docstring text at level 0.5."""
     from epythet.validation.parse import findings_for, parse_docstring
 
-    doc = Docstring(file="", line=0, def_line=0, qualname=qualname, kind="function", text=text, source="", is_raw=True)
-    return sorted({f.rule for f in findings_for(parse_docstring(doc, napoleon=napoleon), rules)})
+    doc = Docstring(
+        file="",
+        line=0,
+        def_line=0,
+        qualname=qualname,
+        kind="function",
+        text=text,
+        source="",
+        is_raw=True,
+    )
+    return sorted(
+        {f.rule for f in findings_for(parse_docstring(doc, napoleon=napoleon), rules)}
+    )
 
 
 def repair_source(
@@ -407,17 +445,40 @@ def repair_source(
         end = _offset(offsets, source, constant.end_lineno, constant.end_col_offset)
         before = source[start:end]
         after, reason = rewrite_docstring_literal(before, rules=rules)
-        edit = DocstringEdit(qualname=qualname or "<module>", line=constant.lineno, start=start, end=end, before=before, after=after, reason=reason)
+        edit = DocstringEdit(
+            qualname=qualname or "<module>",
+            line=constant.lineno,
+            start=start,
+            end=end,
+            before=before,
+            after=after,
+            reason=reason,
+        )
         if ledger_rules:
-            was = _findings_for_text(inspect.cleandoc(constant.value), qualname=edit.qualname, rules=ledger_rules, napoleon=napoleon)
+            was = _findings_for_text(
+                inspect.cleandoc(constant.value),
+                qualname=edit.qualname,
+                rules=ledger_rules,
+                napoleon=napoleon,
+            )
             edit.remaining = was
             if edit.applied:
                 new_parts = split_literal(after)
-                new_text = inspect.cleandoc(new_parts[2]) if new_parts else constant.value
-                now = _findings_for_text(new_text, qualname=edit.qualname, rules=ledger_rules, napoleon=napoleon)
+                new_text = (
+                    inspect.cleandoc(new_parts[2]) if new_parts else constant.value
+                )
+                now = _findings_for_text(
+                    new_text,
+                    qualname=edit.qualname,
+                    rules=ledger_rules,
+                    napoleon=napoleon,
+                )
                 introduced = sorted(set(now) - set(was))
                 if introduced:
-                    edit.after, edit.reason = before, f"the rewrite would introduce {', '.join(introduced)}"
+                    edit.after, edit.reason = (
+                        before,
+                        f"the rewrite would introduce {', '.join(introduced)}",
+                    )
                 else:
                     edit.fixed = sorted(set(was) - set(now))
                     edit.remaining = now
@@ -427,7 +488,9 @@ def repair_source(
     repaired = applier(source, repair.edits)
     try:
         if _ast_fingerprint(repaired) != _ast_fingerprint(source):
-            repair.skipped = "the rewrite changed the module's AST outside its docstrings"
+            repair.skipped = (
+                "the rewrite changed the module's AST outside its docstrings"
+            )
             return repair
     except SyntaxError as e:
         repair.skipped = f"the rewrite does not parse: {e}"
@@ -498,7 +561,10 @@ def _module_name(path: Path, project_dir: Path) -> str | None:
         parts = list(rel.with_suffix("").parts)
         if parts and parts[-1] == "__init__":
             parts = parts[:-1]
-        if parts and all((root / Path(*parts[: i + 1]) / "__init__.py").exists() for i in range(len(parts) - (0 if rel.name == "__init__.py" else 1))):
+        if parts and all(
+            (root / Path(*parts[: i + 1]) / "__init__.py").exists()
+            for i in range(len(parts) - (0 if rel.name == "__init__.py" else 1))
+        ):
             return ".".join(parts)
     return None
 
@@ -511,13 +577,17 @@ def _doctest_failures(path: Path, *, project_dir: Path) -> tuple[int, int, str]:
     """
     env = dict(os.environ)
     roots = [str(project_dir), str(Path(project_dir) / "src")]
-    env["PYTHONPATH"] = os.pathsep.join(p for p in (*roots, env.get("PYTHONPATH", "")) if p)
+    env["PYTHONPATH"] = os.pathsep.join(
+        p for p in (*roots, env.get("PYTHONPATH", "")) if p
+    )
     module = _module_name(path, project_dir)
     if module is None:
         command = [sys.executable, "-m", "doctest", str(path)]
     else:
         command = [sys.executable, "-c", _DOCTEST_RUNNER, module]
-    proc = subprocess.run(command, cwd=project_dir, env=env, capture_output=True, text=True)
+    proc = subprocess.run(
+        command, cwd=project_dir, env=env, capture_output=True, text=True
+    )
     output = (proc.stdout + proc.stderr).strip()
     tail = output.splitlines()[-1] if output else ""
     if module is not None:
@@ -529,7 +599,9 @@ def _doctest_failures(path: Path, *, project_dir: Path) -> tuple[int, int, str]:
         except (ValueError, IndexError):
             return proc.returncode, IMPORT_FAILED, tail
     match = _DOCTEST_FAILURES_RE.search(output)
-    failures = int(match.group(1)) if match else (0 if proc.returncode == 0 else IMPORT_FAILED)
+    failures = (
+        int(match.group(1)) if match else (0 if proc.returncode == 0 else IMPORT_FAILED)
+    )
     return proc.returncode, failures, tail
 
 
@@ -564,13 +636,17 @@ def _files_under(path: Path, *, ignore: Iterable[str]) -> tuple[Path, list[Path]
     except FileNotFoundError:
         # A plain directory of .py files (no __init__, no pyproject): every file in it.
         files = [
-            p for p in sorted(path.rglob("*.py"))
-            if "__pycache__" not in p.parts and not any(t in p.as_posix() for t in ignore)
+            p
+            for p in sorted(path.rglob("*.py"))
+            if "__pycache__" not in p.parts
+            and not any(t in p.as_posix() for t in ignore)
         ]
         if not files:
             raise
         return path, files
-    return resolved.project_dir, list(iter_python_files(resolved.package_dir, ignore=ignore))
+    return resolved.project_dir, list(
+        iter_python_files(resolved.package_dir, ignore=ignore)
+    )
 
 
 def _find_project(start: Path) -> Path:
@@ -615,26 +691,46 @@ def repair(
     ledger_rules = ()
     if revalidate:
         catalog = load_ledger(ledger)
-        ledger_rules = [r for r in catalog.of_kind(*PARSE_KINDS) if r.applies(napoleon=napoleon)]
+        ledger_rules = [
+            r for r in catalog.of_kind(*PARSE_KINDS) if r.applies(napoleon=napoleon)
+        ]
     active_rules = rules_for(fence_style, rules)
     for file in files:
         try:
             source, newline, bom = _read_source(file)
         except (OSError, UnicodeDecodeError) as e:
-            report.files.append(FileRepair(path=file, original="", repaired="", skipped=f"{type(e).__name__}: {e}"))
+            report.files.append(
+                FileRepair(
+                    path=file,
+                    original="",
+                    repaired="",
+                    skipped=f"{type(e).__name__}: {e}",
+                )
+            )
             continue
-        result = repair_source(source, rules=active_rules, ledger_rules=ledger_rules, napoleon=napoleon, applier=applier, path=file)
+        result = repair_source(
+            source,
+            rules=active_rules,
+            ledger_rules=ledger_rules,
+            napoleon=napoleon,
+            applier=applier,
+            path=file,
+        )
         report.files.append(result)
         if not (write and result.changed):
             continue
-        before = _doctest_failures(file, project_dir=project_dir) if run_doctests else None
+        before = (
+            _doctest_failures(file, project_dir=project_dir) if run_doctests else None
+        )
         _write_source(file, result.repaired, newline=newline, bom=bom)
         result.written = True
         if not run_doctests:
             continue
         after = _doctest_failures(file, project_dir=project_dir)
         if before[1] == IMPORT_FAILED and after[1] == IMPORT_FAILED:
-            result.verification.append(f"not verified: the module could not be imported to run its doctests ({after[2]})")
+            result.verification.append(
+                f"not verified: the module could not be imported to run its doctests ({after[2]})"
+            )
         elif after[1] == IMPORT_FAILED or after[1] > max(before[1], 0):
             _write_source(file, source, newline=newline, bom=bom)
             result.written = False
@@ -642,7 +738,9 @@ def repair(
                 f"restored: doctest failures went from {before[1]} to {after[1]} ({after[2]})"
             )
         else:
-            result.verification.append(f"doctests: {before[1]} failure(s) before, {after[1]} after")
+            result.verification.append(
+                f"doctests: {before[1]} failure(s) before, {after[1]} after"
+            )
     return report
 
 
@@ -685,7 +783,9 @@ def repair_command(
     from epythet.validation.ledger import LedgerError
 
     if fence_style not in FENCE_STYLES:
-        raise cw.CommandError(f"--fence-style must be one of {list(FENCE_STYLES)}", code=2)
+        raise cw.CommandError(
+            f"--fence-style must be one of {list(FENCE_STYLES)}", code=2
+        )
     appliers = {"span": apply_span_edits, "libcst": apply_with_libcst}
     if applier not in appliers:
         raise cw.CommandError(f"--applier must be one of {list(appliers)}", code=2)
@@ -717,11 +817,15 @@ def render_repair(report: RepairReport, *, diff: bool = True) -> str:
     for file in report.changed:
         if report.write:
             state = "written" if file.written else "NOT written"
-            lines.append(f"{file.path}: {len(file.applied)} docstring(s) rewritten, {state}")
+            lines.append(
+                f"{file.path}: {len(file.applied)} docstring(s) rewritten, {state}"
+            )
             lines += [f"    {v}" for v in file.verification]
         for edit in file.applied:
             if edit.fixed:
-                lines.append(f"    {file.path.name}:{edit.line} {edit.qualname}: fixed {', '.join(edit.fixed)}")
+                lines.append(
+                    f"    {file.path.name}:{edit.line} {edit.qualname}: fixed {', '.join(edit.fixed)}"
+                )
     if report.refused:
         lines.append("")
         lines.append("needs a hand:")

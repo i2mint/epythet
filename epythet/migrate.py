@@ -40,12 +40,32 @@ import re
 from typing import Iterable, Sequence
 
 from epythet import normalizer as N
-from epythet.repair import Applier, RepairReport, apply_span_edits, apply_with_libcst, render_repair, repair
+from epythet.repair import (
+    Applier,
+    RepairReport,
+    apply_span_edits,
+    apply_with_libcst,
+    render_repair,
+    repair,
+)
 
 TARGET_STYLES = ("google", "numpy")
 #: Field names whose conversion round-trips through ``docstring_parser``.
 CONVERTIBLE_FIELDS = frozenset(
-    {"param", "parameter", "arg", "argument", "type", "returns", "return", "rtype", "raises", "raise", "except", "exception"}
+    {
+        "param",
+        "parameter",
+        "arg",
+        "argument",
+        "type",
+        "returns",
+        "return",
+        "rtype",
+        "raises",
+        "raise",
+        "except",
+        "exception",
+    }
 )
 _FIELD_RE = re.compile(r"^(\s*):([a-zA-Z]+)(?:\s+[^:]*)?:")
 
@@ -69,7 +89,11 @@ def field_region(lines: Sequence[str]) -> tuple[int, int] | None:
     """
     contexts = N.line_contexts(lines)
     start = next(
-        (i for i, line in enumerate(lines) if contexts[i] == N.FIELD and _field_name(line)),
+        (
+            i
+            for i, line in enumerate(lines)
+            if contexts[i] == N.FIELD and _field_name(line)
+        ),
         None,
     )
     if start is None:
@@ -80,9 +104,16 @@ def field_region(lines: Sequence[str]) -> tuple[int, int] | None:
         line = lines[end]
         if not line.strip():
             following = end + 1
-            if following < len(lines) and lines[following].strip() and (
-                (_field_name(lines[following]) and N.indent_of(lines[following]) == indent)
-                or N.indent_of(lines[following]) > indent
+            if (
+                following < len(lines)
+                and lines[following].strip()
+                and (
+                    (
+                        _field_name(lines[following])
+                        and N.indent_of(lines[following]) == indent
+                    )
+                    or N.indent_of(lines[following]) > indent
+                )
             ):
                 end += 1
                 continue
@@ -100,15 +131,25 @@ def field_region(lines: Sequence[str]) -> tuple[int, int] | None:
 def _facts(docstring) -> tuple:
     """What a docstring says, independent of its style: params, return, raises."""
     params = tuple(
-        (p.arg_name, (p.type_name or None), " ".join((p.description or "").split()), bool(p.is_optional))
+        (
+            p.arg_name,
+            (p.type_name or None),
+            " ".join((p.description or "").split()),
+            bool(p.is_optional),
+        )
         for p in docstring.params
     )
     returns = None
     if docstring.returns is not None:
         r = docstring.returns
-        returns = ((r.type_name or None), " ".join((r.description or "").split()), r.is_generator)
+        returns = (
+            (r.type_name or None),
+            " ".join((r.description or "").split()),
+            r.is_generator,
+        )
     raises = tuple(
-        ((r.type_name or None), " ".join((r.description or "").split())) for r in docstring.raises
+        ((r.type_name or None), " ".join((r.description or "").split()))
+        for r in docstring.raises
     )
     return params, returns, raises
 
@@ -137,7 +178,7 @@ def convert_fields(region: str, *, to: str = "google") -> str | None:
         return None
     if _facts(back) != _facts(parsed):
         return None
-    body = composed[len("Summary."):].lstrip("\n")
+    body = composed[len("Summary.") :].lstrip("\n")
     # docstring_parser composes an untyped return as ``    : text``; drop the stray colon.
     body = re.sub(r"^(\s+): (?=\S)", r"\1", body, flags=re.M)
     return body.rstrip("\n")
@@ -182,7 +223,9 @@ def rst_fields_to_sections(to: str = "google") -> N.Rule:
         if converted is None:
             return lines
         pad = " " * indent
-        new_block = [(pad + line) if line.strip() else "" for line in converted.split("\n")]
+        new_block = [
+            (pad + line) if line.strip() else "" for line in converted.split("\n")
+        ]
         out = lines[:start]
         if out and out[-1].strip():
             out.append("")
@@ -250,7 +293,9 @@ def _why_not_converted(literal: str) -> str | None:
     unconvertible = sorted(names - CONVERTIBLE_FIELDS)
     if unconvertible:
         return f"fields that do not round-trip: {', '.join(unconvertible)}"
-    return "the converted section did not describe the same parameters, return and raises"
+    return (
+        "the converted section did not describe the same parameters, return and raises"
+    )
 
 
 def migrate_style_command(

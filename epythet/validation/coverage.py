@@ -164,9 +164,7 @@ def name_words(identifier: str) -> set[str]:
 
 def content_words(text: str) -> set[str]:
     """Content words of prose: lower-cased, stop words out, crudely lemmatised."""
-    return {
-        _lemma(w) for w in _WORD_RE.findall(text) if w.lower() not in STOP_WORDS
-    }
+    return {_lemma(w) for w in _WORD_RE.findall(text) if w.lower() not in STOP_WORDS}
 
 
 def trivial_summary_words(identifier: str, summary: str) -> bool:
@@ -217,7 +215,9 @@ def _names_in_all(tree: ast.Module) -> set[str] | None:
             value = node.value
             if isinstance(value, (ast.List, ast.Tuple)):
                 return {
-                    e.value for e in value.elts if isinstance(e, ast.Constant) and isinstance(e.value, str)
+                    e.value
+                    for e in value.elts
+                    if isinstance(e, ast.Constant) and isinstance(e.value, str)
                 }
     return None
 
@@ -289,7 +289,11 @@ def param_descriptions(docstring: str) -> dict[str, str]:
             continue
         rst = _RST_PARAM_RE.match(line)
         if rst:
-            mode, current, current_indent = "rst", rst.group(1).lstrip("*"), _indent(line)
+            mode, current, current_indent = (
+                "rst",
+                rst.group(1).lstrip("*"),
+                _indent(line),
+            )
             found[current] = [rst.group(2).strip()]
             continue
         if _GOOGLE_ARGS_HEADER_RE.match(line):
@@ -340,10 +344,17 @@ def _params_of(node: ast.AST, source: str, docstring: str | None) -> list[Param]
     described = param_descriptions(docstring) if docstring else {}
     params = []
     args = node.args
-    for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs, *filter(None, (args.vararg, args.kwarg))]:
+    for arg in [
+        *args.posonlyargs,
+        *args.args,
+        *args.kwonlyargs,
+        *filter(None, (args.vararg, args.kwarg)),
+    ]:
         if arg.arg in ("self", "cls"):
             continue
-        annotation = ast.get_source_segment(source, arg.annotation) if arg.annotation else None
+        annotation = (
+            ast.get_source_segment(source, arg.annotation) if arg.annotation else None
+        )
         params.append(Param(arg.arg, annotation, described.get(arg.arg)))
     return params
 
@@ -364,7 +375,9 @@ def iter_public_objects(
     """
     package_dir = Path(package_dir)
     entry_points = entry_point_names(package_dir)
-    for path in (files if files is not None else iter_python_files(package_dir, ignore=ignore)):
+    for path in (
+        files if files is not None else iter_python_files(package_dir, ignore=ignore)
+    ):
         path = Path(path)
         try:
             rel = path.relative_to(package_dir)
@@ -410,7 +423,8 @@ def iter_public_objects(
                     line=child.lineno,
                     docstring=text,
                     params=_params_of(child, source, text),
-                    is_entry_point=top and (all_entry_points or child.name in entry_points or is_init),
+                    is_entry_point=top
+                    and (all_entry_points or child.name in entry_points or is_init),
                     name=child.name,
                 )
                 if kind == "class":
@@ -477,7 +491,9 @@ def iter_coverage_cases(fixture_path: Path) -> Iterator[CoverageCase]:
 
     fixture_path = Path(fixture_path)
     lines = fixture_path.read_text(encoding="utf-8").splitlines()
-    for obj in iter_public_objects(fixture_path.parent, files=[fixture_path], all_entry_points=True):
+    for obj in iter_public_objects(
+        fixture_path.parent, files=[fixture_path], all_entry_points=True
+    ):
         if obj.kind == "module":
             continue
         header = lines[obj.line - 1] if obj.line - 1 < len(lines) else ""

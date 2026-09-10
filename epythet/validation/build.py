@@ -288,7 +288,9 @@ def _render_with_sphinx(
                 if warnings_file.exists()
                 else proc.stdout + proc.stderr
             )
-            result.warnings = list(parse_warning_stream(stream, project_dir=project_dir))
+            result.warnings = list(
+                parse_warning_stream(stream, project_dir=project_dir)
+            )
     result.log = "\n".join(logs)
     return result
 
@@ -384,6 +386,7 @@ class SphinxBackend:
                 outdir=outdir if self.outdir else None,
                 command=args,
             )
+
     def render(
         self,
         project_dir: Path,

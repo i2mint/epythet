@@ -100,7 +100,13 @@ REPLY_SCHEMA: dict[str, Any] = {
     "title": "epythet level-3 review reply",
     "type": "object",
     "additionalProperties": False,
-    "required": ["schema_version", "model", "prompt_hash", "findings", "proposed_rules"],
+    "required": [
+        "schema_version",
+        "model",
+        "prompt_hash",
+        "findings",
+        "proposed_rules",
+    ],
     "properties": {
         "schema_version": {"const": REPLY_SCHEMA_VERSION},
         "model": {"type": "string", "minLength": 1},
@@ -260,7 +266,9 @@ def select_pages(
     if mode == "changed" and changed is not None:
         wanted = set(changed)
         return [p for p in available if p in wanted]
-    ordered = sorted(available, key=lambda p: (p != "index", "_autosummary" not in p, p))
+    ordered = sorted(
+        available, key=lambda p: (p != "index", "_autosummary" not in p, p)
+    )
     return ordered[:sample]
 
 
@@ -281,7 +289,9 @@ def _screenshot(html_dir: Path, docname: str, target: Path) -> bool:
             page.goto(page_path.resolve().as_uri())
             page.screenshot(path=str(target), full_page=True)
             browser.close()
-    except Exception:  # Playwright raises its own hierarchy; any failure is "no screenshot"
+    except (
+        Exception
+    ):  # Playwright raises its own hierarchy; any failure is "no screenshot"
         return False
     return True
 
@@ -329,7 +339,9 @@ def write_packet(
     rubric = rubric_text(ledger)
     packet.prompt_hash = _prompt_hash(rubric, REPLY_SCHEMA)
     (root / "rubric.md").write_text(rubric, encoding="utf-8")
-    (root / "schema.json").write_text(json.dumps(REPLY_SCHEMA, indent=2), encoding="utf-8")
+    (root / "schema.json").write_text(
+        json.dumps(REPLY_SCHEMA, indent=2), encoding="utf-8"
+    )
     (root / "INSTRUCTIONS.md").write_text(INSTRUCTIONS, encoding="utf-8")
     manifest = {
         "schema_version": REPLY_SCHEMA_VERSION,
@@ -380,7 +392,8 @@ def _validate_against(schema: dict[str, Any], value, where: str) -> None:
     expected = schema.get("type")
     if isinstance(expected, list):
         if not any(
-            (t == "null" and value is None) or (t != "null" and isinstance(value, {"string": str}[t]))
+            (t == "null" and value is None)
+            or (t != "null" and isinstance(value, {"string": str}[t]))
             for t in expected
         ):
             raise ReplyError(f"{where}: expected one of {expected}")
@@ -425,7 +438,9 @@ def load_reply(path: Path) -> dict[str, Any]:
     return reply
 
 
-def reply_findings(reply: dict[str, Any], ledger: Ledger, *, source: str = "") -> list[Finding]:
+def reply_findings(
+    reply: dict[str, Any], ledger: Ledger, *, source: str = ""
+) -> list[Finding]:
     """Turn a reply's ``findings`` into level-3 findings (informational by construction)."""
     findings: list[Finding] = []
     model = reply.get("model", "")

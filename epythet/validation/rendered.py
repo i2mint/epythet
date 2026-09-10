@@ -86,7 +86,10 @@ def _pages(outdir: Path, suffix: str) -> Iterator[tuple[str, Path]]:
     """``(docname, path)`` for every page of one builder, in a stable order."""
     outdir = Path(outdir)
     for path in sorted(outdir.rglob(f"*{suffix}")):
-        if any(part.startswith(("_static", "_sources", "_modules")) for part in path.relative_to(outdir).parts):
+        if any(
+            part.startswith(("_static", "_sources", "_modules"))
+            for part in path.relative_to(outdir).parts
+        ):
             continue
         yield path.relative_to(outdir).with_suffix("").as_posix(), path
 
@@ -183,7 +186,9 @@ def unresolved_xrefs_in(root: ET.Element) -> list[RenderHit]:
         if any(a.tag == "title" for a in chain):
             continue  # section titles are not links
         hits.append(
-            RenderHit(page="", evidence=_text(literal), object=_object_of(literal, parents))
+            RenderHit(
+                page="", evidence=_text(literal), object=_object_of(literal, parents)
+            )
         )
     return hits
 
@@ -261,11 +266,7 @@ def dangling_anchors(html: str) -> list[str]:
     hand-written ``:ref:`` to a missing label ends the same way.
     """
     collector = _collect(html)
-    return [
-        href
-        for href in collector.fragment_hrefs
-        if href[1:] not in collector.ids
-    ]
+    return [href for href in collector.fragment_hrefs if href[1:] not in collector.ids]
 
 
 def _is_local(src: str) -> bool:
@@ -289,12 +290,16 @@ def _scan_html(outdir: Path, extract) -> list[RenderHit]:
             html = path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        hits += [RenderHit(page=docname, evidence=e) for e in extract(html, path.parent)]
+        hits += [
+            RenderHit(page=docname, evidence=e) for e in extract(html, path.parent)
+        ]
     return hits
 
 
 @render_detector("dangling_anchors")
-def dangling_anchors_detector(outdirs: dict[str, Path], _docsrc: Path) -> list[RenderHit]:
+def dangling_anchors_detector(
+    outdirs: dict[str, Path], _docsrc: Path
+) -> list[RenderHit]:
     """Level-2 detector over the ``html`` output (DR027)."""
     if "html" not in outdirs:
         return []
@@ -344,7 +349,9 @@ def _unified_diff(old: str, new: str, name: str) -> str:
 def compare_snapshots(text_dir: Path, snapshot_dir: Path) -> SnapshotDiff:
     """Diff every rendered text page against its stored snapshot."""
     rendered = dict(_pages(Path(text_dir), ".txt"))
-    stored = dict(_pages(Path(snapshot_dir), ".txt")) if Path(snapshot_dir).is_dir() else {}
+    stored = (
+        dict(_pages(Path(snapshot_dir), ".txt")) if Path(snapshot_dir).is_dir() else {}
+    )
     diff = SnapshotDiff()
     for docname, path in rendered.items():
         if docname not in stored:
@@ -369,13 +376,17 @@ def update_snapshots(text_dir: Path, snapshot_dir: Path) -> int:
     for docname, path in _pages(Path(text_dir), ".txt"):
         target = snapshot_dir / f"{docname}.txt"
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(path.read_text(encoding="utf-8", errors="replace"), encoding="utf-8")
+        target.write_text(
+            path.read_text(encoding="utf-8", errors="replace"), encoding="utf-8"
+        )
         count += 1
     return count
 
 
 @render_detector("text_snapshots")
-def text_snapshots_detector(_outdirs: dict[str, Path], _docsrc: Path) -> list[RenderHit]:
+def text_snapshots_detector(
+    _outdirs: dict[str, Path], _docsrc: Path
+) -> list[RenderHit]:
     """DR035's detector is the snapshot diff, driven by ``snapshot=``; nothing to scan here."""
     return []
 
@@ -399,7 +410,9 @@ class RenderArtifacts:
     snapshot: SnapshotDiff | None = None
 
 
-def _rule_or_fallback(ledger: Ledger, rule_id: str, *, severity: str, title: str) -> Rule:
+def _rule_or_fallback(
+    ledger: Ledger, rule_id: str, *, severity: str, title: str
+) -> Rule:
     """The ledger's rule, or a minimal stand-in when an overlay removed it."""
     try:
         return ledger[rule_id]
@@ -445,23 +458,38 @@ def render_findings(
 def snapshot_findings(diff: SnapshotDiff, ledger: Ledger) -> list[Finding]:
     """One DR035 finding per changed page, plus info findings for new and removed pages."""
     rule = _rule_or_fallback(
-        ledger, SNAPSHOT_DRIFT, severity="error", title="Rendered text drifted from its snapshot"
+        ledger,
+        SNAPSHOT_DRIFT,
+        severity="error",
+        title="Rendered text drifted from its snapshot",
     )
     findings: list[Finding] = []
     for docname, text in diff.changed.items():
         lines = text.splitlines()
-        evidence = "\n".join(lines[: _DIFF_LINES_IN_EVIDENCE])
+        evidence = "\n".join(lines[:_DIFF_LINES_IN_EVIDENCE])
         if len(lines) > _DIFF_LINES_IN_EVIDENCE:
             evidence += f"\n… {len(lines) - _DIFF_LINES_IN_EVIDENCE} more diff lines"
         findings.append(
-            _finding(rule, RenderHit(page=docname, evidence=evidence), message=f"{docname} changed ({len(lines)} diff lines)")
+            _finding(
+                rule,
+                RenderHit(page=docname, evidence=evidence),
+                message=f"{docname} changed ({len(lines)} diff lines)",
+            )
         )
     for docname in diff.added:
-        finding = _finding(rule, RenderHit(page=docname, evidence="new page"), message=f"{docname} has no snapshot yet")
+        finding = _finding(
+            rule,
+            RenderHit(page=docname, evidence="new page"),
+            message=f"{docname} has no snapshot yet",
+        )
         finding.severity = "info"
         findings.append(finding)
     for docname in diff.removed:
-        finding = _finding(rule, RenderHit(page=docname, evidence="page gone"), message=f"{docname} is snapshotted but no longer rendered")
+        finding = _finding(
+            rule,
+            RenderHit(page=docname, evidence="page gone"),
+            message=f"{docname} is snapshotted but no longer rendered",
+        )
         finding.severity = "warning"
         findings.append(finding)
     return findings
@@ -486,7 +514,11 @@ def run_render_level(
 
     notes: list[str] = []
     artifacts = RenderArtifacts()
-    docsrc = backend.resolve_docsrc(Path(project_dir)) if hasattr(backend, "resolve_docsrc") else None
+    docsrc = (
+        backend.resolve_docsrc(Path(project_dir))
+        if hasattr(backend, "resolve_docsrc")
+        else None
+    )
     if not hasattr(backend, "render"):
         return (
             [
@@ -528,15 +560,23 @@ def run_render_level(
                 level=RENDER_LEVEL,
                 message=f"-b {builder} failed (exit {code})",
                 detector="render",
-                evidence=result.log.strip().splitlines()[-1][:300] if result.log.strip() else "",
+                evidence=result.log.strip().splitlines()[-1][:300]
+                if result.log.strip()
+                else "",
                 tool=getattr(backend, "name", "backend"),
             )
         )
     artifacts.outdirs = dict(result.outdirs)
     artifacts.docsrc = docsrc
-    findings += render_findings(result.outdirs, ledger, docsrc=docsrc or Path(project_dir))
+    findings += render_findings(
+        result.outdirs, ledger, docsrc=docsrc or Path(project_dir)
+    )
     if "text" in result.outdirs and (snapshot or update):
-        snapshot_dir = Path(snapshot_dir) if snapshot_dir else (docsrc or Path(project_dir) / "docsrc") / SNAPSHOT_DIRNAME
+        snapshot_dir = (
+            Path(snapshot_dir)
+            if snapshot_dir
+            else (docsrc or Path(project_dir) / "docsrc") / SNAPSHOT_DIRNAME
+        )
         if update:
             written = update_snapshots(result.outdirs["text"], snapshot_dir)
             notes.append(f"{written} text snapshots written to {snapshot_dir}")
@@ -545,8 +585,12 @@ def run_render_level(
             diff = compare_snapshots(result.outdirs["text"], snapshot_dir)
             artifacts.snapshot = diff
             if not snapshot_dir.is_dir():
-                notes.append(f"no snapshots at {snapshot_dir}; run with --update-snapshots to create them")
+                notes.append(
+                    f"no snapshots at {snapshot_dir}; run with --update-snapshots to create them"
+                )
             else:
                 findings += snapshot_findings(diff, ledger)
-                notes.append(f"{diff.compared} text snapshots compared against {snapshot_dir}")
+                notes.append(
+                    f"{diff.compared} text snapshots compared against {snapshot_dir}"
+                )
     return findings, notes, artifacts

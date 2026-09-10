@@ -129,7 +129,11 @@ def resolve_package(package: str | os.PathLike) -> ResolvedPackage:
             project_dir = _find_project_dir(path.parent)
             name, version = _project_metadata(project_dir)
             return ResolvedPackage(path.name, path, project_dir, version)
-        project_dir = path if any((path / m).exists() for m in PROJECT_MARKERS) else _find_project_dir(path)
+        project_dir = (
+            path
+            if any((path / m).exists() for m in PROJECT_MARKERS)
+            else _find_project_dir(path)
+        )
         name, version = _project_metadata(project_dir)
         package_dir = _package_dir_in_project(project_dir, name)
         if package_dir is None and path != project_dir:

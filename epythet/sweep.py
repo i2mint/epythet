@@ -278,7 +278,9 @@ def render_sweep(result: SweepResult, *, top: int = 20) -> str:
         f" {sum(p.undocumented for p in result.swept)} undocumented"
     ]
     lines.append("")
-    lines.append(f"{'rule':<10}{'severity':<9}{'findings':>9}{'packages':>9}{'share':>7}{'/100 obj':>10}  title")
+    lines.append(
+        f"{'rule':<10}{'severity':<9}{'findings':>9}{'packages':>9}{'share':>7}{'/100 obj':>10}  title"
+    )
     for row in result.distribution():
         lines.append(
             f"{row['rule']:<10}{row['severity']:<9}{row['findings']:>9}{row['packages']:>9}"
@@ -345,7 +347,10 @@ def sweep_command(
     def progress(package: PackageSweep) -> None:
         if quiet:
             return
-        state = package.error or f"{package.objects} objects, {sum(package.counts.values())} findings"
+        state = (
+            package.error
+            or f"{package.objects} objects, {sum(package.counts.values())} findings"
+        )
         sys.stderr.write(f"  {package.name}: {state} ({package.duration_s:.1f}s)\n")
 
     try:
@@ -364,7 +369,11 @@ def sweep_command(
         )
     except FileNotFoundError as e:
         raise cw.CommandError(str(e), code=2) from e
-    text = render_sweep(result, top=top) if format == "table" else json.dumps(result.to_dict(), indent=2)
+    text = (
+        render_sweep(result, top=top)
+        if format == "table"
+        else json.dumps(result.to_dict(), indent=2)
+    )
     if output:
         Path(output).write_text(text + "\n", encoding="utf-8")
     else:

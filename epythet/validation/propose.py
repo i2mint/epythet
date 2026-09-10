@@ -66,7 +66,14 @@ def _yaml_scalar(value: str) -> str:
 
 def _yaml_block(text: str, indent: int = 2) -> str:
     pad = " " * indent
-    return "|\n" + "\n".join(pad + line if line.strip() else "" for line in text.rstrip("\n").splitlines()) + "\n"
+    return (
+        "|\n"
+        + "\n".join(
+            pad + line if line.strip() else ""
+            for line in text.rstrip("\n").splitlines()
+        )
+        + "\n"
+    )
 
 
 def rule_yaml(rule_id: str, proposal: dict[str, Any], *, source: str) -> str:
@@ -82,14 +89,23 @@ def rule_yaml(rule_id: str, proposal: dict[str, Any], *, source: str) -> str:
         "detector:",
         f"  kind: {detector['kind']}",
     ]
-    for key in ("node", "function", "scan", "skip_doctest_lines", "whole_text", "ignore_case"):
+    for key in (
+        "node",
+        "function",
+        "scan",
+        "skip_doctest_lines",
+        "whole_text",
+        "ignore_case",
+    ):
         if key in detector:
             value = detector[key]
             lines.append(
                 f"  {key}: {str(value).lower() if isinstance(value, bool) else _yaml_scalar(str(value))}"
             )
     if "pattern" in detector:
-        lines.append("  pattern: " + _yaml_block(detector["pattern"], indent=4).rstrip("\n"))
+        lines.append(
+            "  pattern: " + _yaml_block(detector["pattern"], indent=4).rstrip("\n")
+        )
     lines.append(f"message: {_yaml_scalar(proposal['message'])}")
     fix = proposal.get("fix") or {}
     lines.append("fix:")
@@ -106,7 +122,9 @@ def rule_yaml(rule_id: str, proposal: dict[str, Any], *, source: str) -> str:
 
 def _indent_docstring(text: str) -> str:
     body = text.strip("\n")
-    return "\n".join(("    " + line) if line.strip() else "" for line in body.splitlines())
+    return "\n".join(
+        ("    " + line) if line.strip() else "" for line in body.splitlines()
+    )
 
 
 def fixture_py(rule_id: str, proposal: dict[str, Any]) -> str:
@@ -121,7 +139,9 @@ def fixture_py(rule_id: str, proposal: dict[str, Any]) -> str:
         if not any(quote in example or "\\" in example for example in examples):
             break
     else:
-        raise LedgerError("example_bad/example_good must not contain both triple quotes or a backslash")
+        raise LedgerError(
+            "example_bad/example_good must not contain both triple quotes or a backslash"
+        )
     title = proposal["title"].replace("\n", " ")
     return (
         f'"""Fixture for {rule_id}: {title} (proposed).\n\n'
@@ -164,7 +184,9 @@ def propose(
         yaml_path = overlay_dir / f"{rule_id}.yaml"
         py_path = yaml_path.with_suffix(".py")
         try:
-            yaml_path.write_text(rule_yaml(rule_id, proposal, source=str(reply_path)), encoding="utf-8")
+            yaml_path.write_text(
+                rule_yaml(rule_id, proposal, source=str(reply_path)), encoding="utf-8"
+            )
             py_path.write_text(fixture_py(rule_id, proposal), encoding="utf-8")
             rule = load_rule(yaml_path)
             if rule.kind in PARSE_KINDS:
@@ -193,7 +215,9 @@ def _check_fixture_fires(rule) -> None:
             raise LedgerError(f"{rule.id}: the detector fires on example_good")
 
 
-def propose_command(reply: str, *, overlay: str | None = None, ledger: str | None = None) -> None:
+def propose_command(
+    reply: str, *, overlay: str | None = None, ledger: str | None = None
+) -> None:
     """Write a review reply's proposed rules into a ledger overlay as ``status: proposed`` rules.
 
     :param reply: A review.json written by a reviewer (see the packet's INSTRUCTIONS.md).
