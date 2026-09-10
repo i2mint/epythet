@@ -1,139 +1,42 @@
-"""Setup and generate Sphinx docs effortlessly
+"""Beautiful, correct documentation from a Python package, with no boilerplate.
 
-Console Scripts
----------------
+Point epythet at a project and its conventions (README, docstrings, package
+layout, ``pyproject.toml`` metadata) produce the site::
 
-To see available commands
-::
+    epythet quickstart PROJECT_DIR --ignore tests/ scrap/ examples/
 
-    epythet --help
+which writes ``PROJECT_DIR/docsrc/_build/html/``: a landing page that *is* the
+README, a nested API tree, a light/dark theme with an accent derived from the
+package name, and agent-facing twins (``llms.txt``, a ``.md`` per page, a flat
+``<package>.md``, ``objects.inv``).
 
-Quickstart
-----------
-As easy as 1, 2, 3
+The same, from Python::
 
-Prequisite
-==========
-Check your ``PROJECT_DIR/setup.cfg`` contains::
+    from epythet import quickstart
+    quickstart(PROJECT_DIR, ignore=["tests/"])
 
-    [metadata]
-    name = epythet
-    version = 0.0.27
-    author = Jane Doe
-    copyright = 2020, Jane Doe  # optional; omit for no copyright line
-    display_name = Epythet
+Or step by step: :func:`make_docsrc` writes ``docsrc/`` (a two-line ``conf.py``
+shim and ``index.md``), :func:`make` runs Sphinx (``html`` by default). All
+configuration lives in ``[tool.epythet]`` of ``pyproject.toml``; see
+:mod:`epythet.config` for the keys and :mod:`epythet.themes` for the themes.
 
-For graphviz support:
+Rendering fixes for common docstring slips (a doctest glued to the prose above
+it, a Markdown fence, ``Returns: text`` on one line, a stray ``*args``) are
+applied at build time by :mod:`epythet.normalizer`, so existing docstrings
+render correctly without edits.
 
-For MacOS::
-
-    brew install graphviz
-
-For Ubuntu::
-
-    sudo apt-get install graphviz
-
-For Windows::
-
-    Install windows package from: https://graphviz.gitlab.io/_pages/Download/Download_windows.html
-    Add C:\\Program Files (x86)\\Graphviz2.38\bin to User path
-    Add C:\\Program Files (x86)\\Graphviz2.38\bin\\dot.exe to System Path
-
-3-in-1 Quickstart
-=================
-
-Run the three following steps in one go
-
-Command Line::
-
-    epythet quickstart PROJECT_DIR
-
-View by opening ``PROJECT_DIR/docsrc/_build/html/index.html``
-
-
-1. Setup Sphinx docsrc
-======================
-One time setup to create docsrc folder with Sphinx docs config and makefile.  Commit docsrc into your git repo.
-
-Python::
-
-    from epythet.setup_docsrc import make_docsrc
-    make_docsrc(PROJECT_DIR)
-
-Command Line::
-
-    epythet make-docsrc PROJECT_DIR
-
-2. Generate module docs
-=======================
-Generate rst docs for all .py modules in your package.  Use make_autodocs each time there is a new .py file added.
-These rst files generated in the docsrc folder should also be commited into your git repo.
-
-Python::
-
-    from epythet.autogen import make_autodocs
-    make_autodocs(PROJECT_DIR)
-
-Command Line::
-
-    epythet make-autodocs PROJECT_DIR
-
-3. Compile docs
-===============
-Compile generated rst docs with Sphinx makefile.  Use this each time you make changes to your .py files or .rst files.
-
-Python::
-
-    from epythet.call_make import make
-    make(PROJECT_DIR, 'html')
-
-Command Line::
-
-    epythet make PROJECT_DIR html
-
-View by opening ``PROJECT_DIR/docsrc/_build/html/index.html``
-
-Github Pages
-------------
-
-Go to your repo settings and set GitHub Pages site to build from the ``/docs`` folder in the ``master`` branch.
-That is:
-- Go to {github_repo}/settings
-- Scroll down to "GitHub" Pages section.
-- For epythet, the settings look like this:
-
-.. image:: https://user-images.githubusercontent.com/1906276/113177929-e71d9e80-9202-11eb-918e-1f7421dff06f.png
-  :width: 750
-  :alt: GithubPagesSetup
-
-More detailed instructions `here <https://docs.github.com/en/github/working-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site>`_
-
-Github will tell you where it will be published.
-In this case, the site is published at https://i2mint.github.io/epythet/
-
-Compile docs for github
-::
-
-    cd PROJECT_DIR/docsrc
-    make github
-
-Push generated ``PROJECT_DIR/docs`` to ``master`` branch
-
-Editing and Customizing Docs
-----------------------------
-
-You can add RST documentation directly in the source files.
-`This source file for example <https://github.com/i2mint/epythet/blob/master/epythet/__init__.py>`_.
-
+GitHub Pages helpers (:func:`check_pages_setup`, :func:`enable_pages`) and
+docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,
+:func:`repair_package`) live in :mod:`epythet.tools`.
 """
 
-from pathlib import Path
-
-_STATIC_FILES = Path(__file__).absolute().parent / "_static"
-
-from epythet.autogen import make_autodocs
-from epythet.setup_docsrc import make_docsrc
-from epythet.call_make import make
+from epythet.config import DocsConfig, load_config
+from epythet.confgen import sphinx_settings
+from epythet.scaffold import make_docsrc, make_autodocs, scaffold
+from epythet.build import make, build
+from epythet.normalizer import normalize_docstring, normalize_text
+from epythet.themes import accent_for, choose_theme, resolve_theme, THEMES
+from epythet.agent_outputs import write_aggregates
 
 from epythet.tools import (
     repair_package,
@@ -151,3 +54,14 @@ from contextlib import suppress
 
 with suppress(ImportError, ModuleNotFoundError):
     from epythet.tools import published_doc_diagnosis_df
+
+
+def quickstart(project_dir, *, ignore=None):
+    """Scaffold ``docsrc`` and build the HTML site; returns the output directory.
+
+    :param project_dir: the project root
+    :param ignore: path substrings to skip (default: ``[tool.epythet] ignore``)
+    """
+    from epythet.cli import quickstart as _quickstart
+
+    return _quickstart(project_dir, ignore=ignore)

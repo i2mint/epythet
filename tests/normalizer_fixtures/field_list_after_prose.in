@@ -1,0 +1,3 @@
+Check the name.
+:param s: a string
+:return: True iff valid

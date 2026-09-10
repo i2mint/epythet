@@ -9,6 +9,11 @@ captured from the previous ``argh`` implementation *before* the migration to
 decision to change the published CLI.
 
 The single most load-bearing case is :func:`test_ignore_with_zero_values`.
+
+v2 (0.2.0) deliberately changed two things, and the goldens were updated with
+that decision: ``make-docsrc`` gained ``--ignore``, and ``quickstart`` now
+calls one orchestrator (``load_config`` -> ``scaffold`` -> ``build``) instead of
+the three legacy functions.
 """
 
 import subprocess
@@ -56,7 +61,9 @@ EXPECTED_USAGE = {
         "usage: epythet [-h] "
         "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages} ..."
     ),
-    ("make-docsrc",): "usage: epythet make-docsrc [-h] [-v] project-dir",
+    (
+        "make-docsrc",
+    ): "usage: epythet make-docsrc [-h] [-v] [-i [IGNORE ...]] project-dir",
     ("make-autodocs",): (
         "usage: epythet make-autodocs [-h] [-o OUTPUT_DIRNAME] [-s] "
         "[-d DOCSRC_DIR] [-i [IGNORE ...]] project-dir"
@@ -132,11 +139,12 @@ def test_make_autodocs_ignore_with_zero_values():
     assert ns.ignore == []
 
 
-def test_action_invocation_reaches_the_function_with_empty_ignore():
-    """End-to-end: the action's argv reaches ``quickstart`` with ``ignore=[]``.
+def test_action_invocation_reaches_the_build_with_default_ignore():
+    """End-to-end: the action's argv reaches the orchestrator with ``ignore=[]``.
 
-    Runs the real dispatch path in a subprocess with the three side-effecting
-    steps replaced by recorders, so no Sphinx build happens.
+    An empty ``ignore`` means "use the configured default", so no override is
+    forwarded to the build. Runs the real dispatch path in a subprocess with the
+    three side-effecting steps replaced by recorders, so no Sphinx build happens.
     """
     program = textwrap.dedent(
         """
@@ -144,16 +152,16 @@ def test_action_invocation_reaches_the_function_with_empty_ignore():
         import epythet.cli as cli
 
         calls = {}
-        cli.make_docsrc = lambda *a, **k: calls.__setitem__('make_docsrc', (a, k))
-        cli.make_autodocs = lambda *a, **k: calls.__setitem__('make_autodocs', (a, k))
-        cli.make = lambda *a, **k: calls.__setitem__('make', (a, k))
+        cli.load_config = lambda d, **k: calls.__setitem__('load_config', (d, k)) or 'CFG'
+        cli.scaffold = lambda cfg, **k: calls.__setitem__('scaffold', (cfg, k))
+        cli.build = lambda cfg, target, **k: calls.__setitem__('build', (cfg, target, k))
 
         sys.argv = ['epythet', 'quickstart', '.', '--ignore']
         try:
             cli.epythet_cli()
         except SystemExit as e:
             assert not e.code, f'exited {e.code}'
-        print(json.dumps({k: [list(v[0]), v[1]] for k, v in calls.items()}))
+        print(json.dumps(calls))
         """
     )
     result = subprocess.run(
@@ -163,8 +171,42 @@ def test_action_invocation_reaches_the_function_with_empty_ignore():
     import json
 
     calls = json.loads(result.stdout)
-    assert calls["make_autodocs"][1]["ignore"] == []
-    assert calls["make"][0] == [".", "html"]
+    assert calls["load_config"] == [".", {}]
+    assert calls["scaffold"] == ["CFG", {"verbose": True}]
+    assert calls["build"] == ["CFG", "html", {"overrides": {}}]
+
+
+def test_explicit_ignore_is_forwarded_as_an_override():
+    program = textwrap.dedent(
+        """
+        import sys, json
+        import epythet.cli as cli
+
+        calls = {}
+        cli.load_config = lambda d, **k: calls.__setitem__('load_config', (d, k)) or 'CFG'
+        cli.scaffold = lambda cfg, **k: None
+        cli.build = lambda cfg, target, **k: calls.__setitem__('build', (cfg, target, k))
+        sys.argv = ['epythet', 'quickstart', '.', '--ignore', 'tests/', 'scrap/']
+        try:
+            cli.epythet_cli()
+        except SystemExit as e:
+            assert not e.code
+        print(json.dumps(calls))
+        """
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", program], capture_output=True, text=True, timeout=60
+    )
+    assert result.returncode == 0, result.stderr
+    import json
+
+    calls = json.loads(result.stdout)
+    assert calls["load_config"] == [".", {"ignore": ["tests/", "scrap/"]}]
+    assert calls["build"] == [
+        "CFG",
+        "html",
+        {"overrides": {"ignore": ["tests/", "scrap/"]}},
+    ]
 
 
 # --------------------------------------------------------------------------

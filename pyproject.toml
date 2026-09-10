@@ -4,22 +4,26 @@ build-backend = "hatchling.build"
 
 [project]
 name = "epythet"
-version = "0.1.17"
-description = "Tools for documentation and packaging"
+version = "0.2.0"
+description = "Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages"
 readme = "README.md"
-requires-python = ">=3.10"
-keywords = ["documentation", "publishing"]
+requires-python = ">=3.11"
+keywords = ["documentation", "sphinx", "github-pages", "llms.txt", "publishing"]
 authors = [{ email = "andie.phan@analog.com" }]
 dependencies = [
-    "Sphinx>=3.3.1",
-    "myst_parser>=0.15.2",
+    "sphinx>=9,<10",
+    "myst-parser>=5.1,<6",
+    "sphinx-autoapi>=3.8,<4",
+    "sphinx-autodoc-typehints>=3",
+    "sphinx-copybutton>=0.5",
+    "sphinxcontrib-mermaid>=1",
+    "sphinx-llm>=1,<2",
+    "sphinx-markdown-builder>=0.6",
+    "furo>=2024",
+    "shibuya>=2025",
+    "pydata-sphinx-theme>=0.16",
+    "sphinxawesome-theme>=5",
     "cw>=0.1.1,<0.2",
-    "commonmark>=0.9.1",
-    "sphinx-toggleprompt>=0.0.5",
-    "sphinx-copybutton>=0.4.0",
-    "sphinx-rtd-theme>=1.0.0",
-    "tomli",
-    "dol",
     "requests",
 ]
 
@@ -31,14 +35,16 @@ Homepage = "https://github.com/i2mint/epythet"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov>=4.0", "hubcap", "pandas", "ruff>=0.1.0"]
-docs = ["sphinx>=6.0", "sphinx-rtd-theme>=1.0"]
+docs = []
+themes = ["sphinx-book-theme>=1.1", "sphinx-rtd-theme>=3"]
+pdf = ["playwright>=1.40"]
 
 [project.scripts]
 epythet = "epythet.cli:epythet_cli"
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py311"
 exclude = [
     "**/*.ipynb",
     ".git",
@@ -61,12 +67,15 @@ convention = "google"
 "**/tests/*" = ["D"]
 "**/examples/*" = ["D"]
 "**/scrap/*" = ["D"]
-"**/_static/*" = ["D"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["tests"]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
+
+[tool.epythet]
+# epythet/ledger holds rule fixtures (.py files that are not modules to document)
+ignore = ["tests/", "scrap/", "examples/", "ledger/"]
 
 [tool.wads.ci]
 project_name = ""
@@ -95,19 +104,19 @@ enabled = false
 enabled = false
 
 [tool.wads.ci.testing]
-python_versions = ["3.10", "3.12"]
+python_versions = ["3.11", "3.12"]
 pytest_args = ["-v", "--tb=short"]
 coverage_enabled = true
 coverage_threshold = 0
 coverage_report_format = ["term", "xml"]
-exclude_paths = ["examples", "scrap", "_static", "epythet/_static"]
+exclude_paths = ["examples", "scrap"]
 test_on_windows = true
 
 [tool.wads.ci.metrics]
 enabled = true
 config_path = ".github/umpyre-config.yml"
 storage_branch = "code-metrics"
-python_version = "3.10"
+python_version = "3.11"
 force_run = false
 
 [tool.wads.ci.build]

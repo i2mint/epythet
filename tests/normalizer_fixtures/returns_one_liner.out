@@ -1,0 +1,4 @@
+Wrap it.
+
+Returns:
+    A subclass of store_cls.

@@ -1,0 +1,7 @@
+Intro.
+
+>>> f(*args, **kwargs)  # comment
+>>> # a comment line
+... x = '```'
+>>> print('## not a heading')
+## not a heading
