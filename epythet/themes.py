@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
@@ -90,6 +91,38 @@ def _gamma_byte(c: float) -> int:
     c = min(1.0, max(0.0, c))
     c = 12.92 * c if c <= 0.0031308 else 1.055 * c ** (1 / 2.4) - 0.055
     return round(min(1.0, max(0.0, c)) * 255)
+
+
+def hex_to_oklch(hex_color: str) -> tuple[float, float, float]:
+    """``(L, C, h)`` in OKLCH for an sRGB hex colour.
+
+    >>> L, C, h = hex_to_oklch(oklch_to_hex(0.5, 0.13, 200))
+    >>> round(L, 2), round(C, 2), round(h)
+    (0.5, 0.13, 200)
+    """
+
+    def linear(v):
+        v /= 255
+        return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+    r, g, b = (linear(v) for v in hex_to_rgb(hex_color))
+    l = (0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b) ** (1 / 3)
+    m = (0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b) ** (1 / 3)
+    s = (0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b) ** (1 / 3)
+    L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s
+    a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s
+    bb = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+    return L, math.hypot(a, bb), math.degrees(math.atan2(bb, a)) % 360
+
+
+def dark_variant(hex_color: str) -> str:
+    """The dark-mode twin of an accent: same hue, lightness lifted to :data:`DARK_L`.
+
+    >>> contrast_ratio(dark_variant("#3661ac"), "#131415") > 7
+    True
+    """
+    _, _, h = hex_to_oklch(hex_color)
+    return oklch_to_hex(DARK_L, ACCENT_C, h)
 
 
 def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
@@ -188,6 +221,8 @@ def _furo_accent(light, dark):
 
 def _css_variables(selector_light, selector_dark, var_names):
     def css(light, dark):
+        if not var_names:
+            return ""
         light_vars = "".join(f"  {v}: {light};\n" for v in var_names)
         dark_vars = "".join(f"  {v}: {dark};\n" for v in var_names)
         return (
@@ -201,13 +236,9 @@ THEMES: dict[str, ThemeSpec] = {
     "furo": ThemeSpec(
         html_theme="furo",
         pip_name="furo",
-        options={
-            "navigation_with_keys": True,
-            "top_of_page_buttons": ["view", "edit"],
-            "source_repository": "{repo_url}",
-            "source_branch": "master",
-            "source_directory": "{docs_dir}/",
-        },
+        # No source_repository/top_of_page_buttons: the API pages are generated
+        # files, so "view/edit this page" links would 404. Add them via theme_options.
+        options={"navigation_with_keys": True},
         accent=_furo_accent,
     ),
     "shibuya": ThemeSpec(
@@ -367,7 +398,7 @@ def resolve_theme(
     name = choose_theme(package_name, theme)
     spec = theme_spec(name)
     if accent:
-        light = dark = accent
+        light, dark = accent, dark_variant(accent)
     else:
         light, dark = accent_for(package_name)
     substitutions = {
@@ -405,10 +436,10 @@ def _fill_placeholders(
 
 def _fill_value(value: Any, values: dict[str, str]) -> Any:
     if isinstance(value, str) and "{" in value:
-        filled = value.format(**values)
-        # A placeholder that resolved to nothing leaves e.g. "/" behind: drop it.
-        stripped = filled.strip("/")
-        return filled if stripped and stripped != value.strip("/{}") else None
+        names = re.findall(r"{(\w+)}", value)
+        if any(not values.get(name) for name in names):
+            return None  # a placeholder with no value: drop the option entirely
+        return value.format(**values)
     if isinstance(value, dict):
         filled = _fill_placeholders(value, values)
         return filled or None

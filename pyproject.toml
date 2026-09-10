@@ -24,6 +24,7 @@ dependencies = [
     "pydata-sphinx-theme>=0.16",
     "sphinxawesome-theme>=5",
     "cw>=0.1.1,<0.2",
+    "dol",
     "requests",
 ]
 

@@ -173,6 +173,14 @@ def test_package_dir_by_convention_src_layout(tmp_path):
     assert find_package_dir(tmp_path, "my-pkg") == tmp_path / "src" / "my_pkg"
 
 
+def test_package_dir_fallback_to_the_single_top_level_package(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "c5-name"\n')
+    for d in ("othername", "tests"):
+        (tmp_path / d).mkdir()
+        (tmp_path / d / "__init__.py").write_text("")
+    assert load_config(tmp_path).package_dir == tmp_path / "othername"
+
+
 def test_package_dir_override(tmp_path):
     (tmp_path / "pyproject.toml").write_text(
         '[project]\nname = "pkg"\n[tool.epythet]\npackage_dir = "lib/pkg"\n'

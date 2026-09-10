@@ -43,14 +43,46 @@ def sphinx_settings(*, description: str = "") -> dict:
 
 def inject_link_relations(app, pagename, templatename, context, doctree):
     """``html-page-context`` hook: advertise the Markdown twin and ``llms.txt``."""
+    context["metatags"] = context.get("metatags", "") + link_relation_tags(pagename)
+
+
+def link_relation_tags(pagename: str) -> str:
+    """The two ``<link>`` tags for a page, with hrefs relative to that page.
+
+    >>> print(link_relation_tags("_autosummary/pkg.mod"))
+    <BLANKLINE>
+    <link rel="alternate" type="text/markdown" href="pkg.mod.html.md">
+    <link rel="describedby" href="../llms.txt" type="text/markdown">
+    """
     depth = pagename.count("/")
     root = "../" * depth
-    metatags = context.get("metatags", "")
-    metatags += (
-        f'\n<link rel="alternate" type="text/markdown" href="{pagename}.html.md">'
+    basename = pagename.rsplit("/", 1)[-1]
+    return (
+        f'\n<link rel="alternate" type="text/markdown" href="{basename}.html.md">'
         f'\n<link rel="describedby" href="{root}llms.txt" type="text/markdown">'
     )
-    context["metatags"] = metatags
+
+
+def inject_link_relations_into_site(html_dir: str | Path) -> int:
+    """Add the link relations to every built page that has a Markdown twin but no tag.
+
+    Themes that do not render Sphinx's ``metatags`` block (shibuya) get nothing
+    from the ``html-page-context`` hook; this post-build pass covers them.
+    Returns the number of files changed.
+    """
+    html_dir = Path(html_dir)
+    changed = 0
+    for page in html_dir.rglob("*.html"):
+        if not page.with_name(page.name + ".md").is_file():
+            continue
+        text = page.read_text(encoding="utf-8")
+        if 'type="text/markdown"' in text or "</head>" not in text:
+            continue
+        pagename = page.relative_to(html_dir).with_suffix("").as_posix()
+        text = text.replace("</head>", link_relation_tags(pagename) + "\n</head>", 1)
+        page.write_text(text, encoding="utf-8")
+        changed += 1
+    return changed
 
 
 def write_aggregates(

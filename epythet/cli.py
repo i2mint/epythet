@@ -5,15 +5,11 @@
 and writes it to ``PROJECT_DIR/docsrc/_build/html``.
 """
 
-from pathlib import Path
-
 import cw
 
 from epythet.build import build, make
 from epythet.config import load_config
 from epythet.scaffold import make_autodocs, make_docsrc, scaffold
-
-_STATIC_FILES = Path(__file__).absolute().parent / "_static"
 
 
 def quickstart(project_dir, *, ignore: list[str] = None):

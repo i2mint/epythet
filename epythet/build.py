@@ -19,7 +19,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from epythet.agent_outputs import write_aggregates
+from epythet.agent_outputs import inject_link_relations_into_site, write_aggregates
 from epythet.config import DocsConfig, load_config
 
 BUILD_DIRNAME = "_build"
@@ -90,5 +90,6 @@ def build(
             f"(sources: {docsrc})"
         )
     if target == "html" and config.agent_outputs:
+        inject_link_relations_into_site(outdir)
         write_aggregates(outdir, package_name=config.name, aggregates=config.aggregates)
     return outdir

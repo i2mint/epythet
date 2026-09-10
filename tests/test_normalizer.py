@@ -73,3 +73,17 @@ def test_sphinx_hook_rewrites_in_place_and_ignores_options():
 def test_custom_rule_set():
     lines = normalize_docstring(["Text", ">>> 1"], rules=[])
     assert lines == ["Text", ">>> 1"]
+
+
+def test_rules_from_conf_may_be_dotted_paths_and_empty_disables():
+    class App:
+        class config:
+            epythet_normalizer_rules = ["epythet.normalizer:escape_unmatched_stars"]
+
+    lines = ["Text *args", ">>> 1"]
+    sphinx_process_docstring(App(), "function", "f", None, None, lines)
+    assert lines == ["Text \\*args", ">>> 1"]  # only the named rule ran
+    App.config.epythet_normalizer_rules = []
+    lines = ["Text", ">>> 1"]
+    sphinx_process_docstring(App(), "function", "f", None, None, lines)
+    assert lines == ["Text", ">>> 1"]

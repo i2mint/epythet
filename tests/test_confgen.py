@@ -80,13 +80,15 @@ def test_theme_options_passthrough_wins():
     assert s["html_theme_options"]["navigation_with_keys"] is False
 
 
-def test_repo_url_reaches_furo_source_buttons():
-    s = sphinx_settings(_cfg(theme="furo", repo_url="https://github.com/org/proj"))
-    opts = s["html_theme_options"]
-    assert opts["source_repository"] == "https://github.com/org/proj"
-    assert opts["source_directory"] == "docsrc/"
-    no_repo = sphinx_settings(_cfg(theme="furo"))["html_theme_options"]
-    assert "source_repository" not in no_repo
+def test_repo_url_reaches_theme_options_and_is_dropped_when_empty():
+    s = sphinx_settings(_cfg(theme="shibuya", repo_url="https://github.com/org/proj"))
+    assert s["html_theme_options"]["github_url"] == "https://github.com/org/proj"
+    no_repo = sphinx_settings(_cfg(theme="shibuya"))["html_theme_options"]
+    assert "github_url" not in no_repo
+    furo = sphinx_settings(_cfg(theme="furo", repo_url="https://github.com/org/proj"))
+    assert (
+        "source_repository" not in furo["html_theme_options"]
+    )  # generated pages would 404
 
 
 # -- themes -----------------------------------------------------------------
@@ -141,6 +143,8 @@ def test_accent_override_and_mode_per_theme():
         furo.html_theme_options["light_css_variables"]["color-brand-primary"]
         == "#3661ac"
     )
+    dark = furo.html_theme_options["dark_css_variables"]["color-brand-primary"]
+    assert dark != "#3661ac" and contrast_ratio(dark, "#131415") >= 7
     shibuya = resolve_theme("x", theme="shibuya", accent="#3661ac", mode="dark")
     assert shibuya.html_theme_options["accent_color"] == "indigo"
     assert shibuya.html_theme_options["color_mode"] == "dark"
@@ -153,4 +157,5 @@ def test_accent_override_and_mode_per_theme():
 
 def test_css_file_only_when_theme_needs_it():
     assert sphinx_settings(_cfg(theme="furo"))["html_css_files"] == []
+    assert sphinx_settings(_cfg(theme="alabaster"))["html_css_files"] == []
     assert sphinx_settings(_cfg(theme="pydata"))["html_css_files"] == ["epythet.css"]

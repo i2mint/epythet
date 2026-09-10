@@ -118,8 +118,8 @@ def line_contexts(lines: Sequence[str]) -> list[str]:
     in_fence = False
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if block == DOCTEST and stripped and indent_of(line) < block_indent:
-            block = None  # doctest output cannot be shallower than its prompt
+        if block is not None and stripped and indent_of(line) < block_indent:
+            block = None  # a line shallower than the block's marker ends the block
         if in_fence:
             contexts.append(FENCE)
             if stripped.startswith("```"):
@@ -157,10 +157,14 @@ def line_contexts(lines: Sequence[str]) -> list[str]:
             continue
         if _BULLET_RE.match(line):
             contexts.append(LIST)
+            if block != LIST:
+                block_indent = indent_of(line)
             block = LIST
             continue
         if _FIELD_RE.match(line):
             contexts.append(FIELD)
+            if block != FIELD:
+                block_indent = indent_of(line)
             block = FIELD
             continue
         if block in (LIST, FIELD):
@@ -237,6 +241,11 @@ def fix_short_underlines(lines: list[str]) -> list[str]:
             continue
         if i >= 2 and lines[i - 2].strip() and not _UNDERLINE_RE.match(lines[i - 2]):
             continue  # a paragraph line, not a title
+        if (
+            title.rstrip().endswith((".", "!", "?", ",", ";", ":"))
+            or len(lines[i].strip()) < 4
+        ):
+            continue  # a sentence over a Markdown rule, not a title
         width = len(title.rstrip())
         if len(lines[i].rstrip()) < width:
             out[i] = " " * indent_of(title) + m.group(1) * (width - indent_of(title))
@@ -535,7 +544,7 @@ def reflow_list_continuations(lines: list[str]) -> list[str]:
                 marker_indent = None
             out.append(line)
             continue
-        if indent_of(line) > marker_indent:
+        if indent_of(line) != marker_indent:
             out.append(line)
             continue
         stripped = line.strip()
@@ -594,15 +603,39 @@ def sphinx_process_docstring(app, what, name, obj, options, lines):
     deprecated in Sphinx 9). Register with ``priority=400`` so this runs before
     napoleon (priority 500) sees the docstring.
     """
-    rules = getattr(app.config, "epythet_normalizer_rules", None) or DEFAULT_RULES
+    configured = getattr(app.config, "epythet_normalizer_rules", None)
+    rules = DEFAULT_RULES if configured is None else resolve_rules(configured)
     lines[:] = normalize_docstring(lines, rules=rules)
 
 
+def resolve_rules(rules: Iterable) -> tuple[Rule, ...]:
+    """Accept rule functions or dotted import paths (``"pkg.mod:func"`` or ``"pkg.mod.func"``).
+
+    Dotted paths are what a ``conf.py`` can hold: Sphinx cannot pickle functions
+    in its configuration, and a ledger of autofixable rules ships names.
+
+    >>> [r.__name__ for r in resolve_rules(["epythet.normalizer.fences_to_code_blocks"])]
+    ['fences_to_code_blocks']
+    """
+    import importlib
+
+    resolved = []
+    for rule in rules:
+        if isinstance(rule, str):
+            module_name, _, attr = rule.replace(":", ".").rpartition(".")
+            rule = getattr(importlib.import_module(module_name), attr)
+        resolved.append(rule)
+    return tuple(resolved)
+
+
 def setup(app):
-    """Sphinx extension entry point: ``extensions = ["epythet.normalizer"]``."""
-    app.add_config_value("epythet_normalizer_rules", None, "env")
-    app.connect("autodoc-process-docstring", sphinx_process_docstring, priority=400)
-    return {"version": "0.2.0", "parallel_read_safe": True, "parallel_write_safe": True}
+    """Sphinx extension entry point: ``extensions = ["epythet.normalizer"]``.
+
+    ``epythet.sphinx_ext`` registers the same hook; listing both is harmless.
+    """
+    from epythet.sphinx_ext import setup as _full_setup
+
+    return _full_setup(app)
 
 
 # --------------------------------------------------------------------------

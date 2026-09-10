@@ -32,7 +32,7 @@ docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,
 
 from epythet.config import DocsConfig, load_config
 from epythet.confgen import sphinx_settings
-from epythet.scaffold import make_docsrc, make_autodocs, scaffold
+from epythet.scaffold import make_docsrc, make_autodocs, scaffold, PageSpec
 from epythet.build import make, build
 from epythet.normalizer import normalize_docstring, normalize_text
 from epythet.themes import accent_for, choose_theme, resolve_theme, THEMES

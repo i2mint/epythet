@@ -63,9 +63,9 @@ announcement = "v2 is in beta"
 
 `setup.cfg` projects put the same keys under `[metadata]` (`display_name`, `copyright`) or a `[tool.epythet]` section. When both files exist, `pyproject.toml` wins.
 
-**Themes.** `theme = "auto"` (the default) hashes the package name into a curated pool (furo, shibuya, pydata-sphinx-theme, sphinxawesome-theme) so a fleet of packages gets variety while every package keeps the same look across rebuilds. The pool's themes are installed with epythet; `sphinx-book-theme` and `sphinx_rtd_theme` come with `pip install "epythet[themes]"`. The accent is one hue per package, at a fixed perceptual lightness, so every possible colour clears WCAG AA against white and AAA on a dark background.
+**Themes.** `theme = "auto"` (the default) hashes the package name into a curated pool (furo, shibuya, pydata-sphinx-theme, sphinxawesome-theme) so a fleet of packages gets variety while every package keeps the same look across rebuilds. The pool's themes are installed with epythet; `sphinx-book-theme` and `sphinx_rtd_theme` come with `pip install "epythet[themes]"`. The accent is one hue per package, at a fixed perceptual lightness, so every possible colour clears WCAG AA against white and AAA on a dark background; an explicit `accent` is used as given in light mode and lifted to the same dark-mode lightness for dark mode.
 
-**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import: use it when the package cannot be imported in CI. Both give the nested tree; both run the normalizer.
+**API generator.** `autosummary` (Sphinx built-in) imports your package, so aliases, `functools.partial` objects and other assigned names keep the docstring of what they point to. `autoapi` parses statically and needs no import: use it when the package cannot be imported in CI. Both give the nested tree; both run the normalizer. Under `autosummary`, `ignore` keeps the ignored modules out of the tree, but Python still imports them once while discovering the package.
 
 **PDF aggregate.** `aggregates = ["md", "pdf"]` renders `<package>.pdf` from the Markdown aggregate with Playwright (`pip install "epythet[pdf]" && playwright install chromium`) or WeasyPrint, whichever is installed. No LaTeX.
 
@@ -79,7 +79,7 @@ from epythet.sphinx_conf import *  # noqa: F401,F403
 
 and an `index.md` that includes your README and a hidden toctree for the API pages. That is the whole scaffold; the API pages and the agent outputs are generated at build time. You do not need to commit `docsrc/` (CI regenerates it), but if you do, the shim is the single source of truth: put project-specific Sphinx overrides below the import and they win over the generated values. A hand-written `conf.py` without the import is never overwritten.
 
-`epythet make PROJECT_DIR [html|doctest|markdown|github|clean]` runs `sphinx-build` with the current interpreter; there is no Makefile. `github` builds HTML and copies it into `PROJECT_DIR/docs`.
+`epythet make PROJECT_DIR [html|doctest|markdown|github|clean]` runs `sphinx-build` with the current interpreter; there is no Makefile. `github` builds HTML and copies it into `PROJECT_DIR/docs`. `doctest` is Sphinx's doctest builder, which runs examples without the module's namespace; for docstring doctests use `pytest --doctest-modules`.
 
 # For agents
 
@@ -197,7 +197,7 @@ epythet 0.2 keeps the contract the fleet depends on and changes what is behind i
 - `make_docsrc`, `make_autodocs`, `make` and `quickstart` are still importable from `epythet` (and from `epythet.setup_docsrc` / `epythet.call_make`); `make_autodocs` is now a no-op alias of `make_docsrc`, since API pages are generated at build time.
 - `epythet.config_parser.parse_config` keeps its 5-tuple `(name, copyright, author, version, display_name)`, so a committed 0.1.x `docsrc/conf.py` keeps working. It now resolves the project directory whatever path it is given, so `pyproject.toml` wins over a stale `setup.cfg` (0.1.x silently preferred `setup.cfg`).
 - A committed 0.1.x `docsrc/` (template `conf.py`, `index.rst`, `table_of_contents.rst`, `module_docs/`, Makefile) is recognised and replaced by the new scaffold on the next `quickstart`.
-- Dropped: the `sphinx_rtd_theme` default (furo-class themes replace it), `sphinx-toggleprompt` (copybutton already strips prompts), `commonmark`, and the `Makefile`. Requires Python 3.11+, Sphinx 9, myst-parser 5.1.
+- Dropped: the `sphinx_rtd_theme` default (furo-class themes replace it), `sphinx-toggleprompt` (copybutton already strips prompts), `commonmark`, and the `Makefile`. Requires Python 3.11+, Sphinx 9, myst-parser 5.1; a project that pins `sphinx<9` or `docutils<0.22` in its own dependencies will conflict with epythet 0.2 in the same environment.
 - URLs of API pages changed (`module_docs/<pkg>/<mod>.html` is now `_autosummary/<pkg>.<mod>.html`); `objects.inv` keeps every symbol resolvable across sites.
 
 The publish action pins `epythet<0.2` until v2 is validated across the fleet; see the [v2 decision record](https://github.com/i2mint/epythet/discussions/15) and the [tracking issue](https://github.com/i2mint/epythet/issues/16).

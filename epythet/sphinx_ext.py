@@ -46,15 +46,36 @@ def _link_relations_if_enabled(app, pagename, templatename, context, doctree):
         inject_link_relations(app, pagename, templatename, context, doctree)
 
 
+def _version() -> str:
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        return version("epythet")
+    except PackageNotFoundError:  # pragma: no cover
+        return "0"
+
+
 def setup(app):
-    """Register epythet's hooks and configuration values."""
+    """Register epythet's hooks and configuration values (idempotent)."""
+    if getattr(app, "_epythet_setup_done", False):
+        return {
+            "version": _version(),
+            "parallel_read_safe": True,
+            "parallel_write_safe": True,
+        }
+    app._epythet_setup_done = True
     app.add_config_value("epythet_theme_css", "", "html")
     app.add_config_value("epythet_agent_outputs", True, "html")
-    app.add_config_value("epythet_normalizer_rules", None, "env")
+    # rebuild "": rule lists hold functions or dotted paths; never pickled into the env
+    app.add_config_value("epythet_normalizer_rules", None, "")
     app.connect("autodoc-process-docstring", sphinx_process_docstring, priority=400)
     app.connect("builder-inited", write_theme_css)
     app.connect("html-page-context", _link_relations_if_enabled)
     logging.getLogger("sphinx.sphinx.ext.autosummary").addFilter(
         _DropIgnoredModuleWarnings()
     )
-    return {"version": "0.2.0", "parallel_read_safe": True, "parallel_write_safe": True}
+    return {
+        "version": _version(),
+        "parallel_read_safe": True,
+        "parallel_write_safe": True,
+    }

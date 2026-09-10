@@ -154,6 +154,7 @@ def _api_generator_settings(config: DocsConfig) -> dict[str, Any]:
         "autosummary_generate": True,
         "autosummary_ignore_module_all": False,
         "autodoc_default_options": {"members": True, "show-inheritance": True},
+        "templates_path": ["_templates"],  # the ignore-aware module.rst (scaffold)
         "exclude_patterns": [
             f"_autosummary/*{pattern.strip('/').replace('/', '.')}*"
             for pattern in config.ignore

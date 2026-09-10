@@ -67,6 +67,11 @@ DEFAULT_DOCS_DIR = "docsrc"
 #: Directory candidates (relative to the project root) that may hold the package.
 PACKAGE_DIR_CANDIDATES: tuple[str, ...] = ("{name}", "src/{name}")
 
+#: Top-level directories never taken for the package when guessing by convention.
+NON_PACKAGE_DIRS = frozenset(
+    {"tests", "test", "docs", "docsrc", "scrap", "examples", "misc"}
+)
+
 VALID_MODES = ("auto", "light", "dark")
 VALID_API_GENERATORS = ("autosummary", "autoapi")
 VALID_AGGREGATES = ("md", "pdf")
@@ -186,7 +191,15 @@ def find_package_dir(project_dir: str | Path, name: str) -> Path | None:
         path = project_dir / candidate.format(name=module_name)
         if (path / "__init__.py").is_file():
             return path.absolute()
-    return None
+    # Fallback: the one top-level package that is not a conventional non-package dir.
+    found = [
+        d
+        for root in (project_dir, project_dir / "src")
+        if root.is_dir()
+        for d in root.iterdir()
+        if (d / "__init__.py").is_file() and d.name not in NON_PACKAGE_DIRS
+    ]
+    return found[0].absolute() if len(found) == 1 else None
 
 
 def _project_root(path: str | Path) -> Path:
