@@ -72,6 +72,38 @@ def configure_pages(repo, *, branch: str = "gh-pages", path: str = "/"):
         print(f"Failed to enable Pages for {repo_stub}.")
 
 
+def ai_artifacts(project_dir, *, format: str = "table"):
+    """List the AI agent artifacts a project ships (skills, subagents, instruction files).
+
+    Looks where agents and ``gh skill`` look: ``<pkg>/data/skills``, ``skills/``,
+    ``.claude/skills``, ``<pkg>/data/agents``, ``.claude/agents``, ``CLAUDE.md``,
+    ``AGENTS.md``, ``.cursor/rules``, ``.codex``. The same discovery feeds the
+    generated "For AI agents" documentation page.
+
+    :param project_dir: the project root
+    :param format: table (human) or json
+    """
+    from epythet.ai_artifacts import (
+        artifacts_json,
+        artifacts_table,
+        discover_artifacts,
+        repo_stub_for,
+    )
+
+    if format not in ("table", "json"):
+        raise cw.CommandError("--format must be table or json", code=2)
+    try:
+        config = load_config(project_dir)
+        package_dir, repo_stub = config.package_dir, repo_stub_for(config.repo_url)
+    except Exception:  # not a Python project: still list what is there
+        package_dir, repo_stub = None, ""
+    found = discover_artifacts(project_dir, package_dir=package_dir)
+    if format == "json":
+        print(artifacts_json(found))
+    else:
+        print(artifacts_table(found, repo_stub=repo_stub))
+
+
 def _resolve_repo_stub(repo):
     """Resolve a repo argument to an owner/repo slug."""
     if "/" in repo and not repo.startswith("/") and not repo.startswith("."):
@@ -98,6 +130,7 @@ COMMANDS = [
     check_pages,
     configure_pages,
     validate,
+    ai_artifacts,
 ]
 
 

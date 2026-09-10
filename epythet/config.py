@@ -27,6 +27,8 @@ The ``[tool.epythet]`` keys, all optional::
     api_generator = "autosummary" # "autosummary" (imports the package) | "autoapi" (static)
     agent_outputs = true          # llms.txt + .md twins of every page
     aggregates = ["md"]           # flat single-document twins at the site root
+    ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
+    ai_artifacts_template = ""    # project-relative file overriding that page's template
     package_dir = "src/dol"       # default: found by convention
     docs_dir = "docsrc"           # where the Sphinx sources live
 
@@ -105,6 +107,8 @@ class DocsConfig:
     api_generator: str = "autosummary"
     agent_outputs: bool = True
     aggregates: tuple[str, ...] = ("md",)
+    ai_artifacts: bool = True
+    ai_artifacts_template: str = ""
     package_dir: Path | None = None
     docs_dir: str = DEFAULT_DOCS_DIR
 
@@ -261,7 +265,7 @@ def _fields_from_setup_cfg(setup_cfg: Path) -> dict[str, Any]:
 
 
 _LIST_KEYS = ("ignore", "aggregates")
-_BOOL_KEYS = ("agent_outputs",)
+_BOOL_KEYS = ("agent_outputs", "ai_artifacts")
 
 
 def _coerce_tool_fields(tool: dict[str, Any]) -> dict[str, Any]:

@@ -64,14 +64,20 @@ def make_docsrc(project_dir, *, verbose: bool = True, ignore: list[str] = None) 
 
 
 def scaffold(
-    config: DocsConfig, *, verbose: bool = True, pages: Sequence[PageSpec] = ()
+    config: DocsConfig, *, verbose: bool = True, pages: Sequence[PageSpec] | None = None
 ) -> Path:
     """Write the docsrc files for an already-loaded configuration.
 
     :param pages: extra generated pages, written next to ``index.md`` and added
-        to its toctree after the API entry (the seam for e.g. a "For AI agents"
-        page).
+        to its toctree after the API entry. ``None`` (the default) means the
+        conventional pages, i.e. the "For AI agents" page that
+        ``epythet.ai_artifacts.default_pages`` produces when the project has
+        agent artifacts and ``ai_artifacts`` is on; pass ``()`` for none.
     """
+    if pages is None:
+        from epythet.ai_artifacts import default_pages
+
+        pages = default_pages(config)
     if config.package_dir is None:
         raise ConfigError(
             f"Cannot find the package directory for {config.name!r} under "
