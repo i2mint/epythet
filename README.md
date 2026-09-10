@@ -163,8 +163,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "tests/,scrap/,examples/"
           python-version: "3.12"
-          # v2 opt-in until the action's default flips (i2mint/epythet#16)
-          epythet-spec: "epythet>=0.2,<0.3"
 ```
 
 The action installs epythet, installs your project, runs `epythet quickstart . --ignore ...` and pushes `./docsrc/_build/html/` to the `gh-pages` branch.
