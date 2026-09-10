@@ -26,6 +26,7 @@ dependencies = [
     "cw>=0.1.1,<0.2",
     "dol",
     "requests",
+    "pyyaml>=6.0",
 ]
 
 [project.license]

@@ -129,14 +129,19 @@ def resolve_package(package: str | os.PathLike) -> ResolvedPackage:
             project_dir = _find_project_dir(path.parent)
             name, version = _project_metadata(project_dir)
             return ResolvedPackage(path.name, path, project_dir, version)
-        name, version = _project_metadata(path)
-        package_dir = _package_dir_in_project(path, name)
+        project_dir = path if any((path / m).exists() for m in PROJECT_MARKERS) else _find_project_dir(path)
+        name, version = _project_metadata(project_dir)
+        package_dir = _package_dir_in_project(project_dir, name)
+        if package_dir is None and path != project_dir:
+            # e.g. a ``src/`` entry of a manifest: the one package directory inside it
+            inside = [p for p in path.iterdir() if (p / "__init__.py").exists()]
+            package_dir = inside[0] if len(inside) == 1 else None
         if package_dir is None:
             raise FileNotFoundError(
                 f"{path} is neither a package (no __init__.py) nor a project with a "
                 f"package directory I can find (tried {name or path.name!r} and src/)"
             )
-        return ResolvedPackage(package_dir.name, package_dir, path, version)
+        return ResolvedPackage(package_dir.name, package_dir, project_dir, version)
     spec = importlib.util.find_spec(str(package)) if "/" not in str(package) else None
     if spec is None or not spec.submodule_search_locations:
         raise FileNotFoundError(

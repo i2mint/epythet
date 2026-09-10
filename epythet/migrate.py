@@ -138,17 +138,40 @@ def convert_fields(region: str, *, to: str = "google") -> str | None:
     if _facts(back) != _facts(parsed):
         return None
     body = composed[len("Summary."):].lstrip("\n")
+    # docstring_parser composes an untyped return as ``    : text``; drop the stray colon.
+    body = re.sub(r"^(\s+): (?=\S)", r"\1", body, flags=re.M)
     return body.rstrip("\n")
 
 
+def field_regions(lines: Sequence[str]) -> list[tuple[int, int]]:
+    """Every field block of a docstring, in order.
+
+    >>> field_regions([":param x: x", "", "prose", "", ":returns: y"])
+    [(0, 1), (4, 5)]
+    """
+    regions: list[tuple[int, int]] = []
+    offset = 0
+    while True:
+        region = field_region(lines[offset:])
+        if region is None:
+            return regions
+        start, end = region[0] + offset, region[1] + offset
+        regions.append((start, end))
+        offset = end
+
+
 def rst_fields_to_sections(to: str = "google") -> N.Rule:
-    """A normalizer-shaped rule (``lines -> lines``) converting the docstring's field block."""
+    """A normalizer-shaped rule (``lines -> lines``) converting the docstring's field block.
+
+    A docstring with more than one field block is left alone: converting one
+    would leave a mixed-style docstring behind.
+    """
 
     def rule(lines: list[str]) -> list[str]:
-        region = field_region(lines)
-        if region is None:
+        regions = field_regions(lines)
+        if len(regions) != 1:
             return lines
-        start, end = region
+        start, end = regions[0]
         block = lines[start:end]
         while block and not block[-1].strip():
             block.pop()
@@ -205,25 +228,29 @@ def migrate_style(
         for edit in file.edits:
             if edit.applied or edit.reason:
                 continue
-            unconvertible = _unconvertible_fields(edit.before)
-            if unconvertible:
-                edit.reason = f"fields that do not round-trip: {', '.join(unconvertible)}"
+            edit.reason = _why_not_converted(edit.before)
     return report
 
 
-def _unconvertible_fields(literal: str) -> list[str]:
-    """Field names in a docstring literal's first field block that :func:`convert_fields` refuses."""
+def _why_not_converted(literal: str) -> str | None:
+    """Why a docstring literal with fields was left alone, or ``None`` when it has no fields."""
     from epythet.repair import split_literal
 
     parts = split_literal(literal)
     if parts is None:
-        return []
+        return None
     lines = parts[2].split("\n")
-    region = field_region(lines)
-    if region is None:
-        return []
-    names = {_field_name(line) for line in lines[region[0] : region[1]] if _field_name(line)}
-    return sorted(names - CONVERTIBLE_FIELDS)
+    regions = field_regions(lines)
+    if not regions:
+        return None
+    if len(regions) > 1:
+        return f"{len(regions)} separate field blocks; converting one would mix styles"
+    start, end = regions[0]
+    names = {_field_name(line) for line in lines[start:end] if _field_name(line)}
+    unconvertible = sorted(names - CONVERTIBLE_FIELDS)
+    if unconvertible:
+        return f"fields that do not round-trip: {', '.join(unconvertible)}"
+    return "the converted section did not describe the same parameters, return and raises"
 
 
 def migrate_style_command(

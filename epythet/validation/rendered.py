@@ -61,7 +61,8 @@ class RenderHit:
     object: str | None = None
 
 
-RenderDetector = Callable[[Path, Path], list[RenderHit]]
+#: A detector takes ``{builder: outdir}`` and the Sphinx source dir.
+RenderDetector = Callable[[dict[str, Path], Path], list[RenderHit]]
 #: Detector name (as in a rule's ``detector.function``) -> function.
 RENDER_DETECTORS: dict[str, RenderDetector] = {}
 
@@ -172,7 +173,7 @@ def unresolved_xrefs_in(root: ET.Element) -> list[RenderHit]:
     """
     parents = _parents(root)
     hits: list[RenderHit] = []
-    for literal in root.iter("literal"):
+    for literal in (*root.iter("literal"), *root.iter("inline")):
         classes = (literal.get("classes") or "").split()
         if "xref" not in classes:
             continue
@@ -237,6 +238,9 @@ class _LinkCollector(HTMLParser):
         if tag == "a" and attributes.get("name"):
             self.ids.add(attributes["name"])
         href = attributes.get("href") if tag == "a" else None
+        classes = (attributes.get("class") or "").split()
+        if any("skip" in c for c in classes):
+            return  # a theme's skip-to-content link, not a document link
         if href and href.startswith("#") and len(href) > 1:
             self.fragment_hrefs.append(href)
         if tag == "img" and attributes.get("src"):
@@ -483,6 +487,21 @@ def run_render_level(
     notes: list[str] = []
     artifacts = RenderArtifacts()
     docsrc = backend.resolve_docsrc(Path(project_dir)) if hasattr(backend, "resolve_docsrc") else None
+    if not hasattr(backend, "render"):
+        return (
+            [
+                Finding(
+                    rule="NO_RENDER",
+                    severity="warning",
+                    level=RENDER_LEVEL,
+                    message=f"backend {getattr(backend, 'name', type(backend).__name__)!r} cannot render pages; level 2 checked nothing",
+                    detector="render",
+                    tool=getattr(backend, "name", "backend"),
+                )
+            ],
+            notes,
+            artifacts,
+        )
     result = backend.render(Path(project_dir), outdir=Path(outdir))
     if all(code == NO_DOCSRC for code in result.returncodes.values()):
         return (

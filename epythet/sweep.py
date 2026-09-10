@@ -326,7 +326,7 @@ def sweep_command(
     :param ignore: Skip files whose path contains this string (repeat -i for several).
     :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.
     :param no_napoleon: Parse docstrings without napoleon's Google/NumPy pre-processing.
-    :param no_observe: Do not append findings to the observations file.
+    :param no_observe: Do not append findings (or the sweep summary) to the user data dir.
     :param limit: Sweep at most this many packages.
     :param format: table (human) or json (the full result).
     :param top: How many packages the queue shows.
@@ -358,6 +358,7 @@ def sweep_command(
             napoleon=not no_napoleon,
             linters=linters,
             observe=not no_observe,
+            record=not no_observe,
             limit=limit,
             on_package=progress,
         )

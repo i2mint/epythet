@@ -23,8 +23,13 @@ narrow:
   :mod:`doctest`'s own parser); a rewrite that would change one is skipped.
 - Every rewritten docstring is re-validated at level 0.5: a rewrite that
   introduces a finding the original did not have is dropped. With
-  ``write=True`` the doctests of every touched file are run before and after,
-  and a file whose failures went up is restored.
+  ``write=True`` the doctests of every touched file are run before and after
+  (the module is *imported* for that, so its top level runs; pass
+  ``run_doctests=False`` / ``--no-doctests`` for code that must not run), and
+  a file whose failures went up is restored. A module that cannot be imported
+  is written but reported as unverified.
+- Line endings (CRLF), a UTF-8 BOM and tab indentation are preserved; a file
+  is replaced atomically.
 
 Dry run is the default and prints a unified diff; ``write=True`` applies.
 The seam ``applier=`` swaps the rewriting substrate: :func:`apply_span_edits`
@@ -143,13 +148,40 @@ def split_literal(segment: str) -> tuple[str, str, str, str] | None:
     return None
 
 
-def _margin(lines: Sequence[str]) -> int:
-    indents = [N.indent_of(line) for line in lines[1:] if line.strip()]
-    return min(indents) if indents else 0
+def _margin(lines: Sequence[str]) -> str:
+    r"""The whitespace every non-blank line after the first starts with (tabs included).
+
+    >>> _margin(["Summary.", "\t\tone", "\t\t\ttwo", ""])
+    '\t\t'
+    >>> _margin(["one line"])
+    ''
+    """
+    rest = [line for line in lines[1:] if line.strip()]
+    if not rest:
+        return ""
+    margin = rest[0][: len(rest[0]) - len(rest[0].lstrip())]
+    for line in rest[1:]:
+        while not line.startswith(margin):
+            margin = margin[:-1]
+    return margin
 
 
-def _doctest_sources(text: str) -> list[str]:
-    return [example.source for example in doctest.DocTestParser().get_examples(text)]
+def _body_indented(lines: Sequence[str]) -> bool:
+    """Whether every non-blank line after the first is indented (what ``cleandoc`` flattens).
+
+    >>> _body_indented(["Returns:", "    the x"]), _body_indented(["Text", "- one"])
+    (True, False)
+    """
+    rest = [line for line in lines[1:] if line.strip()]
+    return bool(rest) and all(N.indent_of(line) > 0 for line in rest)
+
+
+def _doctest_sources(text: str) -> list[str] | None:
+    """Doctest example sources, or ``None`` when :mod:`doctest` cannot parse the text."""
+    try:
+        return [example.source for example in doctest.DocTestParser().get_examples(text)]
+    except ValueError:
+        return None
 
 
 def rewrite_docstring_literal(
@@ -175,7 +207,10 @@ def rewrite_docstring_literal(
     if len(lines) > 1 and not lines[-1].strip():
         trailing = lines.pop()  # the closing quote's own line: keep its indentation
     margin = _margin(lines)
-    dedented = [lines[0], *[line[margin:] if line.strip() else "" for line in lines[1:]]]
+    dedented = [lines[0], *[line[len(margin):] if line.strip() else "" for line in lines[1:]]]
+    before_sources = _doctest_sources("\n".join(dedented))
+    if before_sources is None:
+        return segment, "doctest could not parse the docstring; fix the doctest first"
     normalized = N.normalize_docstring(dedented, rules=rules)
     while normalized and not normalized[-1].strip() and trailing is not None:
         normalized.pop()
@@ -183,10 +218,17 @@ def rewrite_docstring_literal(
         return segment, None
     if len(quote) == 1 and (len(normalized) > 1 or "\n" in normalized[0]):
         return segment, "single-quoted docstring would need a triple-quoted rewrite"
-    if _doctest_sources("\n".join(dedented)) != _doctest_sources("\n".join(normalized)):
+    if _doctest_sources("\n".join(normalized)) != before_sources:
         return segment, "the rewrite would change a doctest's source"
-    pad = " " * margin
-    reindented = [normalized[0], *[(pad + line) if line.strip() else "" for line in normalized[1:]]]
+    reindented = [(margin + line) if line.strip() else "" for line in normalized[1:]]
+    if _body_indented(normalized) and not _body_indented(dedented) and normalized[0].strip():
+        # The rewrite indented everything under the first line (a one-line section
+        # became a header with a body). ``inspect.cleandoc`` strips the common
+        # indentation of the lines after the first, so only the leading-newline
+        # form keeps the body under its header.
+        reindented[:0] = ["", margin + normalized[0].strip()]
+    else:
+        reindented.insert(0, normalized[0])
     if trailing is not None:
         reindented.append(trailing)
     new_body = "\n".join(reindented)
@@ -241,8 +283,12 @@ class FileRepair:
 
     @property
     def refused(self) -> list[DocstringEdit]:
-        """Docstrings left for a hand: a refused rewrite, or findings no rule can fix."""
-        return [e for e in self.edits if e.reason or (e.remaining and not e.applied)]
+        """Docstrings left for a hand: a refused rewrite, or findings no rule fixes.
+
+        A docstring that was rewritten but still has findings counts too, so
+        the number is the same on the dry run, the write, and the run after.
+        """
+        return [e for e in self.edits if e.reason or e.remaining]
 
     def diff(self) -> str:
         """The unified diff of the file, empty when nothing changed."""
@@ -257,9 +303,15 @@ class FileRepair:
 
 
 def _line_offsets(source: str) -> list[int]:
+    """Character offset of the start of each line; ``\\n`` only, as ``ast`` counts lines.
+
+    (``str.splitlines`` would also split on form feeds and U+2028, which the
+    parser does not.)
+    """
     offsets = [0]
-    for line in source.splitlines(keepends=True):
-        offsets.append(offsets[-1] + len(line))
+    for line in source.split("\n")[:-1]:
+        offsets.append(offsets[-1] + len(line) + 1)
+    offsets.append(len(source) + 1)
     return offsets
 
 
@@ -419,21 +471,85 @@ class RepairReport:
         return "".join(f.diff() for f in self.changed)
 
 
+#: Runs a module's doctests by importing it under its dotted name (so relative
+#: imports work) and prints ``failed attempted``; exit 3 when it cannot be imported.
+_DOCTEST_RUNNER = """\
+import doctest, importlib, sys
+try:
+    module = importlib.import_module(sys.argv[1])
+except BaseException as e:
+    print(f"import failed: {type(e).__name__}: {e}", file=sys.stderr)
+    sys.exit(3)
+result = doctest.testmod(module)
+print(result.failed, result.attempted)
+sys.exit(1 if result.failed else 0)
+"""
+IMPORT_FAILED = -1
+
+
+def _module_name(path: Path, project_dir: Path) -> str | None:
+    """``pkg.sub.mod`` for a file under ``project_dir`` (or ``src/``), by its ``__init__`` chain."""
+    path = Path(path).resolve()
+    for root in (Path(project_dir).resolve(), Path(project_dir).resolve() / "src"):
+        try:
+            rel = path.relative_to(root)
+        except ValueError:
+            continue
+        parts = list(rel.with_suffix("").parts)
+        if parts and parts[-1] == "__init__":
+            parts = parts[:-1]
+        if parts and all((root / Path(*parts[: i + 1]) / "__init__.py").exists() for i in range(len(parts) - (0 if rel.name == "__init__.py" else 1))):
+            return ".".join(parts)
+    return None
+
+
 def _doctest_failures(path: Path, *, project_dir: Path) -> tuple[int, int, str]:
-    """``(returncode, failures, tail)`` of ``python -m doctest <file>`` run from the project."""
+    """``(returncode, failures, tail)`` of the file's doctests, run in a subprocess.
+
+    ``failures`` is :data:`IMPORT_FAILED` when the module cannot be imported,
+    which the caller reports as "not verified" rather than as a pass.
+    """
     env = dict(os.environ)
-    env["PYTHONPATH"] = os.pathsep.join(p for p in (str(project_dir), env.get("PYTHONPATH", "")) if p)
-    proc = subprocess.run(
-        [sys.executable, "-m", "doctest", str(path)],
-        cwd=project_dir,
-        env=env,
-        capture_output=True,
-        text=True,
-    )
-    output = proc.stdout + proc.stderr
+    roots = [str(project_dir), str(Path(project_dir) / "src")]
+    env["PYTHONPATH"] = os.pathsep.join(p for p in (*roots, env.get("PYTHONPATH", "")) if p)
+    module = _module_name(path, project_dir)
+    if module is None:
+        command = [sys.executable, "-m", "doctest", str(path)]
+    else:
+        command = [sys.executable, "-c", _DOCTEST_RUNNER, module]
+    proc = subprocess.run(command, cwd=project_dir, env=env, capture_output=True, text=True)
+    output = (proc.stdout + proc.stderr).strip()
+    tail = output.splitlines()[-1] if output else ""
+    if module is not None:
+        if proc.returncode == 3 or "import failed" in output:
+            return proc.returncode, IMPORT_FAILED, tail
+        try:
+            failed, _attempted = proc.stdout.split()[-2:]
+            return proc.returncode, int(failed), tail
+        except (ValueError, IndexError):
+            return proc.returncode, IMPORT_FAILED, tail
     match = _DOCTEST_FAILURES_RE.search(output)
-    failures = int(match.group(1)) if match else (0 if proc.returncode == 0 else -1)
-    return proc.returncode, failures, output.strip().splitlines()[-1] if output.strip() else ""
+    failures = int(match.group(1)) if match else (0 if proc.returncode == 0 else IMPORT_FAILED)
+    return proc.returncode, failures, tail
+
+
+def _read_source(path: Path) -> tuple[str, str, bool]:
+    """``(text with LF newlines, original newline, had_bom)``."""
+    raw = path.read_bytes()
+    bom = raw.startswith(b"\xef\xbb\xbf")
+    text = raw[3:].decode("utf-8") if bom else raw.decode("utf-8")
+    newline = "\r\n" if "\r\n" in text else "\n"
+    return text.replace("\r\n", "\n"), newline, bom
+
+
+def _write_source(path: Path, text: str, *, newline: str, bom: bool) -> None:
+    """Write ``text`` back with the file's own newline and BOM, replacing the file atomically."""
+    data = text.replace("\n", newline).encode("utf-8")
+    if bom:
+        data = b"\xef\xbb\xbf" + data
+    tmp = path.with_name(f".{path.name}.epythet-tmp")
+    tmp.write_bytes(data)
+    os.replace(tmp, path)
 
 
 def _files_under(path: Path, *, ignore: Iterable[str]) -> tuple[Path, list[Path]]:
@@ -443,7 +559,17 @@ def _files_under(path: Path, *, ignore: Iterable[str]) -> tuple[Path, list[Path]
     path = Path(path).expanduser().resolve()
     if path.is_file():
         return _find_project(path.parent), [path]
-    resolved = resolve_package(path)
+    try:
+        resolved = resolve_package(path)
+    except FileNotFoundError:
+        # A plain directory of .py files (no __init__, no pyproject): every file in it.
+        files = [
+            p for p in sorted(path.rglob("*.py"))
+            if "__pycache__" not in p.parts and not any(t in p.as_posix() for t in ignore)
+        ]
+        if not files:
+            raise
+        return path, files
     return resolved.project_dir, list(iter_python_files(resolved.package_dir, ignore=ignore))
 
 
@@ -493,7 +619,7 @@ def repair(
     active_rules = rules_for(fence_style, rules)
     for file in files:
         try:
-            source = file.read_text(encoding="utf-8")
+            source, newline, bom = _read_source(file)
         except (OSError, UnicodeDecodeError) as e:
             report.files.append(FileRepair(path=file, original="", repaired="", skipped=f"{type(e).__name__}: {e}"))
             continue
@@ -502,18 +628,21 @@ def repair(
         if not (write and result.changed):
             continue
         before = _doctest_failures(file, project_dir=project_dir) if run_doctests else None
-        file.write_text(result.repaired, encoding="utf-8")
+        _write_source(file, result.repaired, newline=newline, bom=bom)
         result.written = True
-        if run_doctests:
-            after = _doctest_failures(file, project_dir=project_dir)
-            if after[1] > before[1] or (before[0] == 0 and after[0] != 0):
-                file.write_text(source, encoding="utf-8")
-                result.written = False
-                result.verification.append(
-                    f"restored: doctest failures went from {before[1]} to {after[1]} ({after[2]})"
-                )
-            else:
-                result.verification.append(f"doctests: {before[1]} failure(s) before, {after[1]} after")
+        if not run_doctests:
+            continue
+        after = _doctest_failures(file, project_dir=project_dir)
+        if before[1] == IMPORT_FAILED and after[1] == IMPORT_FAILED:
+            result.verification.append(f"not verified: the module could not be imported to run its doctests ({after[2]})")
+        elif after[1] == IMPORT_FAILED or after[1] > max(before[1], 0):
+            _write_source(file, source, newline=newline, bom=bom)
+            result.written = False
+            result.verification.append(
+                f"restored: doctest failures went from {before[1]} to {after[1]} ({after[2]})"
+            )
+        else:
+            result.verification.append(f"doctests: {before[1]} failure(s) before, {after[1]} after")
     return report
 
 
@@ -553,6 +682,8 @@ def repair_command(
     """
     import cw
 
+    from epythet.validation.ledger import LedgerError
+
     if fence_style not in FENCE_STYLES:
         raise cw.CommandError(f"--fence-style must be one of {list(FENCE_STYLES)}", code=2)
     appliers = {"span": apply_span_edits, "libcst": apply_with_libcst}
@@ -569,7 +700,7 @@ def repair_command(
             run_doctests=not no_doctests,
             applier=appliers[applier],
         )
-    except FileNotFoundError as e:
+    except (FileNotFoundError, LedgerError) as e:
         raise cw.CommandError(str(e), code=2) from e
     except ImportError as e:
         raise cw.CommandError(f"{e} (pip install 'epythet[repair]')", code=2) from e
@@ -589,15 +720,18 @@ def render_repair(report: RepairReport, *, diff: bool = True) -> str:
             lines.append(f"{file.path}: {len(file.applied)} docstring(s) rewritten, {state}")
             lines += [f"    {v}" for v in file.verification]
         for edit in file.applied:
-            if edit.fixed or edit.remaining:
-                fixed = f"fixed {', '.join(edit.fixed)}" if edit.fixed else "no ledger finding changed"
-                remaining = f"; still: {', '.join(edit.remaining)}" if edit.remaining else ""
-                lines.append(f"    {file.path.name}:{edit.line} {edit.qualname}: {fixed}{remaining}")
+            if edit.fixed:
+                lines.append(f"    {file.path.name}:{edit.line} {edit.qualname}: fixed {', '.join(edit.fixed)}")
     if report.refused:
         lines.append("")
-        lines.append("needs a hand (not rewritten):")
+        lines.append("needs a hand:")
         for file, edit in report.refused:
-            why = edit.reason or "no source-safe rule fixes this"
+            if edit.reason:
+                why = edit.reason
+            elif edit.applied:
+                why = "rewritten, but findings remain"
+            else:
+                why = "no source-safe rule fixes this"
             still = f" [{', '.join(edit.remaining)}]" if edit.remaining else ""
             lines.append(f"  {file.path}:{edit.line} {edit.qualname}: {why}{still}")
     for file in report.files:

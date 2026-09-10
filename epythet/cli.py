@@ -5,6 +5,8 @@
 and writes it to ``PROJECT_DIR/docsrc/_build/html``.
 """
 
+import dataclasses
+
 import cw
 
 from epythet.build import build, make
@@ -144,22 +146,29 @@ TOOL_COMMANDS = {"repair": repair, "migrate-style": migrate_style, "sweep": swee
 LEDGER_COMMANDS = {"propose": propose}
 
 
+#: cw's argh-compatible convention, resolving string annotations: the command
+#: modules use ``from __future__ import annotations``, and ``list[str]`` must
+#: still become ``nargs="*"`` (``--ignore a b``), not a single value.
+CONVENTION = dataclasses.replace(cw.ARGH, resolve_hints=True)
+
+
 def mk_epythet_parser(**parser_kwargs):
-    """The full ``epythet`` parser: the flat commands plus the ``ledger`` group."""
-    parser = cw.mk_parser(COMMANDS, **parser_kwargs)
-    cw.add_commands(parser, TOOL_COMMANDS)
+    """The full ``epythet`` parser: the flat commands, the tool commands, the ``ledger`` group."""
+    parser = cw.mk_parser(COMMANDS, convention=CONVENTION, **parser_kwargs)
+    cw.add_commands(parser, TOOL_COMMANDS, convention=CONVENTION)
     cw.add_commands(
         parser,
         LEDGER_COMMANDS,
         group_name="ledger",
         group_kwargs={"title": "Artifact ledger maintenance"},
+        convention=CONVENTION,
     )
     return parser
 
 
 def epythet_cli(argv=None):
     """Entry point for the ``epythet`` console script."""
-    raise SystemExit(cw.run(mk_epythet_parser(), argv))
+    raise SystemExit(cw.run(mk_epythet_parser(), argv, convention=CONVENTION))
 
 
 if __name__ == "__main__":

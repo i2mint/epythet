@@ -85,7 +85,9 @@ def rule_yaml(rule_id: str, proposal: dict[str, Any], *, source: str) -> str:
     for key in ("node", "function", "scan", "skip_doctest_lines", "whole_text", "ignore_case"):
         if key in detector:
             value = detector[key]
-            lines.append(f"  {key}: {str(value).lower() if isinstance(value, bool) else value}")
+            lines.append(
+                f"  {key}: {str(value).lower() if isinstance(value, bool) else _yaml_scalar(str(value))}"
+            )
     if "pattern" in detector:
         lines.append("  pattern: " + _yaml_block(detector["pattern"], indent=4).rstrip("\n"))
     lines.append(f"message: {_yaml_scalar(proposal['message'])}")
@@ -94,7 +96,7 @@ def rule_yaml(rule_id: str, proposal: dict[str, Any], *, source: str) -> str:
     lines.append(f"  hint: {_yaml_scalar(str(fix.get('hint', '')))}")
     lines.append(f"  autofixable: {str(bool(fix.get('autofixable', False))).lower()}")
     if fix.get("strategy"):
-        lines.append(f"  strategy: {fix['strategy']}")
+        lines.append(f"  strategy: {_yaml_scalar(str(fix['strategy']))}")
     explanation = proposal.get("explanation") or proposal["title"]
     lines.append("explanation: " + _yaml_block(explanation).rstrip("\n"))
     lines.append("references:")
@@ -108,14 +110,26 @@ def _indent_docstring(text: str) -> str:
 
 
 def fixture_py(rule_id: str, proposal: dict[str, Any]) -> str:
-    """The sibling fixture: one ``# ruleid:`` specimen and one ``# ok:`` specimen."""
+    """The sibling fixture: one ``# ruleid:`` specimen and one ``# ok:`` specimen.
+
+    The quote style is whichever the examples do not contain; an example that
+    contains both triple quotes (or a backslash) is refused, because the
+    fixture would not round-trip through ``ast``.
+    """
+    examples = (proposal["example_bad"], proposal["example_good"])
+    for quote in ('"""', "'''"):
+        if not any(quote in example or "\\" in example for example in examples):
+            break
+    else:
+        raise LedgerError("example_bad/example_good must not contain both triple quotes or a backslash")
+    title = proposal["title"].replace("\n", " ")
     return (
-        f'"""Fixture for {rule_id}: {proposal["title"]} (proposed).\n\n'
+        f'"""Fixture for {rule_id}: {title} (proposed).\n\n'
         'Written by ``epythet ledger propose``; edit the specimens if the rule is refined.\n"""\n\n\n'
         f"def bad_case():  # ruleid: {rule_id}\n"
-        f'    """\n{_indent_docstring(proposal["example_bad"])}\n    """\n\n\n'
+        f"    {quote}\n{_indent_docstring(examples[0])}\n    {quote}\n\n\n"
         f"def good_case():  # ok: {rule_id}\n"
-        f'    """\n{_indent_docstring(proposal["example_good"])}\n    """\n'
+        f"    {quote}\n{_indent_docstring(examples[1])}\n    {quote}\n"
     )
 
 
@@ -149,9 +163,9 @@ def propose(
         known.add(rule_id)
         yaml_path = overlay_dir / f"{rule_id}.yaml"
         py_path = yaml_path.with_suffix(".py")
-        yaml_path.write_text(rule_yaml(rule_id, proposal, source=str(reply_path)), encoding="utf-8")
-        py_path.write_text(fixture_py(rule_id, proposal), encoding="utf-8")
         try:
+            yaml_path.write_text(rule_yaml(rule_id, proposal, source=str(reply_path)), encoding="utf-8")
+            py_path.write_text(fixture_py(rule_id, proposal), encoding="utf-8")
             rule = load_rule(yaml_path)
             if rule.kind in PARSE_KINDS:
                 _check_fixture_fires(rule)
