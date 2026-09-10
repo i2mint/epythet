@@ -224,6 +224,7 @@ def test_discovery_finds_each_kind_once(repo):
     assert files[".cursor/rules"].is_dir and not files["CLAUDE.md"].is_dir
 
 
+@needs_symlinks  # acme-use is reached only through the .claude symlink here
 def test_discovery_without_package_dir_skips_package_locations(repo):
     found = discover_artifacts(repo)
     assert {s.name for s in found.skills} == {
