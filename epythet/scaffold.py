@@ -64,14 +64,20 @@ def make_docsrc(project_dir, *, verbose: bool = True, ignore: list[str] = None) 
 
 
 def scaffold(
-    config: DocsConfig, *, verbose: bool = True, pages: Sequence[PageSpec] = ()
+    config: DocsConfig, *, verbose: bool = True, pages: Sequence[PageSpec] | None = None
 ) -> Path:
     """Write the docsrc files for an already-loaded configuration.
 
     :param pages: extra generated pages, written next to ``index.md`` and added
-        to its toctree after the API entry (the seam for e.g. a "For AI agents"
-        page).
+        to its toctree after the API entry. ``None`` (the default) means the
+        conventional pages, i.e. the "For AI agents" page that
+        ``epythet.ai_artifacts.default_pages`` produces when the project has
+        agent artifacts and ``ai_artifacts`` is on; pass ``()`` for none.
     """
+    if pages is None:
+        from epythet.ai_artifacts import default_pages
+
+        pages = default_pages(config)
     if config.package_dir is None:
         raise ConfigError(
             f"Cannot find the package directory for {config.name!r} under "
@@ -108,6 +114,7 @@ def scaffold(
         _write_if_generated(
             docsrc / page.filename, page.content, markers=(page.marker,), say=say
         )
+    _remove_stale_generated_pages(docsrc, pages, say)
     if config.api_generator == "autosummary":
         (docsrc / "api.rst").write_text(
             templates.api_rst_autosummary.format(package_name=config.package_name),
@@ -234,6 +241,27 @@ def _remove_legacy_files(docsrc: Path, say) -> None:
         elif path.is_file():
             path.unlink()
             say(f"Removed legacy {name}")
+
+
+def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
+    """Delete a generated conventional page that this run did not produce.
+
+    The "For AI agents" page is written when a project has agent artifacts; when
+    they are gone (or ``ai_artifacts`` is turned off) the old file would stay in
+    a committed ``docsrc``, be built, and be listed in ``llms.txt`` while no
+    longer being in the toctree. Only files carrying the epythet marker are
+    removed; a hand-written page of the same name is kept.
+    """
+    from epythet.ai_artifacts import PAGE_FILENAME
+
+    produced = {page.filename for page in pages}
+    for filename in (PAGE_FILENAME,):
+        path = docsrc / filename
+        if filename in produced or not path.is_file():
+            continue
+        if templates.INDEX_MARKER in path.read_text(encoding="utf-8", errors="replace"):
+            path.unlink()
+            say(f"Removed stale generated {filename}")
 
 
 def _write_if_generated(path: Path, content: str, *, markers, say) -> None:

@@ -59,7 +59,7 @@ def _usage(argv):
 EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
-        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate} ..."
+        "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,ai-artifacts} ..."
     ),
     (
         "make-docsrc",
@@ -74,6 +74,7 @@ EXPECTED_USAGE = {
     ("configure-pages",): (
         "usage: epythet configure-pages [-h] [-b BRANCH] [-p PATH] repo"
     ),
+    ("ai-artifacts",): "usage: epythet ai-artifacts [-h] [-f FORMAT] project-dir",
 }
 
 
@@ -95,6 +96,7 @@ def test_command_set_and_order():
         "check-pages",
         "configure-pages",
         "validate",
+        "ai-artifacts",
     ]
 
 

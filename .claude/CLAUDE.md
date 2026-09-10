@@ -1,84 +1,87 @@
 # Epythet
 
-Documentation generation and publishing tools built on Sphinx.
-"Less humdrum, more automation, earlier at the pub."
+Beautiful, correct documentation from a Python package, with no boilerplate in the package. Sphinx 9 underneath; README as landing page, nested API tree, themes, build-time docstring normalizer, agent-facing outputs, validation with a ledger of known artifacts, GitHub Pages publishing. "Less humdrum, more automation, earlier at the pub."
 
-## What epythet does
+This file is the map: where things are and which artifact to read for which task. Content lives in the files it points at.
 
-1. **Generates Sphinx docs** from Python docstrings (`make_docsrc`, `make_autodocs`, `make`)
-2. **Publishes to GitHub Pages** via a CI action (`actions/publish-github-pages`)
-3. **Diagnoses and repairs** docstring formatting issues (`repair_package`, `diagnose_doctest_code_blocks`)
-4. **Manages GitHub Pages settings** programmatically (`check_pages_setup`, `enable_pages`, `configure_pages`)
+## Design record
+
+- Decision record (engine, markup, generator, themes, config, agent outputs, AI artifacts, validate, repair, skills): https://github.com/i2mint/epythet/discussions/15
+- Tracking issue with the work packages and journals: https://github.com/i2mint/epythet/issues/16
+- Back-compat contract the fleet depends on: `epythet quickstart DIR --ignore ...` writes `DIR/docsrc/_build/html/`; `epythet.config_parser.parse_config` keeps its 5-tuple; `diagnose_doctest_code_blocks` and `repair_package` import paths stay stable.
 
 ## Architecture
 
 ```
 epythet/
-  __init__.py          # Re-exports from submodules
-  cli.py               # argh-based CLI: epythet {make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages}
-  autogen.py           # RST generation from module docstrings
-  setup_docsrc.py      # One-time Sphinx docsrc scaffolding
-  call_make.py         # Thin wrapper around Sphinx's Makefile
-  config_parser.py     # Reads project metadata from setup.cfg or pyproject.toml
-  templates.py         # RST templates (RstTitle, AutoDocs enums)
-  _static/             # Static files copied into docsrc
-  tools/
-    __init__.py        # Re-exports diagnosis and pages tools
-    docstring_diagnosis.py  # Detects/repairs missing blank lines before doctests
-    published_docs.py       # GitHub Pages config, diagnosis, and publishing checks
-actions/
-  publish-github-pages/action.yml  # Composite GitHub Action for CI docs publishing
+  __init__.py        # public API re-exports; quickstart()
+  cli.py             # cw-based CLI: make-docsrc make-autodocs make quickstart check-pages configure-pages validate ai-artifacts
+  config.py          # DocsConfig SSOT: pyproject [project] + [tool.epythet], setup.cfg fallback
+  confgen.py         # DocsConfig -> Sphinx conf namespace (sphinx_settings)
+  sphinx_conf.py     # the star-import target of the generated two-line conf.py
+  sphinx_ext.py      # Sphinx extension: normalizer hook, link relations, theme CSS
+  scaffold.py        # writes docsrc/ (conf.py shim, index.md, extra PageSpec pages)
+  build.py           # runs sphinx-build; agent outputs and aggregates after html
+  templates.py       # text of the generated files
+  normalizer.py      # build-time docstring rewrites (pure functions, DEFAULT_RULES)
+  themes.py          # curated theme registry, theme="auto", OKLCH accent
+  agent_outputs.py   # llms.txt, .md twins, <link rel=alternate>, <pkg>.md / .pdf
+  ai_artifacts.py    # discovers skills/agents/CLAUDE.md by convention; "For AI agents" page
+  validation/        # epythet validate: levels 0 / 0.5 / 1, Finding/Report model, ledger loader
+  ledger/rules/      # one YAML per rule (DRnnn) + sibling .py fixture (rendering/, source/, build_warnings/)
+  data/skills/       # SHIPPED consumer skills (real files; gh skill + pip)
+  data/agents/       # SHIPPED subagents (real files)
+  tools/             # docstring diagnosis/repair, GitHub Pages helpers
+actions/publish-github-pages/action.yml   # composite action the fleet's docs CI runs
+.claude/skills/, .claude/agents/          # relative symlinks into epythet/data/ (Claude Code bridge)
+tests/                                    # pytest; Sphinx smoke build in test_build.py
 ```
 
-## Key conventions
+## Conventions
 
-- **CLI** uses `argh`. Each CLI command is a plain function decorated with `@argh.arg` as needed, added to the `argh_kwargs["functions"]` list in `cli.py`.
-- **GitHub API access** has dual paths: uses `GITHUB_TOKEN` env var + `requests` when available, falls back to `gh` CLI subprocess. The `_github_api_get` and `_github_api_request` helpers in `published_docs.py` handle this.
-- **Config parsing** supports both `setup.cfg` (`[metadata]` section) and `pyproject.toml` (`[project]` section). The `[tool.epythet]` section in pyproject.toml can override copyright/display_name.
-- **Optional dependencies**: `pandas` (for `published_doc_diagnosis_df`), `hubcap` (for org-level repo listing), `tec` (for flexible package reading in `repair_package`). These are imported lazily and guarded by `suppress(ImportError)`.
+- **CLI** uses `cw`: a command is a plain function with keyword-only options, appended to `COMMANDS` in `cli.py`. `tests/test_cli.py` holds usage goldens; adding a command means updating them deliberately.
+- **Config** keys are `DocsConfig` fields; unknown `[tool.epythet]` keys raise `ConfigError`. Booleans and lists coerced from `setup.cfg` strings via `_BOOL_KEYS` / `_LIST_KEYS`.
+- **Seams are keyword arguments**: `api_generator`, `theme`, `agent_outputs` / `aggregates`, normalizer `rules`, `scaffold(pages=)`, `validate(backend=, ledger=)`, `ai_artifacts_template` (and `EPYTHET_AI_ARTIFACTS=0` as the fleet-wide off switch).
+- **Generated files carry a marker** (`<!-- generated by epythet -->`, `from epythet.sphinx_conf import *`) so epythet overwrites only its own output; hand-written files are kept.
+- **GitHub API** access: `GITHUB_TOKEN` + `requests` when available, else the `gh` CLI (`published_docs.py`).
+- **Optional dependencies** are imported lazily under `suppress(ImportError)`: `pandas`, `hubcap`, `tec`, `pyyaml` (validate), `playwright` / `weasyprint` (pdf).
+- **Module docstrings everywhere** (ruff `D100` is the one lint rule on).
+- Never commit data derived from private repos: validate observations go to `~/.local/share/epythet/ledger/` (`EPYTHET_DATA_DIR`), never into the repo.
+
+## AI artifacts: consumer vs dev
+
+| | Consumer (shipped) | Dev (this repo only) |
+|---|---|---|
+| Purpose | help users and their agents use epythet | help the agent building epythet |
+| Real files | `epythet/data/skills/<name>/`, `epythet/data/agents/<name>.md` | repo-root `skills/<epythet-dev-*>/` (none yet) |
+| Bridge | `.claude/skills/<name>` and `.claude/agents/<name>.md` relative symlinks | same bridge |
+| Naming | `epythet-<topic>`, `metadata.audience: users` | `epythet-dev-<topic>`, `metadata.audience: developers` |
+| Install | `gh skill install i2mint/epythet <name> --agent <host>`; also in the wheel | not distributed |
+| Documented | README "AI agents", https://i2mint.github.io/epythet/ai-agents.html | this file |
+
+Shipped skills: `epythet-setup`, `epythet-pages`, `epythet-docstring-style`, `epythet-validate`, `epythet-repair-migrate`, `epythet-theme`, `epythet-ai-artifacts`. Shipped agents: `docs-reviewer` (Level 3 review packets that propose ledger rules), `docs-migrator` (the per-repo sweep). `tests/test_ai_artifacts.py` enforces the spec rules and the symlink layout. Policy for layout and shipping: the user-level `skill-package-setup` and `skill-enable` skills; dev skills: `dev-skills-workflow`.
+
+## Which artifact for which task
+
+- Setting up docs for a package, `[tool.epythet]` keys, Pages workflow: `.claude/skills/epythet-setup`
+- Pages 404 / enable Pages / batch across an org: `.claude/skills/epythet-pages`
+- Writing or reviewing docstrings: `.claude/skills/epythet-docstring-style`
+- `epythet validate`, exit codes, ledger, proposing a rule: `.claude/skills/epythet-validate`
+- The per-repo sweep (WP6): `.claude/skills/epythet-repair-migrate`, agent `docs-migrator`
+- Choosing a theme or accent: `.claude/skills/epythet-theme`
+- Finding a repo's skills/agents, the "For AI agents" page: `.claude/skills/epythet-ai-artifacts`
 
 ## Testing
 
 ```bash
-pytest tests/ -v
-python -m doctest epythet/tools/docstring_diagnosis.py
+pytest tests/ -v                      # includes two Sphinx smoke builds (seconds each)
+python -m doctest epythet/ai_artifacts.py epythet/normalizer.py
+epythet validate . --level 2          # dogfood
+epythet quickstart . --ignore tests/ scrap/ examples/ ledger/   # the site, incl. ai-agents.html
 ```
 
-## Common repo_stub pattern
+Run from the repo root (or with `PYTHONPATH` set to it in a worktree) so `import epythet` resolves to the checkout rather than an installed wheel.
 
-Many functions take a `repo_stub` (e.g., `"owner/repo"`). The `repo_stub_from_local_dir(path)` utility extracts this from a local `.git/config`.
+## GitHub Pages setup flow (the recurring support question)
 
-## GitHub Pages setup flow
-
-The most common issue: CI pushes docs to the `gh-pages` branch, but Pages isn't
-enabled in repo settings. The target setting is **source branch `gh-pages`,
-folder `/ (root)`**. The fix is:
-
-```python
-from epythet import enable_pages
-
-enable_pages("owner/repo")  # uses gh CLI or GITHUB_TOKEN
-```
-
-Or via CLI: `epythet configure-pages owner/repo`
-
-### Raw `gh` equivalent
-
-`enable_pages` is a thin wrapper over the GitHub Pages REST API. The equivalent
-of clicking *Settings > Pages → Branch `gh-pages`, folder `/ (root)` → Save* is:
-
-```bash
-# Read current config (empty/404 means Pages is NOT enabled — GitHub's default)
-gh api repos/OWNER/REPO/pages --jq '{branch:.source.branch, path:.source.path}'
-
-# Enable Pages — POST creates the Pages site (use when Pages is not yet enabled)
-gh api repos/OWNER/REPO/pages -X POST -f 'source[branch]=gh-pages' -f 'source[path]=/'
-
-# Change an existing Pages config — PUT updates it (use when Pages already exists)
-gh api repos/OWNER/REPO/pages -X PUT  -f 'source[branch]=gh-pages' -f 'source[path]=/'
-```
-
-`enable_pages` tries `POST` first and falls back to `PUT` if Pages already
-exists. See `_gh_api` / `_flatten_json` in `epythet/tools/published_docs.py`,
-which turn the nested `{"source": {"branch": ..., "path": ...}}` body into
-`gh api`'s `source[branch]=…` / `source[path]=…` bracket form.
+CI pushes docs to `gh-pages` but Pages is not enabled: `epythet configure-pages owner/repo` (or `enable_pages("owner/repo")`). Raw equivalent: `gh api repos/OWNER/REPO/pages -X POST -f 'source[branch]=gh-pages' -f 'source[path]=/'` (PUT to change an existing config). Details and the diagnosis table: `.claude/skills/epythet-pages`.

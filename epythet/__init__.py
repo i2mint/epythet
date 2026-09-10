@@ -25,6 +25,10 @@ it, a Markdown fence, ``Returns: text`` on one line, a stray ``*args``) are
 applied at build time by :mod:`epythet.normalizer`, so existing docstrings
 render correctly without edits.
 
+A repository's agent artifacts (skills, subagents, ``CLAUDE.md`` and friends)
+are discovered by convention and rendered as a "For AI agents" page, see
+:mod:`epythet.ai_artifacts`; epythet's own skills ship in ``epythet/data/skills``.
+
 GitHub Pages helpers (:func:`check_pages_setup`, :func:`enable_pages`) and
 docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,
 :func:`repair_package`) live in :mod:`epythet.tools`.
@@ -37,6 +41,7 @@ from epythet.build import make, build
 from epythet.normalizer import normalize_docstring, normalize_text
 from epythet.themes import accent_for, choose_theme, resolve_theme, THEMES
 from epythet.agent_outputs import write_aggregates
+from epythet.ai_artifacts import discover_artifacts, ai_artifacts_page
 
 from epythet.tools import (
     repair_package,
