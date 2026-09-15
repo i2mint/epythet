@@ -1,4 +1,4 @@
-Add the agentic aspects to this README, first, as a priority: agents get their section before the humans get theirs.
+Add the agentic aspects to this README. With `agentic_first` on, agents get their section before the humans get theirs; otherwise it closes the README.
 
 Do not hand-write the section. Run `epythet ai-readme-check <project_dir> --write` so it lands between epythet's marker comments and a later run updates it in place. To change the wording, change the snippets, not the README: `epythet snippets init`, then edit `agentic-readme-section.md` and `agentic-readme-humor.md` in your snippets folder.
 

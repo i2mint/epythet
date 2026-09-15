@@ -27,7 +27,7 @@ Nothing has to be added to the package. Everything is read from `pyproject.toml`
 
 **Skills** ([Agent Skills](https://agentskills.io) format), for any agent host. Install one with `gh skill`:
 ```bash
-gh skill install i2mint/epythet epythet-agentic-readme --agent claude-code   # or copilot, cursor, codex, gemini
+gh skill install i2mint/epythet epythet-setup --agent claude-code   # or copilot, cursor, codex, gemini
 ```
 
 | Skill | Use it to |
@@ -93,6 +93,10 @@ docs_dir = "docsrc"             # where the Sphinx sources are generated
 
 [tool.epythet.theme_options]    # verbatim passthrough into Sphinx's html_theme_options; always wins
 announcement = "v2 is in beta"
+
+[tool.epythet.readme]           # pins the generated "For AI agents" README section (see "For agents"); wins over ~/.config/epythet
+humor = true
+agentic_first = true
 ```
 
 `setup.cfg` projects put the same keys under `[metadata]` (`display_name`, `copyright`) or a `[tool.epythet]` section. When both files exist, `pyproject.toml` wins.
@@ -126,7 +130,7 @@ Every site also serves, next to the HTML:
 
 Set `agent_outputs = false` to skip the second (Markdown) build pass.
 
-**The README.** `epythet ai-readme-check PROJECT_DIR` reports which of these a project has (skills, subagents, instruction files, the outputs above) and whether its README mentions each; `--format json` for machines, `--fail-on warn` for CI (the exit code is 0 otherwise). `--draft` prints a "For AI agents" README section rendered from text snippets; `--write` adds it between marker comments and updates it in place on later runs, wherever you moved it (the section at the top of this README is one). What to do about a missing section is a user-level policy in `~/.config/epythet/config.toml`: `[readme] agentic_aspects = "warn"` (the packaged default) or `"add"`, `humor = true` to draw the "for humans" line from a pool, `agentic_first = true` to put the section before every other. The wording is yours too: `epythet snippets list | show NAME | init | diff` resolve a snippet from `~/.config/epythet/snippets/` over the packaged default; `init` copies the defaults out once, with a header recording the epythet version, and never overwrites; `diff` shows how your copy differs from the current default after an upgrade. The `epythet-agentic-readme` skill walks an agent through the whole thing.
+**The README.** `epythet ai-readme-check PROJECT_DIR` reports which of these a project has (skills, subagents, instruction files, the outputs above) and whether its README mentions each; `--format json` for machines, `--fail-on warn` for CI (the exit code is 0 otherwise). `--draft` prints a "For AI agents" README section rendered from text snippets; `--write` adds it between marker comments and updates it in place on later runs, wherever you moved it (the section at the top of this README is one). What to do about a missing section is a user-level policy in `~/.config/epythet/config.toml`: `[readme] agentic_aspects = "warn"` (the packaged default) or `"add"`, `humor = true` to draw the "for humans" line from a pool, `agentic_first = true` to put the section before every other; a project pins the keys that shape its committed text in `[tool.epythet.readme]`, which wins. The wording is yours too: `epythet snippets list | show NAME | init | diff` resolve a snippet from `~/.config/epythet/snippets/` over the packaged default; `init` copies the defaults out once, with a header recording the epythet version, and never overwrites; `diff` shows how your copy differs from the current default after an upgrade. The `epythet-agentic-readme` skill walks an agent through the whole thing.
 
 **The "For AI agents" page.** When the repository ships anything for agents, epythet adds an `ai-agents` page to the site listing it: skills (`<pkg>/data/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`) with their `gh skill install` lines and source folders, subagents (`<pkg>/data/agents/*.md`, `.claude/agents/*.md`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules`, `.codex`), and the outputs above with their URLs. Symlinks are followed and duplicates removed. `epythet ai-artifacts PROJECT_DIR` prints the same inventory (`--format json` for machines). Turn the page off with `ai_artifacts = false` (or, for a whole CI fleet, the environment variable `EPYTHET_AI_ARTIFACTS=0`), or replace its template with `ai_artifacts_template = "path/to/template.md"` (a `str.format` template; see `epythet.ai_artifacts`). A hand-written `docsrc/ai-agents.md` is left alone. A malformed `SKILL.md` never fails the build: the skill is listed by folder name.
 

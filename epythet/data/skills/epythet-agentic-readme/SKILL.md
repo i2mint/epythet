@@ -45,7 +45,7 @@ An agent arriving at a repository reads the README first. If the repository ship
      epythet ai-readme-check . --write
      ```
 
-     The section goes right after the README's intro, before the first section heading, when `agentic_first` is true; at the end otherwise. A later `--write` updates it in place wherever the author moved it. The check runs again after the write and its table is the report.
+     The section goes right after the README's intro, before the second heading (the first one after the title), when `agentic_first` is true; at the end otherwise. A later `--write` updates it in place wherever the author moved it, keeping its heading level. The check runs again after the write and its table is the report (in `--format json`, the `write` key carries the outcome). `--write` refuses, with a message and exit 2, a README with unpaired markers, a non-UTF-8 or non-Markdown README, and a user template that dropped the markers; it never eats content.
 
 3. **Review the prose as a stranger would.** Read the section in the README. The humour line (one per package, chosen stably from the pool) is light and on the writer's side of the joke; if it is not, fix the pool, not the README. No em-dashes, no "not X but Y", no closing paragraph that restates the section, every link resolves. If the README already covered the same artifacts under a heading of its own, keep that heading only if it says something the generated section does not; otherwise remove it so the two never disagree.
 
@@ -63,6 +63,16 @@ agentic_first = true      # section right after the intro, before the first head
 ```
 
 Unknown keys are an error, so typos do not pass silently. The data side of epythet's local state (`epythet validate` observations) stays under `~/.local/share/epythet`; config and snippets live under `~/.config/epythet`.
+
+A committed README should not depend on who ran the tool, so a project can pin the keys that shape its text in `pyproject.toml`; these win over the user's file:
+
+```toml
+[tool.epythet.readme]
+humor = true
+agentic_first = true
+```
+
+`epythet ai-readme-check . --format json` shows all three layers: `policy.readme` (effective), `policy.user`, `policy.project`.
 
 ## Changing the wording: snippets
 
@@ -90,10 +100,10 @@ epythet snippets diff [--name NAME]   # your copy against the current packaged d
 | `skills` | `epythet ai-artifacts` finds a `SKILL.md` | a `gh skill install` line or a skill name |
 | `subagents` | an agent file under `<pkg>/data/agents` or `.claude/agents` | the word "subagent" or an agent name |
 | `instruction_files` | `CLAUDE.md`, `AGENTS.md`, `.cursor/rules`, `.codex`, `.github/copilot-instructions.md` | the file name |
-| `agent_docs` | `[tool.epythet] agent_outputs` is on | `llms.txt`, `<package>.md`, `objects.inv` or `ai-agents.html` |
+| `agent_docs` | `[tool.epythet] agent_outputs` is on and the project has a GitHub URL (so the site's address is known) | `llms.txt`, `<package>.md`, `objects.inv` or `ai-agents.html` |
 | `section` | any of the above | epythet's markers, or a heading mentioning agents or LLMs |
 
-Discovery is the same as the "For AI agents" site page (skill `epythet-ai-artifacts`), so the README and the site never disagree about what exists.
+Discovery is the same as the "For AI agents" site page (skill `epythet-ai-artifacts`), so the README and the site never disagree about what exists (`EPYTHET_AI_ARTIFACTS=0` drops the page link from the section too). A mention is a whole-token match, wherever it appears and whatever the sentence says: "we do not publish `llms.txt`" counts. A heading counts as the section when it names agents or LLMs. Read the evidence column before trusting an `ok`.
 
 ## Related, not done here
 

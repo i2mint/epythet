@@ -26,6 +26,7 @@ call ``epythet snippets show <name>`` and ``epythet ai-readme-check --format jso
 and let this module do the resolving.
 
 >>> import os, tempfile
+>>> _saved = os.environ.get("EPYTHET_CONFIG_DIR")
 >>> os.environ["EPYTHET_CONFIG_DIR"] = tempfile.mkdtemp()
 >>> load_user_config().readme
 ReadmePolicy(agentic_aspects='warn', humor=False, agentic_first=False)
@@ -36,7 +37,7 @@ ReadmePolicy(agentic_aspects='warn', humor=False, agentic_first=False)
 'user'
 >>> init_snippets()          # a second init writes nothing
 []
->>> del os.environ["EPYTHET_CONFIG_DIR"]
+>>> _ = os.environ.pop("EPYTHET_CONFIG_DIR") if _saved is None else os.environ.__setitem__("EPYTHET_CONFIG_DIR", _saved)
 """
 
 from __future__ import annotations
@@ -45,9 +46,9 @@ import difflib
 import os
 import re
 import tomllib
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
 from pathlib import Path
-from typing import Iterator
+from typing import Any, Iterator, Mapping
 
 from epythet.config import ConfigError
 
@@ -64,9 +65,8 @@ SNIPPET_SUFFIX = ".md"
 AGENTIC_ASPECTS_POLICIES = ("warn", "add")
 
 _HEADER_RE = re.compile(
-    r"\A<!--\s*epythet snippet\s+\"(?P<name>[^\"]+)\"\s+copied from epythet\s+"
-    r"(?P<version>[^\s.]+(?:\.[^\s.]+)*?)\.?(?:\s.*?)?-->\s*\n?",
-    re.DOTALL,
+    r"\A<!--\s*epythet snippet\s+\"(?P<name>[^\"\n]+)\"\s+copied from epythet\s+"
+    r"(?P<version>[^\s.]+(?:\.[^\s.]+)*?)\.?(?:\s[^\n]*?)?-->[ \t]*\n?"
 )
 
 
@@ -84,9 +84,10 @@ def config_dir() -> Path:
 
     XDG-style on every platform, like :func:`epythet.validation.ledger.user_data_dir`.
 
+    >>> _saved = os.environ.get(CONFIG_DIR_ENV)
     >>> os.environ[CONFIG_DIR_ENV] = "/tmp/x"; config_dir().as_posix()
     '/tmp/x'
-    >>> del os.environ[CONFIG_DIR_ENV]
+    >>> _ = os.environ.pop(CONFIG_DIR_ENV) if _saved is None else os.environ.__setitem__(CONFIG_DIR_ENV, _saved)
     """
     override = os.environ.get(CONFIG_DIR_ENV)
     if override:
@@ -133,9 +134,17 @@ class ReadmePolicy:
 
 @dataclass(frozen=True)
 class SnippetsConfig:
-    """The ``[snippets]`` table: ``dir`` overrides where user snippets are read."""
+    """The ``[snippets]`` table: ``dir`` overrides where user snippets are read.
+
+    A relative ``dir`` is taken relative to the config directory, so the same
+    ``config.toml`` means the same folder from any shell.
+    """
 
     dir: str = ""
+
+    def __post_init__(self):
+        if not isinstance(self.dir, str):
+            raise UserConfigError("[snippets] dir must be a string (a folder path)")
 
 
 @dataclass(frozen=True)
@@ -146,11 +155,43 @@ class UserConfig:
     snippets: SnippetsConfig = field(default_factory=SnippetsConfig)
     path: Path | None = None
 
-    def to_dict(self) -> dict:
-        """A JSON-ready view (the ``policy`` block of ``ai-readme-check --format json``)."""
+    def readme_for(self, project_overrides: Mapping[str, Any] | None = None) -> ReadmePolicy:
+        """The effective policy for one project: ``[tool.epythet.readme]`` keys override the user's.
+
+        Committed READMEs should not depend on who ran the tool, so a project
+        can pin what matters for its text (``humor``, ``agentic_first``) in its
+        ``pyproject.toml``; ``agentic_aspects`` may be pinned too.
+
+        >>> UserConfig().readme_for({"humor": True}).humor
+        True
+        >>> UserConfig().readme_for({"humour": True})  # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ...
+        UserConfigError: unknown key(s) ['humour'] in [tool.epythet.readme]
+        """
+        overrides = dict(project_overrides or {})
+        if not overrides:
+            return self.readme
+        allowed = {f.name for f in fields(ReadmePolicy)}
+        extra = set(overrides) - allowed
+        if extra:
+            raise UserConfigError(
+                f"unknown key(s) {sorted(extra)} in [tool.epythet.readme]; known: {sorted(allowed)}"
+            )
+        return replace(self.readme, **overrides)
+
+    def to_dict(self, project_overrides: Mapping[str, Any] | None = None) -> dict:
+        """A JSON-ready view (the ``policy`` block of ``ai-readme-check --format json``).
+
+        ``readme`` is the effective policy after ``project_overrides``; ``user``
+        the user's own table, ``project`` the overrides, ``path`` the config file.
+        """
+        effective = self.readme_for(project_overrides)
         return {
             "path": str(self.path) if self.path else None,
-            "readme": {f.name: getattr(self.readme, f.name) for f in fields(ReadmePolicy)},
+            "readme": {f.name: getattr(effective, f.name) for f in fields(ReadmePolicy)},
+            "user": {f.name: getattr(self.readme, f.name) for f in fields(ReadmePolicy)},
+            "project": dict(project_overrides or {}),
             "snippets": {"dir": self.snippets.dir},
         }
 
@@ -164,8 +205,10 @@ def load_user_config(path: str | Path | None = None) -> UserConfig:
     if not target.is_file():
         return UserConfig(path=None)
     try:
-        raw = tomllib.loads(target.read_text(encoding="utf-8"))
+        raw = tomllib.loads(target.read_text(encoding="utf-8-sig"))
     except tomllib.TOMLDecodeError as e:
+        raise UserConfigError(f"{target}: {e}") from e
+    except OSError as e:
         raise UserConfigError(f"{target}: {e}") from e
     return _user_config_from(raw, target)
 
@@ -189,7 +232,10 @@ def _user_config_from(raw: dict, target: Path) -> UserConfig:
                 f"{target}: unknown key(s) {sorted(extra)} in [{table}]; "
                 f"known: {sorted(allowed)}"
             )
-        sections[table] = cls(**values)
+        try:
+            sections[table] = cls(**values)
+        except TypeError as e:  # a nested table where a scalar belongs
+            raise UserConfigError(f"{target}: [{table}]: {e}") from e
     return UserConfig(path=target, **sections)
 
 
@@ -223,7 +269,8 @@ def snippets_dir(config: UserConfig | None = None) -> Path:
     """Where user snippets are read: ``[snippets] dir`` if set, else ``<config dir>/snippets``."""
     config = config if config is not None else load_user_config()
     if config.snippets.dir:
-        return Path(config.snippets.dir).expanduser()
+        chosen = Path(config.snippets.dir).expanduser()
+        return chosen if chosen.is_absolute() else config_dir() / chosen
     return config_dir() / SNIPPETS_DIRNAME
 
 
@@ -409,9 +456,21 @@ def snippets_table(*, user_dir: Path | None = None) -> str:
 # --------------------------------------------------------------------------
 
 
+def _guarded(action):
+    """Run ``action()``; config and filesystem problems become a ``CommandError`` (exit 2)."""
+    import cw
+
+    try:
+        return action()
+    except KeyError as e:
+        raise cw.CommandError(str(e.args[0]), code=2) from e
+    except (UserConfigError, OSError) as e:
+        raise cw.CommandError(str(e), code=2) from e
+
+
 def snippets_list():
     """List every snippet with its source (user or packaged), provenance and status."""
-    print(snippets_table())
+    print(_guarded(snippets_table))
 
 
 def snippets_show(name):
@@ -419,12 +478,7 @@ def snippets_show(name):
 
     :param name: the snippet name (``epythet snippets list`` shows them)
     """
-    import cw
-
-    try:
-        print(snippet(name).body, end="")
-    except KeyError as e:
-        raise cw.CommandError(str(e.args[0]), code=2) from e
+    print(_guarded(lambda: snippet(name).body), end="")
 
 
 def snippets_init(*, force: bool = False):
@@ -435,8 +489,8 @@ def snippets_init(*, force: bool = False):
 
     :param force: replace existing user copies (run ``diff`` first to see what you lose)
     """
-    written = init_snippets(force=force)
-    folder = snippets_dir()
+    written = _guarded(lambda: init_snippets(force=force))
+    folder = _guarded(snippets_dir)
     if written:
         for path in written:
             print(f"wrote {path}")
@@ -454,20 +508,18 @@ def snippets_diff(name: str = ""):
     """
     import cw
 
-    names = [name] if name else [s.name for s in iter_snippets() if s.source == "user"]
-    diffs = []
-    for item in names:
-        try:
-            text = diff_snippet(item)
-        except KeyError as e:
-            raise cw.CommandError(str(e.args[0]), code=2) from e
-        if text:
-            diffs.append(text)
+    def collect():
+        names = [name] if name else [s.name for s in iter_snippets() if s.source == "user"]
+        return [text for text in (diff_snippet(item) for item in names) if text]
+
+    diffs = _guarded(collect)
     if not diffs:
         print("no differences from the packaged defaults")
         return
     print("\n".join(diffs), end="")
-    raise cw.CommandError("", code=1)
+    raise cw.CommandError(
+        f"{len(diffs)} snippet(s) differ from the packaged defaults (exit 1)", code=1
+    )
 
 
 #: The ``epythet snippets`` group, by command-line name.

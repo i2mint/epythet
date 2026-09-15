@@ -15,11 +15,13 @@ import pytest
 from epythet.agentic_readme import (
     MARKER_END,
     MARKER_START,
+    SectionError,
     blurb,
     check_readme,
     draft_section,
     github_anchor,
     headings_of,
+    marker_span,
     place_section,
     render_section,
     splice_section,
@@ -73,7 +75,7 @@ def test_undocumented_readme_warns_on_every_present_kind(project, config_dir):
     }
     assert report.status == "warn"
     assert {c.kind for c in report.warnings} == set(_statuses(report))
-    assert report.policy.readme == ReadmePolicy()  # packaged defaults
+    assert report.policy == ReadmePolicy()  # packaged defaults
     data = report.to_dict()
     assert data["status"] == "warn" and data["policy"]["readme"]["agentic_aspects"] == "warn"
     assert "warn: the README does not document" in report.table()
@@ -101,12 +103,24 @@ def test_partially_documented_readme(project, config_dir):
 
 
 def test_absent_kinds_are_not_applicable(make_project, config_dir):
+    """A bare package with no site URL has nothing an agent could be pointed at."""
     root = make_project("bare", {"m.py": '"""M."""\n'})
     (root / "README.md").write_text("# bare\n")
+    report = check_readme(root)
+    assert set(_statuses(report).values()) == {"n/a"}
+    assert report.status == "ok"
+
+
+def test_agent_docs_present_only_with_a_site(make_project, config_dir):
+    """With a GitHub URL the site's llms.txt and <pkg>.md become aspects to document."""
+    root = make_project("sited", {"m.py": '"""M."""\n'})
+    (root / "pyproject.toml").write_text(
+        '[project]\nname = "sited"\nversion = "0.0.1"\n[project.urls]\nHomepage = "https://github.com/o/sited"\n'
+    )
+    (root / "README.md").write_text("# sited\n")
     statuses = _statuses(check_readme(root))
-    assert statuses["skills"] == statuses["subagents"] == statuses["instruction_files"] == "n/a"
-    assert statuses["agent_docs"] == "warn"  # agent_outputs is on by default
-    assert statuses["section"] == "warn"
+    assert statuses["agent_docs"] == "warn" and statuses["section"] == "warn"
+    assert statuses["skills"] == "n/a"
 
 
 def test_no_agent_outputs_means_nothing_to_document(make_project, config_dir):
@@ -244,7 +258,7 @@ def test_section_without_repo_url_has_no_install_line(make_project, config_dir):
     text = render_section(discover_artifacts(root, package_dir=config.package_dir), config, policy=ReadmePolicy())
     assert "gh skill install" not in text
     assert "| `nourl-x` | do x |" in text
-    assert "`llms.txt` indexes every page" in text  # no site URL, no link
+    assert "llms.txt" not in text  # no site URL: no published docs to point at
 
 
 # --------------------------------------------------------------------------
@@ -333,10 +347,16 @@ def test_cli_outputs_and_exit_codes(project, config_dir, capsys):
     data = json.loads(out)
     assert data["status"] == "warn" and data["policy"]["readme"]["humor"] is False
     assert {c["kind"] for c in data["checks"]} == {"section", "skills", "subagents", "instruction_files", "agent_docs"}
+    assert data["policy"]["user"]["humor"] is False and data["policy"]["project"] == {}
     code, out = run("ai-readme-check", str(project), "--draft")
     assert code == 0 and out.startswith(MARKER_START) and MARKER_START not in (project / "README.md").read_text()
     code, out = run("ai-readme-check", str(project), "--write", "--fail-on", "warn")
     assert code == 0 and out.startswith("added: ") and "ok: every agentic aspect" in out
+    code, out = run("ai-readme-check", str(project), "--write", "--format", "json")
+    data = json.loads(out)  # a write in JSON mode stays valid JSON
+    assert data["write"]["outcome"] == "unchanged" and data["status"] == "ok"
+    code, _ = run("ai-readme-check", str(project / "nowhere"))
+    assert code == 2
     code, _ = run("ai-readme-check", str(project), "--draft", "--write")
     assert code == 2
     code, _ = run("ai-readme-check", str(project), "--fail-on", "error")
@@ -356,3 +376,160 @@ def test_cli_reads_the_local_policy(project, config_dir, capsys):
     assert code == 0
     assert data["policy"]["readme"] == {"agentic_aspects": "add", "humor": True, "agentic_first": True}
     assert data["policy"]["path"] == str(config_dir / "config.toml")
+
+
+# --------------------------------------------------------------------------
+# Regressions from the adversarial review
+# --------------------------------------------------------------------------
+
+
+def _write_twice(project, text, **readme):
+    path = project / "README.md"
+    path.write_text(text)
+    first = write_section(project, user_config=_policy(**readme))[1]
+    second = write_section(project, user_config=_policy(**readme))[1]
+    return first, second, path.read_text()
+
+
+def test_level_is_stable_when_the_readme_has_no_atx_headings(project, config_dir):
+    for text in ("Plain intro paragraph.\n", "pkg\n===\n\nsetext title\n", ""):
+        first, second, final = _write_twice(project, text, agentic_first=True)
+        assert (first, second) == ("added", "unchanged"), text
+        assert "\n# For AI agents\n" in final and "## For AI agents" not in final
+        # and a third, fourth write still change nothing
+        assert write_section(project, user_config=_policy(agentic_first=True))[1] == "unchanged"
+
+
+def test_title_only_readme_keeps_level_two(project, config_dir):
+    first, second, final = _write_twice(project, "# pkg\n\nintro\n", agentic_first=True)
+    assert (first, second) == ("added", "unchanged")
+    assert "\n## For AI agents\n" in final and "### For AI agents" not in final
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        f"# T\n\n## A\n\n{MARKER_START}\nold\nKEEP ME\n\n## B\n\nb\n",
+        f"# T\n\n{MARKER_END}\n\n{MARKER_START}\n",
+        f"# T\n\n{MARKER_START}\n{MARKER_END}\n{MARKER_START}\n{MARKER_END}\n",
+    ],
+)
+def test_unpaired_or_repeated_markers_are_refused(project, config_dir, text):
+    (project / "README.md").write_text(text)
+    with pytest.raises(SectionError, match="unpaired or repeated"):
+        write_section(project, user_config=_policy())
+    assert (project / "README.md").read_text() == text  # nothing eaten
+    assert _statuses(check_readme(project))["section"] == "warn"  # not counted as a section
+
+
+def test_markers_inside_a_code_fence_are_not_the_section(project, config_dir):
+    text = f"# T\n\n```\n{MARKER_START}\nexample\n{MARKER_END}\n```\n\n## A\n"
+    assert marker_span(text) is None
+    first, second, final = _write_twice(project, text, agentic_first=True)
+    assert (first, second) == ("added", "unchanged")
+    assert final.startswith(text[: text.index("## A")])  # the fenced example survives
+    assert final.count(MARKER_START) == 2  # the example plus the real one
+
+
+def test_crlf_line_endings_are_preserved(project, config_dir):
+    path = project / "README.md"
+    path.write_bytes(b"# pkg\r\n\r\nintro\r\n\r\n## A\r\n\r\na\r\n")
+    assert write_section(project, user_config=_policy(agentic_first=True))[1] == "added"
+    raw = path.read_bytes()
+    assert b"\r\n" in raw and b"\n" not in raw.replace(b"\r\n", b"")
+    assert write_section(project, user_config=_policy(agentic_first=True))[1] == "unchanged"
+
+
+def test_non_utf8_readme_is_refused(project, config_dir):
+    (project / "README.md").write_bytes(b"# caf\xe9\n")
+    with pytest.raises(SectionError, match="not UTF-8"):
+        write_section(project, user_config=_policy())
+    assert check_readme(project).readme is not None  # the check still runs
+
+
+def test_user_template_must_keep_the_markers(project, config_dir):
+    init_snippets()
+    (snippets_dir() / "agentic-readme-section.md").write_text("{heading} Agents\n\n{name}\n")
+    (project / "README.md").write_text("# pkg\n")
+    with pytest.raises(SectionError, match="must keep"):
+        write_section(project, user_config=_policy())
+    assert (project / "README.md").read_text() == "# pkg\n"
+
+
+@pytest.mark.parametrize("template", ["{marker_start}\n{nope}\n{marker_end}", "{marker_start} { {marker_end}", "{marker_start} {} {marker_end}"])
+def test_broken_user_template_is_an_actionable_error(project, config_dir, template, capsys):
+    import cw
+
+    from epythet.cli import CONVENTION, mk_epythet_parser
+
+    init_snippets()
+    (snippets_dir() / "agentic-readme-section.md").write_text(template)
+    with pytest.raises(SectionError, match="does not format"):
+        draft_section(project, user_config=_policy())
+    code = cw.run(mk_epythet_parser(), ["ai-readme-check", str(project), "--draft"], convention=CONVENTION)
+    assert code == 2
+    assert "agentic-readme-section" in capsys.readouterr().err
+
+
+def test_project_override_pins_the_policy(project, config_dir, capsys):
+    """[tool.epythet.readme] wins over the user's config so a committed README is reproducible."""
+    import cw
+
+    from epythet.cli import CONVENTION, mk_epythet_parser
+
+    config_dir.mkdir()
+    (config_dir / "config.toml").write_text("[readme]\nhumor = false\nagentic_first = false\n")
+    (project / "pyproject.toml").write_text(
+        (project / "pyproject.toml").read_text() + "[tool.epythet.readme]\nhumor = true\nagentic_first = true\n"
+    )
+    (project / "README.md").write_text("# pkg\n\n## Install\n")
+    code = cw.run(mk_epythet_parser(), ["ai-readme-check", str(project), "--format", "json"], convention=CONVENTION)
+    data = json.loads(capsys.readouterr().out)
+    assert code == 0
+    assert data["policy"]["readme"] == {"agentic_aspects": "warn", "humor": True, "agentic_first": True}
+    assert data["policy"]["user"]["humor"] is False
+    assert data["policy"]["project"] == {"humor": True, "agentic_first": True}
+    write_section(project)
+    text = (project / "README.md").read_text()
+    assert text.index(MARKER_START) < text.index("## Install")
+    assert "If you are a human" not in text
+    (project / "pyproject.toml").write_text(
+        (project / "pyproject.toml").read_text() + "humour = 1\n"
+    )
+    with pytest.raises(Exception, match="humour"):
+        check_readme(project)
+
+
+def test_ai_artifacts_env_switch_drops_the_page_link(project, config_dir, monkeypatch):
+    config = load_config(project)
+    artifacts = discover_artifacts(project, package_dir=config.package_dir)
+    assert "ai-agents.html" in render_section(artifacts, config, policy=ReadmePolicy())
+    monkeypatch.setenv("EPYTHET_AI_ARTIFACTS", "0")
+    assert "ai-agents.html" not in render_section(artifacts, config, policy=ReadmePolicy())
+
+
+def test_install_line_prefers_a_setup_skill(project, config_dir):
+    extra = project / "pkg" / "data" / "skills" / "aaa-first"
+    extra.mkdir()
+    (extra / "SKILL.md").write_text("---\nname: aaa-first\ndescription: First alphabetically.\n---\nbody\n")
+    setup = project / "pkg" / "data" / "skills" / "pkg-setup"
+    setup.mkdir()
+    (setup / "SKILL.md").write_text("---\nname: pkg-setup\ndescription: Set up pkg.\n---\nbody\n")
+    config = load_config(project)
+    text = render_section(discover_artifacts(project, package_dir=config.package_dir), config, policy=ReadmePolicy())
+    assert "gh skill install org/pkg pkg-setup --agent claude-code" in text
+
+
+def test_mentions_are_whole_tokens(project, config_dir):
+    (project / "README.md").write_text("# pkg\n\nSee pkg-quickstart-legacy and CLAUDE.mdx\n")
+    statuses = _statuses(check_readme(project))
+    assert statuses["skills"] == "warn"
+    assert statuses["instruction_files"] == "warn"
+    (project / "README.md").write_text("# pkg\n\nSee `pkg-quickstart` and CLAUDE.md.\n")
+    statuses = _statuses(check_readme(project))
+    assert statuses["skills"] == "ok" and statuses["instruction_files"] == "ok"
+
+
+def test_github_anchor_keeps_underscores():
+    assert github_anchor("my_function and my_other") == "my_function-and-my_other"
+    assert github_anchor("See [dol](https://x) 2.0") == "see-dol-20"

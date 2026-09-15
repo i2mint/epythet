@@ -7,18 +7,19 @@ first. :func:`check_readme` reuses :func:`epythet.ai_artifacts.discover_artifact
 to learn what exists and reads the README to see whether each kind is mentioned
 (a ``gh skill install`` line, a skill or agent name, ``CLAUDE.md``, ``llms.txt``,
 a heading about agents). The result is a :class:`ReadmeReport`: one
-:class:`KindCheck` per kind, each ``ok``, ``warn`` or ``n/a``.
+:class:`KindCheck` per kind, each ``ok``, ``warn`` or ``n/a``. The check is a
+heuristic: a mention counts whatever the sentence around it says.
 
 :func:`render_section` produces the README section from the effective snippets
 (:mod:`epythet.userconfig`: the user's ``agentic-readme-section.md`` and
-``agentic-readme-humor.md`` over the packaged defaults) and the user's
-:class:`~epythet.userconfig.ReadmePolicy`. :func:`place_section` puts it
-between two marker comments so a later run updates it in place: right after
-the README's intro (before the first section heading) when ``agentic_first`` is
-on, at the end otherwise. The "for humans" line links to the heading that
-follows the section.
+``agentic-readme-humor.md`` over the packaged defaults) and the effective
+:class:`~epythet.userconfig.ReadmePolicy` (the user's ``config.toml``, with a
+project's ``[tool.epythet.readme]`` keys on top so a committed README does not
+depend on who ran the tool). :func:`place_section` puts it between two marker
+comments so a later run updates it in place: before the first heading after the
+title when ``agentic_first`` is on, at the end otherwise. The "for humans" line
+links to the heading that follows the section.
 
->>> from epythet.userconfig import ReadmePolicy
 >>> readme = "# pkg\\n\\nTagline.\\n\\n# Install\\n\\npip install pkg\\n"
 >>> start, end, heading, level = place_section(readme, agentic_first=True)
 >>> readme[start:end], heading.title, level
@@ -34,30 +35,33 @@ import re
 import zlib
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Callable, Iterator
+from typing import Any, Callable, Iterator, Mapping
 
 from epythet.ai_artifacts import (
+    DEFAULT_AGENT_HOST,
     AIArtifacts,
     agent_outputs_for,
     discover_artifacts,
+    enabled_by_environment,
     repo_stub_for,
     site_url_for,
 )
 from epythet.userconfig import (
     ReadmePolicy,
     UserConfig,
+    UserConfigError,
     load_user_config,
     pool_lines,
     snippet_text,
 )
 
-#: The comments that delimit the generated section in a README.
+#: The comments that delimit the generated section in a README (each on its own line).
 MARKER_START = "<!-- epythet:agentic-readme:start -->"
 MARKER_END = "<!-- epythet:agentic-readme:end -->"
 #: README filenames, in order of preference.
 README_NAMES = ("README.md", "readme.md", "README.markdown", "README.rst", "README.txt", "README")
 #: The kinds a check reports on, in display order.
-KINDS = ("section", "skills", "subagents", "instruction_files", "agent_docs")
+KINDS = ("skills", "subagents", "instruction_files", "agent_docs", "section")
 #: The snippet names the section is rendered from.
 SECTION_SNIPPET = "agentic-readme-section"
 HUMOR_SNIPPET = "agentic-readme-humor"
@@ -66,6 +70,8 @@ INSTRUCTION_SNIPPET = "agentic-readme-instruction"
 NEUTRAL_INTRO = "If you are a human"
 #: Longest blurb (first sentence of a description) shown per skill or agent.
 MAX_BLURB = 140
+#: Skill name suffixes that make a skill the one named in the install line.
+HEADLINE_SUFFIXES = ("-setup", "-quickstart", "-start")
 #: The fields a section snippet may use.
 SECTION_FIELDS = frozenset(
     {
@@ -87,6 +93,14 @@ SECTION_FIELDS = frozenset(
 _HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 _FENCE_RE = re.compile(r"^\s*(```|~~~)")
 _AGENT_HEADING_RE = re.compile(r"\bagents?\b|\bagentic\b|\bllms?\b", re.IGNORECASE)
+
+
+class SectionError(ValueError):
+    """The README or a snippet is in a state the tool will not write over.
+
+    Raised for unpaired or repeated markers, a README that is not UTF-8 or not
+    Markdown, and a section snippet that fails to format or drops the markers.
+    """
 
 
 # --------------------------------------------------------------------------
@@ -114,12 +128,18 @@ class KindCheck:
 
 @dataclass(frozen=True)
 class ReadmeReport:
-    """The outcome of :func:`check_readme` for one project."""
+    """The outcome of :func:`check_readme` for one project.
+
+    ``policy`` is the effective :class:`ReadmePolicy`; ``user_config`` and
+    ``project_overrides`` are where it came from.
+    """
 
     project_dir: Path
     readme: Path | None
     checks: tuple[KindCheck, ...]
-    policy: UserConfig
+    policy: ReadmePolicy
+    user_config: UserConfig
+    project_overrides: Mapping[str, Any]
 
     @property
     def warnings(self) -> tuple[KindCheck, ...]:
@@ -137,7 +157,7 @@ class ReadmeReport:
             "project_dir": str(self.project_dir),
             "readme": str(self.readme) if self.readme else None,
             "status": self.status,
-            "policy": self.policy.to_dict(),
+            "policy": self.user_config.to_dict(self.project_overrides),
             "checks": [{**asdict(c), "status": c.status} for c in self.checks],
         }
 
@@ -145,11 +165,12 @@ class ReadmeReport:
         """The plain-text listing (the default CLI output)."""
         lines = [f"Agentic aspects of {self.project_dir}"]
         lines.append(f"README: {self.readme.name if self.readme else 'none found'}")
-        readme = self.policy.readme
+        source = (
+            f"  ({self.user_config.path})" if self.user_config.path else "  (packaged defaults)"
+        ) + ("  + [tool.epythet.readme]" if self.project_overrides else "")
         lines.append(
-            f"policy: agentic_aspects={readme.agentic_aspects} humor={readme.humor} "
-            f"agentic_first={readme.agentic_first}"
-            + (f"  ({self.policy.path})" if self.policy.path else "  (packaged defaults)")
+            f"policy: agentic_aspects={self.policy.agentic_aspects} humor={self.policy.humor} "
+            f"agentic_first={self.policy.agentic_first}{source}"
         )
         lines.append("")
         lines.append(f"{'kind':<18} {'status':<6} {'in project':<28} evidence")
@@ -172,7 +193,7 @@ def _shorten(text: str, width: int) -> str:
 
 
 # --------------------------------------------------------------------------
-# The check
+# The project: README, config, artifacts, effective policy
 # --------------------------------------------------------------------------
 
 
@@ -184,6 +205,19 @@ def find_readme(project_dir: str | Path) -> Path | None:
         if candidate.is_file():
             return candidate
     return None
+
+
+def read_readme(path: Path) -> tuple[str, str]:
+    """``(text, newline)``: the README with ``\\n`` line ends, and the style to write back.
+
+    :raises SectionError: when the file is not UTF-8
+    """
+    try:
+        text = path.read_bytes().decode("utf-8")
+    except UnicodeDecodeError as e:
+        raise SectionError(f"{path.name} is not UTF-8 ({e}); only UTF-8 READMEs are edited") from e
+    newline = "\r\n" if "\r\n" in text else "\n"
+    return text.replace("\r\n", "\n"), newline
 
 
 def load_project(project_dir: str | Path):
@@ -198,6 +232,50 @@ def load_project(project_dir: str | Path):
     return config, discover_artifacts(project_dir, package_dir=package_dir)
 
 
+@dataclass(frozen=True)
+class Project:
+    """What every entry point needs once: config, artifacts, README, effective policy."""
+
+    root: Path
+    config: Any
+    artifacts: AIArtifacts
+    readme: Path | None
+    user_config: UserConfig
+    policy: ReadmePolicy
+    project_overrides: Mapping[str, Any]
+
+
+def load(
+    project_dir: str | Path,
+    *,
+    config=None,
+    artifacts: AIArtifacts | None = None,
+    user_config: UserConfig | None = None,
+) -> Project:
+    """Resolve a project once; each argument given is used instead of being loaded."""
+    root = Path(project_dir).absolute()
+    if artifacts is None or config is None:
+        loaded_config, loaded_artifacts = load_project(root)
+        config = config if config is not None else loaded_config
+        artifacts = artifacts if artifacts is not None else loaded_artifacts
+    user_config = user_config if user_config is not None else load_user_config()
+    overrides = dict(getattr(config, "readme", None) or {}) if config is not None else {}
+    return Project(
+        root,
+        config,
+        artifacts,
+        find_readme(root),
+        user_config,
+        user_config.readme_for(overrides),
+        overrides,
+    )
+
+
+# --------------------------------------------------------------------------
+# The check
+# --------------------------------------------------------------------------
+
+
 def check_readme(
     project_dir: str | Path,
     *,
@@ -209,27 +287,37 @@ def check_readme(
 
     :param config: the :class:`~epythet.config.DocsConfig` (loaded when omitted)
     :param artifacts: discovery result (computed when omitted)
-    :param user_config: the effective policy (read from the config dir when omitted)
+    :param user_config: the user's policy (read from the config dir when omitted)
     """
-    root = Path(project_dir).absolute()
-    if artifacts is None or config is None:
-        loaded_config, loaded_artifacts = load_project(root)
-        config = config if config is not None else loaded_config
-        artifacts = artifacts if artifacts is not None else loaded_artifacts
-    user_config = user_config if user_config is not None else load_user_config()
-    readme = find_readme(root)
-    text = readme.read_text(encoding="utf-8", errors="replace") if readme else ""
-    checks = tuple(_checks_for(artifacts, config, text))
-    return ReadmeReport(root, readme, checks, user_config)
+    project = load(project_dir, config=config, artifacts=artifacts, user_config=user_config)
+    text = (
+        project.readme.read_text(encoding="utf-8", errors="replace") if project.readme else ""
+    )
+    return ReadmeReport(
+        project.root,
+        project.readme,
+        tuple(_checks_for(project.artifacts, project.config, text)),
+        project.policy,
+        project.user_config,
+        project.project_overrides,
+    )
+
+
+def _mentioned(text: str, needle: str) -> bool:
+    """``needle`` in ``text`` as a whole token (not inside a longer word or name).
+
+    >>> _mentioned("use pages-tool", "pages"), _mentioned("the pages skill", "pages")
+    (False, True)
+    """
+    return bool(re.search(rf"(?<![\w-]){re.escape(needle)}(?![\w-])", text, re.IGNORECASE))
 
 
 def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
-    lowered = text.lower()
     headings = [h.title for h in headings_of(text)]
     agent_headings = [h for h in headings if _AGENT_HEADING_RE.search(h)]
 
     def mentions(*needles) -> list[str]:
-        return [n for n in needles if n and n.lower() in lowered]
+        return [n for n in needles if n and _mentioned(text, n)]
 
     skills = artifacts.skills
     hits = mentions("gh skill install", *(s.name for s in skills))
@@ -241,7 +329,7 @@ def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
         _evidence(hits, "no `gh skill install` line and no skill name"),
     )
     agents = artifacts.subagents
-    hits = mentions("subagent", "sub-agent", *(a.name for a in agents))
+    hits = mentions("subagent", "subagents", "sub-agent", "sub-agents", *(a.name for a in agents))
     yield KindCheck(
         "subagents",
         bool(agents),
@@ -251,7 +339,7 @@ def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
     )
     files = artifacts.instruction_files
     names = tuple(f.source for f in files)
-    hits = mentions(*(Path(n).name for n in names))
+    hits = mentions(*(f.source if f.is_dir else Path(f.source).name for f in files))
     yield KindCheck(
         "instruction_files",
         bool(files),
@@ -259,8 +347,7 @@ def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
         names,
         _evidence(hits, "no instruction file named"),
     )
-    outputs = agent_outputs_for(config) if config is not None else []
-    agent_docs = [o.filename for o in outputs if o.kind != "objects_inv"]
+    agent_docs = [o.filename for o in _published_outputs(config) if o.kind != "objects_inv"]
     hits = mentions(*agent_docs, "objects.inv", ".md twin", "ai-agents.html")
     yield KindCheck(
         "agent_docs",
@@ -270,7 +357,7 @@ def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
         _evidence(hits, "no `llms.txt`, `<package>.md` or `objects.inv` mention"),
     )
     anything = bool(skills or agents or files or agent_docs)
-    if MARKER_START in text:
+    if marker_span(text, strict=False) is not None:
         evidence, documented = "epythet section markers", True
     elif agent_headings:
         evidence, documented = f"heading {agent_headings[0]!r}", True
@@ -279,12 +366,23 @@ def _checks_for(artifacts, config, text) -> Iterator[KindCheck]:
     yield KindCheck("section", anything, documented, (), evidence)
 
 
+def _published_outputs(config) -> list:
+    """The agent-readable outputs the project publishes at a known URL (else none).
+
+    Without a GitHub URL there is no site to point at, so the outputs are not
+    an aspect the README can be asked to document.
+    """
+    if config is None or not site_url_for(config.repo_url):
+        return []
+    return agent_outputs_for(config)
+
+
 def _evidence(hits: list[str], missing: str) -> str:
     return "mentions " + ", ".join(f"`{h}`" for h in hits[:4]) if hits else missing
 
 
 # --------------------------------------------------------------------------
-# README structure: headings outside fences, placement, anchors
+# README structure: headings and markers outside fences, placement, anchors
 # --------------------------------------------------------------------------
 
 
@@ -297,15 +395,9 @@ class Heading:
     title: str
 
 
-def headings_of(text: str) -> list[Heading]:
-    """Every ATX heading outside fenced code blocks.
-
-    >>> [h.title for h in headings_of("# A\\n```\\n# not one\\n```\\n## B\\n")]
-    ['A', 'B']
-    """
-    found = []
+def _lines_outside_fences(lines: list[str]) -> Iterator[tuple[int, str]]:
     fence = None
-    for index, line in enumerate(text.splitlines()):
+    for index, line in enumerate(lines):
         fence_match = _FENCE_RE.match(line)
         if fence_match:
             marker = fence_match.group(1)
@@ -314,12 +406,52 @@ def headings_of(text: str) -> list[Heading]:
             elif marker == fence:
                 fence = None
             continue
-        if fence is not None:
-            continue
+        if fence is None:
+            yield index, line
+
+
+def headings_of(text: str) -> list[Heading]:
+    """Every ATX heading outside fenced code blocks.
+
+    >>> [h.title for h in headings_of("# A\\n```\\n# not one\\n```\\n## B\\n")]
+    ['A', 'B']
+    """
+    found = []
+    for index, line in _lines_outside_fences(text.splitlines()):
         match = _HEADING_RE.match(line)
         if match:
             found.append(Heading(index, len(match.group(1)), match.group(2).strip()))
     return found
+
+
+def marker_span(text: str, *, strict: bool = True) -> tuple[int, int] | None:
+    """The character span of the marked section (``None`` when there is none).
+
+    Markers count only on their own line outside fenced code, so a README that
+    shows them in an example is not mistaken for one that has the section.
+
+    :param strict: raise :class:`SectionError` on an unpaired or repeated marker
+        (``False``: report such a README as having no section)
+    """
+    lines = text.splitlines(keepends=True)
+    offsets = _line_offsets(lines)
+    starts, ends = [], []
+    for index, line in _lines_outside_fences(lines):
+        stripped = line.strip()
+        if stripped == MARKER_START:
+            starts.append(index)
+        elif stripped == MARKER_END:
+            ends.append(index)
+    if not starts and not ends:
+        return None
+    if len(starts) != 1 or len(ends) != 1 or ends[0] < starts[0]:
+        if not strict:
+            return None
+        raise SectionError(
+            f"the README has unpaired or repeated epythet markers ({len(starts)} start, "
+            f"{len(ends)} end); fix them by hand before writing the section"
+        )
+    return offsets[starts[0]], offsets[ends[0] + 1]
 
 
 def github_anchor(title: str) -> str:
@@ -327,10 +459,13 @@ def github_anchor(title: str) -> str:
 
     >>> github_anchor("For AI agents"), github_anchor("What it *fixes*: `x`")
     ('for-ai-agents', 'what-it-fixes-x')
+    >>> github_anchor("my_function and [links](https://x)")
+    'my_function-and-links'
     """
-    cleaned = re.sub(r"[`*_]", "", title).strip().lower()
+    cleaned = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", title)
+    cleaned = re.sub(r"[`*]", "", cleaned).strip().lower()
     cleaned = re.sub(r"[^\w\- ]", "", cleaned)
-    return re.sub(r" ", "-", cleaned)
+    return cleaned.replace(" ", "-")
 
 
 def humans_link_for(heading: Heading | None) -> str:
@@ -350,24 +485,23 @@ def place_section(
     empty span right before the first heading after the title (``agentic_first``)
     or at the end of the file. ``next_heading`` is the heading that follows the
     span (the "for humans" target) and ``level`` the heading level the section
-    should use to sit among its siblings.
+    should use to sit among its siblings. Headings inside the existing section
+    are ignored, so rewriting never changes the level.
+
+    :raises SectionError: on unpaired markers
     """
-    lines = text.splitlines(keepends=True)
-    offsets = _line_offsets(lines)
+    offsets = _line_offsets(text.splitlines(keepends=True))
+    span = marker_span(text)
+    if span is not None:
+        start, end = span
+        outside = [h for h in headings_of(text) if not start <= offsets[h.line] < end]
+        next_heading = next((h for h in outside if offsets[h.line] >= end), None)
+        return start, end, next_heading, _section_level(outside, next_heading)
     headings = headings_of(text)
-    if MARKER_START in text and MARKER_END in text:
-        start = text.index(MARKER_START)
-        start = text.rfind("\n", 0, start) + 1
-        end = text.index(MARKER_END, start) + len(MARKER_END)
-        end = _consume_newline(text, end)
-        next_heading = next((h for h in headings if offsets[h.line] >= end), None)
-        return start, end, next_heading, _section_level(headings, next_heading)
     if agentic_first and len(headings) >= 2:
         target = headings[1]
-        start = end = offsets[target.line]
-        return start, end, target, _section_level(headings, target)
-    start = end = len(text)
-    return start, end, None, _section_level(headings, None)
+        return offsets[target.line], offsets[target.line], target, _section_level(headings, target)
+    return len(text), len(text), None, _section_level(headings, None)
 
 
 def _line_offsets(lines: list[str]) -> list[int]:
@@ -377,10 +511,6 @@ def _line_offsets(lines: list[str]) -> list[int]:
         total += len(line)
     offsets.append(total)
     return offsets
-
-
-def _consume_newline(text: str, end: int) -> int:
-    return end + 1 if text[end : end + 1] == "\n" else end
 
 
 def _section_level(headings: list[Heading], next_heading: Heading | None) -> int:
@@ -419,33 +549,48 @@ def render_section(
     level: int = 1,
     humans_link: str = "the top of the page",
     snippets: Callable[[str], str] = snippet_text,
+    agent: str = DEFAULT_AGENT_HOST,
 ) -> str:
     """The README section for ``artifacts``, from the effective snippets and ``policy``.
 
     :param level: heading level (``1`` renders ``# For AI agents``)
     :param humans_link: what the "for humans" sentence points at
     :param snippets: ``name -> text`` resolver (the seam tests use to inject text)
-    :raises KeyError: when the section snippet uses a field the renderer does not provide
+    :param agent: the host named in the ``gh skill install`` line
+    :raises SectionError: when the section snippet fails to format or drops a marker
     """
     name = config.name if config is not None else artifacts.project_dir.name
     repo_stub = repo_stub_for(config.repo_url) if config is not None else ""
     site_url = site_url_for(config.repo_url) if config is not None else ""
     template = snippets(SECTION_SNIPPET)
-    intro = _for_humans_intro(name, policy, snippets(HUMOR_SNIPPET))
-    return template.format(
+    fields = dict(
         marker_start=MARKER_START,
         marker_end=MARKER_END,
         heading="#" * max(1, min(level, 6)),
         name=name,
         repo_stub=repo_stub,
         site_url=site_url,
-        skills_block=_skills_block(artifacts, repo_stub),
+        skills_block=_skills_block(artifacts, repo_stub, agent),
         subagents_block=_subagents_block(artifacts),
         instructions_block=_instructions_block(artifacts),
         docs_block=_docs_block(config, artifacts, site_url),
-        for_humans_intro=intro,
+        for_humans_intro=_for_humans_intro(name, policy, snippets(HUMOR_SNIPPET)),
         humans_link=humans_link,
-    ).strip("\n") + "\n"
+    )
+    try:
+        rendered = template.format(**fields)
+    except (KeyError, IndexError, ValueError) as e:
+        raise SectionError(
+            f"snippet {SECTION_SNIPPET!r} does not format: {e!r}; the fields are "
+            f"{sorted(SECTION_FIELDS)} and literal braces must be doubled ({{{{ and }}}})"
+        ) from e
+    rendered = rendered.strip("\n") + "\n"
+    if MARKER_START not in rendered or MARKER_END not in rendered:
+        raise SectionError(
+            f"snippet {SECTION_SNIPPET!r} must keep {{marker_start}} and {{marker_end}} "
+            "(each on its own line), or the section cannot be updated in place"
+        )
+    return rendered
 
 
 def _for_humans_intro(name: str, policy: ReadmePolicy, pool_text: str) -> str:
@@ -482,20 +627,26 @@ def _first_clause(text: str, max_length: int) -> str:
     return text[: cut if cut > 0 else max_length].rstrip(",;: ") + "…"
 
 
-def _skills_block(artifacts: AIArtifacts, repo_stub: str) -> str:
+def headline_skill(skills):
+    """The skill named in the install line: a ``*-setup``-like one if any, else the first installable."""
+    installable = [s for s in skills if s.installable]
+    for suffix in HEADLINE_SUFFIXES:
+        for skill in installable:
+            if skill.name.endswith(suffix):
+                return skill
+    return installable[0] if installable else None
+
+
+def _skills_block(artifacts: AIArtifacts, repo_stub: str, agent: str) -> str:
     skills = artifacts.skills
     if not skills:
         return ""
-    parts = [
-        "\n**Skills** ([Agent Skills](https://agentskills.io) format), for any agent host.",
-    ]
-    installable = [s for s in skills if s.installable]
-    if repo_stub and installable:
+    parts = ["\n**Skills** ([Agent Skills](https://agentskills.io) format), for any agent host."]
+    headline = headline_skill(skills)
+    command = headline.install_command(repo_stub, agent=agent) if headline else None
+    if command:
         parts[0] += " Install one with `gh skill`:"
-        parts.append(
-            f"\n```bash\ngh skill install {repo_stub} {installable[0].name} --agent claude-code"
-            "   # or copilot, cursor, codex, gemini\n```\n"
-        )
+        parts.append(f"\n```bash\n{command}   # or copilot, cursor, codex, gemini\n```\n")
     else:
         parts[0] += "\n"
     parts.append("\n| Skill | Use it to |\n|---|---|\n")
@@ -531,9 +682,7 @@ def _instructions_block(artifacts: AIArtifacts) -> str:
 
 
 def _docs_block(config, artifacts: AIArtifacts, site_url: str) -> str:
-    if config is None:
-        return ""
-    outputs = {o.kind: o for o in agent_outputs_for(config)}
+    outputs = {o.kind: o for o in _published_outputs(config)}
     if "llms" not in outputs:
         return ""
 
@@ -548,7 +697,8 @@ def _docs_block(config, artifacts: AIArtifacts, site_url: str) -> str:
     if "objects_inv" in outputs:
         parts.append(f"; {link('objects_inv')} maps symbols to URLs")
     parts.append(".")
-    if site_url and getattr(config, "ai_artifacts", True) and artifacts:
+    page_on = getattr(config, "ai_artifacts", True) and enabled_by_environment()
+    if site_url and page_on and artifacts:
         parts.append(
             f" The full list, with install lines, is on the site's "
             f"[For AI agents]({site_url}ai-agents.html) page."
@@ -577,22 +727,18 @@ def draft_section(
 
     ``readme_text`` is the current README (``""`` when none exists); ``start``
     and ``end`` delimit the span the section replaces.
+
+    :raises SectionError: on unpaired markers, a non-UTF-8 README, or a broken snippet
     """
-    root = Path(project_dir).absolute()
-    user_config = user_config if user_config is not None else load_user_config()
-    if artifacts is None or config is None:
-        loaded_config, loaded_artifacts = load_project(root)
-        config = config if config is not None else loaded_config
-        artifacts = artifacts if artifacts is not None else loaded_artifacts
-    readme = find_readme(root)
-    text = readme.read_text(encoding="utf-8") if readme else ""
+    project = load(project_dir, config=config, artifacts=artifacts, user_config=user_config)
+    text = read_readme(project.readme)[0] if project.readme else ""
     start, end, next_heading, level = place_section(
-        text, agentic_first=user_config.readme.agentic_first
+        text, agentic_first=project.policy.agentic_first
     )
     section = render_section(
-        artifacts,
-        config,
-        policy=user_config.readme,
+        project.artifacts,
+        project.config,
+        policy=project.policy,
         level=level,
         humans_link=humans_link_for(next_heading),
     )
@@ -606,20 +752,23 @@ def write_section(
 
     ``outcome`` is ``added``, ``updated`` or ``unchanged``. The README must be
     Markdown (``README.md``); a missing README is created with the section alone.
+    Line endings are kept as found (CRLF stays CRLF).
 
-    :raises ValueError: when the README is not Markdown
+    :raises SectionError: when the README is not Markdown, not UTF-8, has unpaired
+        markers, or the snippet is broken
     """
     root = Path(project_dir).absolute()
     readme = find_readme(root)
     if readme is not None and readme.suffix.lower() not in (".md", ".markdown"):
-        raise ValueError(f"{readme.name} is not Markdown; only README.md is edited")
+        raise SectionError(f"{readme.name} is not Markdown; only README.md is edited")
     section, text, start, end = draft_section(root, user_config=user_config)
+    newline = read_readme(readme)[1] if readme is not None else "\n"
     new_text = splice_section(text, section, start=start, end=end)
     target = readme or root / "README.md"
     if readme is not None and new_text == text:
         return target, "unchanged"
-    target.write_text(new_text, encoding="utf-8")
-    return target, "updated" if MARKER_START in text else "added"
+    target.write_bytes(new_text.replace("\n", newline).encode("utf-8"))
+    return target, "updated" if marker_span(text, strict=False) else "added"
 
 
 # --------------------------------------------------------------------------
@@ -642,8 +791,9 @@ def ai_readme_check(
     each in the README: a ``gh skill install`` line or skill name, a subagent
     name, ``CLAUDE.md`` / ``AGENTS.md``, ``llms.txt`` / ``<package>.md``, and a
     heading about agents (or epythet's own section markers). The effective
-    policy (``~/.config/epythet/config.toml``, ``[readme]``) is part of the
-    output so a skill can read it.
+    policy (``~/.config/epythet/config.toml`` ``[readme]``, overridden by the
+    project's ``[tool.epythet.readme]``) is part of the output so a skill can
+    read it. ``--write`` is explicit: it writes whatever the policy says.
 
     :param project_dir: the project root
     :param format: table (human) or json
@@ -659,22 +809,27 @@ def ai_readme_check(
         raise cw.CommandError("--fail-on must be warn (or omitted)", code=2)
     if draft and write:
         raise cw.CommandError("--draft and --write are exclusive", code=2)
+    if not Path(project_dir).is_dir():
+        raise cw.CommandError(f"not a directory: {project_dir}", code=2)
     try:
         user_config = load_user_config()
-    except Exception as e:
-        raise cw.CommandError(str(e), code=2) from e
-    if draft:
-        section, _, _, _ = draft_section(project_dir, user_config=user_config)
-        print(section, end="")
-        return
-    if write:
-        try:
-            path, outcome = write_section(project_dir, user_config=user_config)
-        except (ValueError, KeyError) as e:
-            raise cw.CommandError(str(e), code=2) from e
-        print(f"{outcome}: {path}")
-    report = check_readme(project_dir, user_config=user_config)
-    print(json.dumps(report.to_dict(), indent=2) if format == "json" else report.table())
+        if draft:
+            section, _, _, _ = draft_section(project_dir, user_config=user_config)
+            print(section, end="")
+            return
+        written = write_section(project_dir, user_config=user_config) if write else None
+        report = check_readme(project_dir, user_config=user_config)
+    except (SectionError, UserConfigError, KeyError, OSError) as e:
+        raise cw.CommandError(str(e.args[0] if e.args else e), code=2) from e
+    if format == "json":
+        data = report.to_dict()
+        if written:
+            data["write"] = {"path": str(written[0]), "outcome": written[1]}
+        print(json.dumps(data, indent=2))
+    else:
+        if written:
+            print(f"{written[1]}: {written[0]}")
+        print(report.table())
     if fail_on == "warn" and report.warnings:
         raise cw.CommandError(
             f"undocumented agentic aspects: {', '.join(c.kind for c in report.warnings)}",

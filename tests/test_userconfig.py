@@ -160,9 +160,36 @@ def test_snippets_dir_override_from_config(config_dir, tmp_path):
     assert snippet_text("agentic-readme-humor") == "Elsewhere\n"
 
 
-def test_pool_lines_skip_comments_and_blanks():
+def test_pool_lines_skip_comments_and_blanks(config_dir):
     assert pool_lines("# c\n\nA\n  B \n#D\n") == ["A", "B"]
     assert len(pool_lines(snippet_text("agentic-readme-humor"))) >= 4
+
+
+def test_relative_snippets_dir_is_under_the_config_dir(config_dir):
+    config_dir.mkdir()
+    (config_dir / "config.toml").write_text('[snippets]\ndir = "mine"\n')
+    assert snippets_dir() == config_dir / "mine"
+
+
+def test_config_with_bom_and_nested_table(config_dir):
+    config_dir.mkdir()
+    (config_dir / "config.toml").write_bytes(b"\xef\xbb\xbf[readme]\nhumor = true\n")
+    assert load_user_config().readme.humor is True
+    (config_dir / "config.toml").write_text("[readme.sub]\nx = 1\n")
+    with pytest.raises(UserConfigError):
+        load_user_config()
+    (config_dir / "config.toml").write_text("[snippets]\ndir = 42\n")
+    with pytest.raises(UserConfigError, match="dir must be a string"):
+        load_user_config()
+
+
+def test_damaged_header_never_eats_body(config_dir):
+    init_snippets()
+    target = config_dir / "snippets" / "agentic-readme-humor.md"
+    text = target.read_text()
+    broken = text.replace(" -->", "", 1) + "trailing -->\n"
+    assert header_version(broken) == ""
+    assert strip_header(broken) == broken
 
 
 # --------------------------------------------------------------------------
@@ -262,3 +289,6 @@ def test_snippets_cli_round_trip(config_dir, capsys):
     assert code == 1 and "+Only me" in out
     code, _ = run("snippets", "show", "nope")
     assert code == 2
+    (config_dir / "config.toml").write_text("[readme\n")
+    for argv in (["list"], ["show", "agentic-readme-humor"], ["init"], ["diff"]):
+        assert run("snippets", *argv)[0] == 2, argv
