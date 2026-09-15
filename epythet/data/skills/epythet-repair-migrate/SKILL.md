@@ -109,4 +109,6 @@ One pull request per repository, titled for the sweep, body carrying the report.
 
 ## Delegation
 
+The sweep is procedural work, not design work: everything it decides is decided by this skill, so run it on a Sonnet-class model, one repository at a time, and reserve an Opus subagent for the adversarial review of the diff alone.
+
 The `docs-migrator` subagent shipped with epythet runs this procedure end to end for one repository; the `docs-reviewer` subagent reviews rendered pages and proposes ledger rules. Both are in the package's `data/agents/` directory and on the "For AI agents" page of epythet's documentation.
