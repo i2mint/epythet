@@ -155,7 +155,7 @@ def test_snippets_dir_override_from_config(config_dir, tmp_path):
     elsewhere.mkdir()
     (elsewhere / "agentic-readme-humor.md").write_text("Elsewhere\n")
     config_dir.mkdir()
-    (config_dir / "config.toml").write_text(f'[snippets]\ndir = "{elsewhere}"\n')
+    (config_dir / "config.toml").write_text(f"[snippets]\ndir = '{elsewhere}'\n")  # TOML literal string: Windows paths keep their backslashes
     assert snippet("agentic-readme-humor").source == "user"
     assert snippet_text("agentic-readme-humor") == "Elsewhere\n"
 
