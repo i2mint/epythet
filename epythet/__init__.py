@@ -32,6 +32,11 @@ Whether the README documents them is :func:`check_readme`
 (``epythet ai-readme-check``), with the user's policy and text snippets from
 :mod:`epythet.userconfig` (``~/.config/epythet``).
 
+Every site states its provenance: a one-line footer on the landing page (build
+time, commit, package version), an ``about-this-build`` page with the full
+diagnosis and a ``build_info.json`` for machines, see :mod:`epythet.provenance`
+and :func:`collect_build_info`.
+
 GitHub Pages helpers (:func:`check_pages_setup`, :func:`enable_pages`) and
 docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,
 :func:`repair_package`) live in :mod:`epythet.tools`.
@@ -47,6 +52,7 @@ from epythet.agent_outputs import write_aggregates
 from epythet.ai_artifacts import discover_artifacts, ai_artifacts_page
 from epythet.agentic_readme import check_readme, render_section, write_section
 from epythet.userconfig import config_dir, load_user_config, snippet_text
+from epythet.provenance import collect_build_info
 
 from epythet.tools import (
     repair_package,

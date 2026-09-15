@@ -9,7 +9,12 @@ import pytest
 import cw
 from epythet.cli import mk_epythet_parser
 from epythet.migrate import convert_fields, field_regions, migrate_style
-from epythet.repair import IMPORT_FAILED, repair, repair_source, rewrite_docstring_literal
+from epythet.repair import (
+    IMPORT_FAILED,
+    repair,
+    repair_source,
+    rewrite_docstring_literal,
+)
 from epythet.tools import repair_package
 from epythet.validation.core import resolve_package
 from epythet.validation.rendered import dangling_anchors
@@ -27,7 +32,13 @@ def test_ignore_takes_several_values_on_every_command():
 
 
 def test_ignore_is_a_path_substring_not_characters(make_project):
-    project = make_project("pkg", {"mod.py": '"""M."""\n\n\ndef f():\n    """Do.\n    >>> f()\n    """\n', "tests_helper.py": '"""T."""\n\n\ndef g():\n    """Do.\n    >>> g()\n    """\n'})
+    project = make_project(
+        "pkg",
+        {
+            "mod.py": '"""M."""\n\n\ndef f():\n    """Do.\n    >>> f()\n    """\n',
+            "tests_helper.py": '"""T."""\n\n\ndef g():\n    """Do.\n    >>> g()\n    """\n',
+        },
+    )
     report = repair(project, ignore=["tests_"])
     assert [f.path.name for f in report.files] == ["__init__.py", "mod.py"]
 
@@ -55,7 +66,7 @@ def test_unparseable_doctest_is_refused_not_crashed():
     literal = '"""Do.\n\n      >>> f()\n    1\n    """'  # output less indented than its prompt
     new, reason = rewrite_docstring_literal(literal)
     assert new == literal and reason.startswith("doctest could not parse")
-    result = repair_source('def f():\n    ' + literal + "\n")
+    result = repair_source("def f():\n    " + literal + "\n")
     assert result.refused and not result.changed
 
 
@@ -68,19 +79,26 @@ def test_first_line_one_liner_section_uses_the_leading_newline_form():
     new, reason = rewrite_docstring_literal(literal)
     assert reason is None
     assert new == '"""\n    Returns:\n        the x\n        doubled.\n    """'
-    assert inspect.cleandoc(split_literal(new)[2]) == "Returns:\n    the x\n    doubled."
+    assert (
+        inspect.cleandoc(split_literal(new)[2]) == "Returns:\n    the x\n    doubled."
+    )
     assert rewrite_docstring_literal(new)[0] == new  # idempotent
 
 
 def test_form_feed_earlier_in_the_file_does_not_shift_offsets():
-    source = "x = 1\n\x0c\ny = 'é'; z = 2\n\n\ndef f():\n    \"\"\"Do.\n    >>> f()\n    \"\"\"\n"
+    source = 'x = 1\n\x0c\ny = \'é\'; z = 2\n\n\ndef f():\n    """Do.\n    >>> f()\n    """\n'
     result = repair_source(source)
     assert result.applied and result.applied[0].qualname == "f"
     assert result.repaired.startswith("x = 1\n\x0c\ny = 'é'; z = 2\n")
 
 
 def test_unimportable_module_is_written_but_reported_unverified(make_project):
-    project = make_project("pkg", {"mod.py": 'from .nowhere import thing  # noqa\n\n\ndef f():\n    """Do.\n    >>> f()\n    """\n'})
+    project = make_project(
+        "pkg",
+        {
+            "mod.py": 'from .nowhere import thing  # noqa\n\n\ndef f():\n    """Do.\n    >>> f()\n    """\n'
+        },
+    )
     report = repair(project, write=True)
     changed = report.changed[0]
     assert changed.written and changed.verification[0].startswith("not verified")
@@ -89,16 +107,23 @@ def test_unimportable_module_is_written_but_reported_unverified(make_project):
 def test_doctest_gate_uses_the_dotted_import_so_relative_imports_work(make_project):
     project = make_project(
         "pkg",
-        {"helper.py": '"""H."""\nVALUE = 1\n', "mod.py": 'from .helper import VALUE\n\n\ndef f():\n    """Do.\n    >>> f()\n    1\n    """\n    return VALUE\n'},
+        {
+            "helper.py": '"""H."""\nVALUE = 1\n',
+            "mod.py": 'from .helper import VALUE\n\n\ndef f():\n    """Do.\n    >>> f()\n    1\n    """\n    return VALUE\n',
+        },
     )
     report = repair(project, write=True)
     assert report.changed[0].verification == ["doctests: 0 failure(s) before, 0 after"]
 
 
 def test_refused_count_is_stable_across_passes(make_project):
-    project = make_project("pkg", {"mod.py": 'def f(*args):\n    """Takes *args.\n    >>> f()\n    """\n'})
+    project = make_project(
+        "pkg", {"mod.py": 'def f(*args):\n    """Takes *args.\n    >>> f()\n    """\n'}
+    )
     dry = repair(project)
-    assert dry.counts()["docstrings_refused"] == 1  # rewritten (blank line) but DR010 remains
+    assert (
+        dry.counts()["docstrings_refused"] == 1
+    )  # rewritten (blank line) but DR010 remains
     repair(project, write=True, run_doctests=False)
     assert repair(project).counts()["docstrings_refused"] == 1
 
@@ -117,7 +142,10 @@ pytest.importorskip("docstring_parser")
 
 
 def test_untyped_return_has_no_stray_colon():
-    assert convert_fields(":param x: the x\n:returns: y", to="google") == "Args:\n    x: the x\n\nReturns:\n    y"
+    assert (
+        convert_fields(":param x: the x\n:returns: y", to="google")
+        == "Args:\n    x: the x\n\nReturns:\n    y"
+    )
 
 
 def test_two_field_blocks_are_left_alone_with_a_reason(make_project):
@@ -150,17 +178,29 @@ def test_proposed_rule_yaml_quotes_every_scalar():
         "example_good": "g",
     }
     data = yaml.safe_load(rule_yaml("DS009", proposal, source="s"))
-    assert data["severity"] == "info" and data["fix"]["strategy"] == "x\nseverity: error"
+    assert (
+        data["severity"] == "info" and data["fix"]["strategy"] == "x\nseverity: error"
+    )
 
 
 def test_propose_rejects_examples_with_both_triple_quotes(tmp_path):
     reply = {
-        "schema_version": "1", "model": "m", "prompt_hash": "0123456789abcdef", "findings": [],
-        "proposed_rules": [{
-            "title": "T", "namespace": "semantics", "severity": "info", "precision": "low",
-            "detector": {"kind": "regex", "node": "paragraph", "pattern": "bad"},
-            "message": "m", "example_bad": 'bad """ and \'\'\'', "example_good": "good",
-        }],
+        "schema_version": "1",
+        "model": "m",
+        "prompt_hash": "0123456789abcdef",
+        "findings": [],
+        "proposed_rules": [
+            {
+                "title": "T",
+                "namespace": "semantics",
+                "severity": "info",
+                "precision": "low",
+                "detector": {"kind": "regex", "node": "paragraph", "pattern": "bad"},
+                "message": "m",
+                "example_bad": "bad \"\"\" and '''",
+                "example_good": "good",
+            }
+        ],
     }
     path = tmp_path / "review.json"
     path.write_text(json.dumps(reply))
@@ -172,10 +212,15 @@ def test_propose_rejects_examples_with_both_triple_quotes(tmp_path):
 def test_src_layout_manifest_entry_resolves(tmp_path):
     project = tmp_path / "proj"
     (project / "src" / "thing").mkdir(parents=True)
-    (project / "pyproject.toml").write_text('[project]\nname = "thing"\nversion = "1"\n')
+    (project / "pyproject.toml").write_text(
+        '[project]\nname = "thing"\nversion = "1"\n'
+    )
     (project / "src" / "thing" / "__init__.py").write_text('"""T."""\n')
     resolved = resolve_package(project / "src")
-    assert resolved.package_dir == project / "src" / "thing" and resolved.project_dir == project
+    assert (
+        resolved.package_dir == project / "src" / "thing"
+        and resolved.project_dir == project
+    )
 
 
 def test_theme_skip_links_are_not_dangling_anchors():
@@ -197,5 +242,9 @@ def test_backend_without_render_is_a_warning_not_a_crash(make_project, tmp_path)
         def build_warnings(self, project_dir):
             return BuildResult(returncode=0)
 
-    findings, _, artifacts = run_render_level(tmp_path, load_ledger(), backend=WarningsOnly(), outdir=tmp_path / "o")
-    assert [f.rule for f in findings] == ["NO_RENDER"] and findings[0].severity == "warning"
+    findings, _, artifacts = run_render_level(
+        tmp_path, load_ledger(), backend=WarningsOnly(), outdir=tmp_path / "o"
+    )
+    assert [f.rule for f in findings] == ["NO_RENDER"] and findings[
+        0
+    ].severity == "warning"

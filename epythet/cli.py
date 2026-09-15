@@ -115,6 +115,28 @@ def ai_artifacts(project_dir, *, format: str = "table"):
         print(artifacts_table(found, repo_stub=repo_stub))
 
 
+def build_info(project_dir, *, no_pypi: bool = False):
+    """Print the build provenance record for a project as JSON.
+
+    The same record that an ``html`` build writes to ``build_info.json`` at the
+    site root and renders on the about-this-build page: package name and
+    version, git commit/branch/tags/dirty flag, CI context, tool versions, the
+    resolved configuration, the latest PyPI release and whether the docs and
+    the package look aligned. The documented-module counts need a build and
+    are ``null`` here.
+
+    :param project_dir: the project root
+    :param no_pypi: skip the PyPI lookup (also ``EPYTHET_PYPI_CHECK=0``)
+    """
+    import json
+
+    from epythet.provenance import collect_build_info
+
+    config = load_config(project_dir)
+    info = collect_build_info(config, check_pypi=False if no_pypi else None)
+    print(json.dumps(info, indent=2))
+
+
 def _resolve_repo_stub(repo):
     """Resolve a repo argument to an owner/repo slug."""
     if "/" in repo and not repo.startswith("/") and not repo.startswith("."):
@@ -143,6 +165,7 @@ COMMANDS = [
     validate,
     ai_artifacts,
     ai_readme_check,
+    build_info,
 ]
 
 #: The v2 source-editing and fleet commands, by their command-line name.

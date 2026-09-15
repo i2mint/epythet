@@ -95,7 +95,9 @@ def _text_dir(root: Path, pages: dict[str, str]) -> Path:
 
 
 def test_snapshots_update_then_compare(tmp_path):
-    rendered = _text_dir(tmp_path / "text", {"index": "Hello\n", "_autosummary/pkg": "pkg\n***\n"})
+    rendered = _text_dir(
+        tmp_path / "text", {"index": "Hello\n", "_autosummary/pkg": "pkg\n***\n"}
+    )
     snapshots = tmp_path / "snap"
     assert update_snapshots(rendered, snapshots) == 2
     assert compare_snapshots(rendered, snapshots).clean
@@ -183,22 +185,39 @@ def test_render_level_snapshot_drift_is_dr035(tmp_path, canned):
     ledger = load_ledger()
     snapshots = tmp_path / "snap"
     _, notes, _ = run_render_level(
-        tmp_path, ledger, backend=canned, outdir=tmp_path / "o1", update=True, snapshot_dir=snapshots
+        tmp_path,
+        ledger,
+        backend=canned,
+        outdir=tmp_path / "o1",
+        update=True,
+        snapshot_dir=snapshots,
     )
     assert any("1 text snapshots written" in n for n in notes)
     canned.pages["text"]["index"] = "Hello there\n"
     findings, notes, artifacts = run_render_level(
-        tmp_path, ledger, backend=canned, outdir=tmp_path / "o2", snapshot=True, snapshot_dir=snapshots
+        tmp_path,
+        ledger,
+        backend=canned,
+        outdir=tmp_path / "o2",
+        snapshot=True,
+        snapshot_dir=snapshots,
     )
     drift = [f for f in findings if f.rule == "DR035"]
     assert len(drift) == 1 and drift[0].severity == "error" and drift[0].file == "index"
     assert "+Hello there" in drift[0].evidence
-    assert artifacts.snapshot is not None and list(artifacts.snapshot.changed) == ["index"]
+    assert artifacts.snapshot is not None and list(artifacts.snapshot.changed) == [
+        "index"
+    ]
 
 
 def test_render_level_without_snapshots_only_notes(tmp_path, canned):
     findings, notes, _ = run_render_level(
-        tmp_path, load_ledger(), backend=canned, outdir=tmp_path / "o", snapshot=True, snapshot_dir=tmp_path / "none"
+        tmp_path,
+        load_ledger(),
+        backend=canned,
+        outdir=tmp_path / "o",
+        snapshot=True,
+        snapshot_dir=tmp_path / "none",
     )
     assert not [f for f in findings if f.rule == "DR035"]
     assert any("no snapshots" in n for n in notes)
@@ -206,20 +225,30 @@ def test_render_level_without_snapshots_only_notes(tmp_path, canned):
 
 def test_render_level_failed_builder_is_a_build_finding(tmp_path, canned):
     canned.returncodes["xml"] = 2
-    findings, _, artifacts = run_render_level(tmp_path, load_ledger(), backend=canned, outdir=tmp_path / "o")
+    findings, _, artifacts = run_render_level(
+        tmp_path, load_ledger(), backend=canned, outdir=tmp_path / "o"
+    )
     build = [f for f in findings if f.rule == "BUILD"]
     assert len(build) == 1 and "-b xml failed" in build[0].message
     assert "xml" not in artifacts.outdirs
 
 
 def test_render_level_no_docsrc_is_non_gating(tmp_path):
-    backend = CannedBackend(pages={}, returncodes={b: NO_DOCSRC for b in ("html", "text", "xml")})
-    findings, _, _ = run_render_level(tmp_path, load_ledger(), backend=backend, outdir=tmp_path / "o")
-    assert [f.rule for f in findings] == ["NO_DOCSRC"] and findings[0].severity == "warning"
+    backend = CannedBackend(
+        pages={}, returncodes={b: NO_DOCSRC for b in ("html", "text", "xml")}
+    )
+    findings, _, _ = run_render_level(
+        tmp_path, load_ledger(), backend=backend, outdir=tmp_path / "o"
+    )
+    assert [f.rule for f in findings] == ["NO_DOCSRC"] and findings[
+        0
+    ].severity == "warning"
 
 
 def test_validate_tier_3_exit_code_is_13(make_project, canned, tmp_path):
-    project = make_project("pkg", {"mod.py": '"""Mod."""\n\n\ndef f(x):\n    """Return x."""\n'})
+    project = make_project(
+        "pkg", {"mod.py": '"""Mod."""\n\n\ndef f(x):\n    """Return x."""\n'}
+    )
     report = validate(
         project,
         level=3,
@@ -229,15 +258,24 @@ def test_validate_tier_3_exit_code_is_13(make_project, canned, tmp_path):
     )
     assert report.levels_run == [0, 0.5, 1, 2]
     assert report.failing_levels("warning") == [2]
-    assert report.exit_code() == EXIT_FOR_LEVEL[2] == 13  # DR037 (missing image) is an error
-    assert {f.rule for f in report.findings if f.level == 2} == {"DR026", "DR027", "DR036", "DR037"}
+    assert (
+        report.exit_code() == EXIT_FOR_LEVEL[2] == 13
+    )  # DR037 (missing image) is an error
+    assert {f.rule for f in report.findings if f.level == 2} == {
+        "DR026",
+        "DR027",
+        "DR036",
+        "DR037",
+    }
 
 
 # --------------------------------------------------------------------------
 # A real render (Sphinx)
 # --------------------------------------------------------------------------
 
-sphinx_available = shutil.which("sphinx-build") is not None or __import__("importlib.util").util.find_spec("sphinx")
+sphinx_available = shutil.which("sphinx-build") is not None or __import__(
+    "importlib.util"
+).util.find_spec("sphinx")
 
 
 @pytest.mark.skipif(not sphinx_available, reason="needs sphinx")
@@ -265,7 +303,14 @@ def test_real_render_finds_the_planted_artifacts(make_project, tmp_path):
         init='"""Package.\n\nSee :class:`rpkg.mod.Nowhere`.\n\n.. image:: missing.png\n"""\nfrom rpkg.mod import documented, undocumented\n',
     )
     make_docsrc(project, verbose=False)
-    report = validate(project, levels=[2], observations_path=tmp_path / "obs.jsonl", render_dir=tmp_path / "render")
+    report = validate(
+        project,
+        levels=[2],
+        observations_path=tmp_path / "obs.jsonl",
+        render_dir=tmp_path / "render",
+    )
     rules = {f.rule for f in report.findings}
     assert {"DR026", "DR036", "DR037"} <= rules, report.findings
-    assert (tmp_path / "render" / "text").is_dir() and (tmp_path / "render" / "xml").is_dir()
+    assert (tmp_path / "render" / "text").is_dir() and (
+        tmp_path / "render" / "xml"
+    ).is_dir()

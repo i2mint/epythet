@@ -29,6 +29,8 @@ The ``[tool.epythet]`` keys, all optional::
     aggregates = ["md"]           # flat single-document twins at the site root
     ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
     ai_artifacts_template = ""    # project-relative file overriding that page's template
+    provenance = true             # build footer, about-this-build page, build_info.json; "minimal": no page
+    provenance_template = ""      # project-relative file overriding the about-this-build page template
     package_dir = "src/dol"       # default: found by convention
     docs_dir = "docsrc"           # where the Sphinx sources live
 
@@ -90,6 +92,7 @@ VALID_API_GENERATORS = ("auto", "autosummary", "autoapi")
 #: Seconds allowed for the import probe behind ``api_generator = "auto"``.
 IMPORT_PROBE_TIMEOUT = 120
 VALID_AGGREGATES = ("md", "pdf")
+VALID_PROVENANCE = (True, False, "minimal")
 
 
 class ConfigError(ValueError):
@@ -123,6 +126,8 @@ class DocsConfig:
     aggregates: tuple[str, ...] = ("md",)
     ai_artifacts: bool = True
     ai_artifacts_template: str = ""
+    provenance: bool | str = True
+    provenance_template: str = ""
     package_dir: Path | None = None
     docs_dir: str = DEFAULT_DOCS_DIR
 
@@ -140,6 +145,10 @@ class DocsConfig:
         if unknown:
             raise ConfigError(
                 f"aggregates may only contain {VALID_AGGREGATES}; got {sorted(unknown)}"
+            )
+        if self.provenance not in VALID_PROVENANCE:
+            raise ConfigError(
+                f'provenance must be true, false or "minimal", not {self.provenance!r}'
             )
         object.__setattr__(self, "ignore", split_ignore(self.ignore))
         object.__setattr__(self, "aggregates", tuple(self.aggregates))
@@ -380,6 +389,13 @@ def _coerce_tool_fields(tool: dict[str, Any]) -> dict[str, Any]:
             ]
         elif key in _BOOL_KEYS and isinstance(value, str):
             value = value.strip().lower() in ("1", "true", "yes", "on")
+        elif key == "provenance" and isinstance(value, str):
+            lowered = value.strip().lower()
+            value = (
+                lowered
+                if lowered == "minimal"
+                else lowered in ("1", "true", "yes", "on")
+            )
         elif key in ("theme_options", "readme") and not isinstance(value, dict):
             raise ConfigError(f"[tool.epythet.{key}] must be a table")
         out[key] = value

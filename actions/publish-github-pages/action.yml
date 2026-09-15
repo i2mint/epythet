@@ -45,6 +45,27 @@ runs:
       with:
         fetch-depth: 0
 
+    - name: Build from the branch tip
+      # The wads CI publishes to PyPI, then pushes a version-bump commit marked
+      # [skip ci] before this job runs, so the event SHA is the commit *before*
+      # the bump. Fast-forward to the tip so the site is built from the
+      # released version, with its tag, and epythet's provenance footer can
+      # compare it with PyPI. Never fails the job: on any problem the event
+      # commit is built as before.
+      env:
+        # Through env, never interpolated into the script: ref names may contain shell syntax.
+        REF_NAME: ${{ github.ref_name }}
+        DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      run: |
+        if [ -n "$DEFAULT_BRANCH" ] && [ "$REF_NAME" = "$DEFAULT_BRANCH" ]; then
+          if git fetch --quiet --tags origin "$REF_NAME" && git merge --ff-only --quiet FETCH_HEAD; then
+            echo "Building $(git rev-parse --short HEAD) (tip of $REF_NAME; event commit ${GITHUB_SHA::7})"
+          else
+            echo "::notice::Could not fast-forward to origin/$REF_NAME; building the event commit ${GITHUB_SHA::7}"
+          fi
+        fi
+      shell: bash
+
     - name: Set up Python ${{ inputs.python-version }}
       uses: actions/setup-python@v5
       with:

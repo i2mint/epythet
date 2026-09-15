@@ -214,7 +214,10 @@ def test_auto_generator_resolves_by_import_probe(tmp_path, capsys):
     assert "a_dependency_that_is_missing" in capsys.readouterr().err
 
     pinned = DocsConfig(
-        project_dir=bad, name="badpkg", package_dir="badpkg", api_generator="autosummary"
+        project_dir=bad,
+        name="badpkg",
+        package_dir="badpkg",
+        api_generator="autosummary",
     )
     assert pinned.resolved_api_generator == "autosummary"
 

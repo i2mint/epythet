@@ -95,7 +95,7 @@ def scaffold(
             name != "api" or config.resolved_api_generator == "autoapi"
         ):
             shutil.rmtree(docsrc / name)
-    _write_if_generated(
+    write_generated_file(
         docsrc / "conf.py",
         templates.conf_py_shim,
         markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
@@ -104,14 +104,14 @@ def scaffold(
     if (docsrc / "index.rst").is_file():
         say("Keeping hand-written index.rst (no index.md written)")
     else:
-        _write_if_generated(
+        write_generated_file(
             docsrc / "index.md",
             render_index_md(config, pages=pages),
             markers=(templates.INDEX_MARKER,),
             say=say,
         )
     for page in pages:
-        _write_if_generated(
+        write_generated_file(
             docsrc / page.filename, page.content, markers=(page.marker,), say=say
         )
     _remove_stale_generated_pages(docsrc, pages, say)
@@ -126,13 +126,39 @@ def scaffold(
             render_autosummary_module_template(config.api_ignore), encoding="utf-8"
         )
     gitignore = docsrc / ".gitignore"
-    if (
-        not gitignore.exists()
-        or gitignore.read_text(encoding="utf-8").strip()
-        in templates.LEGACY_DOCSRC_GITIGNORES
+    refresh_docsrc_gitignore(docsrc / ".gitignore")
+    return docsrc
+
+
+def refresh_docsrc_gitignore(gitignore: Path) -> None:
+    """Bring ``docsrc/.gitignore`` up to date without losing anyone's lines.
+
+    A missing file, a 0.1.x file or an earlier generated version is replaced;
+    a generated file the user appended to gets the missing generated entries
+    appended; a hand-written file is left alone.
+    """
+    if not gitignore.exists():
+        gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
+        return
+    text = gitignore.read_text(encoding="utf-8")
+    if text == templates.docsrc_gitignore:
+        return
+    if text.strip() in templates.LEGACY_DOCSRC_GITIGNORES or text.strip() in (
+        t.strip() for t in templates.PREVIOUS_DOCSRC_GITIGNORES
     ):
         gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
-    return docsrc
+        return
+    if text.startswith(templates.DOCSRC_GITIGNORE_HEADER):
+        present = {line.strip() for line in text.splitlines()}
+        missing = [
+            line
+            for line in templates.docsrc_gitignore.splitlines()
+            if line.strip() and line.strip() not in present
+        ]
+        if missing:
+            gitignore.write_text(
+                text.rstrip("\n") + "\n" + "\n".join(missing) + "\n", encoding="utf-8"
+            )
 
 
 def render_autosummary_module_template(ignore: Sequence[str]) -> str:
@@ -264,7 +290,13 @@ def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
             say(f"Removed stale generated {filename}")
 
 
-def _write_if_generated(path: Path, content: str, *, markers, say) -> None:
+def write_generated_file(path: Path, content: str, *, markers, say=None) -> None:
+    """Write a generated file unless a hand-written one (no marker) is in the way.
+
+    :param markers: strings, any of which identifies an epythet-generated file
+    :param say: a ``print``-like reporter (``None`` for silence)
+    """
+    say = say or (lambda *a, **k: None)
     if path.exists():
         existing = path.read_text(encoding="utf-8", errors="replace")
         if not any(marker in existing for marker in markers):
@@ -274,3 +306,15 @@ def _write_if_generated(path: Path, content: str, *, markers, say) -> None:
             return
     path.write_text(content, encoding="utf-8")
     say(f"Wrote {path}")
+
+
+def remove_generated_file(path: Path, *, markers, say=None) -> bool:
+    """Delete ``path`` if it is a file epythet generated (carries a marker)."""
+    if not path.is_file():
+        return False
+    existing = path.read_text(encoding="utf-8", errors="replace")
+    if not any(marker in existing for marker in markers):
+        return False
+    path.unlink()
+    (say or (lambda *a, **k: None))(f"Removed generated {path.name}")
+    return True

@@ -18,6 +18,8 @@ Open `/path/to/project/docsrc/_build/html/index.html`. You get:
 - a modern theme with light/dark mode and an accent colour derived from your package name,
 - **agent-facing twins**: `llms.txt`, a `.md` twin of every page, a flat `<package>.md`, and `objects.inv`.
 
+Every site also says where it came from. A small line at the bottom of the landing page reads `built <UTC time> from <commit> (<branch>) · <package> <version> · about this build`, so a reader can tell whether the docs match the repository and the installed package, and a maintainer can see whether the latest push has been published. The `about-this-build` page behind the link holds the full diagnosis (commit, tags, dirty flag, CI run, tool versions, resolved configuration, latest PyPI release and whether it matches, how to reproduce the build), and `build_info.json` at the site root holds the same for machines; `epythet build-info DIR` prints it. `[tool.epythet] provenance = false` turns it off, `"minimal"` keeps the line and the JSON without the page, and `provenance_template` points at your own page template.
+
 Nothing has to be added to the package. Everything is read from `pyproject.toml` (or `setup.cfg`), the README and the docstrings.
 
 <!-- epythet:agentic-readme:start -->
