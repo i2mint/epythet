@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-09-15T09:16:59Z",
+  "package": {
+    "name": "epythet",
+    "version": "0.2.8",
+    "display_name": "epythet",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "764c511eacce1ad4e0ab01de808b93b0e2795545",
+    "short_commit": "764c511",
+    "branch": "master",
+    "tags": [
+      "0.2.8"
+    ],
+    "dirty": false,
+    "remote_url": "https://github.com/i2mint/epythet",
+    "commit_url": "https://github.com/i2mint/epythet/commit/764c511eacce1ad4e0ab01de808b93b0e2795545",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "i2mint/epythet",
+    "sha": "5c7b20d5b1999fc088cc7fb22228ba402e837e14",
+    "sha_in_history": true,
+    "ref": "refs/heads/master",
+    "ref_name": "master",
+    "run_id": "34951386124",
+    "run_url": "https://github.com/i2mint/epythet/actions/runs/34951386124",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.8",
+    "sphinx": "9.1.0",
+    "docutils": "0.22.4",
+    "python": "3.12.14"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "furo",
+    "accent": "#3f6500",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/",
+      "ledger/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 40,
+    "objects_documented": 452
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "0.2.8",
+    "relation": "same",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 764c511eacce1ad4e0ab01de808b93b0e2795545\npip install \"epythet==0.2.8\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
+  "warnings": [],
+  "alignment": {
+    "aligned": true,
+    "notes": []
+  }
+}

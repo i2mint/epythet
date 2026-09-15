@@ -25,10 +25,10 @@ consequence of the decision record.
 
 ### Functions
 
-| [`api_toctree_entry`](#epythet.confgen.api_toctree_entry)(config)   | The document `index.md`'s toctree points at for the API pages.                 |
-|------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`merge_settings`](#epythet.confgen.merge_settings)(base, extra) | Merge two settings dicts, concatenating list values instead of replacing them. |
-| [`sphinx_settings`](#epythet.confgen.sphinx_settings)(config)     | The complete Sphinx `conf.py` namespace for `config`.                          |
+| [`api_toctree_entry`](#epythet.confgen.api_toctree_entry)(config)                 | The document `index.md`'s toctree points at for the API pages.                 |
+|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`merge_settings`](#epythet.confgen.merge_settings)(base, extra)               | Merge two settings dicts, concatenating list values instead of replacing them. |
+| [`sphinx_settings`](#epythet.confgen.sphinx_settings)(config, \*[, build_info]) | The complete Sphinx `conf.py` namespace for `config`.                          |
 
 ### epythet.confgen.API_ROOT *= 'api'*
 
@@ -65,9 +65,14 @@ Merge two settings dicts, concatenating list values instead of replacing them.
 {'extensions': ['a', 'b'], 'x': 2}
 ```
 
-### epythet.confgen.sphinx_settings(config)
+### epythet.confgen.sphinx_settings(config, , build_info=None)
 
 The complete Sphinx `conf.py` namespace for `config`.
 
+* **Parameters:**
+  **build_info** ([`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – the provenance record of this build
+  ([`epythet.provenance.collect_build_info()`](epythet.provenance.html.md#epythet.provenance.collect_build_info)), rendered by the
+  extension as the landing-page footer and `build_info.json`; `None`
+  renders nothing.
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]

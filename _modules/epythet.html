@@ -213,6 +213,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -315,6 +316,11 @@
 <span class="sd">(``epythet ai-readme-check``), with the user's policy and text snippets from</span>
 <span class="sd">:mod:`epythet.userconfig` (``~/.config/epythet``).</span>
 
+<span class="sd">Every site states its provenance: a one-line footer on the landing page (build</span>
+<span class="sd">time, commit, package version), an ``about-this-build`` page with the full</span>
+<span class="sd">diagnosis and a ``build_info.json`` for machines, see :mod:`epythet.provenance`</span>
+<span class="sd">and :func:`collect_build_info`.</span>
+
 <span class="sd">GitHub Pages helpers (:func:`check_pages_setup`, :func:`enable_pages`) and</span>
 <span class="sd">docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,</span>
 <span class="sd">:func:`repair_package`) live in :mod:`epythet.tools`.</span>
@@ -330,6 +336,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.ai_artifacts</span><span class="w"> </span><span class="kn">import</span> <span class="n">discover_artifacts</span><span class="p">,</span> <span class="n">ai_artifacts_page</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.agentic_readme</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_readme</span><span class="p">,</span> <span class="n">render_section</span><span class="p">,</span> <span class="n">write_section</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.userconfig</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_dir</span><span class="p">,</span> <span class="n">load_user_config</span><span class="p">,</span> <span class="n">snippet_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="n">collect_build_info</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.tools</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">repair_package</span><span class="p">,</span>
@@ -389,7 +396,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

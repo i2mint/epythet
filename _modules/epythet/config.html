@@ -213,6 +213,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -312,6 +313,8 @@
 <span class="sd">    aggregates = ["md"]           # flat single-document twins at the site root</span>
 <span class="sd">    ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist</span>
 <span class="sd">    ai_artifacts_template = ""    # project-relative file overriding that page's template</span>
+<span class="sd">    provenance = true             # build footer, about-this-build page, build_info.json; "minimal": no page</span>
+<span class="sd">    provenance_template = ""      # project-relative file overriding the about-this-build page template</span>
 <span class="sd">    package_dir = "src/dol"       # default: found by convention</span>
 <span class="sd">    docs_dir = "docsrc"           # where the Sphinx sources live</span>
 
@@ -373,6 +376,7 @@
 <span class="c1">#: Seconds allowed for the import probe behind ``api_generator = "auto"``.</span>
 <span class="n">IMPORT_PROBE_TIMEOUT</span> <span class="o">=</span> <span class="mi">120</span>
 <span class="n">VALID_AGGREGATES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"md"</span><span class="p">,</span> <span class="s2">"pdf"</span><span class="p">)</span>
+<span class="n">VALID_PROVENANCE</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"minimal"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ConfigError">
@@ -411,6 +415,8 @@
     <span class="n">aggregates</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"md"</span><span class="p">,)</span>
     <span class="n">ai_artifacts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">ai_artifacts_template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">provenance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">provenance_template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">package_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">docs_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_DOCS_DIR</span>
 
@@ -428,6 +434,10 @@
         <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"aggregates may only contain </span><span class="si">{</span><span class="n">VALID_AGGREGATES</span><span class="si">}</span><span class="s2">; got </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">provenance</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VALID_PROVENANCE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'provenance must be true, false or "minimal", not </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">provenance</span><span class="si">!r}</span><span class="s1">'</span>
             <span class="p">)</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"ignore"</span><span class="p">,</span> <span class="n">split_ignore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">))</span>
         <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"aggregates"</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregates</span><span class="p">))</span>
@@ -684,6 +694,13 @@
             <span class="p">]</span>
         <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_BOOL_KEYS</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">"provenance"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">lowered</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">lowered</span>
+                <span class="k">if</span> <span class="n">lowered</span> <span class="o">==</span> <span class="s2">"minimal"</span>
+                <span class="k">else</span> <span class="n">lowered</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"theme_options"</span><span class="p">,</span> <span class="s2">"readme"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ConfigError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[tool.epythet.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">] must be a table"</span><span class="p">)</span>
         <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -726,7 +743,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

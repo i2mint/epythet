@@ -18,13 +18,14 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 
 | [`ai_artifacts`](#epythet.cli.ai_artifacts)(project_dir, \*[, format])   | List the AI agent artifacts a project ships (skills, subagents, instruction files).   |
 |--------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`build_info`](#epythet.cli.build_info)(project_dir, \*[, no_pypi])    | Print the build provenance record for a project as JSON.                              |
 | [`check_pages`](#epythet.cli.check_pages)(repo, \*[, no_url_check])     | Diagnose GitHub Pages setup for a repo.                                               |
 | [`configure_pages`](#epythet.cli.configure_pages)(repo, \*[, branch, path]) | Enable or fix GitHub Pages for a repo.                                                |
 | [`epythet_cli`](#epythet.cli.epythet_cli)([argv])                       | Entry point for the `epythet` console script.                                         |
 | [`mk_epythet_parser`](#epythet.cli.mk_epythet_parser)(\*\*parser_kwargs)      | The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.  |
 | [`quickstart`](#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
-### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>, <function ai_readme_check>]*
+### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>, <function ai_readme_check>, <function build_info>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
 
@@ -60,6 +61,21 @@ generated “For AI agents” documentation page.
 * **Parameters:**
   * **project_dir** – the project root
   * **format** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – table (human) or json
+
+### epythet.cli.build_info(project_dir, , no_pypi=False)
+
+Print the build provenance record for a project as JSON.
+
+The same record that an `html` build writes to `build_info.json` at the
+site root and renders on the about-this-build page: package name and
+version, git commit/branch/tags/dirty flag, CI context, tool versions, the
+resolved configuration, the latest PyPI release and whether the docs and
+the package look aligned. The documented-module counts need a build and
+are `null` here.
+
+* **Parameters:**
+  * **project_dir** – the project root
+  * **no_pypi** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – skip the PyPI lookup (also `EPYTHET_PYPI_CHECK=0`)
 
 ### epythet.cli.check_pages(repo, , no_url_check=False)
 

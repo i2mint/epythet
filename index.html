@@ -214,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -305,6 +306,7 @@ epythet<span class="w"> </span>quickstart<span class="w"> </span>/path/to/projec
 <li><p>a modern theme with light/dark mode and an accent colour derived from your package name,</p></li>
 <li><p><strong>agent-facing twins</strong>: <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code>, a <code class="docutils literal notranslate"><span class="pre">.md</span></code> twin of every page, a flat <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>, and <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code>.</p></li>
 </ul>
+<p>Every site also says where it came from. A small line at the bottom of the landing page reads <code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">&lt;UTC</span> <span class="pre">time&gt;</span> <span class="pre">from</span> <span class="pre">&lt;commit&gt;</span> <span class="pre">(&lt;branch&gt;)</span> <span class="pre">·</span> <span class="pre">&lt;package&gt;</span> <span class="pre">&lt;version&gt;</span> <span class="pre">·</span> <span class="pre">about</span> <span class="pre">this</span> <span class="pre">build</span></code>, so a reader can tell whether the docs match the repository and the installed package, and a maintainer can see whether the latest push has been published. The <code class="docutils literal notranslate"><span class="pre">about-this-build</span></code> page behind the link holds the full diagnosis (commit, tags, dirty flag, CI run, tool versions, resolved configuration, latest PyPI release and whether it matches, how to reproduce the build), and <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> at the site root holds the same for machines; <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">build-info</span> <span class="pre">DIR</span></code> prints it. <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">provenance</span> <span class="pre">=</span> <span class="pre">false</span></code> turns it off, <code class="docutils literal notranslate"><span class="pre">&quot;minimal&quot;</span></code> keeps the line and the JSON without the page, and <code class="docutils literal notranslate"><span class="pre">provenance_template</span></code> points at your own page template.</p>
 <p>Nothing has to be added to the package. Everything is read from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> (or <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code>), the README and the docstrings.</p>
 <!-- epythet:agentic-readme:start -->
 </section>
@@ -638,6 +640,7 @@ epythet<span class="w"> </span>repair<span class="w"> </span>path/to/pkg<span cl
 </section>
 </section>
 
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-09-15 09:16 UTC from <a href="https://github.com/i2mint/epythet/commit/764c511eacce1ad4e0ab01de808b93b0e2795545">764c511</a> (master) · epythet 0.2.8 · <a href="about-this-build.html">about this build</a></p>
         </article>
       </div>
       <footer>
@@ -673,7 +676,7 @@ epythet<span class="w"> </span>repair<span class="w"> </span>path/to/pkg<span cl
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=d4852862"></script>
+</div><script src="_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

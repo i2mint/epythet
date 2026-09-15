@@ -214,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -318,6 +319,10 @@ are discovered by convention and rendered as a “For AI agents” page, see
 Whether the README documents them is <code class="xref py py-func docutils literal notranslate"><span class="pre">check_readme()</span></code>
 (<code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">ai-readme-check</span></code>), with the user’s policy and text snippets from
 <a class="reference internal" href="epythet.userconfig.html#module-epythet.userconfig" title="epythet.userconfig"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.userconfig</span></code></a> (<code class="docutils literal notranslate"><span class="pre">~/.config/epythet</span></code>).</p>
+<p>Every site states its provenance: a one-line footer on the landing page (build
+time, commit, package version), an <code class="docutils literal notranslate"><span class="pre">about-this-build</span></code> page with the full
+diagnosis and a <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> for machines, see <a class="reference internal" href="epythet.provenance.html#module-epythet.provenance" title="epythet.provenance"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.provenance</span></code></a>
+and <code class="xref py py-func docutils literal notranslate"><span class="pre">collect_build_info()</span></code>.</p>
 <p>GitHub Pages helpers (<code class="xref py py-func docutils literal notranslate"><span class="pre">check_pages_setup()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">enable_pages()</span></code>) and
 docstring diagnosis tools (<code class="xref py py-func docutils literal notranslate"><span class="pre">diagnose_doctest_code_blocks()</span></code>,
 <code class="xref py py-func docutils literal notranslate"><span class="pre">repair_package()</span></code>) live in <a class="reference internal" href="epythet.tools.html#module-epythet.tools" title="epythet.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.tools</span></code></a>.</p>
@@ -385,37 +390,40 @@ docstring diagnosis tools (<code class="xref py py-func docutils literal notrans
 <tr class="row-even"><td><p><a class="reference internal" href="epythet.normalizer.html#module-epythet.normalizer" title="epythet.normalizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalizer</span></code></a></p></td>
 <td><p>Build-time docstring normalizer: fix the markup artifacts people actually write.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.repair.html#module-epythet.repair" title="epythet.repair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repair</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.provenance.html#module-epythet.provenance" title="epythet.provenance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">provenance</span></code></a></p></td>
+<td><p>Build provenance: which code, which version, which tools produced a site.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.repair.html#module-epythet.repair" title="epythet.repair"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repair</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">repair</span></code>: apply the normalizer's source-safe rewrites to docstrings in place.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.scaffold.html#epythet.scaffold" title="epythet.scaffold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scaffold</span></code></a>(config, *[, verbose, pages])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.scaffold.html#epythet.scaffold" title="epythet.scaffold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scaffold</span></code></a>(config, *[, verbose, pages])</p></td>
 <td><p>Write the docsrc files for an already-loaded configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.setup_docsrc.html#module-epythet.setup_docsrc" title="epythet.setup_docsrc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_docsrc</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.setup_docsrc.html#module-epythet.setup_docsrc" title="epythet.setup_docsrc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_docsrc</span></code></a></p></td>
 <td><p>Compatibility module: <code class="docutils literal notranslate"><span class="pre">make_docsrc</span></code> now lives in <a class="reference internal" href="epythet.scaffold.html#epythet.scaffold" title="epythet.scaffold"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.scaffold</span></code></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.sphinx_conf.html#module-epythet.sphinx_conf" title="epythet.sphinx_conf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphinx_conf</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.sphinx_conf.html#module-epythet.sphinx_conf" title="epythet.sphinx_conf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphinx_conf</span></code></a></p></td>
 <td><p>The star-import target for a project's <code class="docutils literal notranslate"><span class="pre">docsrc/conf.py</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.sphinx_ext.html#module-epythet.sphinx_ext" title="epythet.sphinx_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphinx_ext</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.sphinx_ext.html#module-epythet.sphinx_ext" title="epythet.sphinx_ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sphinx_ext</span></code></a></p></td>
 <td><p>epythet's Sphinx extension: the normalizer, agent link relations and theme CSS.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.sweep.html#module-epythet.sweep" title="epythet.sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sweep</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.sweep.html#module-epythet.sweep" title="epythet.sweep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sweep</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">sweep</span></code>: validate many packages read-only and rank the queue.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.templates.html#module-epythet.templates" title="epythet.templates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">templates</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.templates.html#module-epythet.templates" title="epythet.templates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">templates</span></code></a></p></td>
 <td><p>Text templates for the generated <code class="docutils literal notranslate"><span class="pre">docsrc</span></code> files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.themes.html#module-epythet.themes" title="epythet.themes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">themes</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.themes.html#module-epythet.themes" title="epythet.themes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">themes</span></code></a></p></td>
 <td><p>Theme registry, deterministic theme choice, and the OKLCH accent palette.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.tools.html#module-epythet.tools" title="epythet.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tools</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.tools.html#module-epythet.tools" title="epythet.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tools</span></code></a></p></td>
 <td><p>Tools to diagnose (and sometimes, repair) documentation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.userconfig.html#module-epythet.userconfig" title="epythet.userconfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">userconfig</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.userconfig.html#module-epythet.userconfig" title="epythet.userconfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">userconfig</span></code></a></p></td>
 <td><p>User-level defaults and parametrizable text snippets.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.html#module-epythet.validation" title="epythet.validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.html#module-epythet.validation" title="epythet.validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">validate</span></code>: tiered documentation validation with a growing artifact ledger.</p></td>
 </tr>
 </tbody>
@@ -487,7 +495,7 @@ docstring diagnosis tools (<code class="xref py py-func docutils literal notrans
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

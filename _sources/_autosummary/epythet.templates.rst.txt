@@ -14,4 +14,6 @@ epythet.templates
       aggregates_block
       LEGACY_DOCSRC_GITIGNORES
       autosummary_module_rst
+      DOCSRC_GITIGNORE_HEADER
+      PREVIOUS_DOCSRC_GITIGNORES
    

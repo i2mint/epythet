@@ -38,6 +38,11 @@ Whether the README documents them is `check_readme()`
 (`epythet ai-readme-check`), with the user’s policy and text snippets from
 [`epythet.userconfig`](epythet.userconfig.html.md#module-epythet.userconfig) (`~/.config/epythet`).
 
+Every site states its provenance: a one-line footer on the landing page (build
+time, commit, package version), an `about-this-build` page with the full
+diagnosis and a `build_info.json` for machines, see [`epythet.provenance`](epythet.provenance.html.md#module-epythet.provenance)
+and `collect_build_info()`.
+
 GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
 docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
 `repair_package()`) live in [`epythet.tools`](epythet.tools.html.md#module-epythet.tools).
@@ -70,6 +75,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`docs_gen`](epythet.docs_gen.html.md#module-epythet.docs_gen)                        | Documentation generation entry points (re-exported for compatibility).                                                               |
 | [`migrate`](epythet.migrate.html.md#module-epythet.migrate)                          | `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.                                              |
 | [`normalizer`](epythet.normalizer.html.md#module-epythet.normalizer)                    | Build-time docstring normalizer: fix the markup artifacts people actually write.                                                     |
+| [`provenance`](epythet.provenance.html.md#module-epythet.provenance)                    | Build provenance: which code, which version, which tools produced a site.                                                            |
 | [`repair`](epythet.repair.html.md#module-epythet.repair)                            | `epythet repair`: apply the normalizer's source-safe rewrites to docstrings in place.                                                |
 | [`scaffold`](epythet.scaffold.html.md#epythet.scaffold)(config, \*[, verbose, pages]) | Write the docsrc files for an already-loaded configuration.                                                                          |
 | [`setup_docsrc`](epythet.setup_docsrc.html.md#module-epythet.setup_docsrc)                | Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.html.md#epythet.scaffold). |

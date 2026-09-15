@@ -20,6 +20,7 @@
 - [epythet.docs_gen](_autosummary/epythet.docs_gen.html.md): Documentation generation entry points (re-exported for compatibility).
 - [epythet.migrate](_autosummary/epythet.migrate.html.md): `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.
 - [epythet.normalizer](_autosummary/epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
+- [epythet.provenance](_autosummary/epythet.provenance.html.md): Build provenance: which code, which version, which tools produced a site.
 - [epythet.repair](_autosummary/epythet.repair.html.md): `epythet repair`: apply the normalizer’s source-safe rewrites to docstrings in place.
 - [epythet.scaffold](_autosummary/epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
 - [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.html.md#epyth...
@@ -47,7 +48,12 @@
 - [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.
 - [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.
 - [For AI agents](ai-agents.html.md): `epythet` ships artifacts for coding agents alongside its code. This page lists
+- [About this build](about-this-build.html.md): This documentation was built on **2026-09-15 09:16 UTC** from commit <a href="https://github.com/i2m...
 
 ---
 
 For more comprehensive documentation, see [epythet.md](epythet.md)
+
+## Build
+
+- [build_info.json](build_info.json): build provenance (commit, version, tool versions, whether the docs match the package)

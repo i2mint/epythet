@@ -213,6 +213,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -337,8 +338,16 @@
 
 <div class="viewcode-block" id="sphinx_settings">
 <a class="viewcode-back" href="../../_autosummary/epythet.confgen.html#epythet.confgen.sphinx_settings">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sphinx_settings</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""The complete Sphinx ``conf.py`` namespace for ``config``."""</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sphinx_settings</span><span class="p">(</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">build_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The complete Sphinx ``conf.py`` namespace for ``config``.</span>
+
+<span class="sd">    :param build_info: the provenance record of this build</span>
+<span class="sd">        (:func:`epythet.provenance.collect_build_info`), rendered by the</span>
+<span class="sd">        extension as the landing-page footer and ``build_info.json``; ``None``</span>
+<span class="sd">        renders nothing.</span>
+<span class="sd">    """</span>
     <span class="n">theme</span> <span class="o">=</span> <span class="n">resolve_theme</span><span class="p">(</span>
         <span class="n">config</span><span class="o">.</span><span class="n">package_name</span><span class="p">,</span>
         <span class="n">theme</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">theme</span><span class="p">,</span>
@@ -398,6 +407,8 @@
         <span class="s2">"epythet_theme_css"</span><span class="p">:</span> <span class="n">theme</span><span class="o">.</span><span class="n">css</span><span class="p">,</span>
         <span class="s2">"epythet_agent_outputs"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">agent_outputs</span><span class="p">,</span>
         <span class="s2">"epythet_normalizer_rules"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">"epythet_provenance"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">provenance</span><span class="p">,</span>
+        <span class="s2">"epythet_build_info"</span><span class="p">:</span> <span class="n">build_info</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">provenance</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">merge_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">_api_generator_settings</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">agent_outputs</span><span class="p">:</span>
@@ -512,7 +523,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

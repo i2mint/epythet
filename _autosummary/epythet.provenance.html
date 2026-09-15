@@ -1,0 +1,1142 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="epythet.provenance.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.repair" href="epythet.repair.html"><link rel="prev" title="epythet.normalizer" href="epythet.normalizer.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>epythet.provenance - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.agentic_readme.html">epythet.agentic_readme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.migrate.html">epythet.migrate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">epythet.provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.sweep.html">epythet.sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="epythet.userconfig.html">epythet.userconfig</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.coverage.html">epythet.validation.coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.propose.html">epythet.validation.propose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.review.html">epythet.validation.review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/_autosummary/epythet.provenance.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-epythet.provenance">
+<span id="epythet-provenance"></span><h1>epythet.provenance<a class="headerlink" href="#module-epythet.provenance" title="Link to this heading">¶</a></h1>
+<p>Build provenance: which code, which version, which tools produced a site.</p>
+<p>A documentation site is a snapshot. The reader wants to know whether it matches
+the repository they are looking at and the package they installed; the
+maintainer wants to know whether the latest push has been published yet
+(issue #7). This module collects that diagnosis once per build and the rest of
+epythet renders it in three places:</p>
+<ul class="simple">
+<li><p>a one-line footer on the landing page (<code class="docutils literal notranslate"><span class="pre">built</span> <span class="pre">&lt;UTC</span> <span class="pre">time&gt;</span> <span class="pre">from</span> <span class="pre">&lt;commit&gt;</span>
+<span class="pre">(&lt;branch&gt;)</span> <span class="pre">·</span> <span class="pre">&lt;package&gt;</span> <span class="pre">&lt;version&gt;</span> <span class="pre">·</span> <span class="pre">about</span> <span class="pre">this</span> <span class="pre">build</span></code>), appended to the
+rendered page by <a class="reference internal" href="epythet.sphinx_ext.html#module-epythet.sphinx_ext" title="epythet.sphinx_ext"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.sphinx_ext</span></code></a>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">about-this-build.html</span></code>, an orphan page (reachable from the footer, absent
+from the navigation) with the full diagnosis, rendered from
+<a class="reference internal" href="#epythet.provenance.ABOUT_PAGE_TEMPLATE" title="epythet.provenance.ABOUT_PAGE_TEMPLATE"><code class="xref py py-data docutils literal notranslate"><span class="pre">ABOUT_PAGE_TEMPLATE</span></code></a> or the project’s <code class="docutils literal notranslate"><span class="pre">provenance_template</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> at the site root, the same data for machines, with
+stable keys and a <code class="docutils literal notranslate"><span class="pre">schema_version</span></code>; also listed in <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and
+referenced at the top of the <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code> aggregate.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">provenance</span></code> key is the seam: <code class="docutils literal notranslate"><span class="pre">true</span></code> (default) renders
+all three, <code class="docutils literal notranslate"><span class="pre">&quot;minimal&quot;</span></code> renders the footer line and the JSON but no page,
+<code class="docutils literal notranslate"><span class="pre">false</span></code> renders nothing.</p>
+<p>Collection never fails a build. No git, no <code class="docutils literal notranslate"><span class="pre">git</span></code> binary, no network, a
+detached HEAD: every source degrades to <code class="docutils literal notranslate"><span class="pre">null</span></code> fields plus an entry in the
+<code class="docutils literal notranslate"><span class="pre">warnings</span></code> list, and the build prints one warning. The record is published,
+so nothing local goes into it: remote URLs lose any credentials, path-shaped
+remotes are dropped, git’s error text is scrubbed of paths, and the reproduce
+lines name the clone by its remote, not by the local folder.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH</span></code> (the reproducible-builds convention Sphinx honours too)
+fixes the build time when set.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/nonexistent"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"pkg"</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">"1.0"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">collect_build_info</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">check_pypi</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span><span class="p">[</span><span class="s2">"schema_version"</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">"package"</span><span class="p">][</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s2">"git"</span><span class="p">][</span><span class="s2">"available"</span><span class="p">]</span>
+<span class="go">(1, 'pkg', False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"about this build"</span> <span class="ow">in</span> <span class="n">render_footer_line</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p class="rubric">Module Attributes</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.SCHEMA_VERSION" title="epythet.provenance.SCHEMA_VERSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SCHEMA_VERSION</span></code></a></p></td>
+<td><p>Bumped when a key is renamed or removed; additions keep the version.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.BUILD_INFO_FILENAME" title="epythet.provenance.BUILD_INFO_FILENAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BUILD_INFO_FILENAME</span></code></a></p></td>
+<td><p>File written at the site root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.ABOUT_PAGE_FILENAME" title="epythet.provenance.ABOUT_PAGE_FILENAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ABOUT_PAGE_FILENAME</span></code></a></p></td>
+<td><p>Source file (in docsrc) and document name of the full-diagnosis page.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.BUILD_INFO_ENV" title="epythet.provenance.BUILD_INFO_ENV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BUILD_INFO_ENV</span></code></a></p></td>
+<td><p>Environment variable carrying the collected JSON into the Sphinx process.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.PYPI_CHECK_ENV" title="epythet.provenance.PYPI_CHECK_ENV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PYPI_CHECK_ENV</span></code></a></p></td>
+<td><p>Set to <code class="docutils literal notranslate"><span class="pre">0</span></code> to skip the PyPI lookup (offline CI, tests).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.SOURCE_DATE_EPOCH_ENV" title="epythet.provenance.SOURCE_DATE_EPOCH_ENV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH_ENV</span></code></a></p></td>
+<td><p>seconds since the epoch, fixes <code class="docutils literal notranslate"><span class="pre">built_at</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.DEFAULT_PYPI_TIMEOUT" title="epythet.provenance.DEFAULT_PYPI_TIMEOUT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_PYPI_TIMEOUT</span></code></a></p></td>
+<td><p>Seconds allowed for the PyPI lookup, in total; the build never waits longer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.GIT_TIMEOUT" title="epythet.provenance.GIT_TIMEOUT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GIT_TIMEOUT</span></code></a></p></td>
+<td><p>Seconds allowed for each git command.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.SHORT_COMMIT_LENGTH" title="epythet.provenance.SHORT_COMMIT_LENGTH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SHORT_COMMIT_LENGTH</span></code></a></p></td>
+<td><p>Characters of a commit hash shown in the footer and the summary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.AGGREGATE_STAMP_PREFIX" title="epythet.provenance.AGGREGATE_STAMP_PREFIX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AGGREGATE_STAMP_PREFIX</span></code></a></p></td>
+<td><p>First line of the stamp prepended to the <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code> aggregate.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.ABOUT_PAGE_TEMPLATE" title="epythet.provenance.ABOUT_PAGE_TEMPLATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ABOUT_PAGE_TEMPLATE</span></code></a></p></td>
+<td><p>it is how epythet recognises its own file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.TEMPLATE_FIELDS" title="epythet.provenance.TEMPLATE_FIELDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEMPLATE_FIELDS</span></code></a></p></td>
+<td><p>The fields <a class="reference internal" href="#epythet.provenance.render_about_page" title="epythet.provenance.render_about_page"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_about_page()</span></code></a> fills; a custom template may use any subset.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Functions</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.about_page" title="epythet.provenance.about_page"><code class="xref py py-obj docutils literal notranslate"><span class="pre">about_page</span></code></a>(info, *[, template])</p></td>
+<td><p>The about page as a <code class="xref py py-class docutils literal notranslate"><span class="pre">PageSpec</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.about_template" title="epythet.provenance.about_template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">about_template</span></code></a>(config)</p></td>
+<td><p>The about page's template: <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">provenance_template</span></code> or the default.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.alignment" title="epythet.provenance.alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alignment</span></code></a>(info)</p></td>
+<td><p>Whether the docs can be trusted to match the repository and the package.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.build_time" title="epythet.provenance.build_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_time</span></code></a>([environ])</p></td>
+<td><p>Now in UTC, or the instant <code class="docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH</span></code> names when it is set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.ci_info" title="epythet.provenance.ci_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ci_info</span></code></a>([environ])</p></td>
+<td><p>The GitHub Actions context, when the build runs there (else <code class="docutils literal notranslate"><span class="pre">None</span></code> fields).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.clone_dirname" title="epythet.provenance.clone_dirname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clone_dirname</span></code></a>(remote)</p></td>
+<td><p>The directory <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">&lt;remote&gt;</span></code> creates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.collect_build_info" title="epythet.provenance.collect_build_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collect_build_info</span></code></a>(config, *[, check_pypi, ...])</p></td>
+<td><p>The provenance record for one build of <code class="docutils literal notranslate"><span class="pre">config</span></code>'s project.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.compare_versions" title="epythet.provenance.compare_versions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_versions</span></code></a>(ours, latest)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">same</span></code> / <code class="docutils literal notranslate"><span class="pre">behind</span></code> / <code class="docutils literal notranslate"><span class="pre">ahead</span></code> of <code class="docutils literal notranslate"><span class="pre">latest</span></code>, or <code class="docutils literal notranslate"><span class="pre">unknown</span></code> when unparsable.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.config_source" title="epythet.provenance.config_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config_source</span></code></a>(project_dir)</p></td>
+<td><p>Which file the package metadata came from: the rule of <a class="reference internal" href="epythet.config.html#module-epythet.config" title="epythet.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.config</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.footer_text" title="epythet.provenance.footer_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">footer_text</span></code></a>(info)</p></td>
+<td><p>The provenance line as plain text (no link).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.git_info" title="epythet.provenance.git_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">git_info</span></code></a>(project_dir, *[, exclude])</p></td>
+<td><p>What git knows about <code class="docutils literal notranslate"><span class="pre">project_dir</span></code>: commit, branch, tags, dirty flag, remote.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.github_web_url" title="epythet.provenance.github_web_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">github_web_url</span></code></a>(remote)</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">https://github.com/owner/repo</span></code> form of a remote URL, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.human_time" title="epythet.provenance.human_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">human_time</span></code></a>(iso)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2026-09-15T14:02:00Z</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">2026-09-15</span> <span class="pre">14:02</span> <span class="pre">UTC</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.load_build_info" title="epythet.provenance.load_build_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_build_info</span></code></a>(raw)</p></td>
+<td><p>Parse the JSON the build process hands over in <code class="docutils literal notranslate"><span class="pre">EPYTHET_BUILD_INFO</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.prune_site" title="epythet.provenance.prune_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prune_site</span></code></a>(html_dir, *, keep_page, keep_json)</p></td>
+<td><p>Remove provenance outputs a previous build left in <code class="docutils literal notranslate"><span class="pre">html_dir</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.publishable_remote" title="epythet.provenance.publishable_remote"><code class="xref py py-obj docutils literal notranslate"><span class="pre">publishable_remote</span></code></a>(url)</p></td>
+<td><p>The form of a remote URL that may appear on a public site, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.pypi_info" title="epythet.provenance.pypi_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pypi_info</span></code></a>(name, version, *[, timeout])</p></td>
+<td><p>The latest release of <code class="docutils literal notranslate"><span class="pre">name</span></code> on PyPI and how <code class="docutils literal notranslate"><span class="pre">version</span></code> relates to it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.pypi_latest_version" title="epythet.provenance.pypi_latest_version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pypi_latest_version</span></code></a>(name, *[, timeout])</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">info.version</span></code> of <code class="docutils literal notranslate"><span class="pre">https://pypi.org/pypi/&lt;name&gt;/json</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> on 404).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.reference_from_agent_outputs" title="epythet.provenance.reference_from_agent_outputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference_from_agent_outputs</span></code></a>(html_dir, info, ...)</p></td>
+<td><p>List <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> in <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and stamp the top of <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.render_about_page" title="epythet.provenance.render_about_page"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_about_page</span></code></a>(info, *[, template])</p></td>
+<td><p>The Markdown source of <code class="docutils literal notranslate"><span class="pre">about-this-build.md</span></code> for a collected <code class="docutils literal notranslate"><span class="pre">info</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.render_footer_line" title="epythet.provenance.render_footer_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render_footer_line</span></code></a>(info, *[, about_href])</p></td>
+<td><p>The landing-page footer as one small HTML paragraph.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.reproduce_command" title="epythet.provenance.reproduce_command"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reproduce_command</span></code></a>(config, git)</p></td>
+<td><p>The shell lines that rebuild this site from the same commit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.resolved_config" title="epythet.provenance.resolved_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolved_config</span></code></a>(config)</p></td>
+<td><p>The documentation choices as the build resolved them (theme, accent, generator...).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.scrub_paths" title="epythet.provenance.scrub_paths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scrub_paths</span></code></a>(message)</p></td>
+<td><p>Replace absolute paths in a diagnostic with <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code>: the record is published.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.short_commit" title="epythet.provenance.short_commit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">short_commit</span></code></a>(sha)</p></td>
+<td><p>The first <a class="reference internal" href="#epythet.provenance.SHORT_COMMIT_LENGTH" title="epythet.provenance.SHORT_COMMIT_LENGTH"><code class="xref py py-data docutils literal notranslate"><span class="pre">SHORT_COMMIT_LENGTH</span></code></a> characters of a commit hash.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.site_counts" title="epythet.provenance.site_counts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">site_counts</span></code></a>(env)</p></td>
+<td><p>Documented-module and documented-object counts from a Sphinx environment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.strip_credentials" title="epythet.provenance.strip_credentials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strip_credentials</span></code></a>(url)</p></td>
+<td><p>A scheme URL without any <code class="docutils literal notranslate"><span class="pre">user:token&#64;</span></code> part (scp-style remotes pass through).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.tool_versions" title="epythet.provenance.tool_versions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tool_versions</span></code></a>()</p></td>
+<td><p>Versions of epythet, Sphinx, docutils and Python in the build environment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.provenance.with_front_matter_and_marker" title="epythet.provenance.with_front_matter_and_marker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_front_matter_and_marker</span></code></a>(template)</p></td>
+<td><p>Make a page template an orphan (out of the toctree) that carries the marker.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.provenance.write_build_info" title="epythet.provenance.write_build_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_build_info</span></code></a>(html_dir, info)</p></td>
+<td><p>Write <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> at the site root; returns its path.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.ABOUT_PAGE_FILENAME">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">ABOUT_PAGE_FILENAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'about-this-build.md'</span></span><a class="headerlink" href="#epythet.provenance.ABOUT_PAGE_FILENAME" title="Link to this definition">¶</a></dt>
+<dd><p>Source file (in docsrc) and document name of the full-diagnosis page.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.ABOUT_PAGE_TEMPLATE">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">ABOUT_PAGE_TEMPLATE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'---\norphan:</span> <span class="pre">true\n---\n{marker}\n\n#</span> <span class="pre">About</span> <span class="pre">this</span> <span class="pre">build\n\n{summary}\n\n{alignment_block}\n\n##</span> <span class="pre">Source\n\n|</span> <span class="pre">|</span> <span class="pre">|\n|---|---|\n|</span> <span class="pre">Commit</span> <span class="pre">|</span> <span class="pre">{commit_cell}</span> <span class="pre">|\n|</span> <span class="pre">Branch</span> <span class="pre">|</span> <span class="pre">{branch}</span> <span class="pre">|\n|</span> <span class="pre">Tags</span> <span class="pre">at</span> <span class="pre">this</span> <span class="pre">commit</span> <span class="pre">|</span> <span class="pre">{tags}</span> <span class="pre">|\n|</span> <span class="pre">Working</span> <span class="pre">tree</span> <span class="pre">|</span> <span class="pre">{tree_state}</span> <span class="pre">|\n|</span> <span class="pre">Remote</span> <span class="pre">|</span> <span class="pre">{remote}</span> <span class="pre">|\n\n##</span> <span class="pre">Continuous</span> <span class="pre">integration\n\n{ci_block}\n\n##</span> <span class="pre">Tools\n\n|</span> <span class="pre">|</span> <span class="pre">|\n|---|---|\n|</span> <span class="pre">epythet</span> <span class="pre">|</span> <span class="pre">{epythet_version}</span> <span class="pre">|\n|</span> <span class="pre">Sphinx</span> <span class="pre">|</span> <span class="pre">{sphinx_version}</span> <span class="pre">|\n|</span> <span class="pre">docutils</span> <span class="pre">|</span> <span class="pre">{docutils_version}</span> <span class="pre">|\n|</span> <span class="pre">Python</span> <span class="pre">|</span> <span class="pre">{python_version}</span> <span class="pre">|\n\n##</span> <span class="pre">Configuration</span> <span class="pre">as</span> <span class="pre">resolved\n\n|</span> <span class="pre">|</span> <span class="pre">|\n|---|---|\n|</span> <span class="pre">theme</span> <span class="pre">|</span> <span class="pre">{theme}</span> <span class="pre">(Sphinx</span> <span class="pre">theme</span> <span class="pre">{html_theme})</span> <span class="pre">|\n|</span> <span class="pre">accent</span> <span class="pre">|</span> <span class="pre">{accent}</span> <span class="pre">|\n|</span> <span class="pre">api_generator</span> <span class="pre">|</span> <span class="pre">{api_generator}</span> <span class="pre">|\n|</span> <span class="pre">ignore</span> <span class="pre">|</span> <span class="pre">{ignore}</span> <span class="pre">|\n|</span> <span class="pre">agent_outputs</span> <span class="pre">|</span> <span class="pre">{agent_outputs}</span> <span class="pre">|\n|</span> <span class="pre">aggregates</span> <span class="pre">|</span> <span class="pre">{aggregates}</span> <span class="pre">|\n|</span> <span class="pre">ai_artifacts</span> <span class="pre">|</span> <span class="pre">{ai_artifacts}</span> <span class="pre">|\n\n##</span> <span class="pre">Package</span> <span class="pre">on</span> <span class="pre">PyPI\n\n{pypi_block}\n\n##</span> <span class="pre">Reproduce\n\n```bash\n{reproduce}\n```\n\nThe</span> <span class="pre">same</span> <span class="pre">data,</span> <span class="pre">for</span> <span class="pre">machines:</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;{build_info_filename}&quot;&gt;&lt;code&gt;{build_info_filename}&lt;/code&gt;&lt;/a&gt;</span> <span class="pre">(schema</span> <span class="pre">version</span> <span class="pre">{schema_version}).\n'</span></span><a class="headerlink" href="#epythet.provenance.ABOUT_PAGE_TEMPLATE" title="Link to this definition">¶</a></dt>
+<dd><p>it is how
+epythet recognises its own file. Literal braces are doubled. Every value
+is already HTML-escaped (<a class="reference internal" href="#epythet.provenance.render_about_page" title="epythet.provenance.render_about_page"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_about_page()</span></code></a>), so a custom template
+may place the fields anywhere.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Markdown source of the about page. <code class="docutils literal notranslate"><span class="pre">{marker}</span></code> must stay</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.AGGREGATE_STAMP_PREFIX">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">AGGREGATE_STAMP_PREFIX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&gt;</span> <span class="pre">built</span> <span class="pre">'</span></span><a class="headerlink" href="#epythet.provenance.AGGREGATE_STAMP_PREFIX" title="Link to this definition">¶</a></dt>
+<dd><p>First line of the stamp prepended to the <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code> aggregate.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.BUILD_INFO_ENV">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">BUILD_INFO_ENV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EPYTHET_BUILD_INFO'</span></span><a class="headerlink" href="#epythet.provenance.BUILD_INFO_ENV" title="Link to this definition">¶</a></dt>
+<dd><p>Environment variable carrying the collected JSON into the Sphinx process.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.BUILD_INFO_FILENAME">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">BUILD_INFO_FILENAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'build_info.json'</span></span><a class="headerlink" href="#epythet.provenance.BUILD_INFO_FILENAME" title="Link to this definition">¶</a></dt>
+<dd><p>File written at the site root.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.DEFAULT_PYPI_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_PYPI_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.0</span></span><a class="headerlink" href="#epythet.provenance.DEFAULT_PYPI_TIMEOUT" title="Link to this definition">¶</a></dt>
+<dd><p>Seconds allowed for the PyPI lookup, in total; the build never waits longer.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.GIT_TIMEOUT">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">GIT_TIMEOUT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#epythet.provenance.GIT_TIMEOUT" title="Link to this definition">¶</a></dt>
+<dd><p>Seconds allowed for each git command.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.PYPI_CHECK_ENV">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">PYPI_CHECK_ENV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EPYTHET_PYPI_CHECK'</span></span><a class="headerlink" href="#epythet.provenance.PYPI_CHECK_ENV" title="Link to this definition">¶</a></dt>
+<dd><p>Set to <code class="docutils literal notranslate"><span class="pre">0</span></code> to skip the PyPI lookup (offline CI, tests).</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.SCHEMA_VERSION">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">SCHEMA_VERSION</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#epythet.provenance.SCHEMA_VERSION" title="Link to this definition">¶</a></dt>
+<dd><p>Bumped when a key is renamed or removed; additions keep the version.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.SHORT_COMMIT_LENGTH">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">SHORT_COMMIT_LENGTH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></span><a class="headerlink" href="#epythet.provenance.SHORT_COMMIT_LENGTH" title="Link to this definition">¶</a></dt>
+<dd><p>Characters of a commit hash shown in the footer and the summary.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.SOURCE_DATE_EPOCH_ENV">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">SOURCE_DATE_EPOCH_ENV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SOURCE_DATE_EPOCH'</span></span><a class="headerlink" href="#epythet.provenance.SOURCE_DATE_EPOCH_ENV" title="Link to this definition">¶</a></dt>
+<dd><p>seconds since the epoch, fixes <code class="docutils literal notranslate"><span class="pre">built_at</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Reproducible-builds convention</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.provenance.TEMPLATE_FIELDS">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">TEMPLATE_FIELDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'accent',</span> <span class="pre">'agent_outputs',</span> <span class="pre">'aggregates',</span> <span class="pre">'ai_artifacts',</span> <span class="pre">'alignment_block',</span> <span class="pre">'api_generator',</span> <span class="pre">'branch',</span> <span class="pre">'build_info_filename',</span> <span class="pre">'ci_block',</span> <span class="pre">'commit_cell',</span> <span class="pre">'docutils_version',</span> <span class="pre">'epythet_version',</span> <span class="pre">'html_theme',</span> <span class="pre">'ignore',</span> <span class="pre">'marker',</span> <span class="pre">'pypi_block',</span> <span class="pre">'python_version',</span> <span class="pre">'remote',</span> <span class="pre">'reproduce',</span> <span class="pre">'schema_version',</span> <span class="pre">'sphinx_version',</span> <span class="pre">'summary',</span> <span class="pre">'tags',</span> <span class="pre">'theme',</span> <span class="pre">'tree_state'})</span></span><a class="headerlink" href="#epythet.provenance.TEMPLATE_FIELDS" title="Link to this definition">¶</a></dt>
+<dd><p>The fields <a class="reference internal" href="#epythet.provenance.render_about_page" title="epythet.provenance.render_about_page"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_about_page()</span></code></a> fills; a custom template may use any subset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.about_page">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">about_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'---\\norphan:</span> <span class="pre">true\\n---\\n{marker}\\n\\n#</span> <span class="pre">About</span> <span class="pre">this</span> <span class="pre">build\\n\\n{summary}\\n\\n{alignment_block}\\n\\n##</span> <span class="pre">Source\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">Commit</span> <span class="pre">|</span> <span class="pre">{commit_cell}</span> <span class="pre">|\\n|</span> <span class="pre">Branch</span> <span class="pre">|</span> <span class="pre">{branch}</span> <span class="pre">|\\n|</span> <span class="pre">Tags</span> <span class="pre">at</span> <span class="pre">this</span> <span class="pre">commit</span> <span class="pre">|</span> <span class="pre">{tags}</span> <span class="pre">|\\n|</span> <span class="pre">Working</span> <span class="pre">tree</span> <span class="pre">|</span> <span class="pre">{tree_state}</span> <span class="pre">|\\n|</span> <span class="pre">Remote</span> <span class="pre">|</span> <span class="pre">{remote}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Continuous</span> <span class="pre">integration\\n\\n{ci_block}\\n\\n##</span> <span class="pre">Tools\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">epythet</span> <span class="pre">|</span> <span class="pre">{epythet_version}</span> <span class="pre">|\\n|</span> <span class="pre">Sphinx</span> <span class="pre">|</span> <span class="pre">{sphinx_version}</span> <span class="pre">|\\n|</span> <span class="pre">docutils</span> <span class="pre">|</span> <span class="pre">{docutils_version}</span> <span class="pre">|\\n|</span> <span class="pre">Python</span> <span class="pre">|</span> <span class="pre">{python_version}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Configuration</span> <span class="pre">as</span> <span class="pre">resolved\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">theme</span> <span class="pre">|</span> <span class="pre">{theme}</span> <span class="pre">(Sphinx</span> <span class="pre">theme</span> <span class="pre">{html_theme})</span> <span class="pre">|\\n|</span> <span class="pre">accent</span> <span class="pre">|</span> <span class="pre">{accent}</span> <span class="pre">|\\n|</span> <span class="pre">api_generator</span> <span class="pre">|</span> <span class="pre">{api_generator}</span> <span class="pre">|\\n|</span> <span class="pre">ignore</span> <span class="pre">|</span> <span class="pre">{ignore}</span> <span class="pre">|\\n|</span> <span class="pre">agent_outputs</span> <span class="pre">|</span> <span class="pre">{agent_outputs}</span> <span class="pre">|\\n|</span> <span class="pre">aggregates</span> <span class="pre">|</span> <span class="pre">{aggregates}</span> <span class="pre">|\\n|</span> <span class="pre">ai_artifacts</span> <span class="pre">|</span> <span class="pre">{ai_artifacts}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Package</span> <span class="pre">on</span> <span class="pre">PyPI\\n\\n{pypi_block}\\n\\n##</span> <span class="pre">Reproduce\\n\\n```bash\\n{reproduce}\\n```\\n\\nThe</span> <span class="pre">same</span> <span class="pre">data,</span> <span class="pre">for</span> <span class="pre">machines:</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;{build_info_filename}&quot;&gt;&lt;code&gt;{build_info_filename}&lt;/code&gt;&lt;/a&gt;</span> <span class="pre">(schema</span> <span class="pre">version</span> <span class="pre">{schema_version}).\\n'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#about_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.about_page" title="Link to this definition">¶</a></dt>
+<dd><p>The about page as a <code class="xref py py-class docutils literal notranslate"><span class="pre">PageSpec</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="epythet.config.html#epythet.config.ConfigError" title="epythet.config.ConfigError"><strong>ConfigError</strong></a> – when <code class="docutils literal notranslate"><span class="pre">template</span></code> names a field the renderer does not
+provide (literal braces must be doubled: <code class="docutils literal notranslate"><span class="pre">{{</span></code>).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.about_template">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">about_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#about_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.about_template" title="Link to this definition">¶</a></dt>
+<dd><p>The about page’s template: <code class="docutils literal notranslate"><span class="pre">[tool.epythet]</span> <span class="pre">provenance_template</span></code> or the default.</p>
+<p>The key names a file relative to the project root, with the same contract
+as <code class="docutils literal notranslate"><span class="pre">ai_artifacts_template</span></code>; the epythet marker is prepended when absent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="epythet.config.html#epythet.config.ConfigError" title="epythet.config.ConfigError"><strong>ConfigError</strong></a> – when the file does not exist</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.alignment">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.alignment" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the docs can be trusted to match the repository and the package.</p>
+<p><code class="docutils literal notranslate"><span class="pre">aligned</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> when nothing suggests otherwise, <code class="docutils literal notranslate"><span class="pre">False</span></code> when a
+note says why they may differ, <code class="docutils literal notranslate"><span class="pre">None</span></code> when there is no git information to
+judge by. <code class="docutils literal notranslate"><span class="pre">notes</span></code> are the plain-language reasons, in the order shown.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.build_time">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">build_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#build_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.build_time" title="Link to this definition">¶</a></dt>
+<dd><p>Now in UTC, or the instant <code class="docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH</span></code> names when it is set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">build_time</span><span class="p">({</span><span class="s2">"SOURCE_DATE_EPOCH"</span><span class="p">:</span> <span class="s2">"0"</span><span class="p">})</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">)</span>
+<span class="go">'1970-01-01'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.ci_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">ci_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#ci_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.ci_info" title="Link to this definition">¶</a></dt>
+<dd><p>The GitHub Actions context, when the build runs there (else <code class="docutils literal notranslate"><span class="pre">None</span></code> fields).</p>
+<p><code class="docutils literal notranslate"><span class="pre">sha_in_history</span></code> says whether the event’s commit is in the built HEAD’s
+history; the publish action fast-forwards to the branch tip before
+building, so HEAD is normally a descendant of <code class="docutils literal notranslate"><span class="pre">GITHUB_SHA</span></code>, not equal to it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ci_info</span><span class="p">({</span><span class="s2">"GITHUB_ACTIONS"</span><span class="p">:</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"GITHUB_REPOSITORY"</span><span class="p">:</span> <span class="s2">"o/r"</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="s2">"GITHUB_RUN_ID"</span><span class="p">:</span> <span class="s2">"42"</span><span class="p">,</span> <span class="s2">"GITHUB_SHA"</span><span class="p">:</span> <span class="s2">"abc"</span><span class="p">,</span> <span class="s2">"GITHUB_REF"</span><span class="p">:</span> <span class="s2">"refs/heads/main"</span><span class="p">,</span>
+<span class="gp">... </span>         <span class="s2">"GITHUB_REF_NAME"</span><span class="p">:</span> <span class="s2">"main"</span><span class="p">})[</span><span class="s2">"run_url"</span><span class="p">]</span>
+<span class="go">'https://github.com/o/r/actions/runs/42'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ci_info</span><span class="p">({})[</span><span class="s2">"provider"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.clone_dirname">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">clone_dirname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#clone_dirname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.clone_dirname" title="Link to this definition">¶</a></dt>
+<dd><p>The directory <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">&lt;remote&gt;</span></code> creates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clone_dirname</span><span class="p">(</span><span class="s2">"https://github.com/org/demo.git"</span><span class="p">),</span> <span class="n">clone_dirname</span><span class="p">(</span><span class="s2">"git@github.com:o/r"</span><span class="p">)</span>
+<span class="go">('demo', 'r')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.collect_build_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">collect_build_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pypi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pypi_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dirty_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#collect_build_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.collect_build_info" title="Link to this definition">¶</a></dt>
+<dd><p>The provenance record for one build of <code class="docutils literal notranslate"><span class="pre">config</span></code>’s project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – a <a class="reference internal" href="epythet.config.html#epythet.config.DocsConfig" title="epythet.config.DocsConfig"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocsConfig</span></code></a></p></li>
+<li><p><strong>check_pypi</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – query PyPI for the latest release; <code class="docutils literal notranslate"><span class="pre">None</span></code> means “unless
+the <code class="docutils literal notranslate"><span class="pre">EPYTHET_PYPI_CHECK</span></code> environment variable turns it off”</p></li>
+<li><p><strong>pypi_timeout</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – seconds allowed for that query</p></li>
+<li><p><strong>dirty_exclude</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – project-relative paths left out of the dirty check, on
+top of the docs dir; <code class="docutils literal notranslate"><span class="pre">None</span></code> means the directories the <code class="docutils literal notranslate"><span class="pre">github</span></code> /
+<code class="docutils literal notranslate"><span class="pre">gitlab</span></code> targets copy the site into (<code class="xref py py-data docutils literal notranslate"><span class="pre">epythet.build.COPY_TARGETS</span></code>)</p></li>
+<li><p><strong>environ</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – the environment to read CI variables from (default: <code class="docutils literal notranslate"><span class="pre">os.environ</span></code>)</p></li>
+<li><p><strong>now</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – the build time (default: <code class="docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH</span></code> if set, else now, UTC)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a JSON-serialisable dict; see the module docstring for the keys.
+<code class="docutils literal notranslate"><span class="pre">site</span></code> counts are <code class="docutils literal notranslate"><span class="pre">None</span></code> here and filled in by the Sphinx
+extension, which knows what was documented.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.compare_versions">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">compare_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#compare_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.compare_versions" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">same</span></code> / <code class="docutils literal notranslate"><span class="pre">behind</span></code> / <code class="docutils literal notranslate"><span class="pre">ahead</span></code> of <code class="docutils literal notranslate"><span class="pre">latest</span></code>, or <code class="docutils literal notranslate"><span class="pre">unknown</span></code> when unparsable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">compare_versions</span><span class="p">(</span><span class="s2">"0.2.4"</span><span class="p">,</span> <span class="s2">"0.2.5"</span><span class="p">),</span> <span class="n">compare_versions</span><span class="p">(</span><span class="s2">"1.0"</span><span class="p">,</span> <span class="s2">"1.0.0"</span><span class="p">)</span>
+<span class="go">('behind', 'same')</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compare_versions</span><span class="p">(</span><span class="s2">"0.3.0.dev1"</span><span class="p">,</span> <span class="s2">"0.2.5"</span><span class="p">),</span> <span class="n">compare_versions</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">)</span>
+<span class="go">('ahead', 'unknown')</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.config_source">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">config_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#config_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.config_source" title="Link to this definition">¶</a></dt>
+<dd><p>Which file the package metadata came from: the rule of <a class="reference internal" href="epythet.config.html#module-epythet.config" title="epythet.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">epythet.config</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.footer_text">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">footer_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#footer_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.footer_text" title="Link to this definition">¶</a></dt>
+<dd><p>The provenance line as plain text (no link).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"built_at"</span><span class="p">:</span> <span class="s2">"2026-09-15T14:02:00Z"</span><span class="p">,</span> <span class="s2">"package"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"dol"</span><span class="p">,</span> <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.3.1"</span><span class="p">},</span>
+<span class="gp">... </span>        <span class="s2">"git"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"short_commit"</span><span class="p">:</span> <span class="s2">"a1b2c3d"</span><span class="p">,</span> <span class="s2">"branch"</span><span class="p">:</span> <span class="s2">"master"</span><span class="p">,</span> <span class="s2">"dirty"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">footer_text</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+<span class="go">'built 2026-09-15 14:02 UTC from a1b2c3d+dirty (master) · dol 0.3.1'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.git_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">git_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_dir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#git_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.git_info" title="Link to this definition">¶</a></dt>
+<dd><p>What git knows about <code class="docutils literal notranslate"><span class="pre">project_dir</span></code>: commit, branch, tags, dirty flag, remote.</p>
+<p><code class="docutils literal notranslate"><span class="pre">exclude</span></code> names paths (relative to the project) left out of the dirty
+check; the build rewrites a committed <code class="docutils literal notranslate"><span class="pre">docsrc/</span></code>, which must not count.
+Everything is <code class="docutils literal notranslate"><span class="pre">None</span></code> with <code class="docutils literal notranslate"><span class="pre">available</span></code> false when the directory is not a
+repository or <code class="docutils literal notranslate"><span class="pre">git</span></code> is not installed. A detached HEAD has <code class="docutils literal notranslate"><span class="pre">branch</span></code>
+<code class="docutils literal notranslate"><span class="pre">None</span></code>. <code class="docutils literal notranslate"><span class="pre">remote_url</span></code> is the publishable form of <code class="docutils literal notranslate"><span class="pre">origin</span></code> (no
+credentials, no local paths), see <a class="reference internal" href="#epythet.provenance.publishable_remote" title="epythet.provenance.publishable_remote"><code class="xref py py-func docutils literal notranslate"><span class="pre">publishable_remote()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.github_web_url">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">github_web_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remote</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#github_web_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.github_web_url" title="Link to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">https://github.com/owner/repo</span></code> form of a remote URL, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">github_web_url</span><span class="p">(</span><span class="s2">"git@github.com:i2mint/epythet.git"</span><span class="p">)</span>
+<span class="go">'https://github.com/i2mint/epythet'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">github_web_url</span><span class="p">(</span><span class="s2">"https://github.com/i2mint/epythet/"</span><span class="p">)</span>
+<span class="go">'https://github.com/i2mint/epythet'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">github_web_url</span><span class="p">(</span><span class="s2">"https://gitlab.com/x/y.git"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.human_time">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">human_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iso</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#human_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.human_time" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">2026-09-15T14:02:00Z</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">2026-09-15</span> <span class="pre">14:02</span> <span class="pre">UTC</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">human_time</span><span class="p">(</span><span class="s2">"2026-09-15T14:02:00Z"</span><span class="p">)</span>
+<span class="go">'2026-09-15 14:02 UTC'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.load_build_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">load_build_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#load_build_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.load_build_info" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the JSON the build process hands over in <code class="docutils literal notranslate"><span class="pre">EPYTHET_BUILD_INFO</span></code>.</p>
+<p>Anything that is not a record of this module’s schema is ignored, so a
+stale or foreign value in the environment never breaks a build.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">load_build_info</span><span class="p">(</span><span class="s1">'{"schema_version": 1, "git": </span><span class="si">{}</span><span class="s1">}'</span><span class="p">)[</span><span class="s2">"schema_version"</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">load_build_info</span><span class="p">(</span><span class="s1">'"str"'</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">load_build_info</span><span class="p">(</span><span class="s2">"{"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.prune_site">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">prune_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_dir</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_json</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#prune_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.prune_site" title="Link to this definition">¶</a></dt>
+<dd><p>Remove provenance outputs a previous build left in <code class="docutils literal notranslate"><span class="pre">html_dir</span></code>.</p>
+<p>Sphinx never cleans its output directory, so a project that turned
+<code class="docutils literal notranslate"><span class="pre">provenance</span></code> off (or down to <code class="docutils literal notranslate"><span class="pre">&quot;minimal&quot;</span></code>) would otherwise keep
+publishing a stale page or JSON. Returns the paths removed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.publishable_remote">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">publishable_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#publishable_remote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.publishable_remote" title="Link to this definition">¶</a></dt>
+<dd><p>The form of a remote URL that may appear on a public site, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Credentials are dropped from scheme URLs, the user part from scp-style
+remotes, and path-shaped remotes (a local or <code class="docutils literal notranslate"><span class="pre">file://</span></code> clone) are not
+published at all.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"https://me:ghp_secret@github.com/o/r.git"</span><span class="p">)</span>
+<span class="go">'https://github.com/o/r.git'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"thor@myserver.local:repos/demo.git"</span><span class="p">)</span>
+<span class="go">'myserver.local:repos/demo.git'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"git@github.com:o/r.git"</span><span class="p">)</span>
+<span class="go">'git@github.com:o/r.git'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"/Users/me/bare/demo.git"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"D:/repos/x.git"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">publishable_remote</span><span class="p">(</span><span class="s2">"file:///srv/git/demo.git"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.pypi_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">pypi_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#pypi_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.pypi_info" title="Link to this definition">¶</a></dt>
+<dd><p>The latest release of <code class="docutils literal notranslate"><span class="pre">name</span></code> on PyPI and how <code class="docutils literal notranslate"><span class="pre">version</span></code> relates to it.</p>
+<p><code class="docutils literal notranslate"><span class="pre">relation</span></code> is <code class="docutils literal notranslate"><span class="pre">same</span></code>, <code class="docutils literal notranslate"><span class="pre">behind</span></code>, <code class="docutils literal notranslate"><span class="pre">ahead</span></code> or <code class="docutils literal notranslate"><span class="pre">unknown</span></code> (not on
+PyPI, unreachable, or unparsable versions). Any failure, including the
+<code class="docutils literal notranslate"><span class="pre">timeout</span></code> elapsing, is recorded in <code class="docutils literal notranslate"><span class="pre">error</span></code> and never raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.pypi_latest_version">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">pypi_latest_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#pypi_latest_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.pypi_latest_version" title="Link to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">info.version</span></code> of <code class="docutils literal notranslate"><span class="pre">https://pypi.org/pypi/&lt;name&gt;/json</span></code> (<code class="docutils literal notranslate"><span class="pre">None</span></code> on 404).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.reference_from_agent_outputs">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">reference_from_agent_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">package_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#reference_from_agent_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.reference_from_agent_outputs" title="Link to this definition">¶</a></dt>
+<dd><p>List <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> in <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and stamp the top of <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.render_about_page">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">render_about_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'---\\norphan:</span> <span class="pre">true\\n---\\n{marker}\\n\\n#</span> <span class="pre">About</span> <span class="pre">this</span> <span class="pre">build\\n\\n{summary}\\n\\n{alignment_block}\\n\\n##</span> <span class="pre">Source\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">Commit</span> <span class="pre">|</span> <span class="pre">{commit_cell}</span> <span class="pre">|\\n|</span> <span class="pre">Branch</span> <span class="pre">|</span> <span class="pre">{branch}</span> <span class="pre">|\\n|</span> <span class="pre">Tags</span> <span class="pre">at</span> <span class="pre">this</span> <span class="pre">commit</span> <span class="pre">|</span> <span class="pre">{tags}</span> <span class="pre">|\\n|</span> <span class="pre">Working</span> <span class="pre">tree</span> <span class="pre">|</span> <span class="pre">{tree_state}</span> <span class="pre">|\\n|</span> <span class="pre">Remote</span> <span class="pre">|</span> <span class="pre">{remote}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Continuous</span> <span class="pre">integration\\n\\n{ci_block}\\n\\n##</span> <span class="pre">Tools\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">epythet</span> <span class="pre">|</span> <span class="pre">{epythet_version}</span> <span class="pre">|\\n|</span> <span class="pre">Sphinx</span> <span class="pre">|</span> <span class="pre">{sphinx_version}</span> <span class="pre">|\\n|</span> <span class="pre">docutils</span> <span class="pre">|</span> <span class="pre">{docutils_version}</span> <span class="pre">|\\n|</span> <span class="pre">Python</span> <span class="pre">|</span> <span class="pre">{python_version}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Configuration</span> <span class="pre">as</span> <span class="pre">resolved\\n\\n|</span> <span class="pre">|</span> <span class="pre">|\\n|---|---|\\n|</span> <span class="pre">theme</span> <span class="pre">|</span> <span class="pre">{theme}</span> <span class="pre">(Sphinx</span> <span class="pre">theme</span> <span class="pre">{html_theme})</span> <span class="pre">|\\n|</span> <span class="pre">accent</span> <span class="pre">|</span> <span class="pre">{accent}</span> <span class="pre">|\\n|</span> <span class="pre">api_generator</span> <span class="pre">|</span> <span class="pre">{api_generator}</span> <span class="pre">|\\n|</span> <span class="pre">ignore</span> <span class="pre">|</span> <span class="pre">{ignore}</span> <span class="pre">|\\n|</span> <span class="pre">agent_outputs</span> <span class="pre">|</span> <span class="pre">{agent_outputs}</span> <span class="pre">|\\n|</span> <span class="pre">aggregates</span> <span class="pre">|</span> <span class="pre">{aggregates}</span> <span class="pre">|\\n|</span> <span class="pre">ai_artifacts</span> <span class="pre">|</span> <span class="pre">{ai_artifacts}</span> <span class="pre">|\\n\\n##</span> <span class="pre">Package</span> <span class="pre">on</span> <span class="pre">PyPI\\n\\n{pypi_block}\\n\\n##</span> <span class="pre">Reproduce\\n\\n```bash\\n{reproduce}\\n```\\n\\nThe</span> <span class="pre">same</span> <span class="pre">data,</span> <span class="pre">for</span> <span class="pre">machines:</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;{build_info_filename}&quot;&gt;&lt;code&gt;{build_info_filename}&lt;/code&gt;&lt;/a&gt;</span> <span class="pre">(schema</span> <span class="pre">version</span> <span class="pre">{schema_version}).\\n'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#render_about_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.render_about_page" title="Link to this definition">¶</a></dt>
+<dd><p>The Markdown source of <code class="docutils literal notranslate"><span class="pre">about-this-build.md</span></code> for a collected <code class="docutils literal notranslate"><span class="pre">info</span></code>.</p>
+<p>Values from the repository (branch, tags, remote, versions) are rendered
+as escaped inline HTML, never as Markdown: a ref name is user input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.render_footer_line">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">render_footer_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">about_href</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'about-this-build.html'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#render_footer_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.render_footer_line" title="Link to this definition">¶</a></dt>
+<dd><p>The landing-page footer as one small HTML paragraph.</p>
+<p>The commit links to GitHub when the remote is known; <code class="docutils literal notranslate"><span class="pre">about_href</span></code> is the
+“about this build” link target (<code class="docutils literal notranslate"><span class="pre">None</span></code> to omit the link, as <code class="docutils literal notranslate"><span class="pre">minimal</span></code> does
+without a page: the JSON is linked instead). The style is inline on purpose:
+it must hold in every theme without a stylesheet of its own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.reproduce_command">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">reproduce_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">git</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#reproduce_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.reproduce_command" title="Link to this definition">¶</a></dt>
+<dd><p>The shell lines that rebuild this site from the same commit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.resolved_config">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">resolved_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#resolved_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.resolved_config" title="Link to this definition">¶</a></dt>
+<dd><p>The documentation choices as the build resolved them (theme, accent, generator…).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.scrub_paths">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">scrub_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#scrub_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.scrub_paths" title="Link to this definition">¶</a></dt>
+<dd><p>Replace absolute paths in a diagnostic with <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code>: the record is published.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scrub_paths</span><span class="p">(</span><span class="s2">"fatal: detected dubious ownership in repository at '/home/me/x'"</span><span class="p">)</span>
+<span class="go">"fatal: detected dubious ownership in repository at '&lt;path&gt;'"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scrub_paths</span><span class="p">(</span><span class="s2">"fatal: not a git repository (or any of the parent directories): .git"</span><span class="p">)</span>
+<span class="go">'fatal: not a git repository (or any of the parent directories): .git'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.short_commit">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">short_commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#short_commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.short_commit" title="Link to this definition">¶</a></dt>
+<dd><p>The first <a class="reference internal" href="#epythet.provenance.SHORT_COMMIT_LENGTH" title="epythet.provenance.SHORT_COMMIT_LENGTH"><code class="xref py py-data docutils literal notranslate"><span class="pre">SHORT_COMMIT_LENGTH</span></code></a> characters of a commit hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.site_counts">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">site_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#site_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.site_counts" title="Link to this definition">¶</a></dt>
+<dd><p>Documented-module and documented-object counts from a Sphinx environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.strip_credentials">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">strip_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#strip_credentials"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.strip_credentials" title="Link to this definition">¶</a></dt>
+<dd><p>A scheme URL without any <code class="docutils literal notranslate"><span class="pre">user:token&#64;</span></code> part (scp-style remotes pass through).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">strip_credentials</span><span class="p">(</span><span class="s2">"https://me:ghp_secret@github.com/o/r.git"</span><span class="p">)</span>
+<span class="go">'https://github.com/o/r.git'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.tool_versions">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">tool_versions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#tool_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.tool_versions" title="Link to this definition">¶</a></dt>
+<dd><p>Versions of epythet, Sphinx, docutils and Python in the build environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.with_front_matter_and_marker">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">with_front_matter_and_marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#with_front_matter_and_marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.with_front_matter_and_marker" title="Link to this definition">¶</a></dt>
+<dd><p>Make a page template an orphan (out of the toctree) that carries the marker.</p>
+<p>YAML front matter must be the very first thing in the file, so the marker
+goes after it; <code class="docutils literal notranslate"><span class="pre">orphan:</span> <span class="pre">true</span></code> is added when the front matter lacks it,
+and front matter is created when there is none.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">with_front_matter_and_marker</span><span class="p">(</span><span class="s2">"# Build</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
+<span class="go">---</span>
+<span class="go">orphan: true</span>
+<span class="go">---</span>
+<span class="go">{marker}</span>
+
+<span class="go"># Build</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">with_front_matter_and_marker</span><span class="p">(</span><span class="s2">"---</span><span class="se">\n</span><span class="s2">title: x</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="si">{marker}</span><span class="se">\n</span><span class="s2"># B</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
+<span class="go">---</span>
+<span class="go">title: x</span>
+<span class="go">orphan: true</span>
+<span class="go">---</span>
+<span class="go">{marker}</span>
+<span class="go"># B</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.provenance.write_build_info">
+<span class="sig-prename descclassname"><span class="pre">epythet.provenance.</span></span><span class="sig-name descname"><span class="pre">write_build_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/provenance.html#write_build_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.provenance.write_build_info" title="Link to this definition">¶</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code> at the site root; returns its path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="epythet.repair.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">epythet.repair</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="epythet.normalizer.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">epythet.normalizer</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">epythet.provenance</a><ul>
+<li><a class="reference internal" href="#epythet.provenance.ABOUT_PAGE_FILENAME"><code class="docutils literal notranslate"><span class="pre">ABOUT_PAGE_FILENAME</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.ABOUT_PAGE_TEMPLATE"><code class="docutils literal notranslate"><span class="pre">ABOUT_PAGE_TEMPLATE</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.AGGREGATE_STAMP_PREFIX"><code class="docutils literal notranslate"><span class="pre">AGGREGATE_STAMP_PREFIX</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.BUILD_INFO_ENV"><code class="docutils literal notranslate"><span class="pre">BUILD_INFO_ENV</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.BUILD_INFO_FILENAME"><code class="docutils literal notranslate"><span class="pre">BUILD_INFO_FILENAME</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.DEFAULT_PYPI_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_PYPI_TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.GIT_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">GIT_TIMEOUT</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.PYPI_CHECK_ENV"><code class="docutils literal notranslate"><span class="pre">PYPI_CHECK_ENV</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.SCHEMA_VERSION"><code class="docutils literal notranslate"><span class="pre">SCHEMA_VERSION</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.SHORT_COMMIT_LENGTH"><code class="docutils literal notranslate"><span class="pre">SHORT_COMMIT_LENGTH</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.SOURCE_DATE_EPOCH_ENV"><code class="docutils literal notranslate"><span class="pre">SOURCE_DATE_EPOCH_ENV</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.TEMPLATE_FIELDS"><code class="docutils literal notranslate"><span class="pre">TEMPLATE_FIELDS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.about_page"><code class="docutils literal notranslate"><span class="pre">about_page()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.about_template"><code class="docutils literal notranslate"><span class="pre">about_template()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.alignment"><code class="docutils literal notranslate"><span class="pre">alignment()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.build_time"><code class="docutils literal notranslate"><span class="pre">build_time()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.ci_info"><code class="docutils literal notranslate"><span class="pre">ci_info()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.clone_dirname"><code class="docutils literal notranslate"><span class="pre">clone_dirname()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.collect_build_info"><code class="docutils literal notranslate"><span class="pre">collect_build_info()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.compare_versions"><code class="docutils literal notranslate"><span class="pre">compare_versions()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.config_source"><code class="docutils literal notranslate"><span class="pre">config_source()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.footer_text"><code class="docutils literal notranslate"><span class="pre">footer_text()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.git_info"><code class="docutils literal notranslate"><span class="pre">git_info()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.github_web_url"><code class="docutils literal notranslate"><span class="pre">github_web_url()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.human_time"><code class="docutils literal notranslate"><span class="pre">human_time()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.load_build_info"><code class="docutils literal notranslate"><span class="pre">load_build_info()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.prune_site"><code class="docutils literal notranslate"><span class="pre">prune_site()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.publishable_remote"><code class="docutils literal notranslate"><span class="pre">publishable_remote()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.pypi_info"><code class="docutils literal notranslate"><span class="pre">pypi_info()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.pypi_latest_version"><code class="docutils literal notranslate"><span class="pre">pypi_latest_version()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.reference_from_agent_outputs"><code class="docutils literal notranslate"><span class="pre">reference_from_agent_outputs()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.render_about_page"><code class="docutils literal notranslate"><span class="pre">render_about_page()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.render_footer_line"><code class="docutils literal notranslate"><span class="pre">render_footer_line()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.reproduce_command"><code class="docutils literal notranslate"><span class="pre">reproduce_command()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.resolved_config"><code class="docutils literal notranslate"><span class="pre">resolved_config()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.scrub_paths"><code class="docutils literal notranslate"><span class="pre">scrub_paths()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.short_commit"><code class="docutils literal notranslate"><span class="pre">short_commit()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.site_counts"><code class="docutils literal notranslate"><span class="pre">site_counts()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.strip_credentials"><code class="docutils literal notranslate"><span class="pre">strip_credentials()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.tool_versions"><code class="docutils literal notranslate"><span class="pre">tool_versions()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.with_front_matter_and_marker"><code class="docutils literal notranslate"><span class="pre">with_front_matter_and_marker()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.provenance.write_build_info"><code class="docutils literal notranslate"><span class="pre">write_build_info()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=dfb2ad43"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=fd10adb8"></script>
+    </body>
+</html>

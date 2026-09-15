@@ -213,6 +213,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -293,7 +294,10 @@
 <span class="sd">  relations on every HTML page when ``epythet_agent_outputs`` is on, see</span>
 <span class="sd">  :mod:`epythet.agent_outputs`;</span>
 <span class="sd">- the theme accent stylesheet ``_static/epythet.css`` when the chosen theme</span>
-<span class="sd">  takes its colours from CSS variables (``epythet_theme_css``).</span>
+<span class="sd">  takes its colours from CSS variables (``epythet_theme_css``);</span>
+<span class="sd">- the build provenance (``epythet_build_info``): the one-line footer appended</span>
+<span class="sd">  to the landing page, the documented-module counts on the about page, and</span>
+<span class="sd">  ``build_info.json`` at the site root, see :mod:`epythet.provenance`.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -303,6 +307,12 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.agent_outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">inject_link_relations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.normalizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">sphinx_process_docstring</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ABOUT_PAGE_DOCNAME</span><span class="p">,</span>
+    <span class="n">render_footer_line</span><span class="p">,</span>
+    <span class="n">site_counts</span><span class="p">,</span>
+    <span class="n">write_build_info</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">CSS_FILENAME</span> <span class="o">=</span> <span class="s2">"epythet.css"</span>
 
@@ -332,6 +342,67 @@
         <span class="n">inject_link_relations</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">pagename</span><span class="p">,</span> <span class="n">templatename</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">doctree</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_html_build</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">builder</span><span class="p">,</span> <span class="s2">"format"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"html"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_provenance_page_context</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">pagename</span><span class="p">,</span> <span class="n">templatename</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">doctree</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Append the footer line to the landing page and the counts to the about page."""</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">"epythet_build_info"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_is_html_build</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"body"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pagename</span> <span class="o">==</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_doc</span><span class="p">:</span>
+            <span class="n">has_page</span> <span class="o">=</span> <span class="n">ABOUT_PAGE_DOCNAME</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">found_docs</span>
+            <span class="n">about_href</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">get_relative_uri</span><span class="p">(</span><span class="n">pagename</span><span class="p">,</span> <span class="n">ABOUT_PAGE_DOCNAME</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">has_page</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">render_footer_line</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">about_href</span><span class="o">=</span><span class="n">about_href</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pagename</span> <span class="o">==</span> <span class="n">ABOUT_PAGE_DOCNAME</span><span class="p">:</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">_site_counts_html</span><span class="p">(</span><span class="n">site_counts</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">env</span><span class="p">))</span>
+            <span class="n">anchor</span> <span class="o">=</span> <span class="s1">'&lt;section id="reproduce"&gt;'</span>
+            <span class="k">if</span> <span class="n">anchor</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="n">anchor</span><span class="p">,</span> <span class="n">block</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">anchor</span><span class="p">,</span> <span class="mi">1</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s2">"body"</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">block</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># provenance never fails a build</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">"epythet: provenance not rendered on </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span><span class="p">,</span> <span class="n">pagename</span><span class="p">,</span> <span class="n">e</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_site_counts_html</span><span class="p">(</span><span class="n">counts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"&lt;tr&gt;&lt;td&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/td&gt;&lt;td&gt;&lt;p&gt;</span><span class="si">{</span><span class="n">value</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'unknown'</span><span class="si">}</span><span class="s2">&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;"</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">"Modules documented"</span><span class="p">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"modules_documented"</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s2">"Objects documented"</span><span class="p">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"objects_documented"</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s1">'&lt;section id="site"&gt;&lt;h2&gt;Site&lt;/h2&gt;'</span>
+        <span class="sa">f</span><span class="s1">'&lt;table class="docutils align-default"&gt;&lt;tbody&gt;</span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s1">&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;'</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write_build_info</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``build-finished`` hook: ``build_info.json`` with the counts filled in."""</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">"epythet_build_info"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">info</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_is_html_build</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="n">site_counts</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">env</span><span class="p">))</span>
+        <span class="n">write_build_info</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># provenance never fails a build</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">"epythet: build_info.json not written (</span><span class="si">%s</span><span class="s2">)"</span><span class="p">,</span> <span class="n">e</span>
+        <span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">PackageNotFoundError</span><span class="p">,</span> <span class="n">version</span>
 
@@ -356,9 +427,13 @@
     <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_agent_outputs"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">)</span>
     <span class="c1"># rebuild "": rule lists hold functions or dotted paths; never pickled into the env</span>
     <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_normalizer_rules"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_provenance"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_build_info"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">dict</span><span class="p">,))</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"autodoc-process-docstring"</span><span class="p">,</span> <span class="n">sphinx_process_docstring</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"builder-inited"</span><span class="p">,</span> <span class="n">write_theme_css</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"html-page-context"</span><span class="p">,</span> <span class="n">_link_relations_if_enabled</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"html-page-context"</span><span class="p">,</span> <span class="n">_provenance_page_context</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"build-finished"</span><span class="p">,</span> <span class="n">_write_build_info</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"sphinx.sphinx.ext.autosummary"</span><span class="p">)</span><span class="o">.</span><span class="n">addFilter</span><span class="p">(</span>
         <span class="n">_DropIgnoredModuleWarnings</span><span class="p">()</span>
     <span class="p">)</span>
@@ -396,7 +471,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

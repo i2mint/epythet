@@ -1,0 +1,58 @@
+epythet.provenance
+==================
+
+.. automodule:: epythet.provenance
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SCHEMA_VERSION
+      BUILD_INFO_FILENAME
+      ABOUT_PAGE_FILENAME
+      BUILD_INFO_ENV
+      PYPI_CHECK_ENV
+      SOURCE_DATE_EPOCH_ENV
+      DEFAULT_PYPI_TIMEOUT
+      GIT_TIMEOUT
+      SHORT_COMMIT_LENGTH
+      AGGREGATE_STAMP_PREFIX
+      ABOUT_PAGE_TEMPLATE
+      TEMPLATE_FIELDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      about_page
+      about_template
+      alignment
+      build_time
+      ci_info
+      clone_dirname
+      collect_build_info
+      compare_versions
+      config_source
+      footer_text
+      git_info
+      github_web_url
+      human_time
+      load_build_info
+      prune_site
+      publishable_remote
+      pypi_info
+      pypi_latest_version
+      reference_from_agent_outputs
+      render_about_page
+      render_footer_line
+      reproduce_command
+      resolved_config
+      scrub_paths
+      short_commit
+      site_counts
+      strip_credentials
+      tool_versions
+      with_front_matter_and_marker
+      write_build_info
+   

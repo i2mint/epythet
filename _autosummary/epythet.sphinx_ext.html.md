@@ -12,7 +12,10 @@ Listed automatically in the generated configuration
   relations on every HTML page when `epythet_agent_outputs` is on, see
   [`epythet.agent_outputs`](epythet.agent_outputs.html.md#module-epythet.agent_outputs);
 - the theme accent stylesheet `_static/epythet.css` when the chosen theme
-  takes its colours from CSS variables (`epythet_theme_css`).
+  takes its colours from CSS variables (`epythet_theme_css`);
+- the build provenance (`epythet_build_info`): the one-line footer appended
+  to the landing page, the documented-module counts on the about page, and
+  `build_info.json` at the site root, see [`epythet.provenance`](epythet.provenance.html.md#module-epythet.provenance).
 
 ### Functions
 

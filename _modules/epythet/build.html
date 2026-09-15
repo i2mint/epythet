@@ -213,6 +213,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
@@ -291,6 +292,13 @@
 <span class="sd">Targets mirror the old Makefile: ``html`` (the default), ``doctest``,</span>
 <span class="sd">``markdown``, ``github`` (``html`` then a copy into ``PROJECT_DIR/docs``),</span>
 <span class="sd">``gitlab`` (copy into ``public``) and ``clean``.</span>
+
+<span class="sd">An ``html`` build also carries its provenance (:mod:`epythet.provenance`): the</span>
+<span class="sd">record is collected here, once, before Sphinx runs; the about page's source is</span>
+<span class="sd">written into ``docsrc``; the record reaches the Sphinx process through the</span>
+<span class="sd">``EPYTHET_BUILD_INFO`` environment variable, where the extension renders the</span>
+<span class="sd">footer and writes ``build_info.json``; afterwards ``llms.txt`` and the</span>
+<span class="sd">``&lt;package&gt;.md`` aggregate get a pointer to that file.</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -304,9 +312,24 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.agent_outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">inject_link_relations_into_site</span><span class="p">,</span> <span class="n">write_aggregates</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span><span class="p">,</span> <span class="n">load_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ABOUT_PAGE_DOCNAME</span><span class="p">,</span>
+    <span class="n">ABOUT_PAGE_FILENAME</span><span class="p">,</span>
+    <span class="n">BUILD_INFO_ENV</span><span class="p">,</span>
+    <span class="n">BUILD_INFO_FILENAME</span><span class="p">,</span>
+    <span class="n">about_page</span><span class="p">,</span>
+    <span class="n">about_template</span><span class="p">,</span>
+    <span class="n">collect_build_info</span><span class="p">,</span>
+    <span class="n">prune_site</span><span class="p">,</span>
+    <span class="n">reference_from_agent_outputs</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.scaffold</span><span class="w"> </span><span class="kn">import</span> <span class="n">remove_generated_file</span><span class="p">,</span> <span class="n">write_generated_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.templates</span><span class="w"> </span><span class="kn">import</span> <span class="n">INDEX_MARKER</span>
 
 <span class="n">BUILD_DIRNAME</span> <span class="o">=</span> <span class="s2">"_build"</span>
 <span class="n">COPY_TARGETS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"github"</span><span class="p">:</span> <span class="s2">"docs"</span><span class="p">,</span> <span class="s2">"gitlab"</span><span class="p">:</span> <span class="s2">"public"</span><span class="p">}</span>
+<span class="c1">#: Builders that produce a browsable site and therefore carry provenance.</span>
+<span class="n">HTML_TARGETS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"html"</span><span class="p">,</span> <span class="s2">"dirhtml"</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BuildError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
@@ -350,6 +373,12 @@
         <span class="n">html_dir</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="n">overrides</span><span class="p">)</span>
         <span class="n">destination</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="n">COPY_TARGETS</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">html_dir</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># copytree never deletes: drop provenance files the fresh site no longer has.</span>
+        <span class="n">prune_site</span><span class="p">(</span>
+            <span class="n">destination</span><span class="p">,</span>
+            <span class="n">keep_page</span><span class="o">=</span><span class="p">(</span><span class="n">html_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ABOUT_PAGE_DOCNAME</span><span class="si">}</span><span class="s2">.html"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span>
+            <span class="n">keep_json</span><span class="o">=</span><span class="p">(</span><span class="n">html_dir</span> <span class="o">/</span> <span class="n">BUILD_INFO_FILENAME</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">destination</span>
 
     <span class="n">outdir</span> <span class="o">=</span> <span class="n">build_dir</span> <span class="o">/</span> <span class="n">target</span>
@@ -371,17 +400,59 @@
     <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
     <span class="n">env</span><span class="p">[</span><span class="s2">"EPYTHET_PROJECT_DIR"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">project_dir</span><span class="p">)</span>
     <span class="n">env</span><span class="p">[</span><span class="s2">"EPYTHET_OVERRIDES"</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">overrides</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">prepare_provenance</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">HTML_TARGETS</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">env</span><span class="p">[</span><span class="n">BUILD_INFO_ENV</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">docsrc</span><span class="p">),</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">BuildError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">"sphinx-build -b </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> failed with exit status </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2"> "</span>
             <span class="sa">f</span><span class="s2">"(sources: </span><span class="si">{</span><span class="n">docsrc</span><span class="si">}</span><span class="s2">)"</span>
         <span class="p">)</span>
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">HTML_TARGETS</span><span class="p">:</span>
+        <span class="c1"># A source file that survived prepare_provenance is hand-written: keep its page.</span>
+        <span class="n">prune_site</span><span class="p">(</span>
+            <span class="n">outdir</span><span class="p">,</span>
+            <span class="n">keep_page</span><span class="o">=</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">docsrc_dir</span> <span class="o">/</span> <span class="n">ABOUT_PAGE_FILENAME</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span>
+            <span class="n">keep_json</span><span class="o">=</span><span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">"html"</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">agent_outputs</span><span class="p">:</span>
         <span class="n">inject_link_relations_into_site</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
         <span class="n">write_aggregates</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">package_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">aggregates</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">aggregates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reference_from_agent_outputs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">package_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">outdir</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">prepare_provenance</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">DocsConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Collect the build record and write the about page's source; ``None`` when off.</span>
+
+<span class="sd">    Runs before Sphinx so the page is part of the build. The page is removed</span>
+<span class="sd">    (when it is epythet's own) for ``provenance = false`` and ``"minimal"``,</span>
+<span class="sd">    so a switched-off project never publishes a stale one. A failure to</span>
+<span class="sd">    collect is reported once and the build goes on without provenance; a</span>
+<span class="sd">    wrong ``provenance_template`` is a :class:`~epythet.config.ConfigError`,</span>
+<span class="sd">    like any other configuration mistake.</span>
+<span class="sd">    """</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">docsrc_dir</span> <span class="o">/</span> <span class="n">ABOUT_PAGE_FILENAME</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">provenance</span><span class="p">:</span>
+        <span class="n">remove_generated_file</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="n">INDEX_MARKER</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">about_template</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">collect_build_info</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># provenance never fails a build</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"epythet: build provenance unavailable (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">provenance</span> <span class="o">==</span> <span class="s2">"minimal"</span><span class="p">:</span>
+        <span class="n">remove_generated_file</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="n">INDEX_MARKER</span><span class="p">,))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">about_page</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+        <span class="n">write_generated_file</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">page</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">marker</span><span class="p">,))</span>
+    <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s2">"warnings"</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"epythet: provenance: </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">info</span>
 </pre></div>
         </article>
       </div>
@@ -410,7 +481,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d4852862"></script>
+</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -28,6 +28,7 @@
    docs_gen
    migrate
    normalizer
+   provenance
    repair
    scaffold
    setup_docsrc
