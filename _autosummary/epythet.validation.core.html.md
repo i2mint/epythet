@@ -32,7 +32,7 @@ what level 2 rendered, so a tier-4 run builds exactly once.
 
 ### *class* epythet.validation.core.ResolvedPackage(name, package_dir, project_dir, version=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Where the package’s source lives and which project it belongs to.
 
@@ -51,32 +51,32 @@ package directory (contains `__init__.py`) or an importable name.
 Validate a package’s documentation and return a `Report`.
 
 * **Parameters:**
-  * **package** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – A project root, a package directory, or an importable name.
-  * **level** ([`int`](https://docs.python.org/3/library/functions.html#int)) – The CLI tier: `0` lint only, `1` lint + parse (default),
+  * **package** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – A project root, a package directory, or an importable name.
+  * **level** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – The CLI tier: `0` lint only, `1` lint + parse (default),
     `2` adds the Sphinx build, `3` the rendered-output checks,
     `4` the review packet.
-  * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/library/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
+  * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
     overrides `level` when given.
-  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
+  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
   * **backend** – The build backend for level 1 (default: `SphinxBackend()`).
-  * **fail_on** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Severity threshold recorded on the report for exit codes.
-  * **napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Pre-process Google/NumPy sections the way the fleet’s
+  * **fail_on** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Severity threshold recorded on the report for exit codes.
+  * **napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Pre-process Google/NumPy sections the way the fleet’s
     `conf.py` does. Set `False` for a package built without napoleon.
-  * **style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Docstring convention passed to ruff and pydoclint.
-  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – Path substrings to skip, as `epythet quickstart --ignore`.
-  * **observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Append findings to the observations JSONL (outside the repo).
-  * **observations_path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Override the observations file (tests use this).
-  * **linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 0: shell out to ruff and pydoclint (`False` keeps the
+  * **style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Docstring convention passed to ruff and pydoclint.
+  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Path substrings to skip, as `epythet quickstart --ignore`.
+  * **observe** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Append findings to the observations JSONL (outside the repo).
+  * **observations_path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Override the observations file (tests use this).
+  * **linters** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 0: shell out to ruff and pydoclint (`False` keeps the
     coverage detectors only; the fleet sweep uses it).
-  * **snapshot** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 2: diff the `-b text` render against the stored snapshots.
-  * **update_snapshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 2: re-baseline the snapshots instead of diffing.
-  * **snapshot_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Where snapshots live (default `<docsrc>/_snapshots/text`).
-  * **render_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Keep level 2’s rendered output here instead of a temp dir.
-  * **review_pages** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Level 3: `changed` (against the snapshot, else a
+  * **snapshot** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 2: diff the `-b text` render against the stored snapshots.
+  * **update_snapshots** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 2: re-baseline the snapshots instead of diffing.
+  * **snapshot_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Where snapshots live (default `<docsrc>/_snapshots/text`).
+  * **render_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Keep level 2’s rendered output here instead of a temp dir.
+  * **review_pages** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Level 3: `changed` (against the snapshot, else a
     sample), `sample` or `all` pages into the packet.
-  * **review_sample** ([`int`](https://docs.python.org/3/library/functions.html#int)) – How many pages `sample` takes.
-  * **screenshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: add Playwright screenshots when it is installed.
-  * **packet_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 3: write the packet here instead of the user data dir.
-  * **review_reply** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 3: a `review.json` to ingest as level-3 findings.
+  * **review_sample** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – How many pages `sample` takes.
+  * **screenshots** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 3: add Playwright screenshots when it is installed.
+  * **packet_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Level 3: write the packet here instead of the user data dir.
+  * **review_reply** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Level 3: a `review.json` to ingest as level-3 findings.
 * **Return type:**
   [`Report`](epythet.validation.model.html.md#epythet.validation.model.Report)

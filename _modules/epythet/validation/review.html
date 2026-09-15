@@ -381,7 +381,13 @@
     <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"epythet level-3 review reply"</span><span class="p">,</span>
     <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
     <span class="s2">"additionalProperties"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s2">"required"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"schema_version"</span><span class="p">,</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"prompt_hash"</span><span class="p">,</span> <span class="s2">"findings"</span><span class="p">,</span> <span class="s2">"proposed_rules"</span><span class="p">],</span>
+    <span class="s2">"required"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"schema_version"</span><span class="p">,</span>
+        <span class="s2">"model"</span><span class="p">,</span>
+        <span class="s2">"prompt_hash"</span><span class="p">,</span>
+        <span class="s2">"findings"</span><span class="p">,</span>
+        <span class="s2">"proposed_rules"</span><span class="p">,</span>
+    <span class="p">],</span>
     <span class="s2">"properties"</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">"schema_version"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"const"</span><span class="p">:</span> <span class="n">REPLY_SCHEMA_VERSION</span><span class="p">},</span>
         <span class="s2">"model"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"string"</span><span class="p">,</span> <span class="s2">"minLength"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
@@ -552,7 +558,9 @@
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"changed"</span> <span class="ow">and</span> <span class="n">changed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">wanted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">changed</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">available</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">]</span>
-    <span class="n">ordered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">available</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="s2">"index"</span><span class="p">,</span> <span class="s2">"_autosummary"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+    <span class="n">ordered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">available</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span> <span class="o">!=</span> <span class="s2">"index"</span><span class="p">,</span> <span class="s2">"_autosummary"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">ordered</span><span class="p">[:</span><span class="n">sample</span><span class="p">]</span></div>
 
 
@@ -574,7 +582,9 @@
             <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">page_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">as_uri</span><span class="p">())</span>
             <span class="n">page</span><span class="o">.</span><span class="n">screenshot</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">),</span> <span class="n">full_page</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># Playwright raises its own hierarchy; any failure is "no screenshot"</span>
+    <span class="k">except</span> <span class="p">(</span>
+        <span class="ne">Exception</span>
+    <span class="p">):</span>  <span class="c1"># Playwright raises its own hierarchy; any failure is "no screenshot"</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="kc">True</span>
 
@@ -624,7 +634,9 @@
     <span class="n">rubric</span> <span class="o">=</span> <span class="n">rubric_text</span><span class="p">(</span><span class="n">ledger</span><span class="p">)</span>
     <span class="n">packet</span><span class="o">.</span><span class="n">prompt_hash</span> <span class="o">=</span> <span class="n">_prompt_hash</span><span class="p">(</span><span class="n">rubric</span><span class="p">,</span> <span class="n">REPLY_SCHEMA</span><span class="p">)</span>
     <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"rubric.md"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">rubric</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
-    <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"schema.json"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">REPLY_SCHEMA</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"schema.json"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">REPLY_SCHEMA</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+    <span class="p">)</span>
     <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"INSTRUCTIONS.md"</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">INSTRUCTIONS</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
     <span class="n">manifest</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">"schema_version"</span><span class="p">:</span> <span class="n">REPLY_SCHEMA_VERSION</span><span class="p">,</span>
@@ -679,7 +691,8 @@
     <span class="n">expected</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="s2">"null"</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">t</span> <span class="o">!=</span> <span class="s2">"null"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">{</span><span class="s2">"string"</span><span class="p">:</span> <span class="nb">str</span><span class="p">}[</span><span class="n">t</span><span class="p">]))</span>
+            <span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="s2">"null"</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">t</span> <span class="o">!=</span> <span class="s2">"null"</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">{</span><span class="s2">"string"</span><span class="p">:</span> <span class="nb">str</span><span class="p">}[</span><span class="n">t</span><span class="p">]))</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">expected</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="n">ReplyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2">: expected one of </span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -732,7 +745,9 @@
 
 <div class="viewcode-block" id="reply_findings">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.review.html#epythet.validation.review.reply_findings">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">reply_findings</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">ledger</span><span class="p">:</span> <span class="n">Ledger</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reply_findings</span><span class="p">(</span>
+    <span class="n">reply</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">ledger</span><span class="p">:</span> <span class="n">Ledger</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Turn a reply's ``findings`` into level-3 findings (informational by construction)."""</span>
     <span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
@@ -844,7 +859,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

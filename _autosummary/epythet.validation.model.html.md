@@ -47,13 +47,13 @@ what [`TIERS`](#epythet.validation.model.TIERS) and [`levels_for_tier()`](#epyth
 | [`Report`](#epythet.validation.model.Report)(package, package_dir, levels_run[, ...])  | Everything one `validate` run produced, plus enough context to reproduce it. |
 | [`Timer`](#epythet.validation.model.Timer)(durations, key)                            | Records how long each level took, as `report.durations[level_name]`.         |
 
-### epythet.validation.model.EXIT_FOR_LEVEL *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[float](https://docs.python.org/3/library/functions.html#float), [int](https://docs.python.org/3/library/functions.html#int)]* *= {0: 10, 0.5: 11, 1: 12, 2: 13, 3: 14}*
+### epythet.validation.model.EXIT_FOR_LEVEL *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[float](https://docs.python.org/3/builtins/functions.html#float), [int](https://docs.python.org/3/builtins/functions.html#int)]* *= {0: 10, 0.5: 11, 1: 12, 2: 13, 3: 14}*
 
 Level -> exit code when that level has findings at or above the threshold.
 
 ### *class* epythet.validation.model.Finding(rule, severity, level, message, file=None, line=None, object=None, detector='', evidence='', fix='', autofixable=False, strategy='', tool='epythet', ledger_occurrences=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One problem found in one place.
 
@@ -62,7 +62,7 @@ upstream tool’s code (`D102`, `DOC101`) for level 0, in which case
 `tool` names the tool. `line` is 1-based and, for docstring findings,
 the line the docstring literal starts on.
 
-#### *property* location *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+#### *property* location *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
 
 `file:line` for the table renderer, or `-` when unknown.
 
@@ -71,7 +71,7 @@ the line the docstring literal starts on.
 JSON-ready dict; the JSON and JSONL renderers emit exactly this.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ### epythet.validation.model.IMPLEMENTED_LEVELS *= (0, 0.5, 1, 2, 3)*
 
@@ -84,7 +84,7 @@ The levels those tiers run.
 * **Type:**
   Every CLI tier is implemented
 
-### epythet.validation.model.LEVELS *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[float](https://docs.python.org/3/library/functions.html#float), [str](https://docs.python.org/3/library/stdtypes.html#str)]* *= {0: 'lint', 0.5: 'parse', 1: 'build', 2: 'render', 3: 'review'}*
+### epythet.validation.model.LEVELS *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[float](https://docs.python.org/3/builtins/functions.html#float), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {0: 'lint', 0.5: 'parse', 1: 'build', 2: 'render', 3: 'review'}*
 
 Level number -> level name, in run order.
 
@@ -98,7 +98,7 @@ The one level-3 finding every packet run emits; “a packet was written” is no
 
 ### *class* epythet.validation.model.Report(package, package_dir, levels_run, findings=<factory>, durations=<factory>, objects_checked=0, objects_undocumented=0, notes=<factory>, epythet_version=None, sphinx_version=None, docutils_version=None, ledger_sources=<factory>, schema_version='1')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything one `validate` run produced, plus enough context to reproduce it.
 
@@ -107,7 +107,7 @@ Everything one `validate` run produced, plus enough context to reproduce it.
 `{"error": n, "warning": n, "info": n}` over all findings.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`int`](https://docs.python.org/3/library/functions.html#int)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
 
 #### exit_code(fail_on='error', , fail_on_review=False)
 
@@ -117,7 +117,7 @@ The *first* (lowest) failing level is reported because it is the first
 gate a CI pipeline would have stopped at.
 
 * **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ```pycon
 >>> r = Report("p", "/p", [0, 0.5])
@@ -147,33 +147,33 @@ severity (the “packet written” finding never does): a review
 proposes, it does not gate (decision D8).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`float`](https://docs.python.org/3/library/functions.html#float)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
 
 #### summary()
 
 The `summary` block of the JSON document.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 #### to_dict()
 
 The JSON document described in decision D8.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ### epythet.validation.model.SEVERITY_RANK *= {'error': 0, 'info': 2, 'warning': 1}*
 
 Lower rank is worse. Used for `--fail-on` comparisons.
 
-### epythet.validation.model.TIERS *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[float](https://docs.python.org/3/library/functions.html#float)]* *= [0, 0.5, 1, 2, 3]*
+### epythet.validation.model.TIERS *: [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[float](https://docs.python.org/3/builtins/functions.html#float)]* *= [0, 0.5, 1, 2, 3]*
 
 Run order of the levels; index into this list is the CLI `--level` tier.
 
 ### *class* epythet.validation.model.Timer(durations, key)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Records how long each level took, as `report.durations[level_name]`.
 
@@ -190,7 +190,7 @@ True
 The levels a CLI tier runs: every level up to and including the tier’s.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`float`](https://docs.python.org/3/library/functions.html#float)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
 
 ```pycon
 >>> levels_for_tier(0)
@@ -206,7 +206,7 @@ The levels a CLI tier runs: every level up to and including the tier’s.
 True when `severity` is at least as serious as `threshold`.
 
 * **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> severity_at_or_above("error", "warning")
@@ -220,4 +220,4 @@ False
 Stable order for every renderer: severity, then rule id, then location.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](#epythet.validation.model.Finding)]

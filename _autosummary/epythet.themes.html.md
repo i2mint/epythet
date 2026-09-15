@@ -70,7 +70,7 @@ OKLCH chroma for both modes.
 
 Changing the salt reshuffles every derived hue in the fleet at once.
 
-### epythet.themes.AUTO_POOL *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('furo', 'shibuya', 'pydata_sphinx_theme', 'sphinxawesome_theme')*
+### epythet.themes.AUTO_POOL *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('furo', 'shibuya', 'pydata_sphinx_theme', 'sphinxawesome_theme')*
 
 the modern, brand-neutral themes.
 Order matters (it is what the hash indexes); append, never reorder.
@@ -98,7 +98,7 @@ Themes epythet depends on and therefore can always use.
 
 ### *class* epythet.themes.ResolvedTheme(html_theme, html_theme_options, html_context, css, accent_light, accent_dark)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything the Sphinx configuration needs for the chosen theme.
 
@@ -108,7 +108,7 @@ Aliases accepted in `[tool.epythet] theme` for registry entries.
 
 ### *class* epythet.themes.ThemeSpec(html_theme, pip_name, options=<factory>, accent=<function ThemeSpec.<lambda>>, mode=<function ThemeSpec.<lambda>>, css=<function ThemeSpec.<lambda>>, context=<function ThemeSpec.<lambda>>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 How one Sphinx theme expresses epythet’s three semantic knobs.
 
@@ -124,14 +124,14 @@ maps the mode to `html_context` entries.
 `(light_hex, dark_hex)` accents for a package name: same hue, per-mode lightness.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.themes.choose_theme(package_name, theme='auto')
 
 Resolve the configured `theme` to a registry key or a raw theme name.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> choose_theme("x", "pydata")
@@ -145,7 +145,7 @@ Resolve the configured `theme` to a registry key or a raw theme name.
 WCAG 2 contrast ratio between two colours.
 
 * **Return type:**
-  [`float`](https://docs.python.org/3/library/functions.html#float)
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
 
 ```pycon
 >>> round(contrast_ratio("#000000", "#ffffff"), 1)
@@ -157,7 +157,7 @@ WCAG 2 contrast ratio between two colours.
 The dark-mode twin of an accent: same hue, lightness lifted to [`DARK_L`](#epythet.themes.DARK_L).
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> contrast_ratio(dark_variant("#3661ac"), "#131415") > 7
@@ -169,7 +169,7 @@ True
 `(L, C, h)` in OKLCH for an sRGB hex colour.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`float`](https://docs.python.org/3/library/functions.html#float), [`float`](https://docs.python.org/3/library/functions.html#float), [`float`](https://docs.python.org/3/library/functions.html#float)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`float`](https://docs.python.org/3/builtins/functions.html#float), [`float`](https://docs.python.org/3/builtins/functions.html#float), [`float`](https://docs.python.org/3/builtins/functions.html#float)]
 
 ```pycon
 >>> L, C, h = hex_to_oklch(oklch_to_hex(0.5, 0.13, 200))
@@ -182,7 +182,7 @@ True
 `'#3661ac'` to `(54, 97, 172)`.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
 
 ```pycon
 >>> hex_to_rgb("#ffffff")
@@ -194,7 +194,7 @@ True
 A stable hue in `[0, 360)` for a package name.
 
 * **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ```pycon
 >>> 0 <= hue_for("dol") < 360
@@ -208,7 +208,7 @@ True
 The Radix colour whose hue is closest (circularly) to `hue`.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> nearest_radix_name(206)
@@ -222,7 +222,7 @@ The Radix colour whose hue is closest (circularly) to `hue`.
 Convert an OKLCH colour to an sRGB hex string (gamut-clipped).
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> oklch_to_hex(0, 0, 0)

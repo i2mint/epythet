@@ -28,17 +28,17 @@ in the latter.
 
 ### *class* epythet.validation.docstrings.Coverage(checked=0, undocumented=0)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 How many public objects were seen and how many lack a docstring.
 
 ### *class* epythet.validation.docstrings.Docstring(file, line, def_line, qualname, kind, text, source, is_raw)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One docstring and where it came from.
 
-#### *property* lines *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]*
+#### *property* lines *: [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
 
 The processed text, split into lines.
 

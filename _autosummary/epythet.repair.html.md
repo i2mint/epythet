@@ -79,13 +79,13 @@ the string nodes).
 
 ### *class* epythet.repair.DocstringEdit(qualname, line, start, end, before, after, reason=None, fixed=<factory>, remaining=<factory>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One docstring the repair rewrote (or refused to).
 
 ### *class* epythet.repair.FileRepair(path, original, repaired, edits=<factory>, skipped=None, written=False, verification=<factory>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What the repair did to one file.
 
@@ -94,9 +94,9 @@ What the repair did to one file.
 The unified diff of the file, empty when nothing changed.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-#### *property* refused *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[DocstringEdit](#epythet.repair.DocstringEdit)]*
+#### *property* refused *: [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[DocstringEdit](#epythet.repair.DocstringEdit)]*
 
 a refused rewrite, or findings no rule fixes.
 
@@ -108,15 +108,15 @@ the number is the same on the dry run, the write, and the run after.
 
 ### *class* epythet.repair.RepairReport(root, files=<factory>, write=False, notes=<factory>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything one `repair` run did.
 
-### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
+### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
 
 The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
 
-### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str)]* *= {'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
+### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
 
 Normalizer rules that stay build-time only, and why.
 
@@ -125,14 +125,14 @@ Normalizer rules that stay build-time only, and why.
 Splice each edit’s `after` over its `[start, end)` span, last edit first.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.repair.apply_with_libcst(source, edits)
 
 The LibCST applier: replace the matching `SimpleString` nodes of a concrete syntax tree.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.repair.fences_to_literal_blocks(lines)
 
@@ -143,7 +143,7 @@ is safe inside a docstring that a doctest runner reads (a `>>>` line
 inside it is still literal, but is never mistaken for a directive body).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> N.normalize_text("Run:\n```bash\npip install x\n```\nDone.", rules=[fences_to_literal_blocks])
@@ -159,24 +159,24 @@ inside it is still literal, but is never mistaken for a directive body).
 The human report: the diff (dry run) or what was written, then the refusals.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
 
 Repair the docstrings under `path` (a file, package directory or project root).
 
 * **Parameters:**
-  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – What to repair.
-  * **write** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Apply the rewrites; the default only computes them (dry run).
-  * **fence_style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – What a Markdown fence becomes: `code-block` or `literal`.
-  * **rules** ([`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]]) – The normalizer rules to apply; [`SOURCE_SAFE_RULES`](#epythet.repair.SOURCE_SAFE_RULES) by default.
-  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – Path substrings to skip, as `epythet validate --ignore`.
+  * **path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike)) – What to repair.
+  * **write** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Apply the rewrites; the default only computes them (dry run).
+  * **fence_style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – What a Markdown fence becomes: `code-block` or `literal`.
+  * **rules** ([`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]]) – The normalizer rules to apply; [`SOURCE_SAFE_RULES`](#epythet.repair.SOURCE_SAFE_RULES) by default.
+  * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Path substrings to skip, as `epythet validate --ignore`.
   * **ledger** – The rule catalog used to re-validate (`None` = bundled).
-  * **napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Parse docstrings with napoleon’s Google/NumPy pre-processing.
-  * **revalidate** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Drop a rewrite that introduces a level-0.5 finding.
-  * **run_doctests** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – With `write`, run each touched file’s doctests before
+  * **napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Parse docstrings with napoleon’s Google/NumPy pre-processing.
+  * **revalidate** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Drop a rewrite that introduces a level-0.5 finding.
+  * **run_doctests** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – With `write`, run each touched file’s doctests before
     and after, and restore a file whose failures went up.
-  * **applier** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`DocstringEdit`](#epythet.repair.DocstringEdit)]], [`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – The rewriting substrate; [`apply_span_edits()`](#epythet.repair.apply_span_edits) or
+  * **applier** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Sequence`](https://docs.python.org/3/library/typing.html#typing.Sequence)[[`DocstringEdit`](#epythet.repair.DocstringEdit)]], [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – The rewriting substrate; [`apply_span_edits()`](#epythet.repair.apply_span_edits) or
     [`apply_with_libcst()`](#epythet.repair.apply_with_libcst).
 * **Return type:**
   [`RepairReport`](#epythet.repair.RepairReport)
@@ -191,17 +191,17 @@ docstring) are reported, never rewritten. Exit 0 when nothing is left to
 do or every write was verified; 3 when a written file had to be restored.
 
 * **Parameters:**
-  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – A .py file, a package directory, or a project root.
-  * **write** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
-  * **fence_style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – What a Markdown fence becomes: code-block or literal.
-  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
-  * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
-  * **no_napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
-  * **no_doctests** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
-  * **applier** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – The rewriting substrate: span (default) or libcst.
-  * **quiet** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Print the summary only, not the diff.
+  * **path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – A .py file, a package directory, or a project root.
+  * **write** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
+  * **fence_style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – What a Markdown fence becomes: code-block or literal.
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
+  * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
+  * **no_doctests** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
+  * **applier** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – The rewriting substrate: span (default) or libcst.
+  * **quiet** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Print the summary only, not the diff.
 * **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
 
@@ -220,21 +220,21 @@ the original margin. Indentation-only lines (the closing-quote line) are
 preserved.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
 ### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
 
 The rule tuple for a fence style (`literal` swaps the fence rule).
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
 
 ### epythet.repair.split_literal(segment)
 
 `(prefix, quote, body, closing quote)` of a string literal’s source, or `None`.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> split_literal('r"""x"""')

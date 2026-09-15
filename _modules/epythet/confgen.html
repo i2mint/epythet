@@ -460,7 +460,9 @@
 <span class="sd">    &gt;&gt;&gt; api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autoapi"))</span>
 <span class="sd">    'api/index'</span>
 <span class="sd">    """</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">API_ROOT</span><span class="si">}</span><span class="s2">/index"</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">resolved_api_generator</span> <span class="o">==</span> <span class="s2">"autoapi"</span> <span class="k">else</span> <span class="n">API_ROOT</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">API_ROOT</span><span class="si">}</span><span class="s2">/index"</span> <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">resolved_api_generator</span> <span class="o">==</span> <span class="s2">"autoapi"</span> <span class="k">else</span> <span class="n">API_ROOT</span>
+    <span class="p">)</span></div>
 
 
 
@@ -508,7 +510,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

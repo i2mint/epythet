@@ -51,14 +51,14 @@ from the `html-page-context` hook; this post-build pass covers them.
 Returns the number of files changed.
 
 * **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ### epythet.agent_outputs.link_relation_tags(pagename)
 
 The two `<link>` tags for a page, with hrefs relative to that page.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> print(link_relation_tags("_autosummary/pkg.mod"))
@@ -75,7 +75,7 @@ Tries, in order: Playwright (Chromium print-to-PDF, best fidelity) and
 WeasyPrint. Returns `None`, with a printed notice, when neither is installed.
 
 * **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.agent_outputs.sphinx_settings(, description='')
 
@@ -85,18 +85,18 @@ The Sphinx configuration values for the agent outputs.
 aggregate; [`write_aggregates()`](#epythet.agent_outputs.write_aggregates) renames it after the build.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ### epythet.agent_outputs.write_aggregates(html_dir, , package_name, aggregates=('md',))
 
 Produce the flat single-document twins at the root of a built site.
 
 * **Parameters:**
-  * **html_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the built site (`docsrc/_build/html`)
-  * **package_name** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – names the files: `<package_name>.md` / `.pdf`
-  * **aggregates** ([`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]) – which of `"md"`, `"pdf"` to produce
+  * **html_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the built site (`docsrc/_build/html`)
+  * **package_name** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – names the files: `<package_name>.md` / `.pdf`
+  * **aggregates** ([`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]) – which of `"md"`, `"pdf"` to produce
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
 * **Returns:**
   the files written, keyed by kind
 

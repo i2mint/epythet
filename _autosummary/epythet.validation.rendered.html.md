@@ -67,13 +67,13 @@ off by default; `update_snapshots=True` re-baselines.
 
 Rule ids this level reports under (all bundled; see `epythet/ledger/rules`).
 
-### epythet.validation.rendered.RENDER_DETECTORS *: [dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[dict](https://docs.python.org/3/library/stdtypes.html#dict)[[str](https://docs.python.org/3/library/stdtypes.html#str), [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [list](https://docs.python.org/3/library/stdtypes.html#list)[[RenderHit](#epythet.validation.rendered.RenderHit)]]]* *= {'dangling_anchors': <function dangling_anchors_detector>, 'empty_descriptions': <function empty_descriptions>, 'missing_images': <function missing_images_detector>, 'text_snapshots': <function text_snapshots_detector>, 'unresolved_xrefs': <function unresolved_xrefs>}*
+### epythet.validation.rendered.RENDER_DETECTORS *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[RenderHit](#epythet.validation.rendered.RenderHit)]]]* *= {'dangling_anchors': <function dangling_anchors_detector>, 'empty_descriptions': <function empty_descriptions>, 'missing_images': <function missing_images_detector>, 'text_snapshots': <function text_snapshots_detector>, 'unresolved_xrefs': <function unresolved_xrefs>}*
 
 Detector name (as in a rule’s `detector.function`) -> function.
 
 ### *class* epythet.validation.rendered.RenderArtifacts(outdirs=<factory>, docsrc=None, snapshot=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What level 2 leaves behind for level 3: output dirs and the snapshot diff.
 
@@ -81,11 +81,11 @@ What level 2 leaves behind for level 3: output dirs and the snapshot diff.
 
 A detector takes `{builder: outdir}` and the Sphinx source dir.
 
-alias of `Callable`[[[`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]]
+alias of `Callable`[[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]]
 
 ### *class* epythet.validation.rendered.RenderHit(page, evidence, object=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One thing a render detector found on one page.
 
@@ -95,7 +95,7 @@ Where `-b text` snapshots live, relative to the Sphinx source directory.
 
 ### *class* epythet.validation.rendered.SnapshotDiff(changed=<factory>, added=<factory>, removed=<factory>, compared=0)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 How the `-b text` render compares with the stored snapshots.
 
@@ -104,7 +104,7 @@ How the `-b text` render compares with the stored snapshots.
 Pages level 3 should review: changed or new relative to the snapshot.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.rendered.compare_snapshots(text_dir, snapshot_dir)
 
@@ -122,21 +122,21 @@ Sphinx emits links to a `#idN` system message it then prunes, and a
 hand-written `:ref:` to a missing label ends the same way.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.rendered.dangling_anchors_detector(outdirs, \_docsrc)
 
 Level-2 detector over the `html` output (DR027).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.empty_descriptions(outdirs, \_docsrc)
 
 Level-2 detector over the `xml` output (DR026).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.empty_descriptions_in(root)
 
@@ -148,21 +148,21 @@ whose summary cell is an empty paragraph (autodoc leaves undocumented
 members out of the page entirely, so the table row is all a reader sees).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.missing_images(html, , page_dir)
 
 `<img src>` values that resolve to no file next to the page.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.rendered.missing_images_detector(outdirs, \_docsrc)
 
 Level-2 detector over the `html` output (DR024 at level 2).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.render_detector(name)
 
@@ -173,7 +173,7 @@ Register a level-2 detector; the ledger loader validates `html` rules against it
 Run every `html`-kind rule of the ledger over the rendered output.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
 
 ### epythet.validation.rendered.run_render_level(project_dir, ledger, , backend, outdir, snapshot=False, update=False, snapshot_dir=None)
 
@@ -183,28 +183,28 @@ Returns `(findings, notes, artifacts)`; the artifacts hand level 3 the
 output directories and the snapshot diff so it never builds again.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)], [`RenderArtifacts`](#epythet.validation.rendered.RenderArtifacts)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`RenderArtifacts`](#epythet.validation.rendered.RenderArtifacts)]
 
 ### epythet.validation.rendered.snapshot_findings(diff, ledger)
 
 One DR035 finding per changed page, plus info findings for new and removed pages.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
 
 ### epythet.validation.rendered.text_snapshots_detector(\_outdirs, \_docsrc)
 
 DR035’s detector is the snapshot diff, driven by `snapshot=`; nothing to scan here.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.unresolved_xrefs(outdirs, \_docsrc)
 
 Level-2 detector over the `xml` output (DR023 at level 2).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.unresolved_xrefs_in(root)
 
@@ -215,11 +215,11 @@ undocumented object (reported by [`empty_descriptions_in()`](#epythet.validation
 bad target.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`RenderHit`](#epythet.validation.rendered.RenderHit)]
 
 ### epythet.validation.rendered.update_snapshots(text_dir, snapshot_dir)
 
 Replace the stored snapshots with the current render; returns pages written.
 
 * **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)

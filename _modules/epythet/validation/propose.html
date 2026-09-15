@@ -347,7 +347,14 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_yaml_block</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">pad</span> <span class="o">=</span> <span class="s2">" "</span> <span class="o">*</span> <span class="n">indent</span>
-    <span class="k">return</span> <span class="s2">"|</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pad</span> <span class="o">+</span> <span class="n">line</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">"|</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">pad</span> <span class="o">+</span> <span class="n">line</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">rule_yaml</span><span class="p">(</span><span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">proposal</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -363,14 +370,23 @@
         <span class="s2">"detector:"</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">"  kind: </span><span class="si">{</span><span class="n">detector</span><span class="p">[</span><span class="s1">'kind'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
     <span class="p">]</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"node"</span><span class="p">,</span> <span class="s2">"function"</span><span class="p">,</span> <span class="s2">"scan"</span><span class="p">,</span> <span class="s2">"skip_doctest_lines"</span><span class="p">,</span> <span class="s2">"whole_text"</span><span class="p">,</span> <span class="s2">"ignore_case"</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">"node"</span><span class="p">,</span>
+        <span class="s2">"function"</span><span class="p">,</span>
+        <span class="s2">"scan"</span><span class="p">,</span>
+        <span class="s2">"skip_doctest_lines"</span><span class="p">,</span>
+        <span class="s2">"whole_text"</span><span class="p">,</span>
+        <span class="s2">"ignore_case"</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">detector</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">detector</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="nb">bool</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">_yaml_scalar</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="s2">"pattern"</span> <span class="ow">in</span> <span class="n">detector</span><span class="p">:</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"  pattern: "</span> <span class="o">+</span> <span class="n">_yaml_block</span><span class="p">(</span><span class="n">detector</span><span class="p">[</span><span class="s2">"pattern"</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s2">"  pattern: "</span> <span class="o">+</span> <span class="n">_yaml_block</span><span class="p">(</span><span class="n">detector</span><span class="p">[</span><span class="s2">"pattern"</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"message: </span><span class="si">{</span><span class="n">_yaml_scalar</span><span class="p">(</span><span class="n">proposal</span><span class="p">[</span><span class="s1">'message'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">fix</span> <span class="o">=</span> <span class="n">proposal</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fix"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"fix:"</span><span class="p">)</span>
@@ -387,7 +403,9 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_indent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">"    "</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">(</span><span class="s2">"    "</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">fixture_py</span><span class="p">(</span><span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">proposal</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -402,7 +420,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">quote</span> <span class="ow">in</span> <span class="n">example</span> <span class="ow">or</span> <span class="s2">"</span><span class="se">\\</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">example</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">):</span>
             <span class="k">break</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">LedgerError</span><span class="p">(</span><span class="s2">"example_bad/example_good must not contain both triple quotes or a backslash"</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">LedgerError</span><span class="p">(</span>
+            <span class="s2">"example_bad/example_good must not contain both triple quotes or a backslash"</span>
+        <span class="p">)</span>
     <span class="n">title</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s2">"title"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="sa">f</span><span class="s1">'"""Fixture for </span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1"> (proposed).</span><span class="se">\n\n</span><span class="s1">'</span>
@@ -447,7 +467,9 @@
         <span class="n">yaml_path</span> <span class="o">=</span> <span class="n">overlay_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rule_id</span><span class="si">}</span><span class="s2">.yaml"</span>
         <span class="n">py_path</span> <span class="o">=</span> <span class="n">yaml_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">".py"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">yaml_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">rule_yaml</span><span class="p">(</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">proposal</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">reply_path</span><span class="p">)),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+            <span class="n">yaml_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+                <span class="n">rule_yaml</span><span class="p">(</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">proposal</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">reply_path</span><span class="p">)),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+            <span class="p">)</span>
             <span class="n">py_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">fixture_py</span><span class="p">(</span><span class="n">rule_id</span><span class="p">,</span> <span class="n">proposal</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
             <span class="n">rule</span> <span class="o">=</span> <span class="n">load_rule</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="n">PARSE_KINDS</span><span class="p">:</span>
@@ -477,7 +499,9 @@
             <span class="k">raise</span> <span class="n">LedgerError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rule</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: the detector fires on example_good"</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">propose_command</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">overlay</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ledger</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">propose_command</span><span class="p">(</span>
+    <span class="n">reply</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">overlay</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ledger</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write a review reply's proposed rules into a ledger overlay as ``status: proposed`` rules.</span>
 
 <span class="sd">    :param reply: A review.json written by a reviewer (see the packet's INSTRUCTIONS.md).</span>
@@ -527,7 +551,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

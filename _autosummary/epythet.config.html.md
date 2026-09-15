@@ -85,7 +85,7 @@ announcement = "v2 is in beta"
 | [`ConfigError`](#epythet.config.ConfigError)   | A project's documentation configuration is missing or invalid.   |
 |----------------------------------------------------------------|------------------------------------------------------------------|
 
-### epythet.config.ALWAYS_IGNORE *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('_\_main_\_',)*
+### epythet.config.ALWAYS_IGNORE *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('_\_main_\_',)*
 
 a `__main__` is a
 command line, not an API. (autosummary still imports it once while
@@ -98,7 +98,7 @@ into a skipped import.)
 
 ### *exception* epythet.config.ConfigError
 
-Bases: [`ValueError`](https://docs.python.org/3/library/exceptions.html#ValueError)
+Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueError)
 
 A project’s documentation configuration is missing or invalid.
 
@@ -106,20 +106,20 @@ A project’s documentation configuration is missing or invalid.
 
 Directory under the project root holding the Sphinx sources.
 
-### epythet.config.DEFAULT_IGNORE *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('tests/', 'scrap/', 'examples/')*
+### epythet.config.DEFAULT_IGNORE *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('tests/', 'scrap/', 'examples/')*
 
 Path substrings skipped by default when discovering modules to document.
 
 ### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything needed to generate a project’s documentation.
 
 Attributes mirror the `[tool.epythet]` keys; see the module docstring.
 `project_dir` and `package_dir` are absolute paths.
 
-#### *property* api_ignore *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]*
+#### *property* api_ignore *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]*
 
 what the API generators skip.
 
@@ -135,15 +135,15 @@ what the API generators skip.
 
 Absolute path of the Sphinx source directory.
 
-#### *property* legacy_tuple *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str)]*
+#### *property* legacy_tuple *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
 
 The 5-tuple that [`epythet.config_parser.parse_config()`](epythet.config_parser.html.md#epythet.config_parser.parse_config) returns.
 
-#### *property* package_name *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+#### *property* package_name *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
 
 The importable package name (`my-pkg` becomes `my_pkg`).
 
-#### *property* resolved_api_generator *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+#### *property* resolved_api_generator *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
 
 see [`resolve_api_generator()`](#epythet.config.resolve_api_generator).
 
@@ -165,7 +165,7 @@ Seconds allowed for the import probe behind `api_generator = "auto"`.
 
 Top-level directories never taken for the package when guessing by convention.
 
-### epythet.config.PACKAGE_DIR_CANDIDATES *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('{name}', 'src/{name}')*
+### epythet.config.PACKAGE_DIR_CANDIDATES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('{name}', 'src/{name}')*
 
 Directory candidates (relative to the project root) that may hold the package.
 
@@ -177,7 +177,7 @@ Tries `<name>/` then `src/<name>/` (with `-` mapped to `_`), returning
 the first that contains an `__init__.py`; `None` when nothing matches.
 
 * **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> find_package_dir("/nonexistent", "nothing") is None
@@ -189,7 +189,7 @@ True
 Read a project’s documentation configuration.
 
 * **Parameters:**
-  * **project_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the project root (holding `pyproject.toml` or `setup.cfg`),
+  * **project_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the project root (holding `pyproject.toml` or `setup.cfg`),
     or a path to one of those files.
   * **overrides** – field values that win over the files (`None` is ignored),
     e.g. `ignore=["tests/"]` from a command line flag.
@@ -211,7 +211,7 @@ static `autoapi` generator, printing why. An explicit value is returned as
 is, and so is `"auto"` when the package directory is unknown.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.config.split_ignore(ignore)
 
@@ -222,7 +222,7 @@ The publish action passes its `ignore` input verbatim as one argument,
 both must mean three patterns, not one that never matches.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
 
 ```pycon
 >>> split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])

@@ -593,7 +593,9 @@
                 <span class="k">if</span> <span class="n">warnings_file</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
                 <span class="k">else</span> <span class="n">proc</span><span class="o">.</span><span class="n">stdout</span> <span class="o">+</span> <span class="n">proc</span><span class="o">.</span><span class="n">stderr</span>
             <span class="p">)</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parse_warning_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">parse_warning_stream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">)</span>
+            <span class="p">)</span>
     <span class="n">result</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
 
@@ -699,6 +701,7 @@
                 <span class="n">outdir</span><span class="o">=</span><span class="n">outdir</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outdir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">command</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
             <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="SphinxBackend.render">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.build.html#epythet.validation.build.SphinxBackend.render">[docs]</a>
@@ -818,7 +821,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

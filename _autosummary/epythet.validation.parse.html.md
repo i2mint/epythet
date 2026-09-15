@@ -47,15 +47,15 @@ Directives whose real implementation takes at most one argument.
 
 ### *class* epythet.validation.parse.ParsedDocstring(docstring, text, tree, messages, \_paragraphs=None, \_literals=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One docstring, its (possibly napoleon-transformed) text, doctree and messages.
 
-#### *property* literals *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]*
+#### *property* literals *: [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
 
 Text of every inline literal.
 
-#### *property* paragraphs *: [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]*
+#### *property* paragraphs *: [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
 
 Prose of every paragraph not inside a system message.
 
@@ -68,14 +68,14 @@ prose regex.
 The text corpus a `regex` detector scans: `paragraph`, `literal` or `any`.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.parse.evaluate_rule(rule, parsed)
 
 Run one parse-level rule over one parsed docstring; returns the evidence list.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.parse.findings_for(parsed, rules, , level=0.5)
 
@@ -94,7 +94,7 @@ twice under two rule ids.
 Register stub Sphinx roles and directives with docutils (idempotent).
 
 * **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.parse.napoleon_transform(text)
 
@@ -104,7 +104,7 @@ Returns `text` unchanged when Sphinx is not importable; the caller records
 a note in that case.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.validation.parse.parse_docstring(docstring, , napoleon=True)
 
@@ -118,18 +118,18 @@ Parse one docstring (after the optional napoleon transform).
 Parse RST text into a doctree, returning it with the docutils messages.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[`document`, [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[`document`, [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
 
 ### epythet.validation.parse.run_parse_level(docstrings, ledger, , napoleon=True)
 
 Level 0.5 over a stream of docstrings.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
 
 ### epythet.validation.parse.sphinx_available()
 
 Whether `sphinx.ext.napoleon` can be imported.
 
 * **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)

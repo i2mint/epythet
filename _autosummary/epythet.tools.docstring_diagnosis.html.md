@@ -205,7 +205,7 @@ But, to doctest this we’ll do this:
 Generate snippets that exhibit the problems in the src
 
 * **Return type:**
-  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.tools.docstring_diagnosis.lines_with_two_new_lines_before_doctests(lines)
 

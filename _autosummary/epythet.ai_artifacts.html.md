@@ -82,7 +82,7 @@ without the epythet marker is never overwritten.
 | [`Skill`](#epythet.ai_artifacts.Skill)(name, source[, description, audience, ...]) | One skill folder: its `name`, description, and where the real files live.                                 |
 | [`Subagent`](#epythet.ai_artifacts.Subagent)(name, source[, description, tools, ...]) | One subagent definition file (`name`, description, tools, source path).                                   |
 
-### epythet.ai_artifacts.AGENT_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('{pkg}/data/agents', '.claude/agents')*
+### epythet.ai_artifacts.AGENT_LOCATIONS *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('{pkg}/data/agents', '.claude/agents')*
 
 Subagent definition folders (one Markdown file per agent).
 
@@ -96,7 +96,7 @@ The machine-readable outputs every epythet site publishes, in display order.
 
 ### *class* epythet.ai_artifacts.AIArtifacts(project_dir, skills=(), subagents=(), instruction_files=())
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything [`discover_artifacts()`](#epythet.ai_artifacts.discover_artifacts) found for one project.
 
@@ -105,11 +105,11 @@ Everything [`discover_artifacts()`](#epythet.ai_artifacts.discover_artifacts) fo
 A JSON-ready view (paths relative to the project root).
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ### *class* epythet.ai_artifacts.AgentOutput(kind, filename, description, url='')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 A machine-readable output of the built site, with its URL when known.
 
@@ -126,13 +126,13 @@ The default page template; `str.format` fields are the section renders.
 Environment variable that switches the page off for a whole fleet build
 (`0` / `false` / `no` / `off`) without touching any `pyproject.toml`.
 
-### epythet.ai_artifacts.INSTRUCTION_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), [str](https://docs.python.org/3/library/stdtypes.html#str)], ...]* *= (('CLAUDE.md', 'Claude Code'), ('.claude/CLAUDE.md', 'Claude Code'), ('AGENTS.md', 'Codex, Copilot, Cursor and other agents'), ('.github/copilot-instructions.md', 'GitHub Copilot'), ('.cursor/rules', 'Cursor'), ('.codex', 'Codex'))*
+### epythet.ai_artifacts.INSTRUCTION_LOCATIONS *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)], ...]* *= (('CLAUDE.md', 'Claude Code'), ('.claude/CLAUDE.md', 'Claude Code'), ('AGENTS.md', 'Codex, Copilot, Cursor and other agents'), ('.github/copilot-instructions.md', 'GitHub Copilot'), ('.cursor/rules', 'Cursor'), ('.codex', 'Codex'))*
 
 Instruction files and directories agents read, with the audience each serves.
 
 ### *class* epythet.ai_artifacts.InstructionFile(source, audience, is_dir=False)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 An instruction file or directory (`CLAUDE.md`, `AGENTS.md`, …).
 
@@ -140,13 +140,13 @@ An instruction file or directory (`CLAUDE.md`, `AGENTS.md`, …).
 
 The generated page’s filename under `docsrc`.
 
-### epythet.ai_artifacts.SKILL_LOCATIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('{pkg}/data/skills', 'skills', '.claude/skills')*
+### epythet.ai_artifacts.SKILL_LOCATIONS *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('{pkg}/data/skills', 'skills', '.claude/skills')*
 
 Skill folders relative to the project root; `{pkg}` is the package directory.
 
 ### *class* epythet.ai_artifacts.Skill(name, source, description='', audience='', shipped=False, installable=True)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One skill folder: its `name`, description, and where the real files live.
 
@@ -168,7 +168,7 @@ The `gh skill install` line, or `None` when `gh skill` cannot see it.
 
 ### *class* epythet.ai_artifacts.Subagent(name, source, description='', tools='', shipped=False)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One subagent definition file (`name`, description, tools, source path).
 
@@ -181,7 +181,7 @@ The fields a page template may use.
 The machine-readable outputs a configuration produces, with URLs when known.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`AgentOutput`](#epythet.ai_artifacts.AgentOutput)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`AgentOutput`](#epythet.ai_artifacts.AgentOutput)]
 
 ```pycon
 >>> from epythet.config import DocsConfig
@@ -210,29 +210,29 @@ file, relative to the project root) when set, else [`DEFAULT_TEMPLATE`](#epythet
 `artifacts` as indented JSON (the `--format json` CLI output).
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.ai_artifacts.artifacts_table(artifacts, , repo_stub='')
 
 A plain-text listing of `artifacts` (the default CLI output).
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.ai_artifacts.default_pages(config)
 
 The generated pages a scaffold gets when the caller passes none.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)
 
 ### epythet.ai_artifacts.discover_artifacts(project_dir, , package_dir=None)
 
 Find the skills, subagents and instruction files of a project by convention.
 
 * **Parameters:**
-  * **project_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the repository root
-  * **package_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/library/constants.html#None)) – the importable package directory, for `{pkg}/data/...`
+  * **project_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)) – the repository root
+  * **package_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – the importable package directory, for `{pkg}/data/...`
     (skipped when `None`)
 * **Return type:**
   [`AIArtifacts`](#epythet.ai_artifacts.AIArtifacts)
@@ -242,7 +242,7 @@ Find the skills, subagents and instruction files of a project by convention.
 False when `EPYTHET_AI_ARTIFACTS` is set to `0`, `false`, `no` or `off`.
 
 * **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> os.environ[DISABLE_ENV] = "0"; enabled_by_environment()
@@ -262,7 +262,7 @@ that understands the subset skills and agents use: `key: value` scalars,
 lists and trailing comments. A malformed frontmatter never raises.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ```pycon
 >>> parse_frontmatter("---\ndescription: Use when a: b\nname: x\n---\n")
@@ -281,12 +281,12 @@ lists and trailing comments. A malformed frontmatter never raises.
 Render the “For AI agents” page for `artifacts` and a `DocsConfig`.
 
 * **Parameters:**
-  * **template** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – a `str.format` template with the fields `marker`,
+  * **template** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – a `str.format` template with the fields `marker`,
     `name`, `display_name`, `repo_stub`, `site_url`, `skills_section`,
     `subagents_section`, `instructions_section`, `outputs_section`
-  * **agent** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – the host named in the `gh skill install` lines
+  * **agent** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – the host named in the `gh skill install` lines
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.ai_artifacts.repo_stub_for(repo_url)
 
@@ -296,7 +296,7 @@ Deeper paths, fragments and queries are dropped, so an `Issues` URL in
 `[project.urls]` still names the repository.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> repo_stub_for("https://github.com/i2mint/epythet.git")
@@ -314,7 +314,7 @@ Deeper paths, fragments and queries are dropped, so an `Issues` URL in
 The GitHub Pages URL a GitHub repository publishes to (’’ when unknown).
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> site_url_for("https://github.com/i2mint/epythet")

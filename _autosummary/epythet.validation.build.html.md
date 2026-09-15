@@ -56,13 +56,13 @@ additionally needs [`RenderBackend`](#epythet.validation.build.RenderBackend).
 
 ### *class* epythet.validation.build.BuildResult(returncode, warnings=<factory>, log='', outdir=None, command=<factory>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What one build produced: exit status, parsed warnings, and the raw log.
 
 ### *class* epythet.validation.build.BuildWarning(severity, message, type=None, file=None, line=None, object=None, raw='')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One parsed line of the Sphinx warning stream.
 
@@ -86,7 +86,7 @@ A backend that can also render several builders into a kept directory (level 2).
 
 ### *class* epythet.validation.build.RenderResult(outdirs=<factory>, returncodes=<factory>, warnings=<factory>, log='')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What a multi-builder render produced: one output directory per builder.
 
@@ -95,13 +95,13 @@ directory holding its pages; a builder that failed is absent from it and
 its exit status is in `returncodes`. `warnings` is the parsed warning
 stream of the first builder (the others repeat it).
 
-#### *property* ok *: [bool](https://docs.python.org/3/library/functions.html#bool)*
+#### *property* ok *: [bool](https://docs.python.org/3/builtins/functions.html#bool)*
 
 Whether every builder exited 0 or with warnings only.
 
 ### *class* epythet.validation.build.SphinxBackend(sphinx_build=None, docsrc=None, outdir=None, builder='html', nitpicky=False, name='sphinx')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 The default (and only shipped) backend: `sphinx-build -b html -W`.
 
@@ -134,14 +134,14 @@ level 3 packs it for review. The caller owns `outdir`.
 The Sphinx source directory, or `None` when there is none to build.
 
 * **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 #### versions()
 
 `{"sphinx": ..., "docutils": ...}` as importable here (`None` if not).
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
 ### epythet.validation.build.WARNINGS_ONLY_EXIT *= 1*
 
@@ -157,21 +157,21 @@ Sphinx’s exit status when the only problem was warnings under `-W`.
 The first build-warning rule that matches, most specific first.
 
 * **Return type:**
-  `Rule` | [`None`](https://docs.python.org/3/library/constants.html#None)
+  `Rule` | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.build.default_sphinx_build()
 
 `python -m sphinx` when Sphinx is importable here, else `sphinx-build` on PATH.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.build.parse_warning_line(line, , project_dir=None)
 
 Parse one warning line; `None` when the line is not a warning.
 
 * **Return type:**
-  [`BuildWarning`](#epythet.validation.build.BuildWarning) | [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`BuildWarning`](#epythet.validation.build.BuildWarning) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ```pycon
 >>> w = parse_warning_line("/p/dol/base.py:docstring of dol.base.Store:7: WARNING: Inline emphasis start-string without end-string. [docutils]")
@@ -197,11 +197,11 @@ plan deletes committed `docsrc/` directories, and “nothing to build”
 must not gate a package whose docstrings are clean.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
 
 ### epythet.validation.build.warnings_to_findings(warnings, ledger)
 
 Map each warning to a ledger finding (unclassified warnings keep their type as the rule).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]

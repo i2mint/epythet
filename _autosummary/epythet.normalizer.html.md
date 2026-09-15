@@ -87,7 +87,7 @@ Options are:
 | [`setup`](#epythet.normalizer.setup)(app)                                     | Sphinx extension entry point: `extensions = ["epythet.normalizer"]`.                 |
 | [`sphinx_process_docstring`](#epythet.normalizer.sphinx_process_docstring)(app, what, name, ...) | The `autodoc-process-docstring` handler: normalizes `lines` in place.                |
 
-### epythet.normalizer.DEFAULT_RULES *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], [list](https://docs.python.org/3/library/stdtypes.html#list)[[str](https://docs.python.org/3/library/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>)*
+### epythet.normalizer.DEFAULT_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>)*
 
 The rules that run by default, in order.
 
@@ -104,7 +104,7 @@ the doctest below sits at the same indentation, the header rendered as a
 stray paragraph. A rubric is what napoleon itself emits for the section.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Examples:\n\n>>> f()\n1", rules=[bare_headers_to_rubrics])
@@ -120,7 +120,7 @@ the fleet: without it Sphinx renders the doctest as a paragraph and
 `sphinx.ext.doctest` never runs it.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Prose\n>>> f()\n1", rules=[blank_lines_between_blocks])
@@ -139,7 +139,7 @@ Only a star run that is never closed on the same line is escaped, so real
 `*emphasis*` and `**strong**` are untouched.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Takes *args and **kwargs, *really*.", rules=[escape_unmatched_stars])
@@ -151,7 +151,7 @@ Only a star run that is never closed on the same line is escaped, so real
 Turn Markdown code fences into `.. code-block::` directives.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Run:\n```bash\npip install x\n```\nDone.", rules=[fences_to_code_blocks])
@@ -163,7 +163,7 @@ Turn Markdown code fences into `.. code-block::` directives.
 Extend a title underline that is shorter than its title.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Examples\n----\ntext", rules=[fix_short_underlines])
@@ -178,7 +178,7 @@ Continuation lines at the same indentation are folded into the section body;
 a Markdown heading or another section ends it.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Returns: a thing that\nspans two lines.\n\nNext.", rules=[google_one_liners])
@@ -192,7 +192,7 @@ a Markdown heading or another section ends it.
 Number of leading spaces (tabs count as one).
 
 * **Return type:**
-  [`int`](https://docs.python.org/3/library/functions.html#int)
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ```pycon
 >>> indent_of("    x"), indent_of("x"), indent_of("")
@@ -208,7 +208,7 @@ doctest block, a `::` literal block, a directive body or a Markdown fence
 is never rewritten.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> line_contexts(["Text:", "", "    >>> 1", "    1", "", "- a", "  b", "", ":param x: y"])
@@ -222,7 +222,7 @@ is never rewritten.
 Make `text:` followed by an indented block a proper `::` literal block.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("For example:\n    x = f(1)\nThen more.", rules=[literal_block_after_colon])
@@ -237,7 +237,7 @@ A `#` line right after code is left alone: it is most likely a comment
 that fell out of a doctest.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Intro.\n## Usage\nText.", rules=[markdown_headings_to_rubrics])
@@ -249,7 +249,7 @@ that fell out of a doctest.
 Rewrite `[text](url)` links as RST hyperlinks, outside code and literals.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("See [the docs](https://x.org/a) now.", rules=[markdown_links_to_rst])
@@ -261,7 +261,7 @@ Rewrite `[text](url)` links as RST hyperlinks, outside code and literals.
 Apply `rules` in order to a docstring given as lines (no trailing newlines).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_docstring(["Text", ">>> 1", "1"])
@@ -273,7 +273,7 @@ Apply `rules` in order to a docstring given as lines (no trailing newlines).
 Apply `rules` to a docstring given as one string.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> normalize_text("Text\n>>> 1\n1")
@@ -290,7 +290,7 @@ the marker makes it one. A line that reads like a new sentence after a
 finished item is separated with a blank line instead.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("- item that\nwraps\n- two", rules=[reflow_list_continuations])
@@ -307,7 +307,7 @@ Dotted paths are what a `conf.py` can hold: Sphinx cannot pickle functions
 in its configuration, and a ledger of autofixable rules ships names.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]], [`...`](https://docs.python.org/3/library/constants.html#Ellipsis)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
 
 ```pycon
 >>> [r.__name__ for r in resolve_rules(["epythet.normalizer.fences_to_code_blocks"])]

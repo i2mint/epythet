@@ -62,23 +62,23 @@ False
 
 ### *class* epythet.validation.coverage.CoverageCase(name, line, expect_hit, rule_ids, object)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One tagged specimen of a coverage fixture: the object and what the tag promises.
 
 ### *class* epythet.validation.coverage.Param(name, annotation=None, description=None)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 A signature parameter and, if the docstring describes it, that description.
 
 ### *class* epythet.validation.coverage.PublicObject(qualname, kind, file, line, docstring, params=<factory>, is_entry_point=False, name='')
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One public module, class or function, with what a detector needs to judge it.
 
-#### *property* summary *: [str](https://docs.python.org/3/library/stdtypes.html#str)*
+#### *property* summary *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
 
 The first non-blank line of the docstring, or `""`.
 
@@ -87,14 +87,14 @@ The first non-blank line of the docstring, or `""`.
 Words a reader could use to restate an annotation: `list[int]` -> int, list, integer…
 
 * **Return type:**
-  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.content_words(text)
 
 Content words of prose: lower-cased, stop words out, crudely lemmatised.
 
 * **Return type:**
-  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.coverage_detector(name)
 
@@ -105,21 +105,21 @@ Register a coverage detector under the name a rule’s `detector.function` uses.
 Names the package’s `__init__` exposes: `__all__`, else what it binds without a leading underscore.
 
 * **Return type:**
-  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.entry_point_without_example(obj)
 
 An entry point (bound by the package `__init__`) whose docstring has no `>>>` (DQ002).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.evaluate_coverage_rule(rule, obj)
 
 Run one `coverage`-kind rule over one public object.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.iter_coverage_cases(fixture_path)
 
@@ -145,21 +145,21 @@ fixtures use it: they have no package `__init__`).
 A summary that talks about the object instead of saying what it does (DQ005).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.missing_docstring(obj)
 
 A public module, class or function with no docstring at all (DQ001).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.name_words(identifier)
 
 Content words of an identifier: `load_config` -> `{"load", "config"}`.
 
 * **Return type:**
-  [`set`](https://docs.python.org/3/library/stdtypes.html#set)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> sorted(name_words("DocsConfig")), sorted(name_words("mk_parser"))
@@ -174,7 +174,7 @@ Deliberately not delegated to `docstring_parser` (an optional extra):
 a detector’s verdict must not depend on what is installed.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> param_descriptions(":param n: how many\n    retries\n:param delay: seconds")
@@ -190,7 +190,7 @@ a detector’s verdict must not depend on what is installed.
 Whether a parameter’s description only restates its annotation.
 
 * **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> restates_type(Param("n", "int", "an integer"))
@@ -206,25 +206,25 @@ False
 Level 0 coverage: `(findings, objects_checked, objects_undocumented)`.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`int`](https://docs.python.org/3/library/functions.html#int), [`int`](https://docs.python.org/3/library/functions.html#int)]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
 
 ### epythet.validation.coverage.trivial_summary(obj)
 
 A summary whose content words all come from the object’s name (DQ003).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.trivial_summary_words(identifier, summary)
 
 Whether the summary’s content words are all in the identifier’s (the *lazy* smell).
 
 * **Return type:**
-  [`bool`](https://docs.python.org/3/library/functions.html#bool)
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.validation.coverage.type_restatement(obj)
 
 A parameter description that only restates the annotation (DQ004).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]

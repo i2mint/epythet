@@ -29,4 +29,4 @@ Register epythet’s hooks and configuration values (idempotent).
 `builder-inited` hook: materialise the theme CSS into `_static`.
 
 * **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)

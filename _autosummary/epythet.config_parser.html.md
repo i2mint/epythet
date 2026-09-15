@@ -37,4 +37,4 @@ copyright line in that case.
 * **Returns:**
   `(name, copyright, author, version, display_name)`
 * **Raises:**
-  [**FileNotFoundError**](https://docs.python.org/3/library/exceptions.html#FileNotFoundError) – when neither configuration file exists
+  [**FileNotFoundError**](https://docs.python.org/3/builtins/exceptions.html#FileNotFoundError) – when neither configuration file exists

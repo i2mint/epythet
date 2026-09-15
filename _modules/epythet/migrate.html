@@ -321,12 +321,32 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalizer</span> <span class="k">as</span> <span class="n">N</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.repair</span><span class="w"> </span><span class="kn">import</span> <span class="n">Applier</span><span class="p">,</span> <span class="n">RepairReport</span><span class="p">,</span> <span class="n">apply_span_edits</span><span class="p">,</span> <span class="n">apply_with_libcst</span><span class="p">,</span> <span class="n">render_repair</span><span class="p">,</span> <span class="n">repair</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.repair</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Applier</span><span class="p">,</span>
+    <span class="n">RepairReport</span><span class="p">,</span>
+    <span class="n">apply_span_edits</span><span class="p">,</span>
+    <span class="n">apply_with_libcst</span><span class="p">,</span>
+    <span class="n">render_repair</span><span class="p">,</span>
+    <span class="n">repair</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">TARGET_STYLES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"google"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">)</span>
 <span class="c1">#: Field names whose conversion round-trips through ``docstring_parser``.</span>
 <span class="n">CONVERTIBLE_FIELDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">"param"</span><span class="p">,</span> <span class="s2">"parameter"</span><span class="p">,</span> <span class="s2">"arg"</span><span class="p">,</span> <span class="s2">"argument"</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"returns"</span><span class="p">,</span> <span class="s2">"return"</span><span class="p">,</span> <span class="s2">"rtype"</span><span class="p">,</span> <span class="s2">"raises"</span><span class="p">,</span> <span class="s2">"raise"</span><span class="p">,</span> <span class="s2">"except"</span><span class="p">,</span> <span class="s2">"exception"</span><span class="p">}</span>
+    <span class="p">{</span>
+        <span class="s2">"param"</span><span class="p">,</span>
+        <span class="s2">"parameter"</span><span class="p">,</span>
+        <span class="s2">"arg"</span><span class="p">,</span>
+        <span class="s2">"argument"</span><span class="p">,</span>
+        <span class="s2">"type"</span><span class="p">,</span>
+        <span class="s2">"returns"</span><span class="p">,</span>
+        <span class="s2">"return"</span><span class="p">,</span>
+        <span class="s2">"rtype"</span><span class="p">,</span>
+        <span class="s2">"raises"</span><span class="p">,</span>
+        <span class="s2">"raise"</span><span class="p">,</span>
+        <span class="s2">"except"</span><span class="p">,</span>
+        <span class="s2">"exception"</span><span class="p">,</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">_FIELD_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(\s*):([a-zA-Z]+)(?:\s+[^:]*)?:"</span><span class="p">)</span>
 
@@ -352,7 +372,11 @@
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">start</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="o">.</span><span class="n">FIELD</span> <span class="ow">and</span> <span class="n">_field_name</span><span class="p">(</span><span class="n">line</span><span class="p">)),</span>
+        <span class="p">(</span>
+            <span class="n">i</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">N</span><span class="o">.</span><span class="n">FIELD</span> <span class="ow">and</span> <span class="n">_field_name</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="p">),</span>
         <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -363,9 +387,16 @@
         <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">end</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">following</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">following</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">_field_name</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span> <span class="ow">and</span> <span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span> <span class="o">==</span> <span class="n">indent</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">indent</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">following</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">_field_name</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span>
+                        <span class="ow">and</span> <span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span> <span class="o">==</span> <span class="n">indent</span>
+                    <span class="p">)</span>
+                    <span class="ow">or</span> <span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">following</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">indent</span>
+                <span class="p">)</span>
             <span class="p">):</span>
                 <span class="n">end</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">continue</span>
@@ -384,15 +415,25 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_facts</span><span class="p">(</span><span class="n">docstring</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""What a docstring says, independent of its style: params, return, raises."""</span>
     <span class="n">params</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">arg_name</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">p</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_optional</span><span class="p">))</span>
+        <span class="p">(</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">arg_name</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">p</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+            <span class="nb">bool</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_optional</span><span class="p">),</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">docstring</span><span class="o">.</span><span class="n">params</span>
     <span class="p">)</span>
     <span class="n">returns</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">docstring</span><span class="o">.</span><span class="n">returns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">docstring</span><span class="o">.</span><span class="n">returns</span>
-        <span class="n">returns</span> <span class="o">=</span> <span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span> <span class="n">r</span><span class="o">.</span><span class="n">is_generator</span><span class="p">)</span>
+        <span class="n">returns</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">is_generator</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="n">raises</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-        <span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docstring</span><span class="o">.</span><span class="n">raises</span>
+        <span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">r</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docstring</span><span class="o">.</span><span class="n">raises</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">params</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">raises</span>
 
@@ -423,7 +464,7 @@
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">_facts</span><span class="p">(</span><span class="n">back</span><span class="p">)</span> <span class="o">!=</span> <span class="n">_facts</span><span class="p">(</span><span class="n">parsed</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">composed</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"Summary."</span><span class="p">):]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">composed</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"Summary."</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="c1"># docstring_parser composes an untyped return as ``    : text``; drop the stray colon.</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(\s+): (?=\S)"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1"</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">body</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
@@ -474,7 +515,9 @@
         <span class="k">if</span> <span class="n">converted</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">lines</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="s2">" "</span> <span class="o">*</span> <span class="n">indent</span>
-        <span class="n">new_block</span> <span class="o">=</span> <span class="p">[(</span><span class="n">pad</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">converted</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)]</span>
+        <span class="n">new_block</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">pad</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">converted</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="p">]</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">out</span> <span class="ow">and</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
@@ -546,7 +589,9 @@
     <span class="n">unconvertible</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">names</span> <span class="o">-</span> <span class="n">CONVERTIBLE_FIELDS</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">unconvertible</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">"fields that do not round-trip: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unconvertible</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-    <span class="k">return</span> <span class="s2">"the converted section did not describe the same parameters, return and raises"</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">"the converted section did not describe the same parameters, return and raises"</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="migrate_style_command">
@@ -633,7 +678,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

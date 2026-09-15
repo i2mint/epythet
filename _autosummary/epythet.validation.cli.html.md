@@ -20,30 +20,30 @@ Exit codes: 0 clean; 10/11/12/13 findings at or above –fail-on at level
 with –fail-on-review; 20 ledger integrity failure; 1 internal error.
 
 * **Parameters:**
-  * **package** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Project root, package directory, or importable package name.
-  * **level** ([`int`](https://docs.python.org/3/library/functions.html#int)) – 0 = lint (ruff D, pydoclint); 1 = lint + parse every docstring’s
+  * **package** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Project root, package directory, or importable package name.
+  * **level** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – 0 = lint (ruff D, pydoclint); 1 = lint + parse every docstring’s
     doctree (default, no build needed); 2 = also run the Sphinx build;
     3 = also read the rendered XML/HTML/text; 4 = also write a review packet.
-  * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human), json (full report), or jsonl (one finding per line).
-  * **fail_on** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Severity that makes the exit code non-zero: error, warning, or info.
-  * **ledger** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
-  * **style** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Docstring convention for the linters: google, numpy, or sphinx.
-  * **no_napoleon** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Parse docstrings without napoleon’s Google/NumPy pre-processing.
-  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)] | [`None`](https://docs.python.org/3/library/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
-  * **docsrc** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Sphinx source directory for level 2 (default: <project>/docsrc).
-  * **no_observe** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Do not append findings to the ledger’s observations file.
-  * **no_linters** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 0 without ruff and pydoclint (coverage detectors only).
-  * **max_per_rule** ([`int`](https://docs.python.org/3/library/functions.html#int)) – How many findings to show per rule in the table.
-  * **output** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Write the report to this file instead of stdout.
-  * **snapshot** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: diff the text render against docsrc/_snapshots/text.
-  * **update_snapshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 3: rewrite the text snapshots from this render.
-  * **snapshot_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Where the text snapshots live (default docsrc/_snapshots/text).
-  * **render_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Keep the rendered html/text/xml here instead of a temp dir.
-  * **review_pages** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Level 4: which pages go in the packet: changed, sample, or all.
-  * **review_sample** ([`int`](https://docs.python.org/3/library/functions.html#int)) – Level 4: how many pages a sample packet holds.
-  * **screenshots** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Level 4: add Playwright screenshots to the packet if installed.
-  * **packet_dir** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 4: write the packet here (default: the user data dir).
-  * **review_reply** ([`str`](https://docs.python.org/3/library/stdtypes.html#str) | [`None`](https://docs.python.org/3/library/constants.html#None)) – Level 4: a review.json written by a reviewer, to ingest.
-  * **fail_on_review** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Exit 14 when the review reply reported findings.
+  * **format** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – table (human), json (full report), or jsonl (one finding per line).
+  * **fail_on** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Severity that makes the exit code non-zero: error, warning, or info.
+  * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
+  * **style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Docstring convention for the linters: google, numpy, or sphinx.
+  * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Parse docstrings without napoleon’s Google/NumPy pre-processing.
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **docsrc** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Sphinx source directory for level 2 (default: <project>/docsrc).
+  * **no_observe** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not append findings to the ledger’s observations file.
+  * **no_linters** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 0 without ruff and pydoclint (coverage detectors only).
+  * **max_per_rule** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – How many findings to show per rule in the table.
+  * **output** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Write the report to this file instead of stdout.
+  * **snapshot** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 3: diff the text render against docsrc/_snapshots/text.
+  * **update_snapshots** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 3: rewrite the text snapshots from this render.
+  * **snapshot_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Where the text snapshots live (default docsrc/_snapshots/text).
+  * **render_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Keep the rendered html/text/xml here instead of a temp dir.
+  * **review_pages** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Level 4: which pages go in the packet: changed, sample, or all.
+  * **review_sample** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – Level 4: how many pages a sample packet holds.
+  * **screenshots** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 4: add Playwright screenshots to the packet if installed.
+  * **packet_dir** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Level 4: write the packet here (default: the user data dir).
+  * **review_reply** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Level 4: a review.json written by a reviewer, to ingest.
+  * **fail_on_review** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Exit 14 when the review reply reported findings.
 * **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)

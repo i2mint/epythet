@@ -373,7 +373,10 @@
 <span class="w">    </span><span class="sd">"""``(docname, path)`` for every page of one builder, in a stable order."""</span>
     <span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">outdir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="sa">f</span><span class="s2">"*</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"_static"</span><span class="p">,</span> <span class="s2">"_sources"</span><span class="p">,</span> <span class="s2">"_modules"</span><span class="p">))</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"_static"</span><span class="p">,</span> <span class="s2">"_sources"</span><span class="p">,</span> <span class="s2">"_modules"</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span>
+        <span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">yield</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">outdir</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span> <span class="n">path</span>
 
@@ -475,7 +478,9 @@
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">"title"</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">):</span>
             <span class="k">continue</span>  <span class="c1"># section titles are not links</span>
         <span class="n">hits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">literal</span><span class="p">),</span> <span class="nb">object</span><span class="o">=</span><span class="n">_object_of</span><span class="p">(</span><span class="n">literal</span><span class="p">,</span> <span class="n">parents</span><span class="p">))</span>
+            <span class="n">RenderHit</span><span class="p">(</span>
+                <span class="n">page</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">_text</span><span class="p">(</span><span class="n">literal</span><span class="p">),</span> <span class="nb">object</span><span class="o">=</span><span class="n">_object_of</span><span class="p">(</span><span class="n">literal</span><span class="p">,</span> <span class="n">parents</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">hits</span></div>
 
@@ -562,11 +567,7 @@
 <span class="sd">    hand-written ``:ref:`` to a missing label ends the same way.</span>
 <span class="sd">    """</span>
     <span class="n">collector</span> <span class="o">=</span> <span class="n">_collect</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span>
-        <span class="n">href</span>
-        <span class="k">for</span> <span class="n">href</span> <span class="ow">in</span> <span class="n">collector</span><span class="o">.</span><span class="n">fragment_hrefs</span>
-        <span class="k">if</span> <span class="n">href</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collector</span><span class="o">.</span><span class="n">ids</span>
-    <span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">href</span> <span class="k">for</span> <span class="n">href</span> <span class="ow">in</span> <span class="n">collector</span><span class="o">.</span><span class="n">fragment_hrefs</span> <span class="k">if</span> <span class="n">href</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">collector</span><span class="o">.</span><span class="n">ids</span><span class="p">]</span></div>
 
 
 
@@ -594,14 +595,18 @@
             <span class="n">html</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="n">hits</span> <span class="o">+=</span> <span class="p">[</span><span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">extract</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">)]</span>
+        <span class="n">hits</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">extract</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="p">]</span>
     <span class="k">return</span> <span class="n">hits</span>
 
 
 <div class="viewcode-block" id="dangling_anchors_detector">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.rendered.html#epythet.validation.rendered.dangling_anchors_detector">[docs]</a>
 <span class="nd">@render_detector</span><span class="p">(</span><span class="s2">"dangling_anchors"</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">dangling_anchors_detector</span><span class="p">(</span><span class="n">outdirs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">_docsrc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderHit</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dangling_anchors_detector</span><span class="p">(</span>
+    <span class="n">outdirs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">_docsrc</span><span class="p">:</span> <span class="n">Path</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderHit</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Level-2 detector over the ``html`` output (DR027)."""</span>
     <span class="k">if</span> <span class="s2">"html"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outdirs</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
@@ -660,7 +665,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">compare_snapshots</span><span class="p">(</span><span class="n">text_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">snapshot_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SnapshotDiff</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Diff every rendered text page against its stored snapshot."""</span>
     <span class="n">rendered</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_pages</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">text_dir</span><span class="p">),</span> <span class="s2">".txt"</span><span class="p">))</span>
-    <span class="n">stored</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_pages</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">),</span> <span class="s2">".txt"</span><span class="p">))</span> <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">stored</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">_pages</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">),</span> <span class="s2">".txt"</span><span class="p">))</span> <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="p">)</span>
     <span class="n">diff</span> <span class="o">=</span> <span class="n">SnapshotDiff</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">docname</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">rendered</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">docname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stored</span><span class="p">:</span>
@@ -688,7 +695,9 @@
     <span class="k">for</span> <span class="n">docname</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">_pages</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">text_dir</span><span class="p">),</span> <span class="s2">".txt"</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">snapshot_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2">.txt"</span>
         <span class="n">target</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">target</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+        <span class="p">)</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">count</span></div>
 
@@ -697,7 +706,9 @@
 <div class="viewcode-block" id="text_snapshots_detector">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.rendered.html#epythet.validation.rendered.text_snapshots_detector">[docs]</a>
 <span class="nd">@render_detector</span><span class="p">(</span><span class="s2">"text_snapshots"</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">text_snapshots_detector</span><span class="p">(</span><span class="n">_outdirs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">_docsrc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderHit</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">text_snapshots_detector</span><span class="p">(</span>
+    <span class="n">_outdirs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">_docsrc</span><span class="p">:</span> <span class="n">Path</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderHit</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""DR035's detector is the snapshot diff, driven by ``snapshot=``; nothing to scan here."""</span>
     <span class="k">return</span> <span class="p">[]</span></div>
 
@@ -728,7 +739,9 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_rule_or_fallback</span><span class="p">(</span><span class="n">ledger</span><span class="p">:</span> <span class="n">Ledger</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Rule</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_rule_or_fallback</span><span class="p">(</span>
+    <span class="n">ledger</span><span class="p">:</span> <span class="n">Ledger</span><span class="p">,</span> <span class="n">rule_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">severity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Rule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""The ledger's rule, or a minimal stand-in when an overlay removed it."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ledger</span><span class="p">[</span><span class="n">rule_id</span><span class="p">]</span>
@@ -779,23 +792,38 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">snapshot_findings</span><span class="p">(</span><span class="n">diff</span><span class="p">:</span> <span class="n">SnapshotDiff</span><span class="p">,</span> <span class="n">ledger</span><span class="p">:</span> <span class="n">Ledger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""One DR035 finding per changed page, plus info findings for new and removed pages."""</span>
     <span class="n">rule</span> <span class="o">=</span> <span class="n">_rule_or_fallback</span><span class="p">(</span>
-        <span class="n">ledger</span><span class="p">,</span> <span class="n">SNAPSHOT_DRIFT</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"error"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"Rendered text drifted from its snapshot"</span>
+        <span class="n">ledger</span><span class="p">,</span>
+        <span class="n">SNAPSHOT_DRIFT</span><span class="p">,</span>
+        <span class="n">severity</span><span class="o">=</span><span class="s2">"error"</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">"Rendered text drifted from its snapshot"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">docname</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">diff</span><span class="o">.</span><span class="n">changed</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-        <span class="n">evidence</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[:</span> <span class="n">_DIFF_LINES_IN_EVIDENCE</span><span class="p">])</span>
+        <span class="n">evidence</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[:</span><span class="n">_DIFF_LINES_IN_EVIDENCE</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_DIFF_LINES_IN_EVIDENCE</span><span class="p">:</span>
             <span class="n">evidence</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">… </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_DIFF_LINES_IN_EVIDENCE</span><span class="si">}</span><span class="s2"> more diff lines"</span>
         <span class="n">findings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">_finding</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">evidence</span><span class="p">),</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> changed (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="si">}</span><span class="s2"> diff lines)"</span><span class="p">)</span>
+            <span class="n">_finding</span><span class="p">(</span>
+                <span class="n">rule</span><span class="p">,</span>
+                <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="n">evidence</span><span class="p">),</span>
+                <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> changed (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="si">}</span><span class="s2"> diff lines)"</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="p">)</span>
     <span class="k">for</span> <span class="n">docname</span> <span class="ow">in</span> <span class="n">diff</span><span class="o">.</span><span class="n">added</span><span class="p">:</span>
-        <span class="n">finding</span> <span class="o">=</span> <span class="n">_finding</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="s2">"new page"</span><span class="p">),</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> has no snapshot yet"</span><span class="p">)</span>
+        <span class="n">finding</span> <span class="o">=</span> <span class="n">_finding</span><span class="p">(</span>
+            <span class="n">rule</span><span class="p">,</span>
+            <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="s2">"new page"</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> has no snapshot yet"</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">finding</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="s2">"info"</span>
         <span class="n">findings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">finding</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">docname</span> <span class="ow">in</span> <span class="n">diff</span><span class="o">.</span><span class="n">removed</span><span class="p">:</span>
-        <span class="n">finding</span> <span class="o">=</span> <span class="n">_finding</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="s2">"page gone"</span><span class="p">),</span> <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> is snapshotted but no longer rendered"</span><span class="p">)</span>
+        <span class="n">finding</span> <span class="o">=</span> <span class="n">_finding</span><span class="p">(</span>
+            <span class="n">rule</span><span class="p">,</span>
+            <span class="n">RenderHit</span><span class="p">(</span><span class="n">page</span><span class="o">=</span><span class="n">docname</span><span class="p">,</span> <span class="n">evidence</span><span class="o">=</span><span class="s2">"page gone"</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">docname</span><span class="si">}</span><span class="s2"> is snapshotted but no longer rendered"</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">finding</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="s2">"warning"</span>
         <span class="n">findings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">finding</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">findings</span></div>
@@ -823,7 +851,11 @@
 
     <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">artifacts</span> <span class="o">=</span> <span class="n">RenderArtifacts</span><span class="p">()</span>
-    <span class="n">docsrc</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">resolve_docsrc</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">))</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">"resolve_docsrc"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">docsrc</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">resolve_docsrc</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">"resolve_docsrc"</span><span class="p">)</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">"render"</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="p">[</span>
@@ -865,15 +897,23 @@
                 <span class="n">level</span><span class="o">=</span><span class="n">RENDER_LEVEL</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"-b </span><span class="si">{</span><span class="n">builder</span><span class="si">}</span><span class="s2"> failed (exit </span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
                 <span class="n">detector</span><span class="o">=</span><span class="s2">"render"</span><span class="p">,</span>
-                <span class="n">evidence</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">300</span><span class="p">]</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span>
+                <span class="n">evidence</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">300</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">else</span> <span class="s2">""</span><span class="p">,</span>
                 <span class="n">tool</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"backend"</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
     <span class="n">artifacts</span><span class="o">.</span><span class="n">outdirs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">)</span>
     <span class="n">artifacts</span><span class="o">.</span><span class="n">docsrc</span> <span class="o">=</span> <span class="n">docsrc</span>
-    <span class="n">findings</span> <span class="o">+=</span> <span class="n">render_findings</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">,</span> <span class="n">ledger</span><span class="p">,</span> <span class="n">docsrc</span><span class="o">=</span><span class="n">docsrc</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">))</span>
+    <span class="n">findings</span> <span class="o">+=</span> <span class="n">render_findings</span><span class="p">(</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">,</span> <span class="n">ledger</span><span class="p">,</span> <span class="n">docsrc</span><span class="o">=</span><span class="n">docsrc</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="s2">"text"</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">outdirs</span> <span class="ow">and</span> <span class="p">(</span><span class="n">snapshot</span> <span class="ow">or</span> <span class="n">update</span><span class="p">):</span>
-        <span class="n">snapshot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">snapshot_dir</span> <span class="k">else</span> <span class="p">(</span><span class="n">docsrc</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"docsrc"</span><span class="p">)</span> <span class="o">/</span> <span class="n">SNAPSHOT_DIRNAME</span>
+        <span class="n">snapshot_dir</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">snapshot_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">snapshot_dir</span>
+            <span class="k">else</span> <span class="p">(</span><span class="n">docsrc</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"docsrc"</span><span class="p">)</span> <span class="o">/</span> <span class="n">SNAPSHOT_DIRNAME</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
             <span class="n">written</span> <span class="o">=</span> <span class="n">update_snapshots</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">snapshot_dir</span><span class="p">)</span>
             <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">written</span><span class="si">}</span><span class="s2"> text snapshots written to </span><span class="si">{</span><span class="n">snapshot_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -882,10 +922,14 @@
             <span class="n">diff</span> <span class="o">=</span> <span class="n">compare_snapshots</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outdirs</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">snapshot_dir</span><span class="p">)</span>
             <span class="n">artifacts</span><span class="o">.</span><span class="n">snapshot</span> <span class="o">=</span> <span class="n">diff</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">snapshot_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-                <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"no snapshots at </span><span class="si">{</span><span class="n">snapshot_dir</span><span class="si">}</span><span class="s2">; run with --update-snapshots to create them"</span><span class="p">)</span>
+                <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"no snapshots at </span><span class="si">{</span><span class="n">snapshot_dir</span><span class="si">}</span><span class="s2">; run with --update-snapshots to create them"</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">findings</span> <span class="o">+=</span> <span class="n">snapshot_findings</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">ledger</span><span class="p">)</span>
-                <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">compared</span><span class="si">}</span><span class="s2"> text snapshots compared against </span><span class="si">{</span><span class="n">snapshot_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">notes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">compared</span><span class="si">}</span><span class="s2"> text snapshots compared against </span><span class="si">{</span><span class="n">snapshot_dir</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
     <span class="k">return</span> <span class="n">findings</span><span class="p">,</span> <span class="n">notes</span><span class="p">,</span> <span class="n">artifacts</span></div>
 
 </pre></div>
@@ -916,7 +960,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=b557875f"></script>
+</div><script src="../../../_static/documentation_options.js?v=f434b289"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

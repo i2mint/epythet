@@ -59,7 +59,7 @@ generated “For AI agents” documentation page.
 
 * **Parameters:**
   * **project_dir** – the project root
-  * **format** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – table (human) or json
+  * **format** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – table (human) or json
 
 ### epythet.cli.check_pages(repo, , no_url_check=False)
 
@@ -67,7 +67,7 @@ Diagnose GitHub Pages setup for a repo.
 
 * **Parameters:**
   * **repo** – GitHub repo as ‘owner/repo’, or path to a local git checkout.
-  * **no_url_check** ([`bool`](https://docs.python.org/3/library/functions.html#bool)) – Skip checking if the docs URL actually responds.
+  * **no_url_check** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Skip checking if the docs URL actually responds.
 
 ### epythet.cli.configure_pages(repo, , branch='gh-pages', path='/')
 
@@ -75,8 +75,8 @@ Enable or fix GitHub Pages for a repo. Requires gh CLI or GITHUB_TOKEN.
 
 * **Parameters:**
   * **repo** – GitHub repo as ‘owner/repo’, or path to a local git checkout.
-  * **branch** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Branch to serve Pages from (default: gh-pages).
-  * **path** ([`str`](https://docs.python.org/3/library/stdtypes.html#str)) – Folder within the branch (default: /).
+  * **branch** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Branch to serve Pages from (default: gh-pages).
+  * **path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Folder within the branch (default: /).
 
 ### epythet.cli.epythet_cli(argv=None)
 
@@ -97,4 +97,4 @@ default”; each value may itself be comma-separated.
 
 * **Parameters:**
   * **project_dir** – Path to root project directory (pyproject.toml or setup.cfg)
-  * **ignore** ([`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]) – skip file if path contains any ignore strings
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – skip file if path contains any ignore strings

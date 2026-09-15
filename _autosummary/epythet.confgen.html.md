@@ -34,7 +34,7 @@ consequence of the decision record.
 
 Where the API pages live under `docsrc` (and in the site URL).
 
-### epythet.confgen.BASE_EXTENSIONS *: [tuple](https://docs.python.org/3/library/stdtypes.html#tuple)[[str](https://docs.python.org/3/library/stdtypes.html#str), ...]* *= ('sphinx.ext.napoleon', 'sphinx_autodoc_typehints', 'sphinx.ext.intersphinx', 'sphinx.ext.doctest', 'sphinx.ext.viewcode', 'sphinx.ext.githubpages', 'myst_parser', 'sphinxcontrib.mermaid', 'sphinx_copybutton', 'epythet.sphinx_ext')*
+### epythet.confgen.BASE_EXTENSIONS *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ('sphinx.ext.napoleon', 'sphinx_autodoc_typehints', 'sphinx.ext.intersphinx', 'sphinx.ext.doctest', 'sphinx.ext.viewcode', 'sphinx.ext.githubpages', 'myst_parser', 'sphinxcontrib.mermaid', 'sphinx_copybutton', 'epythet.sphinx_ext')*
 
 Extensions every epythet site uses, whatever the API generator.
 
@@ -43,7 +43,7 @@ Extensions every epythet site uses, whatever the API generator.
 The document `index.md`’s toctree points at for the API pages.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> from epythet.config import DocsConfig
@@ -58,7 +58,7 @@ The document `index.md`’s toctree points at for the API pages.
 Merge two settings dicts, concatenating list values instead of replacing them.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ```pycon
 >>> merge_settings({"extensions": ["a"], "x": 1}, {"extensions": ["b"], "x": 2})
@@ -70,4 +70,4 @@ Merge two settings dicts, concatenating list values instead of replacing them.
 The complete Sphinx `conf.py` namespace for `config`.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]

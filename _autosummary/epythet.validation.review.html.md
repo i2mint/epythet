@@ -67,13 +67,13 @@ The six dimensions of research_doc_quality §3, scored 0-3 each.
 
 ### *exception* epythet.validation.review.ReplyError
 
-Bases: [`ValueError`](https://docs.python.org/3/library/exceptions.html#ValueError)
+Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueError)
 
 A review reply is not valid against `REPLY_SCHEMA`.
 
 ### *class* epythet.validation.review.ReviewPacket(path, pages=<factory>, screenshots=<factory>, prompt_hash='', notes=<factory>)
 
-Bases: [`object`](https://docs.python.org/3/library/functions.html#object)
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Where a packet was written and what went into it.
 
@@ -86,14 +86,14 @@ The rule id of a reply finding that names no ledger rule.
 Read and validate a `review.json`.
 
 * **Return type:**
-  [`dict`](https://docs.python.org/3/library/stdtypes.html#dict)[[`str`](https://docs.python.org/3/library/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ### epythet.validation.review.reply_findings(reply, ledger, , source='')
 
 Turn a reply’s `findings` into level-3 findings (informational by construction).
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)]
 
 ### epythet.validation.review.reviews_dir()
 
@@ -107,14 +107,14 @@ Turn a reply’s `findings` into level-3 findings (informational by construction
 The rubric with the ledger’s rule ids appended, so replies can name them.
 
 * **Return type:**
-  [`str`](https://docs.python.org/3/library/stdtypes.html#str)
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.validation.review.run_review_level(, package, package_version, outdirs, ledger, changed=None, mode='changed', sample=8, screenshots=False, packet_dir=None, reply=None)
 
 Level 3: write the packet, then ingest `reply` when one is given.
 
 * **Return type:**
-  [`tuple`](https://docs.python.org/3/library/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]]
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
 
 ### epythet.validation.review.select_pages(available, , mode='changed', changed=None, sample=8)
 
@@ -125,7 +125,7 @@ to `sample` (the first `sample` API pages, index first) otherwise;
 `all` takes every page.
 
 * **Return type:**
-  [`list`](https://docs.python.org/3/library/stdtypes.html#list)[[`str`](https://docs.python.org/3/library/stdtypes.html#str)]
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> select_pages(["index", "api", "_autosummary/p", "_autosummary/p.m"], mode="sample", sample=2)
@@ -139,7 +139,7 @@ to `sample` (the first `sample` API pages, index first) otherwise;
 Raise [`ReplyError`](#epythet.validation.review.ReplyError) unless `reply` satisfies `REPLY_SCHEMA`.
 
 * **Return type:**
-  [`None`](https://docs.python.org/3/library/constants.html#None)
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.review.write_packet(, package, package_version, outdirs, ledger, changed=None, mode='changed', sample=8, screenshots=False, packet_dir=None)
 
