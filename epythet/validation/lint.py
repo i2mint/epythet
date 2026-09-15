@@ -27,6 +27,12 @@ LINT_LEVEL = 0
 #: Docstring styles ruff's pydocstyle convention and pydoclint's ``--style`` both accept.
 STYLES = ("google", "numpy", "sphinx")
 
+#: ``D107`` (``__init__`` must have its own docstring) contradicts pydoclint's
+#: ``DOC301`` (``__init__`` must NOT have one; its Args merge into the class
+#: docstring) -- the house convention this repo's docstring-style skill already
+#: documents. Only one side can pass, so the ruff side is dropped.
+RUFF_D_IGNORE = ("D107",)
+
 
 def ruff_severity(code: str) -> str:
     """``D1xx`` (missing docstrings) are warnings; other ``D`` rules are style, so info.
@@ -69,6 +75,8 @@ def run_ruff(
         "--no-cache",
         "--config",
         f"lint.pydocstyle.convention = '{style}'",
+        "--ignore",
+        ",".join(RUFF_D_IGNORE),
         str(package_dir),
     ]
     proc = subprocess.run(cmd, cwd=project_dir, capture_output=True, text=True)
@@ -101,8 +109,15 @@ def run_ruff(
 
 _PYDOCLINT_LINE_RE = re.compile(r"^\s+(?P<line>\d+): (?P<code>DOC\d+): (?P<msg>.*)$")
 
-#: pydoclint options that silence its type-hint bookkeeping: the house convention
-#: is types in annotations, never in the docstring, and not every signature is annotated.
+#: pydoclint options for the house convention: types live in annotations, never
+#: in the docstring. ``--arg-type-hints-in-signature true`` tells pydoclint that
+#: *is* how a documented signature looks (DOC108 fires on the opposite reading:
+#: ``false`` means "expect no type hints in the signature", which trips on every
+#: annotated function). ``--arg-type-hints-in-docstring false`` keeps it from
+#: asking for types in the docstring text. ``--allow-init-docstring`` defaults to
+#: ``False``, which enforces DOC301 (``__init__`` undocumented, its Args merged
+#: into the class docstring) -- the convention this house already writes to, so
+#: it is left at its default rather than passed explicitly.
 PYDOCLINT_OPTIONS = (
     "--quiet",
     "--skip-checking-short-docstrings",
@@ -110,7 +125,7 @@ PYDOCLINT_OPTIONS = (
     "--arg-type-hints-in-docstring",
     "false",
     "--arg-type-hints-in-signature",
-    "false",
+    "true",
     "--check-return-types",
     "false",
     "--check-yield-types",
