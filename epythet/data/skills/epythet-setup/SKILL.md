@@ -111,8 +111,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ignore: "tests/,scrap/,examples/"
           python-version: "3.12"
-          # v2 opt-in until the action's default flips (i2mint/epythet#16)
-          epythet-spec: "epythet>=0.2,<0.3"
 ```
 
 The action installs epythet and the project, runs `epythet quickstart . --ignore ...`, pushes `docsrc/_build/html/` to the `gh-pages` branch, and enables Pages. If the site 404s after the first run, Pages was not enabled: run `epythet configure-pages owner/repo` (the `epythet-pages` skill covers diagnosis).

@@ -30,13 +30,13 @@ inputs:
 
   epythet-spec:
     description: "pip requirement spec for the epythet version that builds the
-      docs. The default is the fleet-wide pin; pass
-      `epythet-spec: \"epythet>=0.2,<0.3\"` to opt a repo into epythet v2
-      (README landing page, nested API tree, agent outputs) before the default
-      flips (see i2mint/epythet#16)."
+      docs. The default is epythet v2 (README landing page, nested API tree,
+      agent outputs); pass `epythet-spec: \"epythet<0.2\"` to keep a repo on the
+      0.1.x layout (see i2mint/epythet#16)."
     required: false
-    # Pinned to 0.1.x: v2 is being developed as 0.2.x and the fleet stays on 0.1.x until validated (see #17)
-    default: "epythet<0.2"
+    # The fleet default is epythet v2 (0.2.x) since the WP5 flip (see #16). A repo that
+    # must stay on 0.1.x passes `epythet-spec: "epythet<0.2"` explicitly.
+    default: "epythet>=0.2,<0.3"
 
 runs:
   using: composite
