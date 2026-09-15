@@ -10,6 +10,7 @@ normalized doctests, the agent outputs and the aggregate. It runs Sphinx twice
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -128,9 +129,15 @@ def project(tmp_path_factory) -> Path:
     (pkg / "tests" / "__init__.py").write_text("")
     (pkg / "tests" / "test_x.py").write_text(TEST_MODULE)
     _git_init(root, remote="https://github.com/org/demo.git", tag="v0.1.0")
-    subprocess.run(["git", "tag", "t|pipe"], cwd=root, check=True)  # a legal ref name
+    if PIPE_TAG_ALLOWED:  # a legal ref name, except on Windows
+        subprocess.run(["git", "tag", PIPE_TAG], cwd=root, check=True)
     (pkg / "core.py").write_text(CORE + "\n# uncommitted change: the tree is dirty\n")
     return root
+
+
+#: A tag with a Markdown table delimiter; Windows git refuses ``|`` in ref names.
+PIPE_TAG = "t|pipe"
+PIPE_TAG_ALLOWED = sys.platform != "win32"
 
 
 def _git_init(root: Path, *, remote: str, tag: str) -> None:
@@ -224,7 +231,7 @@ def test_provenance_footer_page_and_json(project, site):
     assert info["schema_version"] == 1 and info["package"]["version"] == "0.1.0"
     assert (
         git["branch"] == "main"
-        and git["tags"] == ["t|pipe", "v0.1.0"]
+        and git["tags"] == ([PIPE_TAG] if PIPE_TAG_ALLOWED else []) + ["v0.1.0"]
         and git["dirty"] is True
     )
     assert git["commit_url"] == f"https://github.com/org/demo/commit/{git['commit']}"
@@ -251,7 +258,9 @@ def test_provenance_footer_page_and_json(project, site):
     # A "|" in a ref name must not split the table row (rendered HTML, not the source).
     row = about[about.index("Tags at this commit") :]
     row = row[: row.index("</tr>")]
-    assert "<code>t|pipe</code>" in row and row.count("<td") == 1
+    assert row.count("<td") == 1
+    if PIPE_TAG_ALLOWED:
+        assert f"<code>{PIPE_TAG}</code>" in row
     assert "Modules documented" in about and about.index(
         "Modules documented"
     ) < about.index('id="reproduce"')

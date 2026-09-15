@@ -18,7 +18,8 @@ def _hermetic_provenance(tmp_path_factory):
     ``EPYTHET_PYPI_CHECK=0`` keeps PyPI out (offline CI, determinism);
     ``SOURCE_DATE_EPOCH`` makes rebuilds byte-identical; the git variables keep
     the developer's global config (``commit.gpgsign``, hooks, templates) out of
-    the fixture repositories. Session-scoped so it is in place before the
+    the fixture repositories; ``GITHUB_ACTIONS`` is unset so the runner's own
+    context never reaches a record. Session-scoped so it is in place before the
     module-scoped smoke builds.
     """
     with pytest.MonkeyPatch.context() as mp:
@@ -28,6 +29,9 @@ def _hermetic_provenance(tmp_path_factory):
         mp.setenv("GIT_CONFIG_NOSYSTEM", "1")
         # A fixture project that is not a repo must not find one above the temp dir.
         mp.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path_factory.getbasetemp()))
+        # The suite itself runs in GitHub Actions: its context must not leak into
+        # the records the tests build (tests that want CI pass an explicit environ).
+        mp.delenv("GITHUB_ACTIONS", raising=False)
         yield
 
 

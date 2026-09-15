@@ -8,6 +8,7 @@ key set that ``schema_version`` promises, and the ``provenance`` config seam.
 
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -220,6 +221,9 @@ def test_copy_target_output_does_not_count_as_dirty(repo):
     assert git_info(repo)["dirty"] is True
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="Windows git refuses such ref names"
+)
 def test_ref_names_are_escaped_in_the_about_page(repo):
     _git(repo, "checkout", "-q", "-b", "x`<b>BOLD</b>`y")
     _git(repo, "tag", "t|pipe")
