@@ -2,20 +2,18 @@
 
 # About this build
 
-This documentation was built on **2026-09-15 11:33 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/5e4e74f303fc5e69fcff6cee0ece3e05e442d818"><code>5e4e74f</code></a> on branch <code>master</code>, for **epythet 0.2.11** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-09-15 12:35 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d70</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.2.11) is ahead of the latest release on PyPI (0.2.10): these docs describe unreleased code.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/5e4e74f303fc5e69fcff6cee0ece3e05e442d818"><code>5e4e74f303fc5e69fcff6cee0ece3e05e442d818</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d703fd6794b5b324d868b15d5b1e14ce5461</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
-| Tags at this commit | <code>0.2.11</code>                                                                                                                                   |
+| Tags at this commit | <code>0.2.12</code>                                                                                                                                   |
 | Working tree        | clean                                                                                                                                                 |
 | Remote              | <code>https://github.com/i2mint/epythet</code>                                                                                                        |
 
@@ -24,15 +22,15 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34963636403">34963636403</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34969390270">34969390270</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>2b4826e5769795407b5b82493e9f1f360e5f423b</code> (in the history of the built commit) |
+| Event commit | <code>dd8a8c87eb214bb424972795b0687751924963fc</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.11  |
+| epythet  | 0.2.12  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.14 |
@@ -51,14 +49,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.10/">0.2.10</a>, older than the documented version (0.2.11).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.12/">0.2.12</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 5e4e74f303fc5e69fcff6cee0ece3e05e442d818
-pip install "epythet==0.2.11"
+git checkout 7f52d703fd6794b5b324d868b15d5b1e14ce5461
+pip install "epythet==0.2.12"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

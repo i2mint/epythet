@@ -14,9 +14,10 @@ the tool in `tool`, so they never collide with ledger ids.
 
 ### Module Attributes
 
-| [`STYLES`](#epythet.validation.lint.STYLES)            | Docstring styles ruff's pydocstyle convention and pydoclint's `--style` both accept.                        |
-|--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| [`PYDOCLINT_OPTIONS`](#epythet.validation.lint.PYDOCLINT_OPTIONS) | the house convention is types in annotations, never in the docstring, and not every signature is annotated. |
+| [`STYLES`](#epythet.validation.lint.STYLES)            | Docstring styles ruff's pydocstyle convention and pydoclint's `--style` both accept.                                                                                                                                                  |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`RUFF_D_IGNORE`](#epythet.validation.lint.RUFF_D_IGNORE)     | `D107` (`__init__` must have its own docstring) contradicts pydoclint's `DOC301` (`__init__` must NOT have one; its Args merge into the class docstring) -- the house convention this repo's docstring-style skill already documents. |
+| [`PYDOCLINT_OPTIONS`](#epythet.validation.lint.PYDOCLINT_OPTIONS) | types live in annotations, never in the docstring.                                                                                                                                                                                    |
 
 ### Functions
 
@@ -27,13 +28,27 @@ the tool in `tool`, so they never collide with ledger ids.
 | [`run_pydoclint`](#epythet.validation.lint.run_pydoclint)(package_dir, \*, project_dir[, ...]) | Run `pydoclint` if installed; otherwise return a note and no findings.          |
 | [`run_ruff`](#epythet.validation.lint.run_ruff)(package_dir, \*, project_dir[, style])    | Run `ruff check --select D` and translate its JSON output.                      |
 
-### epythet.validation.lint.PYDOCLINT_OPTIONS *= ('--quiet', '--skip-checking-short-docstrings', 'true', '--arg-type-hints-in-docstring', 'false', '--arg-type-hints-in-signature', 'false', '--check-return-types', 'false', '--check-yield-types', 'false')*
+### epythet.validation.lint.PYDOCLINT_OPTIONS *= ('--quiet', '--skip-checking-short-docstrings', 'true', '--arg-type-hints-in-docstring', 'false', '--arg-type-hints-in-signature', 'true', '--check-return-types', 'false', '--check-yield-types', 'false')*
 
-the house convention
-is types in annotations, never in the docstring, and not every signature is annotated.
+types live in annotations, never
+in the docstring. `--arg-type-hints-in-signature true` tells pydoclint that
+*is* how a documented signature looks (DOC108 fires on the opposite reading:
+`false` means “expect no type hints in the signature”, which trips on every
+annotated function). `--arg-type-hints-in-docstring false` keeps it from
+asking for types in the docstring text. `--allow-init-docstring` defaults to
+`False`, which enforces DOC301 (`__init__` undocumented, its Args merged
+into the class docstring) – the convention this house already writes to, so
+it is left at its default rather than passed explicitly.
 
 * **Type:**
-  pydoclint options that silence its type-hint bookkeeping
+  pydoclint options for the house convention
+
+### epythet.validation.lint.RUFF_D_IGNORE *= ('D107',)*
+
+`D107` (`__init__` must have its own docstring) contradicts pydoclint’s
+`DOC301` (`__init__` must NOT have one; its Args merge into the class
+docstring) – the house convention this repo’s docstring-style skill already
+documents. Only one side can pass, so the ruff side is dropped.
 
 ### epythet.validation.lint.STYLES *= ('google', 'numpy', 'sphinx')*
 

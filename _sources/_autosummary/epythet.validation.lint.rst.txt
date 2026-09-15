@@ -9,6 +9,7 @@ epythet.validation.lint
    .. autosummary::
    
       STYLES
+      RUFF_D_IGNORE
       PYDOCLINT_OPTIONS
    
    .. rubric:: Functions

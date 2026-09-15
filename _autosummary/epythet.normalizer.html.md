@@ -56,7 +56,8 @@ The rules, in order:
 7. `reflow_list_continuations`: a wrapped list or field line at the marker’s
    own indentation is indented under it.
 8. `blank_lines_between_blocks`: a blank line is inserted before a doctest,
-   list or field list that follows prose, and after an indented block ends.
+   list or field list that follows prose, and after an indented block ends;
+   not when the block sits directly under its own section header.
 9. `markdown_links_to_rst`: `[text](url)` becomes ``text <url>`_`.
 10. `escape_unmatched_stars`: `*args` / `**kwargs` in prose are escaped.
 
@@ -172,6 +173,16 @@ wrapped `Args:` entry to the next entry is left as written:
 ```pycon
 >>> normalize_text("Args:\n    a: one that\n        wraps.\n    b: two.", rules=[blank_lines_between_blocks])
 'Args:\n    a: one that\n        wraps.\n    b: two.'
+```
+
+A block immediately under its own section header is left alone: napoleon
+renders `Examples:` followed directly by a doctest or list identically
+with or without the blank line, so inserting one only trips `D412`
+(pydocstyle’s “no blank lines between a section header and its content”).
+
+```pycon
+>>> normalize_text("Examples:\n    >>> f()\n    1", rules=[blank_lines_between_blocks])
+'Examples:\n    >>> f()\n    1'
 ```
 
 ### epythet.normalizer.escape_unmatched_stars(lines)

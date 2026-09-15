@@ -330,7 +330,8 @@ block gets the <code class="docutils literal notranslate"><span class="pre">::</
 <li><p><code class="docutils literal notranslate"><span class="pre">reflow_list_continuations</span></code>: a wrapped list or field line at the marker’s
 own indentation is indented under it.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">blank_lines_between_blocks</span></code>: a blank line is inserted before a doctest,
-list or field list that follows prose, and after an indented block ends.</p></li>
+list or field list that follows prose, and after an indented block ends;
+not when the block sits directly under its own section header.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">markdown_links_to_rst</span></code>: <code class="docutils literal notranslate"><span class="pre">[text](url)</span></code> becomes <code class="docutils literal notranslate"><span class="pre">`text</span> <span class="pre">&lt;url&gt;`_</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">escape_unmatched_stars</span></code>: <code class="docutils literal notranslate"><span class="pre">*args</span></code> / <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> in prose are escaped.</p></li>
 </ol>
@@ -504,6 +505,14 @@ consecutive terms need no blank line between them, so a dedent from a
 wrapped <code class="docutils literal notranslate"><span class="pre">Args:</span></code> entry to the next entry is left as written:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Args:</span><span class="se">\n</span><span class="s2">    a: one that</span><span class="se">\n</span><span class="s2">        wraps.</span><span class="se">\n</span><span class="s2">    b: two."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
 <span class="go">'Args:\n    a: one that\n        wraps.\n    b: two.'</span>
+</pre></div>
+</div>
+<p>A block immediately under its own section header is left alone: napoleon
+renders <code class="docutils literal notranslate"><span class="pre">Examples:</span></code> followed directly by a doctest or list identically
+with or without the blank line, so inserting one only trips <code class="docutils literal notranslate"><span class="pre">D412</span></code>
+(pydocstyle’s “no blank lines between a section header and its content”).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Examples:</span><span class="se">\n</span><span class="s2">    &gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2">    1"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
+<span class="go">'Examples:\n    &gt;&gt;&gt; f()\n    1'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -895,7 +904,7 @@ napoleon (priority 500) sees the docstring.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=0152d340"></script>
+</div><script src="../_static/documentation_options.js?v=21e349ab"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

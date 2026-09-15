@@ -326,7 +326,8 @@
 <span class="sd">7. ``reflow_list_continuations``: a wrapped list or field line at the marker's</span>
 <span class="sd">   own indentation is indented under it.</span>
 <span class="sd">8. ``blank_lines_between_blocks``: a blank line is inserted before a doctest,</span>
-<span class="sd">   list or field list that follows prose, and after an indented block ends.</span>
+<span class="sd">   list or field list that follows prose, and after an indented block ends;</span>
+<span class="sd">   not when the block sits directly under its own section header.</span>
 <span class="sd">9. ``markdown_links_to_rst``: ``[text](url)`` becomes ```text &lt;url&gt;`_``.</span>
 <span class="sd">10. ``escape_unmatched_stars``: ``*args`` / ``**kwargs`` in prose are escaped.</span>
 
@@ -967,6 +968,14 @@
 
 <span class="sd">    &gt;&gt;&gt; normalize_text("Args:\\n    a: one that\\n        wraps.\\n    b: two.", rules=[blank_lines_between_blocks])</span>
 <span class="sd">    'Args:\\n    a: one that\\n        wraps.\\n    b: two.'</span>
+
+<span class="sd">    A block immediately under its own section header is left alone: napoleon</span>
+<span class="sd">    renders ``Examples:`` followed directly by a doctest or list identically</span>
+<span class="sd">    with or without the blank line, so inserting one only trips ``D412``</span>
+<span class="sd">    (pydocstyle's "no blank lines between a section header and its content").</span>
+
+<span class="sd">    &gt;&gt;&gt; normalize_text("Examples:\\n    &gt;&gt;&gt; f()\\n    1", rules=[blank_lines_between_blocks])</span>
+<span class="sd">    'Examples:\\n    &gt;&gt;&gt; f()\\n    1'</span>
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">bodies</span> <span class="o">=</span> <span class="n">google_section_bodies</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
@@ -976,9 +985,11 @@
             <span class="n">prev_ctx</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="c1"># A blank line *before* a block that follows a drawing is outside the</span>
             <span class="c1"># drawing, and a doctest glued to one still has to be separated to run.</span>
-            <span class="n">starts_block</span> <span class="o">=</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">)</span> <span class="ow">and</span> <span class="n">prev_ctx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
-                <span class="n">ctx</span><span class="p">,</span> <span class="n">DOCTEST</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span>
-            <span class="p">)</span>  <span class="c1"># fmt: skip</span>
+            <span class="n">starts_block</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">ctx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">prev_ctx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">DOCTEST</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_section_header</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
             <span class="n">next_is_deeper</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">indent_of</span><span class="p">(</span>
                 <span class="n">line</span>
             <span class="p">)</span>
@@ -1303,7 +1314,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=0152d340"></script>
+</div><script src="../../_static/documentation_options.js?v=21e349ab"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

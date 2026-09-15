@@ -311,6 +311,12 @@
 <span class="c1">#: Docstring styles ruff's pydocstyle convention and pydoclint's ``--style`` both accept.</span>
 <span class="n">STYLES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"google"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">,</span> <span class="s2">"sphinx"</span><span class="p">)</span>
 
+<span class="c1">#: ``D107`` (``__init__`` must have its own docstring) contradicts pydoclint's</span>
+<span class="c1">#: ``DOC301`` (``__init__`` must NOT have one; its Args merge into the class</span>
+<span class="c1">#: docstring) -- the house convention this repo's docstring-style skill already</span>
+<span class="c1">#: documents. Only one side can pass, so the ruff side is dropped.</span>
+<span class="n">RUFF_D_IGNORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"D107"</span><span class="p">,)</span>
+
 
 <div class="viewcode-block" id="ruff_severity">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.lint.html#epythet.validation.lint.ruff_severity">[docs]</a>
@@ -358,6 +364,8 @@
         <span class="s2">"--no-cache"</span><span class="p">,</span>
         <span class="s2">"--config"</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">"lint.pydocstyle.convention = '</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">'"</span><span class="p">,</span>
+        <span class="s2">"--ignore"</span><span class="p">,</span>
+        <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">RUFF_D_IGNORE</span><span class="p">),</span>
         <span class="nb">str</span><span class="p">(</span><span class="n">package_dir</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -391,8 +399,15 @@
 
 <span class="n">_PYDOCLINT_LINE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^\s+(?P&lt;line&gt;\d+): (?P&lt;code&gt;DOC\d+): (?P&lt;msg&gt;.*)$"</span><span class="p">)</span>
 
-<span class="c1">#: pydoclint options that silence its type-hint bookkeeping: the house convention</span>
-<span class="c1">#: is types in annotations, never in the docstring, and not every signature is annotated.</span>
+<span class="c1">#: pydoclint options for the house convention: types live in annotations, never</span>
+<span class="c1">#: in the docstring. ``--arg-type-hints-in-signature true`` tells pydoclint that</span>
+<span class="c1">#: *is* how a documented signature looks (DOC108 fires on the opposite reading:</span>
+<span class="c1">#: ``false`` means "expect no type hints in the signature", which trips on every</span>
+<span class="c1">#: annotated function). ``--arg-type-hints-in-docstring false`` keeps it from</span>
+<span class="c1">#: asking for types in the docstring text. ``--allow-init-docstring`` defaults to</span>
+<span class="c1">#: ``False``, which enforces DOC301 (``__init__`` undocumented, its Args merged</span>
+<span class="c1">#: into the class docstring) -- the convention this house already writes to, so</span>
+<span class="c1">#: it is left at its default rather than passed explicitly.</span>
 <span class="n">PYDOCLINT_OPTIONS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">"--quiet"</span><span class="p">,</span>
     <span class="s2">"--skip-checking-short-docstrings"</span><span class="p">,</span>
@@ -400,7 +415,7 @@
     <span class="s2">"--arg-type-hints-in-docstring"</span><span class="p">,</span>
     <span class="s2">"false"</span><span class="p">,</span>
     <span class="s2">"--arg-type-hints-in-signature"</span><span class="p">,</span>
-    <span class="s2">"false"</span><span class="p">,</span>
+    <span class="s2">"true"</span><span class="p">,</span>
     <span class="s2">"--check-return-types"</span><span class="p">,</span>
     <span class="s2">"false"</span><span class="p">,</span>
     <span class="s2">"--check-yield-types"</span><span class="p">,</span>
@@ -526,7 +541,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=0152d340"></script>
+</div><script src="../../../_static/documentation_options.js?v=21e349ab"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
