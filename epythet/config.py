@@ -30,6 +30,7 @@ The ``[tool.epythet]`` keys, all optional::
     ai_artifacts = true           # "For AI agents" page when skills/agents/CLAUDE.md exist
     ai_artifacts_template = ""    # project-relative file overriding that page's template
     provenance = true             # build footer, about-this-build page, build_info.json; "minimal": no page
+    provenance_template = ""      # project-relative file overriding the about-this-build page template
     package_dir = "src/dol"       # default: found by convention
     docs_dir = "docsrc"           # where the Sphinx sources live
 
@@ -126,6 +127,7 @@ class DocsConfig:
     ai_artifacts: bool = True
     ai_artifacts_template: str = ""
     provenance: bool | str = True
+    provenance_template: str = ""
     package_dir: Path | None = None
     docs_dir: str = DEFAULT_DOCS_DIR
 

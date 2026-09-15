@@ -29,11 +29,16 @@ from pathlib import Path
 from epythet.agent_outputs import inject_link_relations_into_site, write_aggregates
 from epythet.config import DocsConfig, load_config
 from epythet.provenance import (
+    ABOUT_PAGE_FILENAME,
     BUILD_INFO_ENV,
     about_page,
+    about_template,
     collect_build_info,
+    prune_site,
     reference_from_agent_outputs,
 )
+from epythet.scaffold import remove_generated_file, write_generated_file
+from epythet.templates import INDEX_MARKER
 
 BUILD_DIRNAME = "_build"
 COPY_TARGETS = {"github": "docs", "gitlab": "public"}
@@ -108,6 +113,12 @@ def build(
             f"sphinx-build -b {target} failed with exit status {result.returncode} "
             f"(sources: {docsrc})"
         )
+    if target == "html":
+        prune_site(
+            outdir,
+            keep_page=info is not None and config.provenance != "minimal",
+            keep_json=info is not None,
+        )
     if target == "html" and config.agent_outputs:
         inject_link_relations_into_site(outdir)
         write_aggregates(outdir, package_name=config.name, aggregates=config.aggregates)
@@ -119,38 +130,28 @@ def build(
 def prepare_provenance(config: DocsConfig) -> dict | None:
     """Collect the build record and write the about page's source; ``None`` when off.
 
-    Runs before Sphinx so the page is part of the build. The about page is
-    skipped for ``provenance = "minimal"``. Any failure is reported once and
-    the build goes on without provenance.
+    Runs before Sphinx so the page is part of the build. The page is removed
+    (when it is epythet's own) for ``provenance = false`` and ``"minimal"``,
+    so a switched-off project never publishes a stale one. A failure to
+    collect is reported once and the build goes on without provenance; a
+    wrong ``provenance_template`` is a :class:`~epythet.config.ConfigError`,
+    like any other configuration mistake.
     """
+    target = config.docsrc_dir / ABOUT_PAGE_FILENAME
     if not config.provenance:
+        remove_generated_file(target, markers=(INDEX_MARKER,))
         return None
+    template = about_template(config)
     try:
         info = collect_build_info(config)
-        page = about_page(info)
-        target = config.docsrc_dir / page.filename
-        if config.provenance == "minimal":
-            _remove_generated(target, marker=page.marker)
-        else:
-            _write_generated(target, page.content, marker=page.marker)
-        for warning in info["warnings"]:
-            print(f"epythet: provenance: {warning}", file=sys.stderr)
-        return info
     except Exception as e:  # provenance never fails a build
         print(f"epythet: build provenance unavailable ({e})", file=sys.stderr)
         return None
-
-
-def _write_generated(path: Path, content: str, *, marker: str) -> None:
-    """Write a generated file unless a hand-written one (no marker) is in the way."""
-    if path.exists() and marker not in path.read_text(
-        encoding="utf-8", errors="replace"
-    ):
-        return
-    if not path.exists() or path.read_text(encoding="utf-8") != content:
-        path.write_text(content, encoding="utf-8")
-
-
-def _remove_generated(path: Path, *, marker: str) -> None:
-    if path.is_file() and marker in path.read_text(encoding="utf-8", errors="replace"):
-        path.unlink()
+    if config.provenance == "minimal":
+        remove_generated_file(target, markers=(INDEX_MARKER,))
+    else:
+        page = about_page(info, template=template)
+        write_generated_file(target, page.content, markers=(page.marker,))
+    for warning in info["warnings"]:
+        print(f"epythet: provenance: {warning}", file=sys.stderr)
+    return info

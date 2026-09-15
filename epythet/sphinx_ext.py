@@ -64,17 +64,24 @@ def _provenance_page_context(app, pagename, templatename, context, doctree):
     info = getattr(app.config, "epythet_build_info", None)
     if not info or not _is_html_build(app) or "body" not in context:
         return
-    if pagename == app.config.root_doc:
-        has_page = ABOUT_PAGE_DOCNAME in app.env.found_docs
-        about_href = f"{ABOUT_PAGE_DOCNAME}.html" if has_page else None
-        context["body"] += "\n" + render_footer_line(info, about_href=about_href)
-    elif pagename == ABOUT_PAGE_DOCNAME:
-        block = _site_counts_html(site_counts(app.env))
-        anchor = '<section id="reproduce">'
-        if anchor in context["body"]:
-            context["body"] = context["body"].replace(anchor, block + "\n" + anchor, 1)
-        else:
-            context["body"] += "\n" + block
+    try:
+        if pagename == app.config.root_doc:
+            has_page = ABOUT_PAGE_DOCNAME in app.env.found_docs
+            about_href = f"{ABOUT_PAGE_DOCNAME}.html" if has_page else None
+            context["body"] += "\n" + render_footer_line(info, about_href=about_href)
+        elif pagename == ABOUT_PAGE_DOCNAME:
+            block = _site_counts_html(site_counts(app.env))
+            anchor = '<section id="reproduce">'
+            if anchor in context["body"]:
+                context["body"] = context["body"].replace(
+                    anchor, block + "\n" + anchor, 1
+                )
+            else:
+                context["body"] += "\n" + block
+    except Exception as e:  # provenance never fails a build
+        logging.getLogger(__name__).warning(
+            "epythet: provenance not rendered on %s (%s)", pagename, e
+        )
 
 
 def _site_counts_html(counts: dict) -> str:
@@ -127,8 +134,8 @@ def setup(app):
     app.add_config_value("epythet_agent_outputs", True, "html")
     # rebuild "": rule lists hold functions or dotted paths; never pickled into the env
     app.add_config_value("epythet_normalizer_rules", None, "")
-    app.add_config_value("epythet_provenance", True, "html")
-    app.add_config_value("epythet_build_info", None, "html")
+    app.add_config_value("epythet_provenance", True, "html", types=(bool, str))
+    app.add_config_value("epythet_build_info", None, "html", types=(dict,))
     app.connect("autodoc-process-docstring", sphinx_process_docstring, priority=400)
     app.connect("builder-inited", write_theme_css)
     app.connect("html-page-context", _link_relations_if_enabled)

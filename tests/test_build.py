@@ -228,6 +228,7 @@ def test_provenance_footer_page_and_json(project, site):
     assert info["site"]["modules_documented"] >= 4
     assert info["site"]["objects_documented"] >= 2
     assert info["pypi"]["checked"] is False  # conftest turns the lookup off
+    assert info["built_at"] == "2026-09-15T12:00:00Z"  # SOURCE_DATE_EPOCH from conftest
     assert (
         info["alignment"]["aligned"] is False
         and "uncommitted" in info["alignment"]["notes"][0]
@@ -259,10 +260,14 @@ def test_provenance_footer_page_and_json(project, site):
 def test_provenance_off_and_minimal(project):
     other = project.parent / "noprov"
     shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
+    quickstart(other)  # provenance on: the page source exists
+    assert (other / "docsrc" / "about-this-build.md").is_file()
+
     (other / "pyproject.toml").write_text(
         PYPROJECT + "[tool.epythet]\nprovenance = false\n"
     )
     html = quickstart(other)
+    assert not (other / "docsrc" / "about-this-build.md").exists()  # no stale page
     assert not (html / "build_info.json").exists()
     assert not (html / "about-this-build.html").exists()
     assert "epythet-provenance" not in (html / "index.html").read_text()
@@ -279,6 +284,23 @@ def test_provenance_off_and_minimal(project):
         "epythet-provenance" in index
         and '<a href="build_info.json">build info</a>' in index
     )
+
+
+def test_provenance_template_override(project):
+    other = project.parent / "provtemplate"
+    shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
+    (other / "misc" / "about.md").write_text(
+        "# Build\n\n{summary}\n\nCommit: {commit_cell}\n"
+    )
+    (other / "pyproject.toml").write_text(
+        PYPROJECT + '[tool.epythet]\nprovenance_template = "misc/about.md"\n'
+    )
+    html = quickstart(other)
+    about = (html / "about-this-build.html").read_text()
+    assert "<h1>Build" in about and "demo 0.1.0" in about and "Reproduce" not in about
+    (other / "misc" / "about.md").write_text("{no_such_field}\n")
+    with pytest.raises(ConfigError, match="no_such_field"):
+        quickstart(other)
 
 
 def test_theme_is_deterministic_and_rebuild_is_stable(project, site):

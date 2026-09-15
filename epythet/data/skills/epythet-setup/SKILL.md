@@ -65,6 +65,7 @@ aggregates = ["md"]             # flat single-document twins at the site root: "
 ai_artifacts = true             # "For AI agents" page when skills / subagents / CLAUDE.md exist
 ai_artifacts_template = ""      # project-relative file overriding that page's template
 provenance = true               # landing-page build line + about-this-build page + build_info.json; "minimal": no page; false: nothing
+provenance_template = ""        # project-relative file overriding the about-this-build page template
 package_dir = "src/dol"         # default: found by convention
 docs_dir = "docsrc"             # where the Sphinx sources are generated
 

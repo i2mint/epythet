@@ -18,6 +18,7 @@ from epythet.provenance import (
     SCHEMA_VERSION,
     alignment,
     ci_info,
+    clone_dirname,
     collect_build_info,
     compare_versions,
     footer_text,
@@ -26,6 +27,7 @@ from epythet.provenance import (
     pypi_info,
     render_about_page,
     render_footer_line,
+    scrub_paths,
     strip_credentials,
 )
 
@@ -84,11 +86,15 @@ def test_git_info_untracked_files_do_not_count(repo):
 
 def test_git_info_detached_head_has_no_branch_name(repo):
     _git(repo, "checkout", "-q", "--detach")
-    assert git_info(repo)["branch"] == "HEAD"
+    assert git_info(repo)["branch"] is None
+    page = render_about_page(collect_build_info(load_config(repo), check_pypi=False))
+    assert "| Branch | none (detached HEAD) |" in page
 
 
-def test_git_info_without_a_repository(tmp_path):
-    info = git_info(tmp_path)
+def test_git_info_without_a_repository(tmp_path, monkeypatch):
+    # Even when pytest's temp dir sits inside some repository.
+    monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path))
+    info = git_info(tmp_path / "project")
     assert info["available"] is False and info["commit"] is None
     assert info["dirty"] is None and info["tags"] == []
     assert info["error"]
@@ -109,6 +115,35 @@ def test_remote_credentials_never_reach_the_record(repo):
     assert "ghp_secret" not in json.dumps(info)
     assert info["remote_url"] == "https://github.com/o/r.git"
     assert strip_credentials("git@github.com:o/r.git") == "git@github.com:o/r.git"
+
+
+@pytest.mark.parametrize(
+    "remote, published",
+    [
+        ("git@github.com:o/r.git", "git@github.com:o/r.git"),
+        ("thor@myserver.local:repos/demo.git", "myserver.local:repos/demo.git"),
+        ("ssh://me:pw@host.example/r.git", "ssh://host.example/r.git"),
+        ("/Users/someone/bare/demo.git", None),
+        ("file:///srv/git/demo.git", None),
+        ("../sibling-checkout", None),
+    ],
+)
+def test_local_paths_and_users_never_reach_the_record(repo, remote, published):
+    _git(repo, "remote", "set-url", "origin", remote)
+    info = collect_build_info(load_config(repo), check_pypi=False)
+    assert info["git"]["remote_url"] == published
+    assert "someone" not in json.dumps(info) and "thor@" not in json.dumps(info)
+    if published:
+        clone_dir = clone_dirname(published)
+        assert f"git clone {published} && cd {clone_dir}" in info["reproduce"]
+    else:
+        assert "git clone" not in info["reproduce"]
+    assert repo.name not in info["reproduce"]  # never the local folder name
+
+
+def test_git_errors_are_scrubbed_of_paths():
+    assert "/" not in scrub_paths("fatal: dubious ownership in repository at '/w/x'")
+    assert "C:" not in scrub_paths("fatal: cannot open C:\\Users\\me\\x")
 
 
 # --------------------------------------------------------------------------
@@ -143,11 +178,55 @@ def test_ci_context_fills_branch_and_commit_url_when_git_cannot(tmp_path, make_p
     assert any(w.startswith("git:") for w in info["warnings"])
 
 
-def test_ci_sha_mismatch_is_a_misalignment_note(repo):
+def test_ci_sha_outside_history_is_a_misalignment_note(repo):
     env = {**CI_ENV, "GITHUB_SHA": "b" * 40, "EPYTHET_PYPI_CHECK": "0"}
     info = collect_build_info(load_config(repo), environ=env)
+    assert info["ci"]["sha_in_history"] is False
     assert info["alignment"]["aligned"] is False
     assert any("CI checkout" in note for note in info["alignment"]["notes"])
+
+
+def test_ci_sha_in_history_is_fine(repo):
+    """The action fast-forwards past the event commit (the wads version bump)."""
+    event_sha = _git(repo, "rev-parse", "HEAD")
+    (repo / "pkg" / "core.py").write_text('"""Bumped."""\n')
+    _git(repo, "commit", "-qam", "bump [skip ci]")
+    env = {**CI_ENV, "GITHUB_SHA": event_sha, "EPYTHET_PYPI_CHECK": "0"}
+    info = collect_build_info(load_config(repo), environ=env)
+    assert info["ci"]["sha_in_history"] is True
+    assert info["git"]["commit"] != event_sha
+    assert info["alignment"] == {"aligned": True, "notes": []}
+    assert "in the history of the built commit" in render_about_page(info)
+
+
+def test_source_date_epoch_fixes_the_build_time(repo):
+    env = {"SOURCE_DATE_EPOCH": "0", "EPYTHET_PYPI_CHECK": "0"}
+    info = collect_build_info(load_config(repo), environ=env)
+    assert info["built_at"] == "1970-01-01T00:00:00Z"
+    assert footer_text(info).startswith("built 1970-01-01 00:00 UTC")
+
+
+def test_copy_target_output_does_not_count_as_dirty(repo):
+    (repo / "docs").mkdir()
+    (repo / "docs" / "index.html").write_text("old")
+    _git(repo, "add", "docs")
+    _git(repo, "commit", "-qm", "site")
+    (repo / "docs" / "index.html").write_text("rebuilt by `epythet make . github`")
+    assert (
+        collect_build_info(load_config(repo), check_pypi=False)["git"]["dirty"] is False
+    )
+    assert git_info(repo)["dirty"] is True
+
+
+def test_ref_names_are_escaped_in_the_about_page(repo):
+    _git(repo, "checkout", "-q", "-b", "x`<b>BOLD</b>`y")
+    _git(repo, "tag", "t|pipe")
+    info = collect_build_info(load_config(repo), check_pypi=False)
+    page = render_about_page(info)
+    assert "<b>BOLD</b>" not in page and "&lt;b&gt;BOLD&lt;/b&gt;" in page
+    assert "| Tags at this commit | <code>t|pipe</code>, <code>v0.0.1</code> |" in page
+    line = render_footer_line(info)
+    assert "<b>" not in line and "&lt;b&gt;" in line
 
 
 EXPECTED_KEYS = {
@@ -185,6 +264,7 @@ def test_record_schema_is_stable_and_json_serialisable(repo):
         "provider",
         "repository",
         "sha",
+        "sha_in_history",
         "ref",
         "ref_name",
         "run_id",
@@ -211,6 +291,7 @@ def test_record_schema_is_stable_and_json_serialisable(repo):
     assert info["package"]["source"] == "pyproject.toml"
     assert info["built_at"].endswith("Z")
     assert info["alignment"] == {"aligned": True, "notes": []}
+    assert "git clone git@github.com:org/pkg.git && cd pkg" in info["reproduce"]
     assert "git checkout " + info["git"]["commit"] in info["reproduce"]
     json.dumps(info)  # every value is plain JSON
 
@@ -321,10 +402,13 @@ def test_about_page_content(repo):
     page = render_about_page(info)
     assert page.startswith("---\norphan: true\n---\n<!-- generated by epythet -->")
     assert ":::{note}" in page and "Nothing suggests a mismatch" in page
-    assert "| Tags at this commit | `v0.0.1` |" in page
+    assert "| Tags at this commit | <code>v0.0.1</code> |" in page
     assert "| Working tree | clean |" in page
-    assert "[123](https://github.com/org/pkg/actions/runs/123)" in page
-    assert "| ignore | `tests/`, `scrap/`, `examples/` |" in page
+    assert '<a href="https://github.com/org/pkg/actions/runs/123">123</a>' in page
+    assert (
+        "| ignore | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code> |"
+        in page
+    )
     assert "Not checked." in page
     assert '<a href="build_info.json">' in page
 

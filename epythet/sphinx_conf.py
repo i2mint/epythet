@@ -65,6 +65,9 @@ def _build_info():
 
     Running ``sphinx-build`` directly still gets the footer and the JSON; the
     about page needs :func:`epythet.build.build`, which writes its source.
+    This path skips the PyPI lookup: non-html builders (``doctest``,
+    ``markdown``, ``validate``'s render pass) go through here too and render
+    nothing from it.
     """
     if not epythet_config.provenance:
         return None
@@ -72,7 +75,7 @@ def _build_info():
     if info is not None:
         return info
     try:
-        return _collect_build_info(epythet_config)
+        return _collect_build_info(epythet_config, check_pypi=False)
     except Exception as e:  # provenance never fails a build
         print(f"epythet: build provenance unavailable ({e})", file=_sys.stderr)
         return None

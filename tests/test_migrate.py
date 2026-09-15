@@ -5,9 +5,18 @@ import importlib.util
 import pytest
 
 import cw
-from epythet.migrate import convert_fields, field_region, migrate_style, migrate_style_command, rst_fields_to_sections
+from epythet.migrate import (
+    convert_fields,
+    field_region,
+    migrate_style,
+    migrate_style_command,
+    rst_fields_to_sections,
+)
 
-pytestmark = pytest.mark.skipif(importlib.util.find_spec("docstring_parser") is None, reason="needs docstring_parser")
+pytestmark = pytest.mark.skipif(
+    importlib.util.find_spec("docstring_parser") is None,
+    reason="needs docstring_parser",
+)
 
 MODULE = '''\
 """Module."""
@@ -69,7 +78,17 @@ GOOGLE_ADD = '''\
 
 
 def test_field_region_bounds():
-    lines = ["Summary.", "", ":param x: the x", "    more", "", ":returns: y", "", "Then prose.", ":param late: no"]
+    lines = [
+        "Summary.",
+        "",
+        ":param x: the x",
+        "    more",
+        "",
+        ":returns: y",
+        "",
+        "Then prose.",
+        ":param late: no",
+    ]
     assert field_region(lines) == (2, 6)
     assert field_region(["No fields."]) is None
     assert field_region([":param x: x", "    >>> not_a_continuation()"]) == (0, 1)
@@ -77,13 +96,18 @@ def test_field_region_bounds():
 
 def test_convert_fields_google_and_numpy():
     region = ":param x: the x value\n:type x: int\n:returns: x doubled\n:rtype: int"
-    assert convert_fields(region, to="google") == "Args:\n    x (int): the x value\n\nReturns:\n    int: x doubled"
+    assert (
+        convert_fields(region, to="google")
+        == "Args:\n    x (int): the x value\n\nReturns:\n    int: x doubled"
+    )
     numpy = convert_fields(region, to="numpy")
     assert numpy.startswith("Parameters\n----------\nx : int\n    the x value")
 
 
 def test_convert_fields_refuses_what_does_not_round_trip():
-    assert convert_fields(":param x: the x\n:keyword verbose: chatty", to="google") is None
+    assert (
+        convert_fields(":param x: the x\n:keyword verbose: chatty", to="google") is None
+    )
     assert convert_fields(":var foo: bar", to="google") is None
     assert convert_fields("no fields here", to="google") is None
     with pytest.raises(ValueError):

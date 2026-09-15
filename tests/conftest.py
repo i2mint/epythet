@@ -1,19 +1,31 @@
 """Shared fixtures: a throwaway project builder and an isolated user data dir."""
 
+import os
 import textwrap
 from pathlib import Path
 
 import pytest
 
 
-@pytest.fixture(autouse=True, scope="session")
-def _no_network():
-    """Provenance never queries PyPI from the test suite (offline CI, determinism).
+#: 2026-09-15T12:00:00Z; every build in the suite claims this time.
+FIXED_BUILD_EPOCH = "1789473600"
 
-    Session-scoped so it is in place before the module-scoped smoke builds.
+
+@pytest.fixture(autouse=True, scope="session")
+def _hermetic_provenance():
+    """Provenance in the test suite: no network, a fixed build time, isolated git.
+
+    ``EPYTHET_PYPI_CHECK=0`` keeps PyPI out (offline CI, determinism);
+    ``SOURCE_DATE_EPOCH`` makes rebuilds byte-identical; the git variables keep
+    the developer's global config (``commit.gpgsign``, hooks, templates) out of
+    the fixture repositories. Session-scoped so it is in place before the
+    module-scoped smoke builds.
     """
     with pytest.MonkeyPatch.context() as mp:
         mp.setenv("EPYTHET_PYPI_CHECK", "0")
+        mp.setenv("SOURCE_DATE_EPOCH", FIXED_BUILD_EPOCH)
+        mp.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+        mp.setenv("GIT_CONFIG_NOSYSTEM", "1")
         yield
 
 

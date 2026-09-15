@@ -11,7 +11,7 @@ epythet renders it in three places:
   rendered page by :mod:`epythet.sphinx_ext`;
 - ``about-this-build.html``, an orphan page (reachable from the footer, absent
   from the navigation) with the full diagnosis, rendered from
-  :data:`ABOUT_PAGE_TEMPLATE`;
+  :data:`ABOUT_PAGE_TEMPLATE` or the project's ``provenance_template``;
 - ``build_info.json`` at the site root, the same data for machines, with
   stable keys and a ``schema_version``; also listed in ``llms.txt`` and
   referenced at the top of the ``<package>.md`` aggregate.
@@ -22,14 +22,20 @@ all three, ``"minimal"`` renders the footer line and the JSON but no page,
 
 Collection never fails a build. No git, no ``git`` binary, no network, a
 detached HEAD: every source degrades to ``null`` fields plus an entry in the
-``warnings`` list, and the build prints one warning.
+``warnings`` list, and the build prints one warning. The record is published,
+so nothing local goes into it: remote URLs lose any credentials, path-shaped
+remotes are dropped, git's error text is scrubbed of paths, and the reproduce
+lines name the clone by its remote, not by the local folder.
+
+``SOURCE_DATE_EPOCH`` (the reproducible-builds convention Sphinx honours too)
+fixes the build time when set.
 
 >>> from epythet.config import DocsConfig
 >>> cfg = DocsConfig(project_dir="/nonexistent", name="pkg", version="1.0")
 >>> info = collect_build_info(cfg, check_pypi=False)
 >>> info["schema_version"], info["package"]["name"], info["git"]["available"]
 (1, 'pkg', False)
->>> "not checked" in render_footer_line(info) or "about this build" in render_footer_line(info)
+>>> "about this build" in render_footer_line(info)
 True
 """
 
@@ -40,6 +46,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
@@ -56,14 +63,19 @@ ABOUT_PAGE_DOCNAME = "about-this-build"
 BUILD_INFO_ENV = "EPYTHET_BUILD_INFO"
 #: Set to ``0`` to skip the PyPI lookup (offline CI, tests).
 PYPI_CHECK_ENV = "EPYTHET_PYPI_CHECK"
-#: Seconds allowed for the PyPI lookup; the site never waits longer.
+#: Reproducible-builds convention: seconds since the epoch, fixes ``built_at``.
+SOURCE_DATE_EPOCH_ENV = "SOURCE_DATE_EPOCH"
+#: Seconds allowed for the PyPI lookup, in total; the build never waits longer.
 DEFAULT_PYPI_TIMEOUT = 3.0
 #: Seconds allowed for each git command.
 GIT_TIMEOUT = 10
-#: Values ``[tool.epythet] provenance`` accepts.
-VALID_PROVENANCE = (True, False, "minimal")
+#: Characters of a commit hash shown in the footer and the summary.
+SHORT_COMMIT_LENGTH = 7
+#: First line of the stamp prepended to the ``<package>.md`` aggregate.
+AGGREGATE_STAMP_PREFIX = "> built "
 
 _OFF_VALUES = ("0", "false", "no", "off")
+_TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 # --------------------------------------------------------------------------
@@ -76,6 +88,7 @@ def collect_build_info(
     *,
     check_pypi: bool | None = None,
     pypi_timeout: float = DEFAULT_PYPI_TIMEOUT,
+    dirty_exclude: tuple[str, ...] | None = None,
     environ: dict | None = None,
     now: datetime | None = None,
 ) -> dict[str, Any]:
@@ -85,8 +98,11 @@ def collect_build_info(
     :param check_pypi: query PyPI for the latest release; ``None`` means "unless
         the ``EPYTHET_PYPI_CHECK`` environment variable turns it off"
     :param pypi_timeout: seconds allowed for that query
+    :param dirty_exclude: project-relative paths left out of the dirty check, on
+        top of the docs dir; ``None`` means the directories the ``github`` /
+        ``gitlab`` targets copy the site into (:data:`epythet.build.COPY_TARGETS`)
     :param environ: the environment to read CI variables from (default: ``os.environ``)
-    :param now: the build time (default: now, UTC)
+    :param now: the build time (default: ``SOURCE_DATE_EPOCH`` if set, else now, UTC)
     :return: a JSON-serialisable dict; see the module docstring for the keys.
         ``site`` counts are ``None`` here and filled in by the Sphinx
         extension, which knows what was documented.
@@ -94,15 +110,21 @@ def collect_build_info(
     environ = os.environ if environ is None else environ
     if check_pypi is None:
         check_pypi = environ.get(PYPI_CHECK_ENV, "1").strip().lower() not in _OFF_VALUES
-    now = now or datetime.now(timezone.utc)
+    if dirty_exclude is None:
+        from epythet.build import COPY_TARGETS  # lazy: build imports this module
+
+        dirty_exclude = tuple(COPY_TARGETS.values())
+    now = now or build_time(environ)
     warnings: list[str] = []
-    git = git_info(config.project_dir, exclude=(config.docs_dir,))
+    git = git_info(config.project_dir, exclude=(config.docs_dir, *dirty_exclude))
     if not git["available"]:
         warnings.append(f"git: {git['error']}")
     ci = ci_info(environ)
+    if ci["sha"] and git["available"]:
+        ci["sha_in_history"] = _is_ancestor(config.project_dir, ci["sha"])
     if git["available"] is False and ci["sha"]:
-        git = {**git, "commit": ci["sha"], "short_commit": ci["sha"][:7]}
-    if git["branch"] in (None, "HEAD") and ci["ref_name"]:
+        git = {**git, "commit": ci["sha"], "short_commit": short_commit(ci["sha"])}
+    if git["branch"] is None and ci["ref_name"]:
         git = {**git, "branch": ci["ref_name"]}
     if not git["commit_url"] and git["commit"] and ci["repository"]:
         server = ci["server_url"] or "https://github.com"
@@ -119,7 +141,7 @@ def collect_build_info(
         warnings.append(f"pypi: {pypi['error']}")
     info: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
-        "built_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "built_at": now.strftime(_TIME_FORMAT),
         "package": {
             "name": config.name,
             "version": config.version or None,
@@ -139,13 +161,33 @@ def collect_build_info(
     return info
 
 
+def build_time(environ: dict | None = None) -> datetime:
+    """Now in UTC, or the instant ``SOURCE_DATE_EPOCH`` names when it is set.
+
+    >>> build_time({"SOURCE_DATE_EPOCH": "0"}).strftime("%Y-%m-%d")
+    '1970-01-01'
+    """
+    env = os.environ if environ is None else environ
+    raw = env.get(SOURCE_DATE_EPOCH_ENV, "").strip()
+    if raw.isdigit():
+        return datetime.fromtimestamp(int(raw), timezone.utc)
+    return datetime.now(timezone.utc)
+
+
+def short_commit(sha: str) -> str:
+    """The first :data:`SHORT_COMMIT_LENGTH` characters of a commit hash."""
+    return sha[:SHORT_COMMIT_LENGTH]
+
+
 def git_info(project_dir: str | Path, *, exclude: tuple[str, ...] = ()) -> dict:
     """What git knows about ``project_dir``: commit, branch, tags, dirty flag, remote.
 
     ``exclude`` names paths (relative to the project) left out of the dirty
     check; the build rewrites a committed ``docsrc/``, which must not count.
     Everything is ``None`` with ``available`` false when the directory is not a
-    repository or ``git`` is not installed.
+    repository or ``git`` is not installed. A detached HEAD has ``branch``
+    ``None``. ``remote_url`` is the publishable form of ``origin`` (no
+    credentials, no local paths), see :func:`publishable_remote`.
     """
     out = {
         "available": False,
@@ -164,9 +206,9 @@ def git_info(project_dir: str | Path, *, exclude: tuple[str, ...] = ()) -> dict:
         return out
     out["available"] = True
     out["commit"] = commit
-    out["short_commit"] = commit[:7]
+    out["short_commit"] = short_commit(commit)
     branch, _ = _git(project_dir, "rev-parse", "--abbrev-ref", "HEAD")
-    out["branch"] = branch or None
+    out["branch"] = branch if branch and branch != "HEAD" else None
     tags, _ = _git(project_dir, "tag", "--points-at", "HEAD")
     out["tags"] = tags.split() if tags else []
     status, error = _git(
@@ -180,9 +222,8 @@ def git_info(project_dir: str | Path, *, exclude: tuple[str, ...] = ()) -> dict:
     )
     out["dirty"] = None if error else bool(status.strip())
     remote, _ = _git(project_dir, "remote", "get-url", "origin")
-    remote = strip_credentials(remote) if remote else ""
-    out["remote_url"] = remote or None
-    repo_url = github_web_url(remote) if remote else None
+    out["remote_url"] = publishable_remote(remote) if remote else None
+    repo_url = github_web_url(out["remote_url"]) if out["remote_url"] else None
     if repo_url:
         out["commit_url"] = f"{repo_url}/commit/{commit}"
     return out
@@ -194,28 +235,86 @@ def _git(project_dir, *args) -> tuple[str, str | None]:
         result = subprocess.run(
             ["git", "-C", str(project_dir), *args],
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=GIT_TIMEOUT,
         )
     except FileNotFoundError:
         return "", "git is not installed"
     except (OSError, subprocess.TimeoutExpired) as e:
-        return "", f"{type(e).__name__}: {e}"
+        return "", scrub_paths(f"{type(e).__name__}: {e}")
     if result.returncode != 0:
         message = result.stderr.strip().splitlines()
-        return "", (message[-1] if message else f"git {args[0]} failed")
+        return "", scrub_paths(message[-1] if message else f"git {args[0]} failed")
     return result.stdout.strip(), None
 
 
+def _is_ancestor(project_dir, sha: str) -> bool | None:
+    """Whether ``sha`` is HEAD or one of its ancestors (``None`` when git cannot say)."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(project_dir), "merge-base", "--is-ancestor", sha, "HEAD"],
+            capture_output=True,
+            timeout=GIT_TIMEOUT,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    # 1: not an ancestor; 128: no such object in this clone. Neither is "in history".
+    return result.returncode == 0
+
+
+def scrub_paths(message: str) -> str:
+    """Replace absolute paths in a diagnostic with ``<path>``: the record is published.
+
+    >>> scrub_paths("fatal: detected dubious ownership in repository at '/home/me/x'")
+    "fatal: detected dubious ownership in repository at '<path>'"
+    >>> scrub_paths("fatal: not a git repository (or any of the parent directories): .git")
+    'fatal: not a git repository (or any of the parent directories): .git'
+    """
+    return re.sub(r"(?:(?<=[\s'\"])|^)(?:/|[A-Za-z]:[\\/])[^\s'\"]*", "<path>", message)
+
+
+def publishable_remote(url: str) -> str | None:
+    """The form of a remote URL that may appear on a public site, or ``None``.
+
+    Credentials are dropped from scheme URLs, the user part from scp-style
+    remotes, and path-shaped remotes (a local or ``file://`` clone) are not
+    published at all.
+
+    >>> publishable_remote("https://me:ghp_secret@github.com/o/r.git")
+    'https://github.com/o/r.git'
+    >>> publishable_remote("thor@myserver.local:repos/demo.git")
+    'myserver.local:repos/demo.git'
+    >>> publishable_remote("git@github.com:o/r.git")
+    'git@github.com:o/r.git'
+    >>> publishable_remote("/Users/me/bare/demo.git") is None
+    True
+    >>> publishable_remote("file:///srv/git/demo.git") is None
+    True
+    """
+    url = url.strip()
+    scheme = re.match(r"^([a-z][a-z0-9+.-]*)://", url, re.IGNORECASE)
+    if scheme:
+        if scheme.group(1).lower() == "file":
+            return None
+        return strip_credentials(url)
+    scp = re.match(r"^(?:([^@/:]+)@)?([^/:]+):(.+)$", url)
+    if scp:
+        user, host, path = scp.groups()
+        # ``git@`` is the conventional, anonymous SSH user of the forges: keep it.
+        return f"{user}@{host}:{path}" if user == "git" else f"{host}:{path}"
+    return None
+
+
 def strip_credentials(url: str) -> str:
-    """A remote URL without any ``user:token@`` part: the record is published.
+    """A scheme URL without any ``user:token@`` part (scp-style remotes pass through).
 
     >>> strip_credentials("https://me:ghp_secret@github.com/o/r.git")
     'https://github.com/o/r.git'
-    >>> strip_credentials("git@github.com:o/r.git")
-    'git@github.com:o/r.git'
     """
-    return re.sub(r"^([a-z+]+://)[^/@]+@", r"\1", url.strip())
+    return re.sub(
+        r"^([a-z][a-z0-9+.-]*://)[^/@]+@", r"\1", url.strip(), flags=re.IGNORECASE
+    )
 
 
 def github_web_url(remote: str) -> str | None:
@@ -238,8 +337,22 @@ def github_web_url(remote: str) -> str | None:
     return f"https://github.com/{owner}/{repo}"
 
 
+def clone_dirname(remote: str) -> str:
+    """The directory ``git clone <remote>`` creates.
+
+    >>> clone_dirname("https://github.com/org/demo.git"), clone_dirname("git@github.com:o/r")
+    ('demo', 'r')
+    """
+    tail = remote.rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1]
+    return re.sub(r"\.git$", "", tail)
+
+
 def ci_info(environ: dict | None = None) -> dict:
     """The GitHub Actions context, when the build runs there (else ``None`` fields).
+
+    ``sha_in_history`` says whether the event's commit is in the built HEAD's
+    history; the publish action fast-forwards to the branch tip before
+    building, so HEAD is normally a descendant of ``GITHUB_SHA``, not equal to it.
 
     >>> ci_info({"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "o/r",
     ...          "GITHUB_RUN_ID": "42", "GITHUB_SHA": "abc", "GITHUB_REF": "refs/heads/main",
@@ -254,6 +367,7 @@ def ci_info(environ: dict | None = None) -> dict:
             "provider": None,
             "repository": None,
             "sha": None,
+            "sha_in_history": None,
             "ref": None,
             "ref_name": None,
             "run_id": None,
@@ -267,6 +381,7 @@ def ci_info(environ: dict | None = None) -> dict:
         "provider": "github",
         "repository": repository,
         "sha": env.get("GITHUB_SHA") or None,
+        "sha_in_history": None,
         "ref": env.get("GITHUB_REF") or None,
         "ref_name": env.get("GITHUB_REF_NAME") or None,
         "run_id": run_id,
@@ -357,14 +472,14 @@ def pypi_info(
     """The latest release of ``name`` on PyPI and how ``version`` relates to it.
 
     ``relation`` is ``same``, ``behind``, ``ahead`` or ``unknown`` (not on
-    PyPI, unreachable, or unparsable versions). Any failure is recorded in
-    ``error`` and never raised.
+    PyPI, unreachable, or unparsable versions). Any failure, including the
+    ``timeout`` elapsing, is recorded in ``error`` and never raised.
     """
     out = {"checked": False, "latest": None, "relation": "unknown", "error": None}
     if not name:
         return out
     try:
-        latest = pypi_latest_version(name, timeout=timeout)
+        latest = _bounded(pypi_latest_version, name, timeout=timeout)
     except Exception as e:  # network down, DNS, 404, bad JSON: all "not checked"
         out["error"] = f"{type(e).__name__}: {e}".strip()
         return out
@@ -373,6 +488,30 @@ def pypi_info(
     if latest and version:
         out["relation"] = compare_versions(version, latest)
     return out
+
+
+def _bounded(function, *args, timeout: float):
+    """Run ``function`` in a daemon thread; give up after ``timeout`` seconds.
+
+    ``urlopen``'s timeout bounds each socket operation, not name resolution
+    or the whole transfer; this bounds the wall clock the build spends.
+    """
+    result: dict[str, Any] = {}
+
+    def run():
+        try:
+            result["value"] = function(*args, timeout=timeout)
+        except BaseException as e:  # reported by the caller, never raised here
+            result["error"] = e
+
+    worker = threading.Thread(target=run, daemon=True)
+    worker.start()
+    worker.join(timeout)
+    if worker.is_alive():
+        raise TimeoutError(f"no answer within {timeout:g}s")
+    if "error" in result:
+        raise result["error"]
+    return result.get("value")
 
 
 def pypi_latest_version(
@@ -419,7 +558,8 @@ def reproduce_command(config, git: dict) -> str:
     """The shell lines that rebuild this site from the same commit."""
     lines = []
     if git.get("remote_url") and git.get("commit"):
-        lines.append(f"git clone {git['remote_url']} && cd {config.project_dir.name}")
+        remote = git["remote_url"]
+        lines.append(f"git clone {remote} && cd {clone_dirname(remote)}")
         lines.append(f"git checkout {git['commit']}")
     epythet_version = tool_versions()["epythet"]
     spec = f"epythet=={epythet_version}" if epythet_version else "epythet"
@@ -443,10 +583,10 @@ def alignment(info: dict) -> dict:
             f"The working tree had uncommitted changes when the docs were built, "
             f"so they may describe code that is not in commit {git['short_commit']}."
         )
-    if ci["sha"] and git["commit"] and ci["sha"] != git["commit"]:
+    if ci["sha"] and git["commit"] and ci.get("sha_in_history") is False:
         notes.append(
-            f"The CI checkout ({ci['sha'][:7]}) differs from the commit the docs "
-            f"were built from ({git['short_commit']})."
+            f"The CI checkout ({short_commit(ci['sha'])}) is not in the history of "
+            f"the commit the docs were built from ({git['short_commit']})."
         )
     if pypi["checked"] and pypi["latest"]:
         if pypi["relation"] == "behind":
@@ -502,7 +642,8 @@ def render_footer_line(
 
     The commit links to GitHub when the remote is known; ``about_href`` is the
     "about this build" link target (``None`` to omit the link, as ``minimal`` does
-    without a page: the JSON is linked instead).
+    without a page: the JSON is linked instead). The style is inline on purpose:
+    it must hold in every theme without a stylesheet of its own.
     """
     git = info["git"]
     built = f"built {escape(human_time(info['built_at']))}"
@@ -535,9 +676,7 @@ def human_time(iso: str) -> str:
     '2026-09-15 14:02 UTC'
     """
     try:
-        return datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").strftime(
-            "%Y-%m-%d %H:%M UTC"
-        )
+        return datetime.strptime(iso, _TIME_FORMAT).strftime("%Y-%m-%d %H:%M UTC")
     except ValueError:
         return iso
 
@@ -547,7 +686,9 @@ def human_time(iso: str) -> str:
 # --------------------------------------------------------------------------
 
 #: The Markdown source of the about page. ``{marker}`` must stay: it is how
-#: epythet recognises its own file. Literal braces are doubled.
+#: epythet recognises its own file. Literal braces are doubled. Every value
+#: is already HTML-escaped (:func:`render_about_page`), so a custom template
+#: may place the fields anywhere.
 ABOUT_PAGE_TEMPLATE = """\
 ---
 orphan: true
@@ -587,13 +728,13 @@ orphan: true
 
 | | |
 |---|---|
-| theme | `{theme}` (Sphinx theme `{html_theme}`) |
-| accent | `{accent}` |
-| api_generator | `{api_generator}` |
+| theme | {theme} (Sphinx theme {html_theme}) |
+| accent | {accent} |
+| api_generator | {api_generator} |
 | ignore | {ignore} |
-| agent_outputs | `{agent_outputs}` |
+| agent_outputs | {agent_outputs} |
 | aggregates | {aggregates} |
-| ai_artifacts | `{ai_artifacts}` |
+| ai_artifacts | {ai_artifacts} |
 
 ## Package on PyPI
 
@@ -641,7 +782,11 @@ TEMPLATE_FIELDS = frozenset(
 
 
 def render_about_page(info: dict, *, template: str = ABOUT_PAGE_TEMPLATE) -> str:
-    """The Markdown source of ``about-this-build.md`` for a collected ``info``."""
+    """The Markdown source of ``about-this-build.md`` for a collected ``info``.
+
+    Values from the repository (branch, tags, remote, versions) are rendered
+    as escaped inline HTML, never as Markdown: a ref name is user input.
+    """
     from epythet.templates import INDEX_MARKER
 
     git, pkg, ci, pypi, cfg, tools = (
@@ -658,57 +803,69 @@ def render_about_page(info: dict, *, template: str = ABOUT_PAGE_TEMPLATE) -> str
         "summary": _summary(info),
         "alignment_block": _alignment_block(info),
         "commit_cell": (
-            f"[`{git['commit']}`]({git['commit_url']})"
+            _link(git["commit_url"], _code(git["commit"]))
             if git.get("commit_url")
-            else (f"`{git['commit']}`" if git.get("commit") else unknown)
+            else (_code(git["commit"]) if git.get("commit") else unknown)
         ),
-        "branch": f"`{git['branch']}`" if git.get("branch") else unknown,
-        "tags": ", ".join(f"`{t}`" for t in git.get("tags") or []) or "none",
+        "branch": _code(git["branch"]) if git.get("branch") else "none (detached HEAD)",
+        "tags": ", ".join(_code(t) for t in git.get("tags") or []) or "none",
         "tree_state": (
             "dirty (uncommitted changes)"
             if git.get("dirty")
             else ("clean" if git.get("dirty") is False else unknown)
         ),
-        "remote": f"`{git['remote_url']}`" if git.get("remote_url") else unknown,
+        "remote": _code(git["remote_url"]) if git.get("remote_url") else unknown,
         "ci_block": _ci_block(ci),
-        "epythet_version": tools.get("epythet") or unknown,
-        "sphinx_version": tools.get("sphinx") or unknown,
-        "docutils_version": tools.get("docutils") or unknown,
-        "python_version": tools.get("python") or unknown,
-        "theme": cfg["theme"],
-        "html_theme": cfg["html_theme"],
-        "accent": cfg["accent"] or unknown,
-        "api_generator": cfg["api_generator"],
-        "ignore": ", ".join(f"`{p}`" for p in cfg["ignore"]) or "none",
-        "agent_outputs": str(cfg["agent_outputs"]).lower(),
-        "aggregates": ", ".join(f"`{a}`" for a in cfg["aggregates"]) or "none",
-        "ai_artifacts": str(cfg["ai_artifacts"]).lower(),
+        "epythet_version": _text(tools.get("epythet")) or unknown,
+        "sphinx_version": _text(tools.get("sphinx")) or unknown,
+        "docutils_version": _text(tools.get("docutils")) or unknown,
+        "python_version": _text(tools.get("python")) or unknown,
+        "theme": _code(cfg["theme"]),
+        "html_theme": _code(cfg["html_theme"]),
+        "accent": _code(cfg["accent"]) if cfg.get("accent") else unknown,
+        "api_generator": _code(cfg["api_generator"]),
+        "ignore": ", ".join(_code(p) for p in cfg["ignore"]) or "none",
+        "agent_outputs": _code(str(cfg["agent_outputs"]).lower()),
+        "aggregates": ", ".join(_code(a) for a in cfg["aggregates"]) or "none",
+        "ai_artifacts": _code(str(cfg["ai_artifacts"]).lower()),
         "pypi_block": _pypi_block(pkg, pypi),
-        "reproduce": info["reproduce"],
+        "reproduce": info["reproduce"].replace("```", "` ` `"),
         "build_info_filename": BUILD_INFO_FILENAME,
         "schema_version": info["schema_version"],
     }
     return template.format(**fields)
 
 
+def _text(value) -> str:
+    return escape(str(value)) if value is not None else ""
+
+
+def _code(value) -> str:
+    return f"<code>{_text(value)}</code>"
+
+
+def _link(href: str, label_html: str) -> str:
+    return f'<a href="{escape(href)}">{label_html}</a>'
+
+
 def _summary(info: dict) -> str:
     git, pkg = info["git"], info["package"]
     when = human_time(info["built_at"])
-    version = f" {pkg['version']}" if pkg.get("version") else ""
-    source = f" (from `{pkg['source']}`)" if pkg.get("source") else ""
+    version = f" {_text(pkg['version'])}" if pkg.get("version") else ""
+    source = f" (from {_code(pkg['source'])})" if pkg.get("source") else ""
     if git.get("short_commit"):
         commit = (
-            f"[`{git['short_commit']}`]({git['commit_url']})"
+            _link(git["commit_url"], _code(git["short_commit"]))
             if git.get("commit_url")
-            else f"`{git['short_commit']}`"
+            else _code(git["short_commit"])
         )
-        branch = f" on branch `{git['branch']}`" if git.get("branch") else ""
+        branch = f" on branch {_code(git['branch'])}" if git.get("branch") else ""
         where = f" from commit {commit}{branch}"
     else:
         where = ""
     return (
         f"This documentation was built on **{when}**{where}, for "
-        f"**{pkg['name']}{version}**{source}."
+        f"**{_text(pkg['name'])}{version}**{source}."
     )
 
 
@@ -721,7 +878,7 @@ def _alignment_block(info: dict) -> str:
             + ("." if info["pypi"]["checked"] else " (PyPI was not checked).")
             + "\n:::"
         )
-    notes = "\n".join(f"- {note}" for note in align["notes"])
+    notes = "\n".join(f"- {escape(note, quote=False)}" for note in align["notes"])
     return (
         ":::{warning}\nThe documentation and the package may be misaligned:\n\n"
         f"{notes}\n:::"
@@ -731,31 +888,36 @@ def _alignment_block(info: dict) -> str:
 def _ci_block(ci: dict) -> str:
     if not ci.get("provider"):
         return "Not built in CI (no GitHub Actions environment was detected)."
-    run = f"[{ci['run_id']}]({ci['run_url']})" if ci.get("run_url") else "unknown"
+    run = _link(ci["run_url"], _text(ci["run_id"])) if ci.get("run_url") else "unknown"
+    sha = _code(ci["sha"]) if ci.get("sha") else "unknown"
+    if ci.get("sha_in_history") is True:
+        sha += " (in the history of the built commit)"
+    repository = _code(ci["repository"]) if ci.get("repository") else "unknown"
+    ref = _code(ci["ref"]) if ci.get("ref") else "unknown"
     return (
         "| | |\n|---|---|\n"
-        f"| Repository | `{ci.get('repository') or 'unknown'}` |\n"
+        f"| Repository | {repository} |\n"
         f"| Run | {run} |\n"
-        f"| Ref | `{ci.get('ref') or 'unknown'}` |\n"
-        f"| Commit | `{ci.get('sha') or 'unknown'}` |"
+        f"| Ref | {ref} |\n"
+        f"| Event commit | {sha} |"
     )
 
 
 def _pypi_block(pkg: dict, pypi: dict) -> str:
     if not pypi["checked"]:
-        return "Not checked" + (f" ({pypi['error']})." if pypi.get("error") else ".")
+        error = f" ({_text(pypi['error'])})" if pypi.get("error") else ""
+        return f"Not checked{error}."
     if not pypi["latest"]:
-        return f"`{pkg['name']}` is not on PyPI."
+        return f"{_code(pkg['name'])} is not on PyPI."
+    version = _text(pkg["version"])
     relation = {
         "same": "the same as the documented version.",
-        "behind": f"newer than the documented version ({pkg['version']}).",
-        "ahead": f"older than the documented version ({pkg['version']}).",
+        "behind": f"newer than the documented version ({version}).",
+        "ahead": f"older than the documented version ({version}).",
         "unknown": "not comparable with the documented version.",
     }[pypi["relation"]]
-    return (
-        f"Latest release: [{pypi['latest']}](https://pypi.org/project/{pkg['name']}/"
-        f"{pypi['latest']}/), {relation}"
-    )
+    url = f"https://pypi.org/project/{pkg['name']}/{pypi['latest']}/"
+    return f"Latest release: {_link(url, _text(pypi['latest']))}, {relation}"
 
 
 # --------------------------------------------------------------------------
@@ -764,10 +926,47 @@ def _pypi_block(pkg: dict, pypi: dict) -> str:
 
 
 def about_page(info: dict, *, template: str = ABOUT_PAGE_TEMPLATE):
-    """The about page as a :class:`~epythet.scaffold.PageSpec`."""
+    """The about page as a :class:`~epythet.scaffold.PageSpec`.
+
+    :raises ConfigError: when ``template`` names a field the renderer does not
+        provide (literal braces must be doubled: ``{{``).
+    """
+    from epythet.config import ConfigError
     from epythet.scaffold import PageSpec
 
-    return PageSpec(ABOUT_PAGE_FILENAME, render_about_page(info, template=template))
+    try:
+        content = render_about_page(info, template=template)
+    except (KeyError, IndexError, ValueError) as e:
+        raise ConfigError(
+            f"provenance_template: unknown field {e}; the fields are "
+            f"{sorted(TEMPLATE_FIELDS)} and literal braces must be doubled ({{{{ and }}}})"
+        ) from e
+    return PageSpec(ABOUT_PAGE_FILENAME, content)
+
+
+def about_template(config) -> str:
+    """The about page's template: ``[tool.epythet] provenance_template`` or the default.
+
+    The key names a file relative to the project root, with the same contract
+    as ``ai_artifacts_template``; the epythet marker is prepended when absent.
+
+    :raises ConfigError: when the file does not exist
+    """
+    from epythet.config import ConfigError
+    from epythet.templates import INDEX_MARKER
+
+    template_path = getattr(config, "provenance_template", "")
+    if not template_path:
+        return ABOUT_PAGE_TEMPLATE
+    path = config.project_dir / template_path
+    if not path.is_file():
+        raise ConfigError(
+            f"[tool.epythet] provenance_template points at {path}, which does not exist"
+        )
+    template = path.read_text(encoding="utf-8")
+    if INDEX_MARKER not in template and "{marker}" not in template:
+        template = "{marker}\n\n" + template
+    return template
 
 
 def site_counts(env) -> dict:
@@ -820,16 +1019,52 @@ def reference_from_agent_outputs(
     aggregate = html_dir / f"{package_name}.md"
     if aggregate.is_file():
         text = aggregate.read_text(encoding="utf-8")
-        if BUILD_INFO_FILENAME not in text[:500]:
+        if not text.startswith(AGGREGATE_STAMP_PREFIX):
             stamp = f"> {footer_text(info)}. Details: {BUILD_INFO_FILENAME}\n\n"
             aggregate.write_text(stamp + text, encoding="utf-8")
 
 
+def prune_site(html_dir: str | Path, *, keep_page: bool, keep_json: bool) -> list:
+    """Remove provenance outputs a previous build left in ``html_dir``.
+
+    Sphinx never cleans its output directory, so a project that turned
+    ``provenance`` off (or down to ``"minimal"``) would otherwise keep
+    publishing a stale page or JSON. Returns the paths removed.
+    """
+    html_dir = Path(html_dir)
+    stale = []
+    if not keep_page:
+        stale += [
+            html_dir / f"{ABOUT_PAGE_DOCNAME}.html",
+            html_dir / f"{ABOUT_PAGE_DOCNAME}.html.md",
+        ]
+    if not keep_json:
+        stale.append(html_dir / BUILD_INFO_FILENAME)
+    removed = []
+    for path in stale:
+        if path.is_file():
+            path.unlink()
+            removed.append(path)
+    return removed
+
+
 def load_build_info(raw: str | None) -> dict | None:
-    """Parse the JSON the build process hands over in ``EPYTHET_BUILD_INFO``."""
+    """Parse the JSON the build process hands over in ``EPYTHET_BUILD_INFO``.
+
+    Anything that is not a record of this module's schema is ignored, so a
+    stale or foreign value in the environment never breaks a build.
+
+    >>> load_build_info('{"schema_version": 1, "git": {}}')["schema_version"]
+    1
+    >>> load_build_info('"str"') is None and load_build_info("{") is None
+    True
+    """
     if not raw:
         return None
     try:
-        return json.loads(raw)
+        info = json.loads(raw)
     except ValueError:
         return None
+    if not isinstance(info, dict) or info.get("schema_version") != SCHEMA_VERSION:
+        return None
+    return info

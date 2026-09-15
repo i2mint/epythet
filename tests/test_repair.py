@@ -143,7 +143,10 @@ def test_split_literal_shapes():
 @pytest.mark.parametrize(
     "literal,expected_reason",
     [
-        ('"""Has \\n escape."""', "non-raw literal with backslashes: escapes would change"),
+        (
+            '"""Has \\n escape."""',
+            "non-raw literal with backslashes: escapes would change",
+        ),
         ("b'''bytes'''", "bytes or f-string literal"),
         ("'One\\n>>> f()'", "non-raw literal with backslashes: escapes would change"),
     ],
@@ -154,9 +157,14 @@ def test_unsafe_literals_are_refused_with_a_reason(literal, expected_reason):
 
 
 def test_single_quoted_docstring_that_would_grow_is_refused():
-    literal = "'Text\n>>> f()'"  # a (syntactically odd) single-quoted literal spanning lines
+    literal = (
+        "'Text\n>>> f()'"  # a (syntactically odd) single-quoted literal spanning lines
+    )
     new, reason = rewrite_docstring_literal(literal)
-    assert new == literal and reason == "single-quoted docstring would need a triple-quoted rewrite"
+    assert (
+        new == literal
+        and reason == "single-quoted docstring would need a triple-quoted rewrite"
+    )
 
 
 def test_rewrite_keeps_margin_and_closing_line():
@@ -181,9 +189,16 @@ def test_repair_source_dry_run_matches_the_golden_diff(tmp_path):
     path.write_text(MODULE)
     result = repair_source(MODULE, rules=rules_for("code-block"), path=path)
     assert result.diff() == EXPECTED_DIFF
-    assert [e.qualname for e in result.applied] == ["<module>", "glued", "fenced", "K.m"]
+    assert [e.qualname for e in result.applied] == [
+        "<module>",
+        "glued",
+        "fenced",
+        "K.m",
+    ]
     refused = {e.qualname: e.reason for e in result.refused}
-    assert refused == {"escaped": "non-raw literal with backslashes: escapes would change"}
+    assert refused == {
+        "escaped": "non-raw literal with backslashes: escapes would change"
+    }
 
 
 def test_repair_source_keeps_the_ast_outside_docstrings():
@@ -219,7 +234,13 @@ def test_fence_style_literal():
 def test_repair_dry_run_writes_nothing(make_project):
     project = make_project("rpkg", {"mod.py": MODULE})
     report = repair(project)
-    assert report.counts() == {"files": 2, "files_changed": 1, "docstrings_rewritten": 4, "docstrings_refused": 2, "files_written": 0}
+    assert report.counts() == {
+        "files": 2,
+        "files_changed": 1,
+        "docstrings_rewritten": 4,
+        "docstrings_refused": 2,
+        "files_written": 0,
+    }
     assert (project / "rpkg" / "mod.py").read_text() == MODULE
     assert report.diff() == EXPECTED_DIFF
 
@@ -237,13 +258,19 @@ def test_repair_write_is_verified_and_idempotent(make_project):
     assert (project / "rpkg" / "mod.py").read_text() == repaired
 
 
-def test_repair_write_restores_a_file_whose_doctests_got_worse(make_project, monkeypatch):
+def test_repair_write_restores_a_file_whose_doctests_got_worse(
+    make_project, monkeypatch
+):
     project = make_project("rpkg", {"mod.py": MODULE})
     calls = iter([(0, 0, "ok"), (1, 2, "***Test Failed*** 2 failures.")])
     monkeypatch.setattr("epythet.repair._doctest_failures", lambda *a, **k: next(calls))
     report = repair(project, write=True)
     assert not report.changed[0].written
-    assert report.changed[0].verification[0].startswith("restored: doctest failures went from 0 to 2")
+    assert (
+        report.changed[0]
+        .verification[0]
+        .startswith("restored: doctest failures went from 0 to 2")
+    )
     assert (project / "rpkg" / "mod.py").read_text() == MODULE
 
 
@@ -258,7 +285,9 @@ def test_repair_package_delegates_and_keeps_its_shape(make_project, capsys):
     total = repair_package(str(project / "rpkg"))
     out = capsys.readouterr().out
     assert total == 4
-    assert out.startswith("---> This is just a diagnosis: No files are being written to")
+    assert out.startswith(
+        "---> This is just a diagnosis: No files are being written to"
+    )
     assert "mod.py" in out and "#problems: 4" in out
     assert (project / "rpkg" / "mod.py").read_text() == MODULE
     assert repair_package(str(project / "rpkg"), write_to_files=True) == 4
@@ -282,6 +311,10 @@ def test_repair_command_exit_codes(make_project, capsys):
 def test_libcst_applier_matches_span_applier():
     from epythet.repair import apply_with_libcst
 
-    span = repair_source(MODULE, rules=rules_for("code-block"), applier=apply_span_edits)
-    cst = repair_source(MODULE, rules=rules_for("code-block"), applier=apply_with_libcst)
+    span = repair_source(
+        MODULE, rules=rules_for("code-block"), applier=apply_span_edits
+    )
+    cst = repair_source(
+        MODULE, rules=rules_for("code-block"), applier=apply_with_libcst
+    )
     assert span.repaired == cst.repaired

@@ -19,7 +19,9 @@ def _specimens():
     for rule in catalog.of_kind("coverage"):
         for case in iter_coverage_cases(rule.fixture_path):
             if rule.id in case.rule_ids:
-                yield pytest.param(rule.id, case, id=f"{rule.id}:{case.name.split('.')[-1]}")
+                yield pytest.param(
+                    rule.id, case, id=f"{rule.id}:{case.name.split('.')[-1]}"
+                )
 
 
 @pytest.mark.parametrize("rule_id,case", list(_specimens()))
@@ -31,8 +33,12 @@ def test_coverage_specimen(rule_id, case):
 
 def test_every_coverage_rule_has_both_specimens():
     for rule in load_ledger().of_kind("coverage"):
-        cases = [c for c in iter_coverage_cases(rule.fixture_path) if rule.id in c.rule_ids]
-        assert any(c.expect_hit for c in cases) and any(not c.expect_hit for c in cases), rule.id
+        cases = [
+            c for c in iter_coverage_cases(rule.fixture_path) if rule.id in c.rule_ids
+        ]
+        assert any(c.expect_hit for c in cases) and any(
+            not c.expect_hit for c in cases
+        ), rule.id
 
 
 @pytest.mark.parametrize(
@@ -74,15 +80,31 @@ def test_public_surface_and_entry_points(make_project):
 
 
 def test_all_in_init_narrows_entry_points(make_project):
-    project = make_project("pkg", {"mod.py": '"""Mod."""\n\n\ndef a():\n    """A."""\n\n\ndef b():\n    """B."""\n'}, init='"""P."""\n__all__ = ["a"]\nfrom pkg.mod import a, b\n')
+    project = make_project(
+        "pkg",
+        {
+            "mod.py": '"""Mod."""\n\n\ndef a():\n    """A."""\n\n\ndef b():\n    """B."""\n'
+        },
+        init='"""P."""\n__all__ = ["a"]\nfrom pkg.mod import a, b\n',
+    )
     assert entry_point_names(project / "pkg") == {"a"}
     objects = {o.qualname: o for o in iter_public_objects(project / "pkg")}
-    assert objects["pkg.mod.a"].is_entry_point and not objects["pkg.mod.b"].is_entry_point
+    assert (
+        objects["pkg.mod.a"].is_entry_point and not objects["pkg.mod.b"].is_entry_point
+    )
 
 
 def test_level_0_without_linters_reports_coverage_only(make_project, tmp_path):
-    project = make_project("pkg", {"mod.py": '"""Mod."""\n\n\ndef load_config(path):\n    """Load the config."""\n\n\ndef bare(x):\n    return x\n'}, init='"""P."""\nfrom pkg.mod import load_config\n')
-    report = validate(project, level=0, linters=False, observations_path=tmp_path / "obs.jsonl")
+    project = make_project(
+        "pkg",
+        {
+            "mod.py": '"""Mod."""\n\n\ndef load_config(path):\n    """Load the config."""\n\n\ndef bare(x):\n    return x\n'
+        },
+        init='"""P."""\nfrom pkg.mod import load_config\n',
+    )
+    report = validate(
+        project, level=0, linters=False, observations_path=tmp_path / "obs.jsonl"
+    )
     rules = sorted(f.rule for f in report.findings)
     assert rules == ["DQ001", "DQ002", "DQ003"]
     assert report.objects_checked == 4 and report.objects_undocumented == 1

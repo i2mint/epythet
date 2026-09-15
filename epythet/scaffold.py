@@ -95,7 +95,7 @@ def scaffold(
             name != "api" or config.resolved_api_generator == "autoapi"
         ):
             shutil.rmtree(docsrc / name)
-    _write_if_generated(
+    write_generated_file(
         docsrc / "conf.py",
         templates.conf_py_shim,
         markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
@@ -104,14 +104,14 @@ def scaffold(
     if (docsrc / "index.rst").is_file():
         say("Keeping hand-written index.rst (no index.md written)")
     else:
-        _write_if_generated(
+        write_generated_file(
             docsrc / "index.md",
             render_index_md(config, pages=pages),
             markers=(templates.INDEX_MARKER,),
             say=say,
         )
     for page in pages:
-        _write_if_generated(
+        write_generated_file(
             docsrc / page.filename, page.content, markers=(page.marker,), say=say
         )
     _remove_stale_generated_pages(docsrc, pages, say)
@@ -126,12 +126,15 @@ def scaffold(
             render_autosummary_module_template(config.api_ignore), encoding="utf-8"
         )
     gitignore = docsrc / ".gitignore"
-    if (
-        not gitignore.exists()
-        or gitignore.read_text(encoding="utf-8").strip()
-        in templates.LEGACY_DOCSRC_GITIGNORES
+    # Refresh epythet's own .gitignore (legacy or generated); keep a hand-written one.
+    if not gitignore.exists() or _is_generated_gitignore(
+        gitignore.read_text(encoding="utf-8")
     ):
-        gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
+        if (
+            not gitignore.exists()
+            or gitignore.read_text(encoding="utf-8") != templates.docsrc_gitignore
+        ):
+            gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
     return docsrc
 
 
@@ -226,6 +229,13 @@ def make_autodocs(
     return make_docsrc(project_dir, verbose=False, ignore=ignore)
 
 
+def _is_generated_gitignore(text: str) -> bool:
+    """A 0.1.x ``.gitignore`` or one that starts with epythet's generated header."""
+    return text.strip() in templates.LEGACY_DOCSRC_GITIGNORES or text.startswith(
+        templates.DOCSRC_GITIGNORE_HEADER
+    )
+
+
 def _remove_legacy_files(docsrc: Path, say) -> None:
     index_rst = docsrc / "index.rst"
     if index_rst.is_file() and "table_of_contents.rst" in index_rst.read_text(
@@ -264,7 +274,13 @@ def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
             say(f"Removed stale generated {filename}")
 
 
-def _write_if_generated(path: Path, content: str, *, markers, say) -> None:
+def write_generated_file(path: Path, content: str, *, markers, say=None) -> None:
+    """Write a generated file unless a hand-written one (no marker) is in the way.
+
+    :param markers: strings, any of which identifies an epythet-generated file
+    :param say: a ``print``-like reporter (``None`` for silence)
+    """
+    say = say or (lambda *a, **k: None)
     if path.exists():
         existing = path.read_text(encoding="utf-8", errors="replace")
         if not any(marker in existing for marker in markers):
@@ -274,3 +290,15 @@ def _write_if_generated(path: Path, content: str, *, markers, say) -> None:
             return
     path.write_text(content, encoding="utf-8")
     say(f"Wrote {path}")
+
+
+def remove_generated_file(path: Path, *, markers, say=None) -> bool:
+    """Delete ``path`` if it is a file epythet generated (carries a marker)."""
+    if not path.is_file():
+        return False
+    existing = path.read_text(encoding="utf-8", errors="replace")
+    if not any(marker in existing for marker in markers):
+        return False
+    path.unlink()
+    (say or (lambda *a, **k: None))(f"Removed generated {path.name}")
+    return True
