@@ -8,6 +8,13 @@ into. The project root and any command-line overrides reach the generated
 Targets mirror the old Makefile: ``html`` (the default), ``doctest``,
 ``markdown``, ``github`` (``html`` then a copy into ``PROJECT_DIR/docs``),
 ``gitlab`` (copy into ``public``) and ``clean``.
+
+An ``html`` build also carries its provenance (:mod:`epythet.provenance`): the
+record is collected here, once, before Sphinx runs; the about page's source is
+written into ``docsrc``; the record reaches the Sphinx process through the
+``EPYTHET_BUILD_INFO`` environment variable, where the extension renders the
+footer and writes ``build_info.json``; afterwards ``llms.txt`` and the
+``<package>.md`` aggregate get a pointer to that file.
 """
 
 from __future__ import annotations
@@ -21,6 +28,12 @@ from pathlib import Path
 
 from epythet.agent_outputs import inject_link_relations_into_site, write_aggregates
 from epythet.config import DocsConfig, load_config
+from epythet.provenance import (
+    BUILD_INFO_ENV,
+    about_page,
+    collect_build_info,
+    reference_from_agent_outputs,
+)
 
 BUILD_DIRNAME = "_build"
 COPY_TARGETS = {"github": "docs", "gitlab": "public"}
@@ -86,6 +99,9 @@ def build(
     env = dict(os.environ)
     env["EPYTHET_PROJECT_DIR"] = str(config.project_dir)
     env["EPYTHET_OVERRIDES"] = json.dumps(overrides)
+    info = prepare_provenance(config) if target == "html" else None
+    if info is not None:
+        env[BUILD_INFO_ENV] = json.dumps(info)
     result = subprocess.run(command, cwd=str(docsrc), env=env)
     if result.returncode != 0:
         raise BuildError(
@@ -95,4 +111,46 @@ def build(
     if target == "html" and config.agent_outputs:
         inject_link_relations_into_site(outdir)
         write_aggregates(outdir, package_name=config.name, aggregates=config.aggregates)
+        if info is not None:
+            reference_from_agent_outputs(outdir, info, package_name=config.name)
     return outdir
+
+
+def prepare_provenance(config: DocsConfig) -> dict | None:
+    """Collect the build record and write the about page's source; ``None`` when off.
+
+    Runs before Sphinx so the page is part of the build. The about page is
+    skipped for ``provenance = "minimal"``. Any failure is reported once and
+    the build goes on without provenance.
+    """
+    if not config.provenance:
+        return None
+    try:
+        info = collect_build_info(config)
+        page = about_page(info)
+        target = config.docsrc_dir / page.filename
+        if config.provenance == "minimal":
+            _remove_generated(target, marker=page.marker)
+        else:
+            _write_generated(target, page.content, marker=page.marker)
+        for warning in info["warnings"]:
+            print(f"epythet: provenance: {warning}", file=sys.stderr)
+        return info
+    except Exception as e:  # provenance never fails a build
+        print(f"epythet: build provenance unavailable ({e})", file=sys.stderr)
+        return None
+
+
+def _write_generated(path: Path, content: str, *, marker: str) -> None:
+    """Write a generated file unless a hand-written one (no marker) is in the way."""
+    if path.exists() and marker not in path.read_text(
+        encoding="utf-8", errors="replace"
+    ):
+        return
+    if not path.exists() or path.read_text(encoding="utf-8") != content:
+        path.write_text(content, encoding="utf-8")
+
+
+def _remove_generated(path: Path, *, marker: str) -> None:
+    if path.is_file() and marker in path.read_text(encoding="utf-8", errors="replace"):
+        path.unlink()

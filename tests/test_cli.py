@@ -13,7 +13,7 @@ The single most load-bearing case is :func:`test_ignore_with_zero_values`.
 v2 (0.2.0) deliberately changed two things, and the goldens were updated with
 that decision: ``make-docsrc`` gained ``--ignore``, and ``quickstart`` now
 calls one orchestrator (``load_config`` -> ``scaffold`` -> ``build``) instead of
-the three legacy functions.
+the three legacy functions. WP7 (0.2.6) added ``build-info``.
 """
 
 import subprocess
@@ -62,7 +62,7 @@ EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
         "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,"
-        "ai-artifacts,ai-readme-check,repair,migrate-style,sweep,ledger,snippets} ..."
+        "ai-artifacts,ai-readme-check,build-info,repair,migrate-style,sweep,ledger,snippets} ..."
     ),
     (
         "make-docsrc",
@@ -84,6 +84,8 @@ EXPECTED_USAGE = {
         "[-d] [-w] project-dir"
     ),
     ("snippets",): "usage: epythet snippets [-h] {list,show,init,diff} ...",
+    # WP7 (0.2.6): build provenance as JSON; -n/--no-pypi skips the network lookup.
+    ("build-info",): "usage: epythet build-info [-h] [-n] project-dir",
     # v2 (0.2.3): the source-editing and fleet commands, and the ledger group.
     ("repair",): (
         "usage: epythet repair [-h] [-w] [-f FENCE_STYLE] [-i [IGNORE ...]] [-l LEDGER] "
@@ -122,6 +124,7 @@ def test_command_set_and_order():
         "validate",
         "ai-artifacts",
         "ai-readme-check",
+        "build-info",
         "repair",
         "migrate-style",
         "sweep",

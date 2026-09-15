@@ -22,6 +22,9 @@ from pathlib import Path as _Path
 from epythet.confgen import sphinx_settings as _sphinx_settings
 from epythet.config import ConfigError as _ConfigError
 from epythet.config import load_config as _load_config
+from epythet.provenance import BUILD_INFO_ENV as _BUILD_INFO_ENV
+from epythet.provenance import collect_build_info as _collect_build_info
+from epythet.provenance import load_build_info as _load_build_info
 
 #: Environment variable naming the project root (set by ``epythet make``).
 PROJECT_DIR_ENV = "EPYTHET_PROJECT_DIR"
@@ -56,4 +59,23 @@ for _path in (epythet_config.project_dir, epythet_config.project_dir / "src"):
     if _path.is_dir() and str(_path) not in _sys.path:
         _sys.path.insert(0, str(_path))
 
-globals().update(_sphinx_settings(epythet_config))
+
+def _build_info():
+    """The provenance record: handed over by ``epythet make``, else collected here.
+
+    Running ``sphinx-build`` directly still gets the footer and the JSON; the
+    about page needs :func:`epythet.build.build`, which writes its source.
+    """
+    if not epythet_config.provenance:
+        return None
+    info = _load_build_info(_os.environ.get(_BUILD_INFO_ENV))
+    if info is not None:
+        return info
+    try:
+        return _collect_build_info(epythet_config)
+    except Exception as e:  # provenance never fails a build
+        print(f"epythet: build provenance unavailable ({e})", file=_sys.stderr)
+        return None
+
+
+globals().update(_sphinx_settings(epythet_config, build_info=_build_info()))

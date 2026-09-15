@@ -7,7 +7,9 @@ normalized doctests, the agent outputs and the aggregate. It runs Sphinx twice
 (HTML, then the Markdown pass for the twins), so it takes a few seconds.
 """
 
+import json
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -125,7 +127,21 @@ def project(tmp_path_factory) -> Path:
     (pkg / "tests").mkdir()
     (pkg / "tests" / "__init__.py").write_text("")
     (pkg / "tests" / "test_x.py").write_text(TEST_MODULE)
+    _git_init(root, remote="https://github.com/org/demo.git", tag="v0.1.0")
+    (pkg / "core.py").write_text(CORE + "\n# uncommitted change: the tree is dirty\n")
     return root
+
+
+def _git_init(root: Path, *, remote: str, tag: str) -> None:
+    git = ["git", "-c", "user.email=jane@example.com", "-c", "user.name=Jane"]
+    for args in (
+        ["init", "-q", "-b", "main"],
+        ["add", "-A"],
+        ["commit", "-qm", "init"],
+        ["remote", "add", "origin", remote],
+        ["tag", tag],
+    ):
+        subprocess.run([*git, *args], cwd=root, check=True, capture_output=True)
 
 
 @pytest.fixture(scope="module")
@@ -198,6 +214,71 @@ def test_agent_outputs_and_aggregate(site):
     assert "Add two numbers" in aggregate and "deep" in aggregate
     assert not (site / "llms-full.txt").exists()
     assert "demo.md" in (site / "llms.txt").read_text()
+
+
+def test_provenance_footer_page_and_json(project, site):
+    """WP7: the landing line, the orphan about page and build_info.json agree."""
+    info = json.loads((site / "build_info.json").read_text())
+    git = info["git"]
+    assert info["schema_version"] == 1 and info["package"]["version"] == "0.1.0"
+    assert (
+        git["branch"] == "main" and git["tags"] == ["v0.1.0"] and git["dirty"] is True
+    )
+    assert git["commit_url"] == f"https://github.com/org/demo/commit/{git['commit']}"
+    assert info["site"]["modules_documented"] >= 4
+    assert info["site"]["objects_documented"] >= 2
+    assert info["pypi"]["checked"] is False  # conftest turns the lookup off
+    assert (
+        info["alignment"]["aligned"] is False
+        and "uncommitted" in info["alignment"]["notes"][0]
+    )
+
+    index = (site / "index.html").read_text()
+    assert index.count('class="epythet-provenance"') == 1
+    assert f">{git['short_commit']}+dirty</a> (main) · demo 0.1.0 · " in index
+    assert '<a href="about-this-build.html">about this build</a>' in index
+    assert (
+        'class="epythet-provenance"'
+        not in (site / "_autosummary" / "demo.core.html").read_text()
+    )
+
+    about = (site / "about-this-build.html").read_text()
+    assert "may be misaligned" in about and git["commit"] in about
+    assert "Modules documented" in about and about.index(
+        "Modules documented"
+    ) < about.index('id="reproduce"')
+    assert (
+        "about-this-build" not in index.split('class="epythet-provenance"')[0]
+    )  # not in the nav
+    assert (site / "about-this-build.html.md").is_file()
+    assert "build_info.json" in (site / "llms.txt").read_text()
+    assert (site / "demo.md").read_text().startswith("> built ")
+    assert "about-this-build.md" in (project / "docsrc" / ".gitignore").read_text()
+
+
+def test_provenance_off_and_minimal(project):
+    other = project.parent / "noprov"
+    shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
+    (other / "pyproject.toml").write_text(
+        PYPROJECT + "[tool.epythet]\nprovenance = false\n"
+    )
+    html = quickstart(other)
+    assert not (html / "build_info.json").exists()
+    assert not (html / "about-this-build.html").exists()
+    assert "epythet-provenance" not in (html / "index.html").read_text()
+
+    (other / "pyproject.toml").write_text(
+        PYPROJECT + '[tool.epythet]\nprovenance = "minimal"\n'
+    )
+    html = quickstart(other)
+    assert (html / "build_info.json").is_file()
+    assert not (other / "docsrc" / "about-this-build.md").exists()
+    assert not (html / "about-this-build.html").exists()
+    index = (html / "index.html").read_text()
+    assert (
+        "epythet-provenance" in index
+        and '<a href="build_info.json">build info</a>' in index
+    )
 
 
 def test_theme_is_deterministic_and_rebuild_is_stable(project, site):
@@ -310,7 +391,9 @@ def all_project(tmp_path_factory) -> Path:
     (pkg / "core.py").write_text('"""Core."""\n\n\ndef thing():\n    """A thing."""\n')
     (pkg / "extra.py").write_text('"""Not in __all__, still a public module."""\n')
     (pkg / "_private.py").write_text('"""Private: never a page."""\n')
-    (pkg / "_listed.py").write_text('"""Private but named in __all__: keeps its page."""\n')
+    (pkg / "_listed.py").write_text(
+        '"""Private but named in __all__: keeps its page."""\n'
+    )
     (pkg / "__main__.py").write_text(ARGPARSE_MAIN)
     (pkg / "tests").mkdir()
     (pkg / "tests" / "__init__.py").write_text("")
@@ -327,7 +410,10 @@ def all_site(all_project) -> Path:
 
 
 def test_comma_joined_ignore_is_split(all_project):
-    assert load_config(all_project, ignore=["tests/,scrap/"]).ignore == ("tests/", "scrap/")
+    assert load_config(all_project, ignore=["tests/,scrap/"]).ignore == (
+        "tests/",
+        "scrap/",
+    )
 
 
 def test_all_of_objects_still_yields_every_public_submodule(all_site):

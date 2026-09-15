@@ -6,6 +6,17 @@ from pathlib import Path
 import pytest
 
 
+@pytest.fixture(autouse=True, scope="session")
+def _no_network():
+    """Provenance never queries PyPI from the test suite (offline CI, determinism).
+
+    Session-scoped so it is in place before the module-scoped smoke builds.
+    """
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setenv("EPYTHET_PYPI_CHECK", "0")
+        yield
+
+
 @pytest.fixture
 def make_project(tmp_path):
     """``make_project(name, {"mod.py": source, ...})`` -> project root with a pyproject."""

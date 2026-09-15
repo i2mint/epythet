@@ -52,8 +52,16 @@ MYST_EXTENSIONS: tuple[str, ...] = (
 )
 
 
-def sphinx_settings(config: DocsConfig) -> dict[str, Any]:
-    """The complete Sphinx ``conf.py`` namespace for ``config``."""
+def sphinx_settings(
+    config: DocsConfig, *, build_info: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    """The complete Sphinx ``conf.py`` namespace for ``config``.
+
+    :param build_info: the provenance record of this build
+        (:func:`epythet.provenance.collect_build_info`), rendered by the
+        extension as the landing-page footer and ``build_info.json``; ``None``
+        renders nothing.
+    """
     theme = resolve_theme(
         config.package_name,
         theme=config.theme,
@@ -113,6 +121,8 @@ def sphinx_settings(config: DocsConfig) -> dict[str, Any]:
         "epythet_theme_css": theme.css,
         "epythet_agent_outputs": config.agent_outputs,
         "epythet_normalizer_rules": None,
+        "epythet_provenance": config.provenance,
+        "epythet_build_info": build_info if config.provenance else None,
     }
     settings = merge_settings(settings, _api_generator_settings(config))
     if config.agent_outputs:

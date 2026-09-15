@@ -64,6 +64,7 @@ agent_outputs = true            # llms.txt, .md twins, <link rel="alternate"> re
 aggregates = ["md"]             # flat single-document twins at the site root: "md", "pdf"
 ai_artifacts = true             # "For AI agents" page when skills / subagents / CLAUDE.md exist
 ai_artifacts_template = ""      # project-relative file overriding that page's template
+provenance = true               # landing-page build line + about-this-build page + build_info.json; "minimal": no page; false: nothing
 package_dir = "src/dol"         # default: found by convention
 docs_dir = "docsrc"             # where the Sphinx sources are generated
 
@@ -90,7 +91,7 @@ and an `index.md` that includes the README with a hidden toctree. API pages and 
 
 Overrides that must survive regeneration go **below the import** in the shim: anything defined there wins over the generated value.
 
-Other commands: `epythet make PROJECT_DIR [html|doctest|markdown|github|clean]` runs `sphinx-build` with the current interpreter (`github` copies HTML into `PROJECT_DIR/docs`). `epythet validate PROJECT_DIR` checks docstrings (see `epythet-validate`). `epythet ai-artifacts PROJECT_DIR` lists a repo's skills and agents (see `epythet-ai-artifacts`).
+Other commands: `epythet make PROJECT_DIR [html|doctest|markdown|github|clean]` runs `sphinx-build` with the current interpreter (`github` copies HTML into `PROJECT_DIR/docs`). `epythet validate PROJECT_DIR` checks docstrings (see `epythet-validate`). `epythet ai-artifacts PROJECT_DIR` lists a repo's skills and agents (see `epythet-ai-artifacts`). `epythet build-info PROJECT_DIR` prints the build provenance record (commit, branch, dirty flag, package version, tool versions, PyPI comparison) that every built site carries as a one-line footer on the landing page, an `about-this-build.html` page and `build_info.json` at the site root; it never fails a build (no git, no network: fields become `null`, the site says so).
 
 ## Publishing to GitHub Pages
 
@@ -125,7 +126,7 @@ epythet's build-time normalizer fixes the common slips (doctest glued to prose, 
 
 1. `pyproject.toml` has `[project] name` and a GitHub URL in `[project.urls]` (the URL drives "GitHub" links and the Pages URL).
 2. `epythet quickstart . --ignore tests/` builds without a `ConfigError`.
-3. Landing page shows the README; sidebar shows the module tree; `docsrc/_build/html/llms.txt` and `<name>.md` exist.
+3. Landing page shows the README; sidebar shows the module tree; `docsrc/_build/html/llms.txt`, `<name>.md` and `build_info.json` exist, and the landing page ends with the `built ... · about this build` line.
 4. `epythet validate .` is clean at `--fail-on error`, or its findings are filed.
 5. Add the workflow, push, then `epythet check-pages owner/repo`.
 6. Add `docsrc/` to `.gitignore` unless it holds hand-written pages.

@@ -2,7 +2,8 @@
 
 Only two files are generated: the ``conf.py`` shim and the ``index.md`` landing
 page. Everything else (the API tree, the agent twins) is produced by Sphinx
-extensions at build time.
+extensions at build time. The about-this-build page's template lives with its
+data in :mod:`epythet.provenance`.
 """
 
 #: Marker line present in every conf.py epythet generated (v2), used to decide
@@ -165,4 +166,5 @@ api/
 _autosummary/
 _templates/
 _static/epythet.css
+about-this-build.md
 """
