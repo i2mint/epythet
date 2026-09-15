@@ -1,0 +1,5 @@
+Do a thing.
+
+Examples:
+    >>> f(1)
+    2
