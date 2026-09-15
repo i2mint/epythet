@@ -1,0 +1,9 @@
+Set it up.
+
+>>> from collections import UserDict
+>>>
+>>>
+>>> class LoggedCache(UserDict):
+...     name = 'cache'
+>>> LoggedCache().name
+'cache'

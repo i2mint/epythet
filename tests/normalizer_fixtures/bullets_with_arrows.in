@@ -1,0 +1,3 @@
+Two mappings:
+- a --> b takes *args
+- c --> d, see [x](https://x.org/a)

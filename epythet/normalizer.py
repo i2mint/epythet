@@ -98,9 +98,6 @@ _SECTION_HEADER_RE = re.compile(r"^(\s*)([A-Z][A-Za-z ]+):\s*$")
 _SECTION_ONE_LINER_RE = re.compile(r"^(\s*)([A-Z][A-Za-z ]+):\s+(\S.*)$")
 _LITERAL_SPAN_RE = re.compile(r"``.+?``|`[^`]+`")
 _STAR_WORD_RE = re.compile(r"(?<![\w\\*])(\*\*?)(?=\w)")
-#: A single word (or dotted / starred name) ending in a colon: a definition term
-#: or a Google ``Args:`` entry with its description on the next line, never a lead-in.
-_TERM_RE = re.compile(r"^\s*\*{0,2}[\w.]+(\s*\([^()]*\))?:\s*$")
 #: A token that is a plain word (optionally followed by punctuation): what prose is made of.
 _PLAIN_WORD_RE = re.compile(r"^[A-Za-z]+[,.;:!?)]*$")
 #: Box-drawing, block and arrow characters: a line with one is part of a drawing.
@@ -140,7 +137,7 @@ def line_contexts(lines: Sequence[str]) -> list[str]:
     >>> line_contexts(["    >>> 1", "    1", "back to prose"])
     ['doctest', 'doctest', 'prose']
     >>> line_contexts(["a --> b", "  |", "  v", "- c"])
-    ['art', 'art', 'art', 'art']
+    ['art', 'art', 'art', 'list']
     """
     contexts = _line_contexts(lines)
     for start, end in _art_runs(lines):
@@ -156,10 +153,17 @@ def is_art_line(line: str) -> bool:
     >>> is_art_line("func1 --> merge"), is_art_line("x = 1  # comment")
     (True, False)
     """
+    if _DOCTEST_RE.match(line):
+        return False  # a bare ``>>>`` prompt is all strokes, and never a drawing
+    return _is_stroke_line(line) or bool(_ASCII_ART_RE.search(line))
+
+
+def _is_stroke_line(line: str) -> bool:
+    """A line drawn with box characters or made at least half of strokes: art beyond doubt."""
     stripped = line.strip()
     if not stripped:
         return False
-    if _BOX_CHAR_RE.search(stripped) or _ASCII_ART_RE.search(stripped):
+    if _BOX_CHAR_RE.search(stripped):
         return True
     strokes = sum(ch in "-+|/\\_<>^v" for ch in stripped)
     return len(stripped) >= 3 and strokes / len(stripped) >= 0.5
@@ -169,16 +173,18 @@ def _art_runs(lines: Sequence[str]) -> list[tuple[int, int]]:
     """``(start, end)`` of every drawing: a run of non-blank lines that is mostly art.
 
     Short label lines inside the run (``a``, ``v``, ``merge``) belong to the
-    drawing; a run with fewer than :data:`ART_MIN_LINES` art lines is prose.
+    drawing; a run with fewer than :data:`ART_MIN_LINES` art lines is prose. A
+    doctest, bullet or field line ends a run (``- a --> b`` is a list item that
+    happens to hold an arrow), unless it is itself drawn in strokes.
     """
     runs: list[tuple[int, int]] = []
     i = 0
     while i < len(lines):
-        if not lines[i].strip():
+        if not lines[i].strip() or _breaks_art(lines[i]):
             i += 1
             continue
         j = i
-        while j < len(lines) and lines[j].strip():
+        while j < len(lines) and lines[j].strip() and not _breaks_art(lines[j]):
             j += 1
         art = [is_art_line(line) for line in lines[i:j]]
         labels = [_is_label(line) for line in lines[i:j]]
@@ -186,6 +192,14 @@ def _art_runs(lines: Sequence[str]) -> list[tuple[int, int]]:
             runs.append((i, j))
         i = j
     return runs
+
+
+def _breaks_art(line: str) -> bool:
+    if _DOCTEST_RE.match(line):
+        return True
+    return bool(
+        (_BULLET_RE.match(line) or _FIELD_RE.match(line)) and not _is_stroke_line(line)
+    )
 
 
 def _is_label(line: str) -> bool:
@@ -228,12 +242,39 @@ def google_section_bodies(lines: Sequence[str]) -> list[int | None]:
 
 
 def _looks_like_prose(line: str) -> bool:
-    """Whether a line reads as a sentence: at least :data:`PROSE_WORDS` plain words.
+    """Whether a line reads as a sentence rather than a command or an expression.
+
+    At least :data:`PROSE_WORDS` plain words and a sentence's punctuation at the
+    end (a wrapped line ends in a comma as often as a period), or half again
+    as many plain words with no punctuation at all.
 
     >>> _looks_like_prose("which will just return the (args,"), _looks_like_prose("x = f(a, b)")
     (True, False)
+    >>> _looks_like_prose("pip install foo bar"), _looks_like_prose("the name of the thing to do")
+    (False, True)
     """
-    return sum(bool(_PLAIN_WORD_RE.match(t)) for t in line.split()) >= PROSE_WORDS
+    words = sum(bool(_PLAIN_WORD_RE.match(t)) for t in line.split())
+    punctuated = line.rstrip().endswith((".", ",", ";", ":", "!", "?"))
+    return words >= PROSE_WORDS and (punctuated or words >= PROSE_WORDS * 3 // 2)
+
+
+_CODE_SIGNAL_RE = re.compile(r"[=(){}\[\]<>$@#|/\\*]|::|--|\.py\b")
+
+
+def _looks_like_code(block: Sequence[str]) -> bool:
+    """Whether an indented block is unmistakably code: no prose line, and a code signal somewhere.
+
+    >>> _looks_like_code(["python run.py  # top 12"]), _looks_like_code(["the thing to do."])
+    (True, False)
+    >>> _looks_like_code(["fast"]), _looks_like_code(["{'a': 1}"])
+    (False, True)
+    """
+    nonblank = [line for line in block if line.strip()]
+    return (
+        bool(nonblank)
+        and not any(_looks_like_prose(line) for line in nonblank)
+        and any(_CODE_SIGNAL_RE.search(line) for line in nonblank)
+    )
 
 
 def _line_contexts(lines: Sequence[str]) -> list[str]:
@@ -307,7 +348,7 @@ def _is_section_header(line: str) -> bool:
     return bool(m) and m.group(2).lower() in GOOGLE_SECTIONS
 
 
-_HEADING_CODE_RE = re.compile(r"[=(){}\[\]`]|>>>|\|")
+_HEADING_CODE_RE = re.compile(r"[=(){}\[\]]|>>>|\|")
 
 
 def _is_heading_title(title: str) -> bool:
@@ -317,11 +358,13 @@ def _is_heading_title(title: str) -> bool:
     (True, False)
     >>> _is_heading_title("Can infer types:"), _is_heading_title("TODO: fix"), _is_heading_title("true")
     (False, False, False)
+    >>> _is_heading_title("3 ways to do it"), _is_heading_title("`Sig` basics")
+    (True, True)
     """
     title = title.strip()
     return (
         bool(title)
-        and title[0].isupper()
+        and (title[0].isupper() or title[0].isdigit() or title[0] == "`")
         and not title.endswith((":", ".", ",", ";"))
         and not _HEADING_CODE_RE.search(title)
         and not re.match(r"[A-Z]{2,}:", title)  # TODO: / FIXME: / NOTE: tags
@@ -436,8 +479,9 @@ def google_one_liners(lines: list[str]) -> list[str]:
         j = i + 1
         while (
             j < len(lines)
-            and contexts[j] in (PROSE, LIST)  # a wrapped sentence, never a field list
-            and not _BULLET_RE.match(lines[j])
+            and contexts[j] in _PROSE_LIKE  # a wrapped sentence, wherever it sits
+            and not _BULLET_RE.match(lines[j])  # ... but a new bullet ends it
+            and not _FIELD_RE.match(lines[j])  # ... and so does a field
             and indent_of(lines[j]) == len(indent)
             and not _SECTION_ONE_LINER_RE.match(lines[j])
             and not _is_section_header(lines[j])
@@ -482,17 +526,21 @@ def markdown_headings_to_rubrics(lines: list[str]) -> list[str]:
     A ``#`` line is also how a code comment, a commented-out doctest and its
     output (``# True``) or a commented-out paragraph look, so the rule wants a
     heading shape: ``#`` marks, a space, then a title that starts with a
-    capital letter and holds no code (``=``, ``(``, ``>>>``, backticks) and no
-    trailing ``:`` or ``.``. A single ``#`` must also stand alone between blank
-    lines (or the docstring's edges); ``##`` and deeper may sit against prose
-    but never against another ``#`` line, and never right after code.
+    capital letter, a digit or a backtick, holds no code (``=``, ``(``,
+    ``>>>``) and no trailing ``:`` or ``.``, and is not a ``TODO:`` tag. A
+    single ``#`` must also follow a blank line (or open the docstring);
+    ``##`` and deeper may sit against prose. No heading of any level sits
+    against another ``#`` line (that is a commented-out paragraph or doctest)
+    or right after code.
 
     >>> normalize_text("Intro.\\n## Usage\\nText.", rules=[markdown_headings_to_rubrics])
     'Intro.\\n\\n.. rubric:: Usage\\n\\nText.'
     >>> normalize_text("# >>> f()\\n# True", rules=[markdown_headings_to_rubrics])
     '# >>> f()\\n# True'
-    >>> normalize_text("# Making a signature\\n\\nText.", rules=[markdown_headings_to_rubrics])
+    >>> normalize_text("# Making a signature\\nText.", rules=[markdown_headings_to_rubrics])
     '.. rubric:: Making a signature\\n\\nText.'
+    >>> normalize_text("Intro.\\n# Not a heading\\n\\nText.", rules=[markdown_headings_to_rubrics])
+    'Intro.\\n# Not a heading\\n\\nText.'
     """
     contexts = line_contexts(lines)
     out: list[str] = []
@@ -509,8 +557,8 @@ def markdown_headings_to_rubrics(lines: list[str]) -> list[str]:
             out.append(line)  # one of a run of comment lines
             continue
         single = line.lstrip().startswith("# ")
-        if single and any(n.strip() for n in neighbours):
-            out.append(line)  # a lone ``#`` needs blank lines around it to be a heading
+        if single and i > 0 and lines[i - 1].strip():
+            out.append(line)  # a lone ``#`` glued to the text above is a comment
             continue
         _ensure_trailing_blank(out)
         out.append(f"{m.group(1)}.. rubric:: {m.group(2)}")
@@ -522,14 +570,17 @@ def markdown_headings_to_rubrics(lines: list[str]) -> list[str]:
 def literal_block_after_colon(lines: list[str]) -> list[str]:
     """Make ``text:`` followed by an indented block a proper ``::`` literal block.
 
-    Only when the block is unmistakably code: the lead-in is a sentence (not a
-    lone ``term:``, which is a definition or an ``Args:`` entry), it is not
-    inside a Google section body, and no line of the indented block reads as
-    prose. A lead-in over an indented paragraph is a definition list the
-    author may have meant; it is left alone and DR014 reports it.
+    Only when the block is unmistakably code (:func:`_looks_like_code`: no
+    line reads as prose and some line carries a code signal such as ``=``,
+    ``(`` or ``#``), and never inside a Google section body, where ``x:`` is an
+    argument. A lead-in over an indented paragraph is a definition list the
+    author may have meant; it is left alone and DR014 reports it. A lone
+    ``Usage:`` or ``Output:`` over a command or a value is code all the same.
 
     >>> normalize_text("For example:\\n    x = f(1)\\nThen more.", rules=[literal_block_after_colon])
     'For example::\\n\\n    x = f(1)\\n\\nThen more.'
+    >>> normalize_text("Usage:\\n    python run.py  # top 12", rules=[literal_block_after_colon])
+    'Usage::\\n\\n    python run.py  # top 12'
     >>> normalize_text("specifying:\\n    the name of the thing to do.", rules=[literal_block_after_colon])
     'specifying:\\n    the name of the thing to do.'
     >>> normalize_text("Args:\\n    x:\\n        The x.", rules=[literal_block_after_colon])
@@ -550,7 +601,6 @@ def literal_block_after_colon(lines: list[str]) -> list[str]:
             and stripped.endswith(":")
             and not stripped.endswith("::")
             and not _is_section_header(line)
-            and not _TERM_RE.match(line)
             and not _FIELD_RE.match(line)
             and j < len(lines)
             and lines[j].strip()
@@ -567,9 +617,9 @@ def literal_block_after_colon(lines: list[str]) -> list[str]:
             not lines[end].strip() or indent_of(lines[end]) > block_indent
         ):
             end += 1
-        if any(_looks_like_prose(l) for l in lines[j:end]):
+        if not _looks_like_code(lines[j:end]):
             i += 1
-            continue  # an indented paragraph, not code: report, do not rewrite
+            continue  # an indented paragraph or a definition, not code: report, do not rewrite
         out[-1] = stripped + ":"
         out.append("")
         out.extend(lines[j:end])
@@ -606,8 +656,10 @@ def blank_lines_between_blocks(lines: list[str]) -> list[str]:
     for i, line in enumerate(lines):
         if i > 0 and lines[i - 1].strip() and line.strip():
             prev_ctx, ctx = contexts[i - 1], contexts[i]
+            # A blank line *before* a block that follows a drawing is outside the
+            # drawing, and a doctest glued to one still has to be separated to run.
             starts_block = ctx in (DOCTEST, LIST, FIELD) and prev_ctx not in (
-                ctx, DOCTEST, FENCE, LITERAL, ART,
+                ctx, DOCTEST, FENCE, LITERAL,
             )  # fmt: skip
             next_is_deeper = i + 1 < len(lines) and indent_of(lines[i + 1]) > indent_of(
                 line
