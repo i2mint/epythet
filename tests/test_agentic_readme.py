@@ -699,6 +699,45 @@ def test_broken_pyproject_is_an_error_not_a_silent_fallback(
     assert code == 2 and "[tool.epythet.readme] humor" in capsys.readouterr().err
 
 
+def test_docs_only_project_gets_the_shorter_section(make_project, config_dir):
+    """No skills, subagents or instruction files: the section must not claim tooling (#27, item 3)."""
+    from epythet.agentic_readme import (
+        DOCS_ONLY_SECTION_SNIPPET,
+        SECTION_SNIPPET,
+        section_snippet_for,
+    )
+
+    root = make_project("onlydocs", {"core.py": '"""Core."""\n'})
+    (root / "pyproject.toml").write_text(
+        '[project]\nname = "onlydocs"\nversion = "0.0.1"\n'
+        '[project.urls]\nHomepage = "https://github.com/org/onlydocs"\n'
+    )
+    config = load_config(root)
+    artifacts = discover_artifacts(root, package_dir=config.package_dir)
+    assert section_snippet_for(artifacts) == DOCS_ONLY_SECTION_SNIPPET
+    text = render_section(artifacts, config, policy=ReadmePolicy(), level=2)
+    assert text.startswith(MARKER_START) and text.rstrip().endswith(MARKER_END)
+    assert "ships tooling" not in text
+    assert "publishes its documentation in forms made for coding agents" in text
+    assert "[`llms.txt`](https://org.github.io/onlydocs/llms.txt)" in text
+    assert "gh skill install" not in text and "Subagents" not in text
+    assert "If you are a human, the rest of this README" in text
+    # the docs-only check still passes as a "section" to document, so --write works
+    report = check_readme(root, user_config=_policy())
+    assert _statuses(report)["agent_docs"] == "warn"
+
+
+def test_project_with_tooling_keeps_the_full_section(project, config_dir):
+    from epythet.agentic_readme import SECTION_SNIPPET, section_snippet_for
+
+    config = load_config(project)
+    artifacts = discover_artifacts(project, package_dir=config.package_dir)
+    assert section_snippet_for(artifacts) == SECTION_SNIPPET
+    assert "ships tooling for coding agents" in render_section(
+        artifacts, config, policy=ReadmePolicy()
+    )
+
+
 def test_write_refuses_when_nothing_is_agentic(make_project, config_dir):
     root = make_project("bare", {"m.py": '"""M."""\n'})
     (root / "README.md").write_text("# bare\n")

@@ -1,0 +1,6 @@
+You have two ways to do that, specifying:
+    `remainder='ignore'`, which will just return the (args,
+    kwargs) tuple and drop the rest.
+
+specifying:
+    the name of the thing to do.

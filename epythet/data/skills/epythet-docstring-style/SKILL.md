@@ -40,7 +40,7 @@ What epythet's normalizer repairs at build time (so existing code renders, not s
 
 **Tier 3, complex class**: everything in Tier 2 on the class docstring (not `__init__`); `Attributes:` with invariants; a lifecycle sketch (construct, configure, use, tear down) as a doctest; state invariants (what mutates, what is safe to reuse); methods at Tier 1 or 2. Target: 40 to 80 lines on the class.
 
-**Module docstring** (required on every non-underscore module): one line on purpose; two to four sentences of intent and how the module relates to the package; a curated `Main entry points:` block naming the 2 to 5 things to start with (a curation, not an inventory); one minimal doctest.
+**Module docstring** (required on every non-underscore module): one line on purpose; two to four sentences of intent and how the module relates to the package; a curated `Main entry points:` line followed by a blank line and a bullet list naming the 2 to 5 things to start with (a curation, not an inventory); one minimal doctest. The blank line matters: `Main entry points:` directly over an indented block is an RST definition list, which `epythet validate` reports as DR014.
 
 ```python
 """<One line: what this module is for.>
@@ -48,12 +48,13 @@ What epythet's normalizer repairs at build time (so existing code renders, not s
 <2-4 sentences: the problem it solves, the mental model, its place in the package.>
 
 Main entry points:
-    <name>: <one clause>
-    <name>: <one clause>
 
-    >>> from pkg.module import main_thing
-    >>> main_thing([1, 2, 3])
-    6
+- ``<name>``: <one clause>
+- ``<name>``: <one clause>
+
+>>> from pkg.module import main_thing
+>>> main_thing([1, 2, 3])
+6
 """
 ```
 

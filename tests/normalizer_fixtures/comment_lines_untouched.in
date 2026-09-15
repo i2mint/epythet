@@ -1,0 +1,17 @@
+Check two defaults.
+
+# >>> same(1, 1)
+# True
+# >>> same(1, 2)
+# False
+
+# Further, know that within the context's scope, an instance
+# will have the context managers it contains available.
+
+# TODO: Make this work!
+#   Right now raises: TypeError
+
+# Can infer types from annotations:
+
+>>> f()
+1

@@ -163,6 +163,19 @@ def _in_package(path: Path, package_dir: Path) -> bool:
     return True
 
 
+def is_ignored(path: Path | str, ignore: Iterable[str]) -> bool:
+    """Whether ``path`` matches the ``--ignore`` list: any token is a substring of its POSIX form.
+
+    The one predicate every level uses, so a file the parse level skips is
+    also absent from the lint, coverage and repair results.
+
+    >>> is_ignored("/p/pkg/tests/test_x.py", ["tests/"]), is_ignored("/p/pkg/x.py", ["tests/"])
+    (True, False)
+    """
+    posix = Path(path).as_posix()
+    return any(token in posix for token in ignore)
+
+
 def iter_python_files(
     package_dir: Path, *, ignore: Iterable[str] = ()
 ) -> Iterator[Path]:
@@ -170,10 +183,9 @@ def iter_python_files(
     ignore = tuple(ignore)
     package_dir = Path(package_dir)
     for path in sorted(package_dir.rglob("*.py")):
-        posix = path.as_posix()
         if "__pycache__" in path.parts or not _in_package(path, package_dir):
             continue
-        if any(token in posix for token in ignore):
+        if is_ignored(path, ignore):
             continue
         yield path
 

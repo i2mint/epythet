@@ -18,7 +18,7 @@ import re
 import shutil
 import subprocess
 from pathlib import Path
-from typing import Iterator
+from typing import Iterable, Iterator
 
 from epythet.validation.model import Finding
 
@@ -172,13 +172,28 @@ def run_pydoclint(
 
 
 def run_lint_level(
-    package_dir: Path, *, project_dir: Path, style: str = "google"
+    package_dir: Path,
+    *,
+    project_dir: Path,
+    style: str = "google",
+    ignore: Iterable[str] = (),
 ) -> tuple[list[Finding], list[str]]:
-    """Level 0: ruff D plus pydoclint, with notes for anything skipped."""
+    """Level 0: ruff D plus pydoclint, with notes for anything skipped.
+
+    ``ignore`` is the ``--ignore`` list every other level applies at file
+    discovery; the linters walk the package themselves, so their findings are
+    filtered by the same predicate (:func:`~epythet.validation.docstrings.is_ignored`)
+    on the file's full path.
+    """
+    from epythet.validation.docstrings import is_ignored
+
+    ignore = tuple(ignore)
     findings: list[Finding] = []
     notes: list[str] = []
     for runner in (run_ruff, run_pydoclint):
         found, noted = runner(package_dir, project_dir=project_dir, style=style)
-        findings.extend(found)
+        findings.extend(
+            f for f in found if not (f.file and is_ignored(project_dir / f.file, ignore))
+        )
         notes.extend(noted)
     return findings, notes

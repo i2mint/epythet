@@ -76,11 +76,12 @@ agentic_first = true
 
 ## Changing the wording: snippets
 
-Three snippets render the section. The user's copy in `<config dir>/snippets/<name>.md` wins over the packaged default in `epythet/data/snippets/`:
+Four snippets render the section. The user's copy in `<config dir>/snippets/<name>.md` wins over the packaged default in `epythet/data/snippets/`:
 
 | Snippet | What it is |
 |---|---|
-| `agentic-readme-section` | the section template (`str.format` fields: `{marker_start}`, `{marker_end}`, `{heading}`, `{name}`, `{repo_stub}`, `{site_url}`, `{skills_block}`, `{subagents_block}`, `{instructions_block}`, `{docs_block}`, `{for_humans_intro}`, `{humans_link}`; literal braces doubled) |
+| `agentic-readme-section` | the section template for a project that ships skills, subagents or instruction files (`str.format` fields: `{marker_start}`, `{marker_end}`, `{heading}`, `{name}`, `{repo_stub}`, `{site_url}`, `{skills_block}`, `{subagents_block}`, `{instructions_block}`, `{docs_block}`, `{for_humans_intro}`, `{humans_link}`; literal braces doubled) |
+| `agentic-readme-section-docs-only` | the shorter template used when the project's only agentic aspect is its published agent-readable documentation (`llms.txt`, `<package>.md`); same fields, no "ships tooling" claim |
 | `agentic-readme-humor` | the pool of openers for the "for humans" sentence, one per line, `#` comments allowed |
 | `agentic-readme-instruction` | what step 2 tells the agent when the policy is `add` |
 

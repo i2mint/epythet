@@ -157,6 +157,25 @@ def test_renderers_agree(tmp_path, observations):
     }
 
 
+def test_ignore_applies_to_the_linters_at_level_0(tmp_path, monkeypatch):
+    """``--ignore tests/`` drops ruff and pydoclint findings under ``tests/`` too (#27, item 8)."""
+    import shutil
+
+    if shutil.which("ruff") is None:
+        pytest.skip("ruff not installed")
+    project = _project(tmp_path, "ignpkg", CLEAN_MODULE)
+    tests = project / "ignpkg" / "tests"
+    tests.mkdir()
+    (tests / "__init__.py").write_text("")
+    (tests / "test_x.py").write_text("def undocumented_public():\n    return 1\n")
+    monkeypatch.setenv("EPYTHET_DATA_DIR", str(tmp_path / "data"))
+    with_tests = validate(project, level=0, observe=False)
+    assert any("tests/" in f.file for f in with_tests.findings), "the fixture must bite"
+    ignored = validate(project, level=0, ignore=["tests/"], observe=False)
+    assert not any("tests/" in f.file for f in ignored.findings)
+    assert ignored.objects_checked < with_tests.objects_checked
+
+
 def test_cli_grammar():
     parser = cw.mk_parser(validate_command, prog="epythet-validate")
     options = {opt for action in parser._actions for opt in action.option_strings}

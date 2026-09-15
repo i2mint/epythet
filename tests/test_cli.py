@@ -340,6 +340,24 @@ def test_unknown_command_exits_two():
     assert "invalid choice" in result.stderr
 
 
+@pytest.mark.parametrize("command,positional", [("validate", "package"), ("repair", "path")])
+@pytest.mark.parametrize(
+    "shape",
+    [
+        ["{cmd}", ".", "-i", "tests/", "scrap/"],
+        ["{cmd}", "-i", "tests/", "scrap/", "--", "."],
+        ["{cmd}", ".", "-i", "tests/", "-i", "scrap/"],
+        ["{cmd}", ".", "--ignore", "tests/", "--ignore", "scrap/"],
+    ],
+)
+def test_ignore_parses_the_same_in_every_argument_order(command, positional, shape):
+    """``-i`` after or before the positional, several values or repeated: one list (#27, item 8)."""
+    argv = [part.format(cmd=command) for part in shape]
+    namespace = _parser().parse_args(argv)
+    assert getattr(namespace, positional) == "."
+    assert namespace.ignore == ["tests/", "scrap/"]
+
+
 def test_missing_required_argument_exits_two():
     result = _run_cli("quickstart")
     assert result.returncode == 2

@@ -180,6 +180,10 @@ LEDGER_COMMANDS = {"propose": propose}
 #: still become ``nargs="*"`` (``--ignore a b``), not a single value.
 CONVENTION = dataclasses.replace(cw.ARGH, resolve_hints=True)
 
+#: ``--ignore a --ignore b`` accumulates on every command that takes it (argparse
+#: would keep only the last flag); ``validate`` and ``repair`` declare the same.
+quickstart._cw = {"params": {"ignore": {"action": "extend", "nargs": "*"}}}
+
 
 def mk_epythet_parser(**parser_kwargs):
     """The full ``epythet`` parser: the flat commands, the tool commands, the ``ledger`` group."""
