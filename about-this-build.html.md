@@ -2,7 +2,7 @@
 
 # About this build
 
-This documentation was built on **2026-09-15 10:42 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/7b9116ace055b5453c5d7f864e6c985f0c5fcd87"><code>7b9116a</code></a> on branch <code>master</code>, for **epythet 0.2.9** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-09-15 10:46 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/00cf318ab556c1a530159363039ad6f03e805c88"><code>00cf318</code></a> on branch <code>master</code>, for **epythet 0.2.10** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -11,9 +11,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/7b9116ace055b5453c5d7f864e6c985f0c5fcd87"><code>7b9116ace055b5453c5d7f864e6c985f0c5fcd87</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/00cf318ab556c1a530159363039ad6f03e805c88"><code>00cf318ab556c1a530159363039ad6f03e805c88</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
-| Tags at this commit | <code>0.2.9</code>                                                                                                                                    |
+| Tags at this commit | <code>0.2.10</code>                                                                                                                                   |
 | Working tree        | clean                                                                                                                                                 |
 | Remote              | <code>https://github.com/i2mint/epythet</code>                                                                                                        |
 
@@ -22,15 +22,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34959085328">34959085328</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34959459512">34959459512</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>1ef791b25fcca916cd579ac8a964ee3aff99cbe0</code> (in the history of the built commit) |
+| Event commit | <code>140fbbc846dc5e291a7f0fdfaaea0d73f018732b</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.9   |
+| epythet  | 0.2.10  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.14 |
@@ -49,14 +49,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.9/">0.2.9</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/epythet/0.2.10/">0.2.10</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 7b9116ace055b5453c5d7f864e6c985f0c5fcd87
-pip install "epythet==0.2.9"
+git checkout 00cf318ab556c1a530159363039ad6f03e805c88
+pip install "epythet==0.2.10"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 
