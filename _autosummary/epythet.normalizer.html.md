@@ -13,8 +13,30 @@ This module rewrites those cases on the fly, in the `autodoc-process-docstring`
 event, so the rendered site is right without editing any source. Each rule is a
 pure function `list[str] -> list[str]` and [`DEFAULT_RULES`](#epythet.normalizer.DEFAULT_RULES) is the
 ordered tuple that runs by default. The rules only touch prose: lines inside
-doctest blocks, literal blocks and directive bodies are left byte-for-byte
-alone, because doctests are executed and code is code.
+doctest blocks, literal blocks, directive bodies and ASCII-art drawings are
+left byte-for-byte alone, because doctests are executed and code is code.
+
+**The principle: rewrite only what is unambiguous; otherwise report.** A rule
+fires when the line can mean one thing (a `>>>` glued to prose is a doctest;
+a 
+
+```
+``
+```
+
+\`\` `` ``` fence is a fence) and stays out when the author’s intent has two
+readings. So a `#` line becomes a rubric only when it is shaped like a
+Markdown heading and stands alone between blank lines, never when it could be
+a code comment; `text:` followed by an indented block becomes a literal
+block only when the block reads as code, never when it reads as a paragraph or
+a definition; a section one-liner folds in the prose that wraps it, never a
+field list that follows it; and nothing at all is rewritten inside the body of
+a Google section (an argument called `x:` is not a literal block marker, an
+argument called `error:` is not a section) or inside a drawing. What the
+rules leave alone, `epythet validate` reports (DR014 for the accidental
+definition list, DR002 for the bare section header, DR031 for the commented
+doctest), so nothing is silently dropped: the same fixture that pins a rule’s
+silence pins the finding that replaces it.
 
 The rules, in order:
 
@@ -62,9 +84,11 @@ Options are:
 
 ### Module Attributes
 
-| [`GOOGLE_SECTIONS`](#epythet.normalizer.GOOGLE_SECTIONS)   | Section names napoleon recognises (Google style), lowercase.   |
-|--------------------------------------------------------------------|----------------------------------------------------------------|
-| [`DEFAULT_RULES`](#epythet.normalizer.DEFAULT_RULES)     | The rules that run by default, in order.                       |
+| [`GOOGLE_SECTIONS`](#epythet.normalizer.GOOGLE_SECTIONS)   | Section names napoleon recognises (Google style), lowercase.               |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`PROSE_WORDS`](#epythet.normalizer.PROSE_WORDS)       | How many plain words make a line read as prose rather than code.           |
+| [`ART_MIN_LINES`](#epythet.normalizer.ART_MIN_LINES)     | How many lines of a run must be drawing lines for the run to be a drawing. |
+| [`DEFAULT_RULES`](#epythet.normalizer.DEFAULT_RULES)     | The rules that run by default, in order.                                   |
 
 ### Functions
 
@@ -75,8 +99,10 @@ Options are:
 | [`fences_to_code_blocks`](#epythet.normalizer.fences_to_code_blocks)(lines)                   | Turn Markdown code fences into <br/><br/>```<br/>``<br/>```<br/><br/>.               |
 | [`fix_short_underlines`](#epythet.normalizer.fix_short_underlines)(lines)                    | Extend a title underline that is shorter than its title.                             |
 | [`google_one_liners`](#epythet.normalizer.google_one_liners)(lines)                       | Expand `Returns: text` (and other one-line sections) into real sections.             |
+| [`google_section_bodies`](#epythet.normalizer.google_section_bodies)(lines)                   | For every line, the indentation of the Google section body it is in, else `None`.    |
 | [`indent_of`](#epythet.normalizer.indent_of)(line)                                | Number of leading spaces (tabs count as one).                                        |
-| [`line_contexts`](#epythet.normalizer.line_contexts)(lines)                           | Classify every line as blank, prose, doctest, literal, list, field or fence.         |
+| [`is_art_line`](#epythet.normalizer.is_art_line)(line)                              | Whether `line` is a piece of a drawing: box characters, arrows, or mostly strokes.   |
+| [`line_contexts`](#epythet.normalizer.line_contexts)(lines)                           | Classify every line as blank, prose, doctest, literal, list, field, fence or art.    |
 | [`literal_block_after_colon`](#epythet.normalizer.literal_block_after_colon)(lines)               | Make `text:` followed by an indented block a proper `::` literal block.              |
 | [`markdown_headings_to_rubrics`](#epythet.normalizer.markdown_headings_to_rubrics)(lines)            | Render `## Heading` as a rubric instead of a literal `##`.                           |
 | [`markdown_links_to_rst`](#epythet.normalizer.markdown_links_to_rst)(lines)                   | Rewrite `[text](url)` links as RST hyperlinks, outside code and literals.            |
@@ -87,6 +113,10 @@ Options are:
 | [`setup`](#epythet.normalizer.setup)(app)                                     | Sphinx extension entry point: `extensions = ["epythet.normalizer"]`.                 |
 | [`sphinx_process_docstring`](#epythet.normalizer.sphinx_process_docstring)(app, what, name, ...) | The `autodoc-process-docstring` handler: normalizes `lines` in place.                |
 
+### epythet.normalizer.ART_MIN_LINES *= 2*
+
+How many lines of a run must be drawing lines for the run to be a drawing.
+
 ### epythet.normalizer.DEFAULT_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>)*
 
 The rules that run by default, in order.
@@ -94,6 +124,10 @@ The rules that run by default, in order.
 ### epythet.normalizer.GOOGLE_SECTIONS *= frozenset({'args', 'arguments', 'attention', 'attributes', 'caution', 'danger', 'error', 'example', 'examples', 'hint', 'important', 'keyword args', 'keyword arguments', 'methods', 'note', 'notes', 'other parameters', 'parameters', 'raise', 'raises', 'receive', 'receives', 'references', 'return', 'returns', 'see also', 'tip', 'todo', 'warn', 'warning', 'warnings', 'warns', 'yield', 'yields'})*
 
 Section names napoleon recognises (Google style), lowercase.
+
+### epythet.normalizer.PROSE_WORDS *= 4*
+
+How many plain words make a line read as prose rather than code.
 
 ### epythet.normalizer.bare_headers_to_rubrics(lines)
 
@@ -129,6 +163,15 @@ the fleet: without it Sphinx renders the doctest as a paragraph and
 'Prose\n\n:param x: y\n    more\n:param z: w'
 >>> normalize_text("Text:\n    indented\nback", rules=[blank_lines_between_blocks])
 'Text:\n    indented\n\nback'
+```
+
+Inside a Google section body the entries are a definition list, where
+consecutive terms need no blank line between them, so a dedent from a
+wrapped `Args:` entry to the next entry is left as written:
+
+```pycon
+>>> normalize_text("Args:\n    a: one that\n        wraps.\n    b: two.", rules=[blank_lines_between_blocks])
+'Args:\n    a: one that\n        wraps.\n    b: two.'
 ```
 
 ### epythet.normalizer.escape_unmatched_stars(lines)
@@ -174,8 +217,10 @@ Extend a title underline that is shorter than its title.
 
 Expand `Returns: text` (and other one-line sections) into real sections.
 
-Continuation lines at the same indentation are folded into the section body;
-a Markdown heading or another section ends it.
+Prose lines that wrap the sentence at the same indentation are folded into
+the section body; a field list, a bullet list, a Markdown heading or another
+section ends it. Inside the body of another section the line is an entry
+(an argument called `error`), not a header, and is left alone.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -185,6 +230,25 @@ a Markdown heading or another section ends it.
 'Returns:\n    a thing that\n    spans two lines.\n\nNext.'
 >>> normalize_text("Returns: a thing.\n## Notes\nText.", rules=[google_one_liners])
 'Returns:\n    a thing.\n\n## Notes\nText.'
+>>> normalize_text("Note: be careful.\n:return: the thing", rules=[google_one_liners])
+'Note:\n    be careful.\n\n:return: the thing'
+```
+
+### epythet.normalizer.google_section_bodies(lines)
+
+For every line, the indentation of the Google section body it is in, else `None`.
+
+A section is a known header (`Args:`, `Returns:`, …) on its own line
+with an indented body below; the body ends at the first non-blank line
+that is not deeper than the header. Rules use this to stay out of section
+bodies, where `x:` is an argument and not a literal-block lead-in.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
+
+```pycon
+>>> google_section_bodies(["Args:", "    x: the x", "        more", "", "Text."])
+[None, 4, 4, 4, None]
 ```
 
 ### epythet.normalizer.indent_of(line)
@@ -199,13 +263,27 @@ Number of leading spaces (tabs count as one).
 (4, 0, 0)
 ```
 
+### epythet.normalizer.is_art_line(line)
+
+Whether `line` is a piece of a drawing: box characters, arrows, or mostly strokes.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> is_art_line("│ 0 │ ──▶ │ 2 │"), is_art_line("  +----+"), is_art_line("- a bullet")
+(True, True, False)
+>>> is_art_line("func1 --> merge"), is_art_line("x = 1  # comment")
+(True, False)
+```
+
 ### epythet.normalizer.line_contexts(lines)
 
-Classify every line as blank, prose, doctest, literal, list, field or fence.
+Classify every line as blank, prose, doctest, literal, list, field, fence or art.
 
 The classification is what keeps every rule away from code: a line inside a
-doctest block, a `::` literal block, a directive body or a Markdown fence
-is never rewritten.
+doctest block, a `::` literal block, a directive body, a Markdown fence or
+an ASCII-art drawing is never rewritten.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -215,11 +293,20 @@ is never rewritten.
 ['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']
 >>> line_contexts(["    >>> 1", "    1", "back to prose"])
 ['doctest', 'doctest', 'prose']
+>>> line_contexts(["a --> b", "  |", "  v", "- c"])
+['art', 'art', 'art', 'list']
 ```
 
 ### epythet.normalizer.literal_block_after_colon(lines)
 
 Make `text:` followed by an indented block a proper `::` literal block.
+
+Only when the block is unmistakably code (`_looks_like_code()`: no
+line reads as prose and some line carries a code signal such as `=`,
+`(` or `#`), and never inside a Google section body, where `x:` is an
+argument. A lead-in over an indented paragraph is a definition list the
+author may have meant; it is left alone and DR014 reports it. A lone
+`Usage:` or `Output:` over a command or a value is code all the same.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -227,14 +314,27 @@ Make `text:` followed by an indented block a proper `::` literal block.
 ```pycon
 >>> normalize_text("For example:\n    x = f(1)\nThen more.", rules=[literal_block_after_colon])
 'For example::\n\n    x = f(1)\n\nThen more.'
+>>> normalize_text("Usage:\n    python run.py  # top 12", rules=[literal_block_after_colon])
+'Usage::\n\n    python run.py  # top 12'
+>>> normalize_text("specifying:\n    the name of the thing to do.", rules=[literal_block_after_colon])
+'specifying:\n    the name of the thing to do.'
+>>> normalize_text("Args:\n    x:\n        The x.", rules=[literal_block_after_colon])
+'Args:\n    x:\n        The x.'
 ```
 
 ### epythet.normalizer.markdown_headings_to_rubrics(lines)
 
 Render `## Heading` as a rubric instead of a literal `##`.
 
-A `#` line right after code is left alone: it is most likely a comment
-that fell out of a doctest.
+A `#` line is also how a code comment, a commented-out doctest and its
+output (`# True`) or a commented-out paragraph look, so the rule wants a
+heading shape: `#` marks, a space, then a title that starts with a
+capital letter, a digit or a backtick, holds no code (`=`, `(`,
+`>>>`) and no trailing `:` or `.`, and is not a `TODO:` tag. A
+single `#` must also follow a blank line (or open the docstring);
+`##` and deeper may sit against prose. No heading of any level sits
+against another `#` line (that is a commented-out paragraph or doctest)
+or right after code.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -242,6 +342,12 @@ that fell out of a doctest.
 ```pycon
 >>> normalize_text("Intro.\n## Usage\nText.", rules=[markdown_headings_to_rubrics])
 'Intro.\n\n.. rubric:: Usage\n\nText.'
+>>> normalize_text("# >>> f()\n# True", rules=[markdown_headings_to_rubrics])
+'# >>> f()\n# True'
+>>> normalize_text("# Making a signature\nText.", rules=[markdown_headings_to_rubrics])
+'.. rubric:: Making a signature\n\nText.'
+>>> normalize_text("Intro.\n# Not a heading\n\nText.", rules=[markdown_headings_to_rubrics])
+'Intro.\n# Not a heading\n\nText.'
 ```
 
 ### epythet.normalizer.markdown_links_to_rst(lines)

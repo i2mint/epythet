@@ -9,6 +9,8 @@ epythet.normalizer
    .. autosummary::
    
       GOOGLE_SECTIONS
+      PROSE_WORDS
+      ART_MIN_LINES
       DEFAULT_RULES
    
    .. rubric:: Functions
@@ -21,7 +23,9 @@ epythet.normalizer
       fences_to_code_blocks
       fix_short_underlines
       google_one_liners
+      google_section_bodies
       indent_of
+      is_art_line
       line_contexts
       literal_block_after_colon
       markdown_headings_to_rubrics

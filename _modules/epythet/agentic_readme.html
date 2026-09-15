@@ -353,8 +353,11 @@
 <span class="p">)</span>
 <span class="c1">#: The kinds a check reports on, in display order.</span>
 <span class="n">KINDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"skills"</span><span class="p">,</span> <span class="s2">"subagents"</span><span class="p">,</span> <span class="s2">"instruction_files"</span><span class="p">,</span> <span class="s2">"agent_docs"</span><span class="p">,</span> <span class="s2">"section"</span><span class="p">)</span>
-<span class="c1">#: The snippet names the section is rendered from.</span>
+<span class="c1">#: The snippet names the section is rendered from. A project whose only agentic</span>
+<span class="c1">#: aspect is its agent-readable documentation gets the shorter docs-only variant:</span>
+<span class="c1">#: it ships no tooling, so the section must not say it does.</span>
 <span class="n">SECTION_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-section"</span>
+<span class="n">DOCS_ONLY_SECTION_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-section-docs-only"</span>
 <span class="n">HUMOR_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-humor"</span>
 <span class="n">INSTRUCTION_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-instruction"</span>
 <span class="c1">#: The opener used when ``humor`` is off.</span>
@@ -939,7 +942,8 @@
     <span class="n">name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">project_dir</span><span class="o">.</span><span class="n">name</span>
     <span class="n">repo_stub</span> <span class="o">=</span> <span class="n">repo_stub_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
     <span class="n">site_url</span> <span class="o">=</span> <span class="n">site_url_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
-    <span class="n">template</span> <span class="o">=</span> <span class="n">snippets</span><span class="p">(</span><span class="n">SECTION_SNIPPET</span><span class="p">)</span>
+    <span class="n">snippet_name</span> <span class="o">=</span> <span class="n">section_snippet_for</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">snippets</span><span class="p">(</span><span class="n">snippet_name</span><span class="p">)</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">marker_start</span><span class="o">=</span><span class="n">MARKER_START</span><span class="p">,</span>
         <span class="n">marker_end</span><span class="o">=</span><span class="n">MARKER_END</span><span class="p">,</span>
@@ -958,16 +962,41 @@
         <span class="n">rendered</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">fields</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># str.format raises Key/Index/Value/Attribute/TypeError</span>
         <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">SECTION_SNIPPET</span><span class="si">!r}</span><span class="s2"> does not format: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">; the fields are "</span>
+            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">snippet_name</span><span class="si">!r}</span><span class="s2"> does not format: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">; the fields are "</span>
             <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">SECTION_FIELDS</span><span class="p">)</span><span class="si">}</span><span class="s2"> and literal braces must be doubled (</span><span class="se">{{{{</span><span class="s2"> and </span><span class="se">}}}}</span><span class="s2">)"</span>
         <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
     <span class="n">rendered</span> <span class="o">=</span> <span class="n">rendered</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
     <span class="k">if</span> <span class="n">marker_span</span><span class="p">(</span><span class="n">rendered</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rendered</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">SECTION_SNIPPET</span><span class="si">!r}</span><span class="s2"> must start with </span><span class="se">{{</span><span class="s2">marker_start</span><span class="se">}}</span><span class="s2"> and end with "</span>
+            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">snippet_name</span><span class="si">!r}</span><span class="s2"> must start with </span><span class="se">{{</span><span class="s2">marker_start</span><span class="se">}}</span><span class="s2"> and end with "</span>
             <span class="s2">"</span><span class="si">{marker_end}</span><span class="s2">, each on its own line, or the section cannot be updated in place"</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">rendered</span></div>
+
+
+
+<div class="viewcode-block" id="ships_tooling">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ships_tooling">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ships_tooling</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether the project ships anything an agent installs or reads as instructions.</span>
+
+<span class="sd">    Skills, subagents and instruction files count; published agent-readable</span>
+<span class="sd">    documentation (``llms.txt``, ``&lt;package&gt;.md``) does not, because it is a</span>
+<span class="sd">    view of the docs rather than tooling.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span> <span class="ow">or</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span> <span class="ow">or</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="section_snippet_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.section_snippet_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">section_snippet_for</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The name of the section snippet ``artifacts`` calls for.</span>
+
+<span class="sd">    :data:`SECTION_SNIPPET` when the project ships tooling, else the shorter</span>
+<span class="sd">    :data:`DOCS_ONLY_SECTION_SNIPPET`, which makes no "ships tooling" claim.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">SECTION_SNIPPET</span> <span class="k">if</span> <span class="n">ships_tooling</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span> <span class="k">else</span> <span class="n">DOCS_ONLY_SECTION_SNIPPET</span></div>
 
 
 
@@ -1284,7 +1313,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

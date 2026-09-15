@@ -553,7 +553,10 @@
         <span class="k">with</span> <span class="n">Timer</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">durations</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">linters</span><span class="p">:</span>
                 <span class="n">found</span><span class="p">,</span> <span class="n">notes</span> <span class="o">=</span> <span class="n">run_lint_level</span><span class="p">(</span>
-                    <span class="n">resolved</span><span class="o">.</span><span class="n">package_dir</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">resolved</span><span class="o">.</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+                    <span class="n">resolved</span><span class="o">.</span><span class="n">package_dir</span><span class="p">,</span>
+                    <span class="n">project_dir</span><span class="o">=</span><span class="n">resolved</span><span class="o">.</span><span class="n">project_dir</span><span class="p">,</span>
+                    <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                    <span class="n">ignore</span><span class="o">=</span><span class="n">ignore</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">findings</span> <span class="o">+=</span> <span class="n">found</span>
                 <span class="n">report</span><span class="o">.</span><span class="n">notes</span> <span class="o">+=</span> <span class="n">notes</span>
@@ -684,7 +687,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

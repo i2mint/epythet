@@ -62,6 +62,8 @@ links to the heading that follows the section.
 | [`place_section`](#epythet.agentic_readme.place_section)(text, \*, agentic_first)             | Where the section goes in `text`: `(start, end, next_heading, level)`.                           |
 | [`read_readme`](#epythet.agentic_readme.read_readme)(path)                                  | `(text, newline)`: the README with `\n` line ends, and the style to write back.                  |
 | [`render_section`](#epythet.agentic_readme.render_section)(artifacts, config, \*, policy)      | The README section for `artifacts`, from the effective snippets and `policy`.                    |
+| [`section_snippet_for`](#epythet.agentic_readme.section_snippet_for)(artifacts)                     | The name of the section snippet `artifacts` calls for.                                           |
+| [`ships_tooling`](#epythet.agentic_readme.ships_tooling)(artifacts)                           | Whether the project ships anything an agent installs or reads as instructions.                   |
 | [`splice_section`](#epythet.agentic_readme.splice_section)(text, section, \*, start, end)      | `text` with `section` in place of `text[start:end]`, blank lines kept sane.                      |
 | [`write_section`](#epythet.agentic_readme.write_section)(project_dir, \*[, user_config])      | Add or update the marked section in the project's README; returns `(path, outcome)`.             |
 
@@ -161,7 +163,9 @@ The fields a section snippet may use.
 
 ### epythet.agentic_readme.SECTION_SNIPPET *= 'agentic-readme-section'*
 
-The snippet names the section is rendered from.
+The snippet names the section is rendered from. A project whose only agentic
+aspect is its agent-readable documentation gets the shorter docs-only variant:
+it ships no tooling, so the section must not say it does.
 
 ### *exception* epythet.agentic_readme.SectionError
 
@@ -348,6 +352,27 @@ The README section for `artifacts`, from the effective snippets and `policy`.
   [**SectionError**](#epythet.agentic_readme.SectionError) – when the section snippet fails to format or drops a marker
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.section_snippet_for(artifacts)
+
+The name of the section snippet `artifacts` calls for.
+
+[`SECTION_SNIPPET`](#epythet.agentic_readme.SECTION_SNIPPET) when the project ships tooling, else the shorter
+`DOCS_ONLY_SECTION_SNIPPET`, which makes no “ships tooling” claim.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.ships_tooling(artifacts)
+
+Whether the project ships anything an agent installs or reads as instructions.
+
+Skills, subagents and instruction files count; published agent-readable
+documentation (`llms.txt`, `<package>.md`) does not, because it is a
+view of the docs rather than tooling.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.agentic_readme.splice_section(text, section, , start, end)
 

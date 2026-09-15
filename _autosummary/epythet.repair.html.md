@@ -20,7 +20,15 @@ narrow:
   prose `*args` is *not* source-safe (it changes what the author wrote,
   and a later reader may not know why the backslash is there), so it stays a
   diagnostic (DR010), like unmatched backticks and every other artifact the
-  normalizer cannot fix.
+  normalizer cannot fix. Nor is turning a bare `Examples:` header into a
+  rubric: napoleon renders it as that rubric already, so the rewrite would
+  churn the source for no change on the page ([`UNSAFE_RULES`](#epythet.repair.UNSAFE_RULES) lists both
+  with the reason).
+- The normalizer’s own rule applies twice over here: \*\*rewrite only what is
+  unambiguous, otherwise report.\*\* A `#` line that could be a comment, a
+  `term:` over an indented paragraph, an entry inside an `Args:` body, a
+  drawing made of arrows: none is touched, and the author’s blank lines
+  before the closing quotes are kept as written.
 - Every doctest keeps its source lines byte for byte (checked with
   [`doctest`](https://docs.python.org/3/library/doctest.html#module-doctest)’s own parser); a rewrite that would change one is skipped.
 - Every rewritten docstring is re-validated at level 0.5: a rewrite that
@@ -51,9 +59,9 @@ the string nodes).
 
 ### Module Attributes
 
-| [`SOURCE_SAFE_RULES`](#epythet.repair.SOURCE_SAFE_RULES)   | The normalizer rules whose rewrite is safe to commit to source, in normalizer order.   |
-|----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| [`UNSAFE_RULES`](#epythet.repair.UNSAFE_RULES)        | Normalizer rules that stay build-time only, and why.                                   |
+| [`UNSAFE_RULES`](#epythet.repair.UNSAFE_RULES)      | Normalizer rules that stay build-time only, and why.                                 |
+|--------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [`SOURCE_SAFE_RULES`](#epythet.repair.SOURCE_SAFE_RULES) | The normalizer rules whose rewrite is safe to commit to source, in normalizer order. |
 
 ### Functions
 
@@ -112,11 +120,11 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything one `repair` run did.
 
-### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
+### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
 
 The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
 
-### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
+### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {'bare_headers_to_rubrics': 'napoleon already renders a bare Examples: header as that rubric, so the rewrite changes the source without changing the page; a bare Note: is ambiguous and reported as DR002 instead', 'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
 
 Normalizer rules that stay build-time only, and why.
 
@@ -161,7 +169,7 @@ The human report: the diff (dry run) or what was written, then the refusals.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
+### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
 
 Repair the docstrings under `path` (a file, package directory or project root).
 
@@ -194,7 +202,7 @@ do or every write was verified; 3 when a written file had to be restored.
   * **path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – A .py file, a package directory, or a project root.
   * **write** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
   * **fence_style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – What a Markdown fence becomes: code-block or literal.
-  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains any of these strings (several after one -i, or -i repeated).
   * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
   * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
   * **no_doctests** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
@@ -203,14 +211,14 @@ do or every write was verified; 3 when a written file had to be restored.
 * **Return type:**
   [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
-### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
+### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
 
 Repair every docstring of one module’s source text; nothing is written.
 
 * **Return type:**
   [`FileRepair`](#epythet.repair.FileRepair)
 
-### epythet.repair.rewrite_docstring_literal(segment, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+### epythet.repair.rewrite_docstring_literal(segment, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
 
 Rewrite one docstring literal’s source; returns `(new_segment, reason_if_unsafe)`.
 
@@ -222,7 +230,7 @@ preserved.
 * **Return type:**
   [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
-### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
 
 The rule tuple for a fence style (`literal` swaps the fence rule).
 

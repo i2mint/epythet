@@ -9,6 +9,7 @@ epythet.validation.docstrings
    .. autosummary::
    
       count_public_objects
+      is_ignored
       iter_docstrings
       iter_file_docstrings
       iter_python_files

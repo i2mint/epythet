@@ -16,6 +16,7 @@ in the latter.
 
 | [`count_public_objects`](#epythet.validation.docstrings.count_public_objects)(package_dir, \*[, ignore])   | Count public modules, classes and functions, and those without a docstring.                 |
 |----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| [`is_ignored`](#epythet.validation.docstrings.is_ignored)(path, ignore)                          | Whether `path` matches the `--ignore` list: any token is a substring of its POSIX form.     |
 | [`iter_docstrings`](#epythet.validation.docstrings.iter_docstrings)(package_dir, \*[, ignore, ...])   | Yield every docstring in a package directory tree.                                          |
 | [`iter_file_docstrings`](#epythet.validation.docstrings.iter_file_docstrings)(path, \*[, root, on_skip])   | Yield the module, class and function docstrings of one file, in source order.               |
 | [`iter_python_files`](#epythet.validation.docstrings.iter_python_files)(package_dir, \*[, ignore])      | Every `.py` in the package tree, skipping caches, non-package dirs and `ignore` substrings. |
@@ -51,6 +52,21 @@ package. Nested functions are counted like any other def.
 
 * **Return type:**
   [`Coverage`](#epythet.validation.docstrings.Coverage)
+
+### epythet.validation.docstrings.is_ignored(path, ignore)
+
+Whether `path` matches the `--ignore` list: any token is a substring of its POSIX form.
+
+The one predicate every level uses, so a file the parse level skips is
+also absent from the lint, coverage and repair results.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> is_ignored("/p/pkg/tests/test_x.py", ["tests/"]), is_ignored("/p/pkg/x.py", ["tests/"])
+(True, False)
+```
 
 ### epythet.validation.docstrings.iter_docstrings(package_dir, , ignore=(), on_skip=None)
 

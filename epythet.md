@@ -1,4 +1,4 @@
-> built 2026-09-15 09:16 UTC from 764c511 (master) · epythet 0.2.8. Details: build_info.json
+> built 2026-09-15 10:42 UTC from 7b9116a (master) · epythet 0.2.9. Details: build_info.json
 
 # index.html.md
 
@@ -486,6 +486,8 @@ links to the heading that follows the section.
 | [`place_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.place_section)(text, \*, agentic_first)             | Where the section goes in `text`: `(start, end, next_heading, level)`.                           |
 | [`read_readme`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.read_readme)(path)                                  | `(text, newline)`: the README with `\n` line ends, and the style to write back.                  |
 | [`render_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.render_section)(artifacts, config, \*, policy)      | The README section for `artifacts`, from the effective snippets and `policy`.                    |
+| [`section_snippet_for`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.section_snippet_for)(artifacts)                     | The name of the section snippet `artifacts` calls for.                                           |
+| [`ships_tooling`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.ships_tooling)(artifacts)                           | Whether the project ships anything an agent installs or reads as instructions.                   |
 | [`splice_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.splice_section)(text, section, \*, start, end)      | `text` with `section` in place of `text[start:end]`, blank lines kept sane.                      |
 | [`write_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.write_section)(project_dir, \*[, user_config])      | Add or update the marked section in the project's README; returns `(path, outcome)`.             |
 
@@ -585,7 +587,9 @@ The fields a section snippet may use.
 
 ### epythet.agentic_readme.SECTION_SNIPPET *= 'agentic-readme-section'*
 
-The snippet names the section is rendered from.
+The snippet names the section is rendered from. A project whose only agentic
+aspect is its agent-readable documentation gets the shorter docs-only variant:
+it ships no tooling, so the section must not say it does.
 
 ### *exception* epythet.agentic_readme.SectionError
 
@@ -772,6 +776,27 @@ The README section for `artifacts`, from the effective snippets and `policy`.
   [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – when the section snippet fails to format or drops a marker
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.section_snippet_for(artifacts)
+
+The name of the section snippet `artifacts` calls for.
+
+[`SECTION_SNIPPET`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SECTION_SNIPPET) when the project ships tooling, else the shorter
+`DOCS_ONLY_SECTION_SNIPPET`, which makes no “ships tooling” claim.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.ships_tooling(artifacts)
+
+Whether the project ships anything an agent installs or reads as instructions.
+
+Skills, subagents and instruction files count; published agent-readable
+documentation (`llms.txt`, `<package>.md`) does not, because it is a
+view of the docs rather than tooling.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.agentic_readme.splice_section(text, section, , start, end)
 
@@ -1885,8 +1910,30 @@ This module rewrites those cases on the fly, in the `autodoc-process-docstring`
 event, so the rendered site is right without editing any source. Each rule is a
 pure function `list[str] -> list[str]` and [`DEFAULT_RULES`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.DEFAULT_RULES) is the
 ordered tuple that runs by default. The rules only touch prose: lines inside
-doctest blocks, literal blocks and directive bodies are left byte-for-byte
-alone, because doctests are executed and code is code.
+doctest blocks, literal blocks, directive bodies and ASCII-art drawings are
+left byte-for-byte alone, because doctests are executed and code is code.
+
+**The principle: rewrite only what is unambiguous; otherwise report.** A rule
+fires when the line can mean one thing (a `>>>` glued to prose is a doctest;
+a 
+
+```
+``
+```
+
+\`\` `` ``` fence is a fence) and stays out when the author’s intent has two
+readings. So a `#` line becomes a rubric only when it is shaped like a
+Markdown heading and stands alone between blank lines, never when it could be
+a code comment; `text:` followed by an indented block becomes a literal
+block only when the block reads as code, never when it reads as a paragraph or
+a definition; a section one-liner folds in the prose that wraps it, never a
+field list that follows it; and nothing at all is rewritten inside the body of
+a Google section (an argument called `x:` is not a literal block marker, an
+argument called `error:` is not a section) or inside a drawing. What the
+rules leave alone, `epythet validate` reports (DR014 for the accidental
+definition list, DR002 for the bare section header, DR031 for the commented
+doctest), so nothing is silently dropped: the same fixture that pins a rule’s
+silence pins the finding that replaces it.
 
 The rules, in order:
 
@@ -1934,9 +1981,11 @@ Options are:
 
 ### Module Attributes
 
-| [`GOOGLE_SECTIONS`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.GOOGLE_SECTIONS)   | Section names napoleon recognises (Google style), lowercase.   |
-|--------------------------------------------------------------------|----------------------------------------------------------------|
-| [`DEFAULT_RULES`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.DEFAULT_RULES)     | The rules that run by default, in order.                       |
+| [`GOOGLE_SECTIONS`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.GOOGLE_SECTIONS)   | Section names napoleon recognises (Google style), lowercase.               |
+|--------------------------------------------------------------------|----------------------------------------------------------------------------|
+| [`PROSE_WORDS`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.PROSE_WORDS)       | How many plain words make a line read as prose rather than code.           |
+| [`ART_MIN_LINES`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.ART_MIN_LINES)     | How many lines of a run must be drawing lines for the run to be a drawing. |
+| [`DEFAULT_RULES`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.DEFAULT_RULES)     | The rules that run by default, in order.                                   |
 
 ### Functions
 
@@ -1947,8 +1996,10 @@ Options are:
 | [`fences_to_code_blocks`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.fences_to_code_blocks)(lines)                   | Turn Markdown code fences into <br/><br/>```<br/>``<br/>```<br/><br/>.               |
 | [`fix_short_underlines`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.fix_short_underlines)(lines)                    | Extend a title underline that is shorter than its title.                             |
 | [`google_one_liners`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.google_one_liners)(lines)                       | Expand `Returns: text` (and other one-line sections) into real sections.             |
+| [`google_section_bodies`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.google_section_bodies)(lines)                   | For every line, the indentation of the Google section body it is in, else `None`.    |
 | [`indent_of`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.indent_of)(line)                                | Number of leading spaces (tabs count as one).                                        |
-| [`line_contexts`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.line_contexts)(lines)                           | Classify every line as blank, prose, doctest, literal, list, field or fence.         |
+| [`is_art_line`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.is_art_line)(line)                              | Whether `line` is a piece of a drawing: box characters, arrows, or mostly strokes.   |
+| [`line_contexts`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.line_contexts)(lines)                           | Classify every line as blank, prose, doctest, literal, list, field, fence or art.    |
 | [`literal_block_after_colon`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.literal_block_after_colon)(lines)               | Make `text:` followed by an indented block a proper `::` literal block.              |
 | [`markdown_headings_to_rubrics`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.markdown_headings_to_rubrics)(lines)            | Render `## Heading` as a rubric instead of a literal `##`.                           |
 | [`markdown_links_to_rst`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.markdown_links_to_rst)(lines)                   | Rewrite `[text](url)` links as RST hyperlinks, outside code and literals.            |
@@ -1959,6 +2010,10 @@ Options are:
 | [`setup`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.setup)(app)                                     | Sphinx extension entry point: `extensions = ["epythet.normalizer"]`.                 |
 | [`sphinx_process_docstring`](_autosummary/epythet.normalizer.html.md#epythet.normalizer.sphinx_process_docstring)(app, what, name, ...) | The `autodoc-process-docstring` handler: normalizes `lines` in place.                |
 
+### epythet.normalizer.ART_MIN_LINES *= 2*
+
+How many lines of a run must be drawing lines for the run to be a drawing.
+
 ### epythet.normalizer.DEFAULT_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>)*
 
 The rules that run by default, in order.
@@ -1966,6 +2021,10 @@ The rules that run by default, in order.
 ### epythet.normalizer.GOOGLE_SECTIONS *= frozenset({'args', 'arguments', 'attention', 'attributes', 'caution', 'danger', 'error', 'example', 'examples', 'hint', 'important', 'keyword args', 'keyword arguments', 'methods', 'note', 'notes', 'other parameters', 'parameters', 'raise', 'raises', 'receive', 'receives', 'references', 'return', 'returns', 'see also', 'tip', 'todo', 'warn', 'warning', 'warnings', 'warns', 'yield', 'yields'})*
 
 Section names napoleon recognises (Google style), lowercase.
+
+### epythet.normalizer.PROSE_WORDS *= 4*
+
+How many plain words make a line read as prose rather than code.
 
 ### epythet.normalizer.bare_headers_to_rubrics(lines)
 
@@ -2001,6 +2060,15 @@ the fleet: without it Sphinx renders the doctest as a paragraph and
 'Prose\n\n:param x: y\n    more\n:param z: w'
 >>> normalize_text("Text:\n    indented\nback", rules=[blank_lines_between_blocks])
 'Text:\n    indented\n\nback'
+```
+
+Inside a Google section body the entries are a definition list, where
+consecutive terms need no blank line between them, so a dedent from a
+wrapped `Args:` entry to the next entry is left as written:
+
+```pycon
+>>> normalize_text("Args:\n    a: one that\n        wraps.\n    b: two.", rules=[blank_lines_between_blocks])
+'Args:\n    a: one that\n        wraps.\n    b: two.'
 ```
 
 ### epythet.normalizer.escape_unmatched_stars(lines)
@@ -2046,8 +2114,10 @@ Extend a title underline that is shorter than its title.
 
 Expand `Returns: text` (and other one-line sections) into real sections.
 
-Continuation lines at the same indentation are folded into the section body;
-a Markdown heading or another section ends it.
+Prose lines that wrap the sentence at the same indentation are folded into
+the section body; a field list, a bullet list, a Markdown heading or another
+section ends it. Inside the body of another section the line is an entry
+(an argument called `error`), not a header, and is left alone.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -2057,6 +2127,25 @@ a Markdown heading or another section ends it.
 'Returns:\n    a thing that\n    spans two lines.\n\nNext.'
 >>> normalize_text("Returns: a thing.\n## Notes\nText.", rules=[google_one_liners])
 'Returns:\n    a thing.\n\n## Notes\nText.'
+>>> normalize_text("Note: be careful.\n:return: the thing", rules=[google_one_liners])
+'Note:\n    be careful.\n\n:return: the thing'
+```
+
+### epythet.normalizer.google_section_bodies(lines)
+
+For every line, the indentation of the Google section body it is in, else `None`.
+
+A section is a known header (`Args:`, `Returns:`, …) on its own line
+with an indented body below; the body ends at the first non-blank line
+that is not deeper than the header. Rules use this to stay out of section
+bodies, where `x:` is an argument and not a literal-block lead-in.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
+
+```pycon
+>>> google_section_bodies(["Args:", "    x: the x", "        more", "", "Text."])
+[None, 4, 4, 4, None]
 ```
 
 ### epythet.normalizer.indent_of(line)
@@ -2071,13 +2160,27 @@ Number of leading spaces (tabs count as one).
 (4, 0, 0)
 ```
 
+### epythet.normalizer.is_art_line(line)
+
+Whether `line` is a piece of a drawing: box characters, arrows, or mostly strokes.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> is_art_line("│ 0 │ ──▶ │ 2 │"), is_art_line("  +----+"), is_art_line("- a bullet")
+(True, True, False)
+>>> is_art_line("func1 --> merge"), is_art_line("x = 1  # comment")
+(True, False)
+```
+
 ### epythet.normalizer.line_contexts(lines)
 
-Classify every line as blank, prose, doctest, literal, list, field or fence.
+Classify every line as blank, prose, doctest, literal, list, field, fence or art.
 
 The classification is what keeps every rule away from code: a line inside a
-doctest block, a `::` literal block, a directive body or a Markdown fence
-is never rewritten.
+doctest block, a `::` literal block, a directive body, a Markdown fence or
+an ASCII-art drawing is never rewritten.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -2087,11 +2190,20 @@ is never rewritten.
 ['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']
 >>> line_contexts(["    >>> 1", "    1", "back to prose"])
 ['doctest', 'doctest', 'prose']
+>>> line_contexts(["a --> b", "  |", "  v", "- c"])
+['art', 'art', 'art', 'list']
 ```
 
 ### epythet.normalizer.literal_block_after_colon(lines)
 
 Make `text:` followed by an indented block a proper `::` literal block.
+
+Only when the block is unmistakably code (`_looks_like_code()`: no
+line reads as prose and some line carries a code signal such as `=`,
+`(` or `#`), and never inside a Google section body, where `x:` is an
+argument. A lead-in over an indented paragraph is a definition list the
+author may have meant; it is left alone and DR014 reports it. A lone
+`Usage:` or `Output:` over a command or a value is code all the same.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -2099,14 +2211,27 @@ Make `text:` followed by an indented block a proper `::` literal block.
 ```pycon
 >>> normalize_text("For example:\n    x = f(1)\nThen more.", rules=[literal_block_after_colon])
 'For example::\n\n    x = f(1)\n\nThen more.'
+>>> normalize_text("Usage:\n    python run.py  # top 12", rules=[literal_block_after_colon])
+'Usage::\n\n    python run.py  # top 12'
+>>> normalize_text("specifying:\n    the name of the thing to do.", rules=[literal_block_after_colon])
+'specifying:\n    the name of the thing to do.'
+>>> normalize_text("Args:\n    x:\n        The x.", rules=[literal_block_after_colon])
+'Args:\n    x:\n        The x.'
 ```
 
 ### epythet.normalizer.markdown_headings_to_rubrics(lines)
 
 Render `## Heading` as a rubric instead of a literal `##`.
 
-A `#` line right after code is left alone: it is most likely a comment
-that fell out of a doctest.
+A `#` line is also how a code comment, a commented-out doctest and its
+output (`# True`) or a commented-out paragraph look, so the rule wants a
+heading shape: `#` marks, a space, then a title that starts with a
+capital letter, a digit or a backtick, holds no code (`=`, `(`,
+`>>>`) and no trailing `:` or `.`, and is not a `TODO:` tag. A
+single `#` must also follow a blank line (or open the docstring);
+`##` and deeper may sit against prose. No heading of any level sits
+against another `#` line (that is a commented-out paragraph or doctest)
+or right after code.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
@@ -2114,6 +2239,12 @@ that fell out of a doctest.
 ```pycon
 >>> normalize_text("Intro.\n## Usage\nText.", rules=[markdown_headings_to_rubrics])
 'Intro.\n\n.. rubric:: Usage\n\nText.'
+>>> normalize_text("# >>> f()\n# True", rules=[markdown_headings_to_rubrics])
+'# >>> f()\n# True'
+>>> normalize_text("# Making a signature\nText.", rules=[markdown_headings_to_rubrics])
+'.. rubric:: Making a signature\n\nText.'
+>>> normalize_text("Intro.\n# Not a heading\n\nText.", rules=[markdown_headings_to_rubrics])
+'Intro.\n# Not a heading\n\nText.'
 ```
 
 ### epythet.normalizer.markdown_links_to_rst(lines)
@@ -2708,7 +2839,9 @@ orphan: true
 {marker}
 
 # Build
+```
 
+```pycon
 >>> print(with_front_matter_and_marker("---\ntitle: x\n---\n{marker}\n# B\n"))
 ---
 title: x
@@ -2750,7 +2883,15 @@ narrow:
   prose `*args` is *not* source-safe (it changes what the author wrote,
   and a later reader may not know why the backslash is there), so it stays a
   diagnostic (DR010), like unmatched backticks and every other artifact the
-  normalizer cannot fix.
+  normalizer cannot fix. Nor is turning a bare `Examples:` header into a
+  rubric: napoleon renders it as that rubric already, so the rewrite would
+  churn the source for no change on the page ([`UNSAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.UNSAFE_RULES) lists both
+  with the reason).
+- The normalizer’s own rule applies twice over here: \*\*rewrite only what is
+  unambiguous, otherwise report.\*\* A `#` line that could be a comment, a
+  `term:` over an indented paragraph, an entry inside an `Args:` body, a
+  drawing made of arrows: none is touched, and the author’s blank lines
+  before the closing quotes are kept as written.
 - Every doctest keeps its source lines byte for byte (checked with
   [`doctest`](https://docs.python.org/3/library/doctest.html#module-doctest)’s own parser); a rewrite that would change one is skipped.
 - Every rewritten docstring is re-validated at level 0.5: a rewrite that
@@ -2781,9 +2922,9 @@ the string nodes).
 
 ### Module Attributes
 
-| [`SOURCE_SAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.SOURCE_SAFE_RULES)   | The normalizer rules whose rewrite is safe to commit to source, in normalizer order.   |
-|----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| [`UNSAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.UNSAFE_RULES)        | Normalizer rules that stay build-time only, and why.                                   |
+| [`UNSAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.UNSAFE_RULES)      | Normalizer rules that stay build-time only, and why.                                 |
+|--------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [`SOURCE_SAFE_RULES`](_autosummary/epythet.repair.html.md#epythet.repair.SOURCE_SAFE_RULES) | The normalizer rules whose rewrite is safe to commit to source, in normalizer order. |
 
 ### Functions
 
@@ -2842,11 +2983,11 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Everything one `repair` run did.
 
-### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
+### epythet.repair.SOURCE_SAFE_RULES *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[Callable](https://docs.python.org/3/library/typing.html#typing.Callable)[[[list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], [list](https://docs.python.org/3/builtins/stdtypes.html#list)[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]], ...]* *= (<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>)*
 
 The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
 
-### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
+### epythet.repair.UNSAFE_RULES *: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [str](https://docs.python.org/3/builtins/stdtypes.html#str)]* *= {'bare_headers_to_rubrics': 'napoleon already renders a bare Examples: header as that rubric, so the rewrite changes the source without changing the page; a bare Note: is ambiguous and reported as DR002 instead', 'escape_unmatched_stars': 'escaping \*args in prose changes what the author wrote; reported as DR010 instead'}*
 
 Normalizer rules that stay build-time only, and why.
 
@@ -2891,7 +3032,7 @@ The human report: the diff (dry run) or what was written, then the refusals.
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
-### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
+### epythet.repair.repair(path, \*, write=False, fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ignore=(), ledger=None, napoleon=True, revalidate=True, run_doctests=True, applier=<function apply_span_edits>)
 
 Repair the docstrings under `path` (a file, package directory or project root).
 
@@ -2924,7 +3065,7 @@ do or every write was verified; 3 when a written file had to be restored.
   * **path** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – A .py file, a package directory, or a project root.
   * **write** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Apply the changes (after re-validating each docstring and re-running doctests).
   * **fence_style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – What a Markdown fence becomes: code-block or literal.
-  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains any of these strings (several after one -i, or -i repeated).
   * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
   * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Re-validate without napoleon’s Google/NumPy pre-processing.
   * **no_doctests** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not run each touched file’s doctests before and after writing.
@@ -2933,14 +3074,14 @@ do or every write was verified; 3 when a written file had to be restored.
 * **Return type:**
   [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
-### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
+### epythet.repair.repair_source(source, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>), ledger_rules=(), napoleon=True, applier=<function apply_span_edits>, path=None)
 
 Repair every docstring of one module’s source text; nothing is written.
 
 * **Return type:**
   [`FileRepair`](_autosummary/epythet.repair.html.md#epythet.repair.FileRepair)
 
-### epythet.repair.rewrite_docstring_literal(segment, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+### epythet.repair.rewrite_docstring_literal(segment, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
 
 Rewrite one docstring literal’s source; returns `(new_segment, reason_if_unsafe)`.
 
@@ -2952,7 +3093,7 @@ preserved.
 * **Return type:**
   [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
-### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
+### epythet.repair.rules_for(fence_style='code-block', rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>))
 
 The rule tuple for a fence style (`literal` swaps the fence rule).
 
@@ -3035,7 +3176,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.8', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.9', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -4794,7 +4935,7 @@ with –fail-on-review; 20 ledger integrity failure; 1 internal error.
   * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
   * **style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Docstring convention for the linters: google, numpy, or sphinx.
   * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Parse docstrings without napoleon’s Google/NumPy pre-processing.
-  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains any of these strings (several after one -i, or -i repeated).
   * **docsrc** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Sphinx source directory for level 2 (default: <project>/docsrc).
   * **no_observe** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not append findings to the ledger’s observations file.
   * **no_linters** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 0 without ruff and pydoclint (coverage detectors only).
@@ -5313,6 +5454,7 @@ in the latter.
 
 | [`count_public_objects`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.count_public_objects)(package_dir, \*[, ignore])   | Count public modules, classes and functions, and those without a docstring.                 |
 |----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| [`is_ignored`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.is_ignored)(path, ignore)                          | Whether `path` matches the `--ignore` list: any token is a substring of its POSIX form.     |
 | [`iter_docstrings`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.iter_docstrings)(package_dir, \*[, ignore, ...])   | Yield every docstring in a package directory tree.                                          |
 | [`iter_file_docstrings`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.iter_file_docstrings)(path, \*[, root, on_skip])   | Yield the module, class and function docstrings of one file, in source order.               |
 | [`iter_python_files`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.iter_python_files)(package_dir, \*[, ignore])      | Every `.py` in the package tree, skipping caches, non-package dirs and `ignore` substrings. |
@@ -5348,6 +5490,21 @@ package. Nested functions are counted like any other def.
 
 * **Return type:**
   [`Coverage`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.Coverage)
+
+### epythet.validation.docstrings.is_ignored(path, ignore)
+
+Whether `path` matches the `--ignore` list: any token is a substring of its POSIX form.
+
+The one predicate every level uses, so a file the parse level skips is
+also absent from the lint, coverage and repair results.
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+```pycon
+>>> is_ignored("/p/pkg/tests/test_x.py", ["tests/"]), is_ignored("/p/pkg/x.py", ["tests/"])
+(True, False)
+```
 
 ### epythet.validation.docstrings.iter_docstrings(package_dir, , ignore=(), on_skip=None)
 
@@ -5479,9 +5636,14 @@ Docstring styles ruff’s pydocstyle convention and pydoclint’s `--style` both
 ('warning', 'info')
 ```
 
-### epythet.validation.lint.run_lint_level(package_dir, , project_dir, style='google')
+### epythet.validation.lint.run_lint_level(package_dir, , project_dir, style='google', ignore=())
 
 Level 0: ruff D plus pydoclint, with notes for anything skipped.
+
+`ignore` is the `--ignore` list every other level applies at file
+discovery; the linters walk the package themselves, so their findings are
+filtered by the same predicate ([`is_ignored()`](_autosummary/epythet.validation.docstrings.html.md#epythet.validation.docstrings.is_ignored))
+on the file’s full path.
 
 * **Return type:**
   [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]
@@ -6283,7 +6445,7 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-09-15 09:16 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/764c511eacce1ad4e0ab01de808b93b0e2795545"><code>764c511</code></a> on branch <code>master</code>, for **epythet 0.2.8** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-09-15 10:42 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/7b9116ace055b5453c5d7f864e6c985f0c5fcd87"><code>7b9116a</code></a> on branch <code>master</code>, for **epythet 0.2.9** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -6292,9 +6454,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/764c511eacce1ad4e0ab01de808b93b0e2795545"><code>764c511eacce1ad4e0ab01de808b93b0e2795545</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/7b9116ace055b5453c5d7f864e6c985f0c5fcd87"><code>7b9116ace055b5453c5d7f864e6c985f0c5fcd87</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
-| Tags at this commit | <code>0.2.8</code>                                                                                                                                    |
+| Tags at this commit | <code>0.2.9</code>                                                                                                                                    |
 | Working tree        | clean                                                                                                                                                 |
 | Remote              | <code>https://github.com/i2mint/epythet</code>                                                                                                        |
 
@@ -6303,15 +6465,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34951386124">34951386124</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34959085328">34959085328</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>5c7b20d5b1999fc088cc7fb22228ba402e837e14</code> (in the history of the built commit) |
+| Event commit | <code>1ef791b25fcca916cd579ac8a964ee3aff99cbe0</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.8   |
+| epythet  | 0.2.9   |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.14 |
@@ -6330,14 +6492,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.8/">0.2.8</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/epythet/0.2.9/">0.2.9</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 764c511eacce1ad4e0ab01de808b93b0e2795545
-pip install "epythet==0.2.8"
+git checkout 7b9116ace055b5453c5d7f864e6c985f0c5fcd87
+pip install "epythet==0.2.9"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

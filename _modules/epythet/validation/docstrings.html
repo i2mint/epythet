@@ -453,6 +453,22 @@
     <span class="k">return</span> <span class="kc">True</span>
 
 
+<div class="viewcode-block" id="is_ignored">
+<a class="viewcode-back" href="../../../_autosummary/epythet.validation.docstrings.html#epythet.validation.docstrings.is_ignored">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_ignored</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ignore</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether ``path`` matches the ``--ignore`` list: any token is a substring of its POSIX form.</span>
+
+<span class="sd">    The one predicate every level uses, so a file the parse level skips is</span>
+<span class="sd">    also absent from the lint, coverage and repair results.</span>
+
+<span class="sd">    &gt;&gt;&gt; is_ignored("/p/pkg/tests/test_x.py", ["tests/"]), is_ignored("/p/pkg/x.py", ["tests/"])</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    """</span>
+    <span class="n">posix</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">token</span> <span class="ow">in</span> <span class="n">posix</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="iter_python_files">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.docstrings.html#epythet.validation.docstrings.iter_python_files">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">iter_python_files</span><span class="p">(</span>
@@ -462,10 +478,9 @@
     <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
     <span class="n">package_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">package_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*.py"</span><span class="p">)):</span>
-        <span class="n">posix</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">"__pycache__"</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">parts</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_in_package</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">package_dir</span><span class="p">):</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">token</span> <span class="ow">in</span> <span class="n">posix</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_ignored</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">yield</span> <span class="n">path</span></div>
 
@@ -554,7 +569,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

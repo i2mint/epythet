@@ -503,7 +503,9 @@ orphan: true
 {marker}
 
 # Build
+```
 
+```pycon
 >>> print(with_front_matter_and_marker("---\ntitle: x\n---\n{marker}\n# B\n"))
 ---
 title: x

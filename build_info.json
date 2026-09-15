@@ -1,38 +1,38 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-15T09:16:59Z",
+  "built_at": "2026-09-15T10:42:08Z",
   "package": {
     "name": "epythet",
-    "version": "0.2.8",
+    "version": "0.2.9",
     "display_name": "epythet",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "764c511eacce1ad4e0ab01de808b93b0e2795545",
-    "short_commit": "764c511",
+    "commit": "7b9116ace055b5453c5d7f864e6c985f0c5fcd87",
+    "short_commit": "7b9116a",
     "branch": "master",
     "tags": [
-      "0.2.8"
+      "0.2.9"
     ],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/epythet",
-    "commit_url": "https://github.com/i2mint/epythet/commit/764c511eacce1ad4e0ab01de808b93b0e2795545",
+    "commit_url": "https://github.com/i2mint/epythet/commit/7b9116ace055b5453c5d7f864e6c985f0c5fcd87",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/epythet",
-    "sha": "5c7b20d5b1999fc088cc7fb22228ba402e837e14",
+    "sha": "1ef791b25fcca916cd579ac8a964ee3aff99cbe0",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "34951386124",
-    "run_url": "https://github.com/i2mint/epythet/actions/runs/34951386124",
+    "run_id": "34959085328",
+    "run_url": "https://github.com/i2mint/epythet/actions/runs/34959085328",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.8",
+    "epythet": "0.2.9",
     "sphinx": "9.1.0",
     "docutils": "0.22.4",
     "python": "3.12.14"
@@ -59,15 +59,15 @@
   },
   "site": {
     "modules_documented": 40,
-    "objects_documented": 452
+    "objects_documented": 459
   },
   "pypi": {
     "checked": true,
-    "latest": "0.2.8",
+    "latest": "0.2.9",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 764c511eacce1ad4e0ab01de808b93b0e2795545\npip install \"epythet==0.2.8\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
+  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 7b9116ace055b5453c5d7f864e6c985f0c5fcd87\npip install \"epythet==0.2.9\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
   "warnings": [],
   "alignment": {
     "aligned": true,

@@ -479,6 +479,10 @@
 <span class="c1">#: still become ``nargs="*"`` (``--ignore a b``), not a single value.</span>
 <span class="n">CONVENTION</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">cw</span><span class="o">.</span><span class="n">ARGH</span><span class="p">,</span> <span class="n">resolve_hints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+<span class="c1">#: ``--ignore a --ignore b`` accumulates on every command that takes it (argparse</span>
+<span class="c1">#: would keep only the last flag); ``validate`` and ``repair`` declare the same.</span>
+<span class="n">quickstart</span><span class="o">.</span><span class="n">_cw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"ignore"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"action"</span><span class="p">:</span> <span class="s2">"extend"</span><span class="p">,</span> <span class="s2">"nargs"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">}}}</span>
+
 
 <div class="viewcode-block" id="mk_epythet_parser">
 <a class="viewcode-back" href="../../_autosummary/epythet.cli.html#epythet.cli.mk_epythet_parser">[docs]</a>
@@ -544,7 +548,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

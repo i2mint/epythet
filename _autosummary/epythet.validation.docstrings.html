@@ -306,13 +306,16 @@ in the latter.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.docstrings.count_public_objects" title="epythet.validation.docstrings.count_public_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_public_objects</span></code></a>(package_dir, *[, ignore])</p></td>
 <td><p>Count public modules, classes and functions, and those without a docstring.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_docstrings" title="epythet.validation.docstrings.iter_docstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_docstrings</span></code></a>(package_dir, *[, ignore, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.docstrings.is_ignored" title="epythet.validation.docstrings.is_ignored"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ignored</span></code></a>(path, ignore)</p></td>
+<td><p>Whether <code class="docutils literal notranslate"><span class="pre">path</span></code> matches the <code class="docutils literal notranslate"><span class="pre">--ignore</span></code> list: any token is a substring of its POSIX form.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_docstrings" title="epythet.validation.docstrings.iter_docstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_docstrings</span></code></a>(package_dir, *[, ignore, ...])</p></td>
 <td><p>Yield every docstring in a package directory tree.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_file_docstrings" title="epythet.validation.docstrings.iter_file_docstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_file_docstrings</span></code></a>(path, *[, root, on_skip])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_file_docstrings" title="epythet.validation.docstrings.iter_file_docstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_file_docstrings</span></code></a>(path, *[, root, on_skip])</p></td>
 <td><p>Yield the module, class and function docstrings of one file, in source order.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_python_files" title="epythet.validation.docstrings.iter_python_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_python_files</span></code></a>(package_dir, *[, ignore])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.validation.docstrings.iter_python_files" title="epythet.validation.docstrings.iter_python_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_python_files</span></code></a>(package_dir, *[, ignore])</p></td>
 <td><p>Every <code class="docutils literal notranslate"><span class="pre">.py</span></code> in the package tree, skipping caches, non-package dirs and <code class="docutils literal notranslate"><span class="pre">ignore</span></code> substrings.</p></td>
 </tr>
 </tbody>
@@ -366,6 +369,23 @@ package. Nested functions are counted like any other def.</p>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.validation.docstrings.Coverage" title="epythet.validation.docstrings.Coverage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Coverage</span></code></a></span></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.validation.docstrings.is_ignored">
+<span class="sig-prename descclassname"><span class="pre">epythet.validation.docstrings.</span></span><span class="sig-name descname"><span class="pre">is_ignored</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/docstrings.html#is_ignored"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.docstrings.is_ignored" title="Link to this definition">¶</a></dt>
+<dd><p>Whether <code class="docutils literal notranslate"><span class="pre">path</span></code> matches the <code class="docutils literal notranslate"><span class="pre">--ignore</span></code> list: any token is a substring of its POSIX form.</p>
+<p>The one predicate every level uses, so a file the parse level skips is
+also absent from the lint, coverage and repair results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_ignored</span><span class="p">(</span><span class="s2">"/p/pkg/tests/test_x.py"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"tests/"</span><span class="p">]),</span> <span class="n">is_ignored</span><span class="p">(</span><span class="s2">"/p/pkg/x.py"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"tests/"</span><span class="p">])</span>
+<span class="go">(True, False)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -464,6 +484,7 @@ business, but silence would hide a docstring from the ledger).</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#epythet.validation.docstrings.count_public_objects"><code class="docutils literal notranslate"><span class="pre">count_public_objects()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.validation.docstrings.is_ignored"><code class="docutils literal notranslate"><span class="pre">is_ignored()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.docstrings.iter_docstrings"><code class="docutils literal notranslate"><span class="pre">iter_docstrings()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.docstrings.iter_file_docstrings"><code class="docutils literal notranslate"><span class="pre">iter_file_docstrings()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.validation.docstrings.iter_python_files"><code class="docutils literal notranslate"><span class="pre">iter_python_files()</span></code></a></li>
@@ -478,7 +499,7 @@ business, but silence would hide a docstring from the ledger).</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

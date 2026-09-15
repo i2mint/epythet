@@ -302,7 +302,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Finding</span>
 
@@ -470,14 +470,31 @@
 <div class="viewcode-block" id="run_lint_level">
 <a class="viewcode-back" href="../../../_autosummary/epythet.validation.lint.html#epythet.validation.lint.run_lint_level">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">run_lint_level</span><span class="p">(</span>
-    <span class="n">package_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"google"</span>
+    <span class="n">package_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"google"</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">"""Level 0: ruff D plus pydoclint, with notes for anything skipped."""</span>
+<span class="w">    </span><span class="sd">"""Level 0: ruff D plus pydoclint, with notes for anything skipped.</span>
+
+<span class="sd">    ``ignore`` is the ``--ignore`` list every other level applies at file</span>
+<span class="sd">    discovery; the linters walk the package themselves, so their findings are</span>
+<span class="sd">    filtered by the same predicate (:func:`~epythet.validation.docstrings.is_ignored`)</span>
+<span class="sd">    on the file's full path.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.docstrings</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ignored</span>
+
+    <span class="n">ignore</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ignore</span><span class="p">)</span>
     <span class="n">findings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Finding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">runner</span> <span class="ow">in</span> <span class="p">(</span><span class="n">run_ruff</span><span class="p">,</span> <span class="n">run_pydoclint</span><span class="p">):</span>
         <span class="n">found</span><span class="p">,</span> <span class="n">noted</span> <span class="o">=</span> <span class="n">runner</span><span class="p">(</span><span class="n">package_dir</span><span class="p">,</span> <span class="n">project_dir</span><span class="o">=</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-        <span class="n">findings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+        <span class="n">findings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">f</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">found</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">file</span> <span class="ow">and</span> <span class="n">is_ignored</span><span class="p">(</span><span class="n">project_dir</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ignore</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="n">notes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">noted</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">findings</span><span class="p">,</span> <span class="n">notes</span></div>
 
@@ -509,7 +526,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -8,8 +8,8 @@ epythet.repair
 
    .. autosummary::
    
-      SOURCE_SAFE_RULES
       UNSAFE_RULES
+      SOURCE_SAFE_RULES
    
    .. rubric:: Functions
 

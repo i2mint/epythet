@@ -29,7 +29,7 @@ with –fail-on-review; 20 ledger integrity failure; 1 internal error.
   * **ledger** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Directory of extra rule YAML files overlaid on the bundled ledger.
   * **style** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Docstring convention for the linters: google, numpy, or sphinx.
   * **no_napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Parse docstrings without napoleon’s Google/NumPy pre-processing.
-  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains this string (repeat -i for several).
+  * **ignore** ([`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Skip files whose path contains any of these strings (several after one -i, or -i repeated).
   * **docsrc** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – Sphinx source directory for level 2 (default: <project>/docsrc).
   * **no_observe** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Do not append findings to the ledger’s observations file.
   * **no_linters** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Level 0 without ruff and pydoclint (coverage detectors only).

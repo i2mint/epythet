@@ -37,6 +37,8 @@ epythet.agentic\_readme
       place_section
       read_readme
       render_section
+      section_snippet_for
+      ships_tooling
       splice_section
       write_section
    

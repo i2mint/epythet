@@ -63,9 +63,14 @@ Docstring styles ruff’s pydocstyle convention and pydoclint’s `--style` both
 ('warning', 'info')
 ```
 
-### epythet.validation.lint.run_lint_level(package_dir, , project_dir, style='google')
+### epythet.validation.lint.run_lint_level(package_dir, , project_dir, style='google', ignore=())
 
 Level 0: ruff D plus pydoclint, with notes for anything skipped.
+
+`ignore` is the `--ignore` list every other level applies at file
+discovery; the linters walk the package themselves, so their findings are
+filtered by the same predicate ([`is_ignored()`](epythet.validation.docstrings.html.md#epythet.validation.docstrings.is_ignored))
+on the file’s full path.
 
 * **Return type:**
   [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Finding`](epythet.validation.model.html.md#epythet.validation.model.Finding)], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]]

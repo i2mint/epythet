@@ -301,11 +301,26 @@ fence is printed literally; <code class="docutils literal notranslate"><span cla
 event, so the rendered site is right without editing any source. Each rule is a
 pure function <code class="docutils literal notranslate"><span class="pre">list[str]</span> <span class="pre">-&gt;</span> <span class="pre">list[str]</span></code> and <a class="reference internal" href="#epythet.normalizer.DEFAULT_RULES" title="epythet.normalizer.DEFAULT_RULES"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_RULES</span></code></a> is the
 ordered tuple that runs by default. The rules only touch prose: lines inside
-doctest blocks, literal blocks and directive bodies are left byte-for-byte
-alone, because doctests are executed and code is code.</p>
+doctest blocks, literal blocks, directive bodies and ASCII-art drawings are
+left byte-for-byte alone, because doctests are executed and code is code.</p>
+<p><strong>The principle: rewrite only what is unambiguous; otherwise report.</strong> A rule
+fires when the line can mean one thing (a <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> glued to prose is a doctest;
+a <a href="#id1"><span class="problematic" id="id2">``</span></a>`` <code class="docutils literal notranslate"><span class="pre">`</span> <span class="pre">``</span></code> fence is a fence) and stays out when the author’s intent has two
+readings. So a <code class="docutils literal notranslate"><span class="pre">#</span></code> line becomes a rubric only when it is shaped like a
+Markdown heading and stands alone between blank lines, never when it could be
+a code comment; <code class="docutils literal notranslate"><span class="pre">text:</span></code> followed by an indented block becomes a literal
+block only when the block reads as code, never when it reads as a paragraph or
+a definition; a section one-liner folds in the prose that wraps it, never a
+field list that follows it; and nothing at all is rewritten inside the body of
+a Google section (an argument called <code class="docutils literal notranslate"><span class="pre">x:</span></code> is not a literal block marker, an
+argument called <code class="docutils literal notranslate"><span class="pre">error:</span></code> is not a section) or inside a drawing. What the
+rules leave alone, <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">validate</span></code> reports (DR014 for the accidental
+definition list, DR002 for the bare section header, DR031 for the commented
+doctest), so nothing is silently dropped: the same fixture that pins a rule’s
+silence pins the finding that replaces it.</p>
 <p>The rules, in order:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">fences_to_code_blocks</span></code>: <a href="#id1"><span class="problematic" id="id2">``</span></a>`` <code class="docutils literal notranslate"><span class="pre">`lang</span> <span class="pre">``</span></code> fences become <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">code-block::</span> <span class="pre">lang</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fences_to_code_blocks</span></code>: <a href="#id3"><span class="problematic" id="id4">``</span></a>`` <code class="docutils literal notranslate"><span class="pre">`lang</span> <span class="pre">``</span></code> fences become <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">code-block::</span> <span class="pre">lang</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fix_short_underlines</span></code>: a section underline shorter than its title is extended.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">google_one_liners</span></code>: <code class="docutils literal notranslate"><span class="pre">Returns:</span> <span class="pre">text</span></code> becomes a real <code class="docutils literal notranslate"><span class="pre">Returns:</span></code> section.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">bare_headers_to_rubrics</span></code>: <code class="docutils literal notranslate"><span class="pre">Examples:</span></code> with unindented content becomes a rubric.</p></li>
@@ -346,6 +361,12 @@ list or field list that follows prose, and after an indented block ends.</p></li
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.GOOGLE_SECTIONS" title="epythet.normalizer.GOOGLE_SECTIONS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GOOGLE_SECTIONS</span></code></a></p></td>
 <td><p>Section names napoleon recognises (Google style), lowercase.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.PROSE_WORDS" title="epythet.normalizer.PROSE_WORDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PROSE_WORDS</span></code></a></p></td>
+<td><p>How many plain words make a line read as prose rather than code.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.ART_MIN_LINES" title="epythet.normalizer.ART_MIN_LINES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ART_MIN_LINES</span></code></a></p></td>
+<td><p>How many lines of a run must be drawing lines for the run to be a drawing.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.DEFAULT_RULES" title="epythet.normalizer.DEFAULT_RULES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_RULES</span></code></a></p></td>
 <td><p>The rules that run by default, in order.</p></td>
 </tr>
@@ -366,7 +387,7 @@ list or field list that follows prose, and after an indented block ends.</p></li
 <td><p>Escape <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> in prose so they are not read as emphasis.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.fences_to_code_blocks" title="epythet.normalizer.fences_to_code_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fences_to_code_blocks</span></code></a>(lines)</p></td>
-<td><p>Turn Markdown code fences into <a href="#id3"><span class="problematic" id="id4">``</span></a>.</p></td>
+<td><p>Turn Markdown code fences into <a href="#id5"><span class="problematic" id="id6">``</span></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.fix_short_underlines" title="epythet.normalizer.fix_short_underlines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_short_underlines</span></code></a>(lines)</p></td>
 <td><p>Extend a title underline that is shorter than its title.</p></td>
@@ -374,11 +395,17 @@ list or field list that follows prose, and after an indented block ends.</p></li
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.google_one_liners" title="epythet.normalizer.google_one_liners"><code class="xref py py-obj docutils literal notranslate"><span class="pre">google_one_liners</span></code></a>(lines)</p></td>
 <td><p>Expand <code class="docutils literal notranslate"><span class="pre">Returns:</span> <span class="pre">text</span></code> (and other one-line sections) into real sections.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.indent_of" title="epythet.normalizer.indent_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">indent_of</span></code></a>(line)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.google_section_bodies" title="epythet.normalizer.google_section_bodies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">google_section_bodies</span></code></a>(lines)</p></td>
+<td><p>For every line, the indentation of the Google section body it is in, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.indent_of" title="epythet.normalizer.indent_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">indent_of</span></code></a>(line)</p></td>
 <td><p>Number of leading spaces (tabs count as one).</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.is_art_line" title="epythet.normalizer.is_art_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_art_line</span></code></a>(line)</p></td>
+<td><p>Whether <code class="docutils literal notranslate"><span class="pre">line</span></code> is a piece of a drawing: box characters, arrows, or mostly strokes.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.normalizer.line_contexts" title="epythet.normalizer.line_contexts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">line_contexts</span></code></a>(lines)</p></td>
-<td><p>Classify every line as blank, prose, doctest, literal, list, field or fence.</p></td>
+<td><p>Classify every line as blank, prose, doctest, literal, list, field, fence or art.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.normalizer.literal_block_after_colon" title="epythet.normalizer.literal_block_after_colon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">literal_block_after_colon</span></code></a>(lines)</p></td>
 <td><p>Make <code class="docutils literal notranslate"><span class="pre">text:</span></code> followed by an indented block a proper <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block.</p></td>
@@ -411,6 +438,12 @@ list or field list that follows prose, and after an indented block ends.</p></li
 </table>
 </div>
 <dl class="py data">
+<dt class="sig sig-object py" id="epythet.normalizer.ART_MIN_LINES">
+<span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">ART_MIN_LINES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#epythet.normalizer.ART_MIN_LINES" title="Link to this definition">¶</a></dt>
+<dd><p>How many lines of a run must be drawing lines for the run to be a drawing.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="epythet.normalizer.DEFAULT_RULES">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_RULES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;function</span> <span class="pre">fences_to_code_blocks&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">fix_short_underlines&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">google_one_liners&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">bare_headers_to_rubrics&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">markdown_headings_to_rubrics&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">literal_block_after_colon&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">reflow_list_continuations&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">blank_lines_between_blocks&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">markdown_links_to_rst&gt;,</span> <span class="pre">&lt;function</span> <span class="pre">escape_unmatched_stars&gt;)</span></span><a class="headerlink" href="#epythet.normalizer.DEFAULT_RULES" title="Link to this definition">¶</a></dt>
 <dd><p>The rules that run by default, in order.</p>
@@ -420,6 +453,12 @@ list or field list that follows prose, and after an indented block ends.</p></li
 <dt class="sig sig-object py" id="epythet.normalizer.GOOGLE_SECTIONS">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">GOOGLE_SECTIONS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'args',</span> <span class="pre">'arguments',</span> <span class="pre">'attention',</span> <span class="pre">'attributes',</span> <span class="pre">'caution',</span> <span class="pre">'danger',</span> <span class="pre">'error',</span> <span class="pre">'example',</span> <span class="pre">'examples',</span> <span class="pre">'hint',</span> <span class="pre">'important',</span> <span class="pre">'keyword</span> <span class="pre">args',</span> <span class="pre">'keyword</span> <span class="pre">arguments',</span> <span class="pre">'methods',</span> <span class="pre">'note',</span> <span class="pre">'notes',</span> <span class="pre">'other</span> <span class="pre">parameters',</span> <span class="pre">'parameters',</span> <span class="pre">'raise',</span> <span class="pre">'raises',</span> <span class="pre">'receive',</span> <span class="pre">'receives',</span> <span class="pre">'references',</span> <span class="pre">'return',</span> <span class="pre">'returns',</span> <span class="pre">'see</span> <span class="pre">also',</span> <span class="pre">'tip',</span> <span class="pre">'todo',</span> <span class="pre">'warn',</span> <span class="pre">'warning',</span> <span class="pre">'warnings',</span> <span class="pre">'warns',</span> <span class="pre">'yield',</span> <span class="pre">'yields'})</span></span><a class="headerlink" href="#epythet.normalizer.GOOGLE_SECTIONS" title="Link to this definition">¶</a></dt>
 <dd><p>Section names napoleon recognises (Google style), lowercase.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.normalizer.PROSE_WORDS">
+<span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">PROSE_WORDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#epythet.normalizer.PROSE_WORDS" title="Link to this definition">¶</a></dt>
+<dd><p>How many plain words make a line read as prose rather than code.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -458,6 +497,13 @@ the fleet: without it Sphinx renders the doctest as a paragraph and
 <span class="go">'Prose\n\n:param x: y\n    more\n:param z: w'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Text:</span><span class="se">\n</span><span class="s2">    indented</span><span class="se">\n</span><span class="s2">back"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
 <span class="go">'Text:\n    indented\n\nback'</span>
+</pre></div>
+</div>
+<p>Inside a Google section body the entries are a definition list, where
+consecutive terms need no blank line between them, so a dedent from a
+wrapped <code class="docutils literal notranslate"><span class="pre">Args:</span></code> entry to the next entry is left as written:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Args:</span><span class="se">\n</span><span class="s2">    a: one that</span><span class="se">\n</span><span class="s2">        wraps.</span><span class="se">\n</span><span class="s2">    b: two."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
+<span class="go">'Args:\n    a: one that\n        wraps.\n    b: two.'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -513,8 +559,10 @@ the fleet: without it Sphinx renders the doctest as a paragraph and
 <dt class="sig sig-object py" id="epythet.normalizer.google_one_liners">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">google_one_liners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#google_one_liners"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.google_one_liners" title="Link to this definition">¶</a></dt>
 <dd><p>Expand <code class="docutils literal notranslate"><span class="pre">Returns:</span> <span class="pre">text</span></code> (and other one-line sections) into real sections.</p>
-<p>Continuation lines at the same indentation are folded into the section body;
-a Markdown heading or another section ends it.</p>
+<p>Prose lines that wrap the sentence at the same indentation are folded into
+the section body; a field list, a bullet list, a Markdown heading or another
+section ends it. Inside the body of another section the line is an entry
+(an argument called <code class="docutils literal notranslate"><span class="pre">error</span></code>), not a header, and is left alone.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
@@ -524,6 +572,27 @@ a Markdown heading or another section ends it.</p>
 <span class="go">'Returns:\n    a thing that\n    spans two lines.\n\nNext.'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Returns: a thing.</span><span class="se">\n</span><span class="s2">## Notes</span><span class="se">\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">google_one_liners</span><span class="p">])</span>
 <span class="go">'Returns:\n    a thing.\n\n## Notes\nText.'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Note: be careful.</span><span class="se">\n</span><span class="s2">:return: the thing"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">google_one_liners</span><span class="p">])</span>
+<span class="go">'Note:\n    be careful.\n\n:return: the thing'</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="epythet.normalizer.google_section_bodies">
+<span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">google_section_bodies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#google_section_bodies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.google_section_bodies" title="Link to this definition">¶</a></dt>
+<dd><p>For every line, the indentation of the Google section body it is in, else <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>A section is a known header (<code class="docutils literal notranslate"><span class="pre">Args:</span></code>, <code class="docutils literal notranslate"><span class="pre">Returns:</span></code>, …) on its own line
+with an indented body below; the body ends at the first non-blank line
+that is not deeper than the header. Rules use this to stay out of section
+bodies, where <code class="docutils literal notranslate"><span class="pre">x:</span></code> is an argument and not a literal-block lead-in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">google_section_bodies</span><span class="p">([</span><span class="s2">"Args:"</span><span class="p">,</span> <span class="s2">"    x: the x"</span><span class="p">,</span> <span class="s2">"        more"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"Text."</span><span class="p">])</span>
+<span class="go">[None, 4, 4, 4, None]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -544,12 +613,29 @@ a Markdown heading or another section ends it.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="epythet.normalizer.is_art_line">
+<span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">is_art_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#is_art_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.is_art_line" title="Link to this definition">¶</a></dt>
+<dd><p>Whether <code class="docutils literal notranslate"><span class="pre">line</span></code> is a piece of a drawing: box characters, arrows, or mostly strokes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_art_line</span><span class="p">(</span><span class="s2">"│ 0 │ ──▶ │ 2 │"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"  +----+"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"- a bullet"</span><span class="p">)</span>
+<span class="go">(True, True, False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_art_line</span><span class="p">(</span><span class="s2">"func1 --&gt; merge"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"x = 1  # comment"</span><span class="p">)</span>
+<span class="go">(True, False)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.line_contexts">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">line_contexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#line_contexts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.line_contexts" title="Link to this definition">¶</a></dt>
-<dd><p>Classify every line as blank, prose, doctest, literal, list, field or fence.</p>
+<dd><p>Classify every line as blank, prose, doctest, literal, list, field, fence or art.</p>
 <p>The classification is what keeps every rule away from code: a line inside a
-doctest block, a <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block, a directive body or a Markdown fence
-is never rewritten.</p>
+doctest block, a <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block, a directive body, a Markdown fence or
+an ASCII-art drawing is never rewritten.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
@@ -559,6 +645,8 @@ is never rewritten.</p>
 <span class="go">['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_contexts</span><span class="p">([</span><span class="s2">"    &gt;&gt;&gt; 1"</span><span class="p">,</span> <span class="s2">"    1"</span><span class="p">,</span> <span class="s2">"back to prose"</span><span class="p">])</span>
 <span class="go">['doctest', 'doctest', 'prose']</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line_contexts</span><span class="p">([</span><span class="s2">"a --&gt; b"</span><span class="p">,</span> <span class="s2">"  |"</span><span class="p">,</span> <span class="s2">"  v"</span><span class="p">,</span> <span class="s2">"- c"</span><span class="p">])</span>
+<span class="go">['art', 'art', 'art', 'list']</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -567,6 +655,12 @@ is never rewritten.</p>
 <dt class="sig sig-object py" id="epythet.normalizer.literal_block_after_colon">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">literal_block_after_colon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#literal_block_after_colon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.literal_block_after_colon" title="Link to this definition">¶</a></dt>
 <dd><p>Make <code class="docutils literal notranslate"><span class="pre">text:</span></code> followed by an indented block a proper <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block.</p>
+<p>Only when the block is unmistakably code (<code class="xref py py-func docutils literal notranslate"><span class="pre">_looks_like_code()</span></code>: no
+line reads as prose and some line carries a code signal such as <code class="docutils literal notranslate"><span class="pre">=</span></code>,
+<code class="docutils literal notranslate"><span class="pre">(</span></code> or <code class="docutils literal notranslate"><span class="pre">#</span></code>), and never inside a Google section body, where <code class="docutils literal notranslate"><span class="pre">x:</span></code> is an
+argument. A lead-in over an indented paragraph is a definition list the
+author may have meant; it is left alone and DR014 reports it. A lone
+<code class="docutils literal notranslate"><span class="pre">Usage:</span></code> or <code class="docutils literal notranslate"><span class="pre">Output:</span></code> over a command or a value is code all the same.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
@@ -574,6 +668,12 @@ is never rewritten.</p>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"For example:</span><span class="se">\n</span><span class="s2">    x = f(1)</span><span class="se">\n</span><span class="s2">Then more."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
 <span class="go">'For example::\n\n    x = f(1)\n\nThen more.'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Usage:</span><span class="se">\n</span><span class="s2">    python run.py  # top 12"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
+<span class="go">'Usage::\n\n    python run.py  # top 12'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"specifying:</span><span class="se">\n</span><span class="s2">    the name of the thing to do."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
+<span class="go">'specifying:\n    the name of the thing to do.'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Args:</span><span class="se">\n</span><span class="s2">    x:</span><span class="se">\n</span><span class="s2">        The x."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
+<span class="go">'Args:\n    x:\n        The x.'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -582,8 +682,15 @@ is never rewritten.</p>
 <dt class="sig sig-object py" id="epythet.normalizer.markdown_headings_to_rubrics">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">markdown_headings_to_rubrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#markdown_headings_to_rubrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.markdown_headings_to_rubrics" title="Link to this definition">¶</a></dt>
 <dd><p>Render <code class="docutils literal notranslate"><span class="pre">##</span> <span class="pre">Heading</span></code> as a rubric instead of a literal <code class="docutils literal notranslate"><span class="pre">##</span></code>.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">#</span></code> line right after code is left alone: it is most likely a comment
-that fell out of a doctest.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">#</span></code> line is also how a code comment, a commented-out doctest and its
+output (<code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">True</span></code>) or a commented-out paragraph look, so the rule wants a
+heading shape: <code class="docutils literal notranslate"><span class="pre">#</span></code> marks, a space, then a title that starts with a
+capital letter, a digit or a backtick, holds no code (<code class="docutils literal notranslate"><span class="pre">=</span></code>, <code class="docutils literal notranslate"><span class="pre">(</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code>) and no trailing <code class="docutils literal notranslate"><span class="pre">:</span></code> or <code class="docutils literal notranslate"><span class="pre">.</span></code>, and is not a <code class="docutils literal notranslate"><span class="pre">TODO:</span></code> tag. A
+single <code class="docutils literal notranslate"><span class="pre">#</span></code> must also follow a blank line (or open the docstring);
+<code class="docutils literal notranslate"><span class="pre">##</span></code> and deeper may sit against prose. No heading of any level sits
+against another <code class="docutils literal notranslate"><span class="pre">#</span></code> line (that is a commented-out paragraph or doctest)
+or right after code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
@@ -591,6 +698,12 @@ that fell out of a doctest.</p>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Intro.</span><span class="se">\n</span><span class="s2">## Usage</span><span class="se">\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
 <span class="go">'Intro.\n\n.. rubric:: Usage\n\nText.'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"# &gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2"># True"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
+<span class="go">'# &gt;&gt;&gt; f()\n# True'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"# Making a signature</span><span class="se">\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
+<span class="go">'.. rubric:: Making a signature\n\nText.'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Intro.</span><span class="se">\n</span><span class="s2"># Not a heading</span><span class="se">\n\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
+<span class="go">'Intro.\n# Not a heading\n\nText.'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -748,15 +861,19 @@ napoleon (priority 500) sees the docstring.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">epythet.normalizer</a><ul>
+<li><a class="reference internal" href="#epythet.normalizer.ART_MIN_LINES"><code class="docutils literal notranslate"><span class="pre">ART_MIN_LINES</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.DEFAULT_RULES"><code class="docutils literal notranslate"><span class="pre">DEFAULT_RULES</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.GOOGLE_SECTIONS"><code class="docutils literal notranslate"><span class="pre">GOOGLE_SECTIONS</span></code></a></li>
+<li><a class="reference internal" href="#epythet.normalizer.PROSE_WORDS"><code class="docutils literal notranslate"><span class="pre">PROSE_WORDS</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.bare_headers_to_rubrics"><code class="docutils literal notranslate"><span class="pre">bare_headers_to_rubrics()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.blank_lines_between_blocks"><code class="docutils literal notranslate"><span class="pre">blank_lines_between_blocks()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.escape_unmatched_stars"><code class="docutils literal notranslate"><span class="pre">escape_unmatched_stars()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.fences_to_code_blocks"><code class="docutils literal notranslate"><span class="pre">fences_to_code_blocks()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.fix_short_underlines"><code class="docutils literal notranslate"><span class="pre">fix_short_underlines()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.google_one_liners"><code class="docutils literal notranslate"><span class="pre">google_one_liners()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.normalizer.google_section_bodies"><code class="docutils literal notranslate"><span class="pre">google_section_bodies()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.indent_of"><code class="docutils literal notranslate"><span class="pre">indent_of()</span></code></a></li>
+<li><a class="reference internal" href="#epythet.normalizer.is_art_line"><code class="docutils literal notranslate"><span class="pre">is_art_line()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.line_contexts"><code class="docutils literal notranslate"><span class="pre">line_contexts()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.literal_block_after_colon"><code class="docutils literal notranslate"><span class="pre">literal_block_after_colon()</span></code></a></li>
 <li><a class="reference internal" href="#epythet.normalizer.markdown_headings_to_rubrics"><code class="docutils literal notranslate"><span class="pre">markdown_headings_to_rubrics()</span></code></a></li>
@@ -778,7 +895,7 @@ napoleon (priority 500) sees the docstring.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

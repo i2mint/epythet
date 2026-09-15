@@ -295,8 +295,24 @@
 <span class="sd">event, so the rendered site is right without editing any source. Each rule is a</span>
 <span class="sd">pure function ``list[str] -&gt; list[str]`` and :data:`DEFAULT_RULES` is the</span>
 <span class="sd">ordered tuple that runs by default. The rules only touch prose: lines inside</span>
-<span class="sd">doctest blocks, literal blocks and directive bodies are left byte-for-byte</span>
-<span class="sd">alone, because doctests are executed and code is code.</span>
+<span class="sd">doctest blocks, literal blocks, directive bodies and ASCII-art drawings are</span>
+<span class="sd">left byte-for-byte alone, because doctests are executed and code is code.</span>
+
+<span class="sd">**The principle: rewrite only what is unambiguous; otherwise report.** A rule</span>
+<span class="sd">fires when the line can mean one thing (a ``&gt;&gt;&gt;`` glued to prose is a doctest;</span>
+<span class="sd">a ```` ``` ```` fence is a fence) and stays out when the author's intent has two</span>
+<span class="sd">readings. So a ``#`` line becomes a rubric only when it is shaped like a</span>
+<span class="sd">Markdown heading and stands alone between blank lines, never when it could be</span>
+<span class="sd">a code comment; ``text:`` followed by an indented block becomes a literal</span>
+<span class="sd">block only when the block reads as code, never when it reads as a paragraph or</span>
+<span class="sd">a definition; a section one-liner folds in the prose that wraps it, never a</span>
+<span class="sd">field list that follows it; and nothing at all is rewritten inside the body of</span>
+<span class="sd">a Google section (an argument called ``x:`` is not a literal block marker, an</span>
+<span class="sd">argument called ``error:`` is not a section) or inside a drawing. What the</span>
+<span class="sd">rules leave alone, ``epythet validate`` reports (DR014 for the accidental</span>
+<span class="sd">definition list, DR002 for the bare section header, DR031 for the commented</span>
+<span class="sd">doctest), so nothing is silently dropped: the same fixture that pins a rule's</span>
+<span class="sd">silence pins the finding that replaces it.</span>
 
 <span class="sd">The rules, in order:</span>
 
@@ -366,12 +382,24 @@
 <span class="n">_SECTION_ONE_LINER_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(\s*)([A-Z][A-Za-z ]+):\s+(\S.*)$"</span><span class="p">)</span>
 <span class="n">_LITERAL_SPAN_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"``.+?``|`[^`]+`"</span><span class="p">)</span>
 <span class="n">_STAR_WORD_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;![\w</span><span class="se">\\</span><span class="s2">*])(\*\*?)(?=\w)"</span><span class="p">)</span>
+<span class="c1">#: A token that is a plain word (optionally followed by punctuation): what prose is made of.</span>
+<span class="n">_PLAIN_WORD_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^[A-Za-z]+[,.;:!?)]*$"</span><span class="p">)</span>
+<span class="c1">#: Box-drawing, block and arrow characters: a line with one is part of a drawing.</span>
+<span class="n">_BOX_CHAR_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[─-◿←-⇿]"</span><span class="p">)</span>
+<span class="c1">#: ASCII arrows and box edges that mark a drawing made of plain characters.</span>
+<span class="n">_ASCII_ART_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">"-{2,}&gt;|&lt;-{2,}|={2,}&gt;|&lt;={2,}|\+-{2,}|-{2,}\+|^\s*[|+]\s*$|\|\s{2,}\|"</span>
+<span class="p">)</span>
 
-<span class="n">BLANK</span><span class="p">,</span> <span class="n">PROSE</span><span class="p">,</span> <span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">,</span> <span class="n">FENCE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">"blank"</span><span class="p">,</span> <span class="s2">"prose"</span><span class="p">,</span> <span class="s2">"doctest"</span><span class="p">,</span> <span class="s2">"literal"</span><span class="p">,</span> <span class="s2">"list"</span><span class="p">,</span> <span class="s2">"field"</span><span class="p">,</span> <span class="s2">"fence"</span><span class="p">,</span>
+<span class="n">BLANK</span><span class="p">,</span> <span class="n">PROSE</span><span class="p">,</span> <span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">,</span> <span class="n">ART</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"blank"</span><span class="p">,</span> <span class="s2">"prose"</span><span class="p">,</span> <span class="s2">"doctest"</span><span class="p">,</span> <span class="s2">"literal"</span><span class="p">,</span> <span class="s2">"list"</span><span class="p">,</span> <span class="s2">"field"</span><span class="p">,</span> <span class="s2">"fence"</span><span class="p">,</span> <span class="s2">"art"</span><span class="p">,</span>
 <span class="p">)</span>  <span class="c1"># fmt: skip</span>
-<span class="n">_CODE_CONTEXTS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">})</span>
+<span class="n">_CODE_CONTEXTS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">,</span> <span class="n">ART</span><span class="p">})</span>
 <span class="n">_PROSE_LIKE</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">PROSE</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">})</span>
+<span class="c1">#: How many plain words make a line read as prose rather than code.</span>
+<span class="n">PROSE_WORDS</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="c1">#: How many lines of a run must be drawing lines for the run to be a drawing.</span>
+<span class="n">ART_MIN_LINES</span> <span class="o">=</span> <span class="mi">2</span>
 
 
 <div class="viewcode-block" id="indent_of">
@@ -389,17 +417,165 @@
 <div class="viewcode-block" id="line_contexts">
 <a class="viewcode-back" href="../../_autosummary/epythet.normalizer.html#epythet.normalizer.line_contexts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""Classify every line as blank, prose, doctest, literal, list, field or fence.</span>
+<span class="w">    </span><span class="sd">"""Classify every line as blank, prose, doctest, literal, list, field, fence or art.</span>
 
 <span class="sd">    The classification is what keeps every rule away from code: a line inside a</span>
-<span class="sd">    doctest block, a ``::`` literal block, a directive body or a Markdown fence</span>
-<span class="sd">    is never rewritten.</span>
+<span class="sd">    doctest block, a ``::`` literal block, a directive body, a Markdown fence or</span>
+<span class="sd">    an ASCII-art drawing is never rewritten.</span>
 
 <span class="sd">    &gt;&gt;&gt; line_contexts(["Text:", "", "    &gt;&gt;&gt; 1", "    1", "", "- a", "  b", "", ":param x: y"])</span>
 <span class="sd">    ['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']</span>
 <span class="sd">    &gt;&gt;&gt; line_contexts(["    &gt;&gt;&gt; 1", "    1", "back to prose"])</span>
 <span class="sd">    ['doctest', 'doctest', 'prose']</span>
+<span class="sd">    &gt;&gt;&gt; line_contexts(["a --&gt; b", "  |", "  v", "- c"])</span>
+<span class="sd">    ['art', 'art', 'art', 'list']</span>
 <span class="sd">    """</span>
+    <span class="n">contexts</span> <span class="o">=</span> <span class="n">_line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">_art_runs</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">contexts</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ART</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">contexts</span></div>
+
+
+
+<div class="viewcode-block" id="is_art_line">
+<a class="viewcode-back" href="../../_autosummary/epythet.normalizer.html#epythet.normalizer.is_art_line">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_art_line</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether ``line`` is a piece of a drawing: box characters, arrows, or mostly strokes.</span>
+
+<span class="sd">    &gt;&gt;&gt; is_art_line("│ 0 │ ──▶ │ 2 │"), is_art_line("  +----+"), is_art_line("- a bullet")</span>
+<span class="sd">    (True, True, False)</span>
+<span class="sd">    &gt;&gt;&gt; is_art_line("func1 --&gt; merge"), is_art_line("x = 1  # comment")</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">_DOCTEST_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># a bare ``&gt;&gt;&gt;`` prompt is all strokes, and never a drawing</span>
+    <span class="k">return</span> <span class="n">_is_stroke_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">_ASCII_ART_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_stroke_line</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A line drawn with box characters or made at least half of strokes: art beyond doubt."""</span>
+    <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stripped</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">_BOX_CHAR_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">stripped</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="n">strokes</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ch</span> <span class="ow">in</span> <span class="s2">"-+|/</span><span class="se">\\</span><span class="s2">_&lt;&gt;^v"</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">stripped</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">stripped</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">strokes</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">stripped</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">0.5</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_art_runs</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">"""``(start, end)`` of every drawing: a run of non-blank lines that is mostly art.</span>
+
+<span class="sd">    Short label lines inside the run (``a``, ``v``, ``merge``) belong to the</span>
+<span class="sd">    drawing; a run with fewer than :data:`ART_MIN_LINES` art lines is prose. A</span>
+<span class="sd">    doctest, bullet or field line ends a run (``- a --&gt; b`` is a list item that</span>
+<span class="sd">    happens to hold an arrow), unless it is itself drawn in strokes.</span>
+<span class="sd">    """</span>
+    <span class="n">runs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">_breaks_art</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_breaks_art</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">art</span> <span class="o">=</span> <span class="p">[</span><span class="n">is_art_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">_is_label</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">art</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">ART_MIN_LINES</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">a</span> <span class="ow">or</span> <span class="n">l</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">art</span><span class="p">,</span> <span class="n">labels</span><span class="p">)):</span>
+            <span class="n">runs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="k">return</span> <span class="n">runs</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_breaks_art</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">_DOCTEST_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">_BULLET_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_FIELD_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_stroke_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_label</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A short caption inside a drawing: up to three tokens, no sentence punctuation."""</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">"!"</span><span class="p">,</span> <span class="s2">"?"</span><span class="p">,</span> <span class="s2">":"</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="google_section_bodies">
+<a class="viewcode-back" href="../../_autosummary/epythet.normalizer.html#epythet.normalizer.google_section_bodies">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">google_section_bodies</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""For every line, the indentation of the Google section body it is in, else ``None``.</span>
+
+<span class="sd">    A section is a known header (``Args:``, ``Returns:``, ...) on its own line</span>
+<span class="sd">    with an indented body below; the body ends at the first non-blank line</span>
+<span class="sd">    that is not deeper than the header. Rules use this to stay out of section</span>
+<span class="sd">    bodies, where ``x:`` is an argument and not a literal-block lead-in.</span>
+
+<span class="sd">    &gt;&gt;&gt; google_section_bodies(["Args:", "    x: the x", "        more", "", "Text."])</span>
+<span class="sd">    [None, 4, 4, 4, None]</span>
+<span class="sd">    """</span>
+    <span class="n">bodies</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_section_header</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">header_indent</span> <span class="o">=</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">_next_nonblank</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">first</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">header_indent</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="n">body_indent</span> <span class="o">=</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">first</span><span class="p">])</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">header_indent</span>
+        <span class="p">):</span>
+            <span class="n">bodies</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">body_indent</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="k">return</span> <span class="n">bodies</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_looks_like_prose</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether a line reads as a sentence rather than a command or an expression.</span>
+
+<span class="sd">    At least :data:`PROSE_WORDS` plain words and a sentence's punctuation at the</span>
+<span class="sd">    end (a wrapped line ends in a comma as often as a period), or half again</span>
+<span class="sd">    as many plain words with no punctuation at all.</span>
+
+<span class="sd">    &gt;&gt;&gt; _looks_like_prose("which will just return the (args,"), _looks_like_prose("x = f(a, b)")</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    &gt;&gt;&gt; _looks_like_prose("pip install foo bar"), _looks_like_prose("the name of the thing to do")</span>
+<span class="sd">    (False, True)</span>
+<span class="sd">    """</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">_PLAIN_WORD_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">punctuated</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">","</span><span class="p">,</span> <span class="s2">";"</span><span class="p">,</span> <span class="s2">":"</span><span class="p">,</span> <span class="s2">"!"</span><span class="p">,</span> <span class="s2">"?"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">words</span> <span class="o">&gt;=</span> <span class="n">PROSE_WORDS</span> <span class="ow">and</span> <span class="p">(</span><span class="n">punctuated</span> <span class="ow">or</span> <span class="n">words</span> <span class="o">&gt;=</span> <span class="n">PROSE_WORDS</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">_CODE_SIGNAL_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[=()</span><span class="si">{}</span><span class="s2">\[\]&lt;&gt;$@#|/</span><span class="se">\\</span><span class="s2">*]|::|--|\.py\b"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_looks_like_code</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether an indented block is unmistakably code: no prose line, and a code signal somewhere.</span>
+
+<span class="sd">    &gt;&gt;&gt; _looks_like_code(["python run.py  # top 12"]), _looks_like_code(["the thing to do."])</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    &gt;&gt;&gt; _looks_like_code(["fast"]), _looks_like_code(["{'a': 1}"])</span>
+<span class="sd">    (False, True)</span>
+<span class="sd">    """</span>
+    <span class="n">nonblank</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">block</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">nonblank</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">_looks_like_prose</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nonblank</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">_CODE_SIGNAL_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nonblank</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">contexts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">block</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># doctest / list / field, reset on a blank line</span>
     <span class="n">block_indent</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># indentation of the &gt;&gt;&gt; that opened a doctest block</span>
@@ -462,13 +638,35 @@
             <span class="n">contexts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PROSE</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">stripped</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"::"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stripped</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">".."</span><span class="p">):</span>
             <span class="n">literal_indent</span> <span class="o">=</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">contexts</span></div>
-
+    <span class="k">return</span> <span class="n">contexts</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_section_header</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">_SECTION_HEADER_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">GOOGLE_SECTIONS</span>
+
+
+<span class="n">_HEADING_CODE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[=()</span><span class="si">{}</span><span class="s2">\[\]]|&gt;&gt;&gt;|\|"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_heading_title</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Whether ``title`` reads as a Markdown heading rather than a comment.</span>
+
+<span class="sd">    &gt;&gt;&gt; _is_heading_title("Making a signature"), _is_heading_title("x=1, y=(2, 3)")</span>
+<span class="sd">    (True, False)</span>
+<span class="sd">    &gt;&gt;&gt; _is_heading_title("Can infer types:"), _is_heading_title("TODO: fix"), _is_heading_title("true")</span>
+<span class="sd">    (False, False, False)</span>
+<span class="sd">    &gt;&gt;&gt; _is_heading_title("3 ways to do it"), _is_heading_title("`Sig` basics")</span>
+<span class="sd">    (True, True)</span>
+<span class="sd">    """</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">or</span> <span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">or</span> <span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"`"</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">title</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">":"</span><span class="p">,</span> <span class="s2">"."</span><span class="p">,</span> <span class="s2">","</span><span class="p">,</span> <span class="s2">";"</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">_HEADING_CODE_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[A-Z]{2,}:"</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>  <span class="c1"># TODO: / FIXME: / NOTE: tags</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_next_nonblank</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -553,21 +751,29 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">google_one_liners</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Expand ``Returns: text`` (and other one-line sections) into real sections.</span>
 
-<span class="sd">    Continuation lines at the same indentation are folded into the section body;</span>
-<span class="sd">    a Markdown heading or another section ends it.</span>
+<span class="sd">    Prose lines that wrap the sentence at the same indentation are folded into</span>
+<span class="sd">    the section body; a field list, a bullet list, a Markdown heading or another</span>
+<span class="sd">    section ends it. Inside the body of another section the line is an entry</span>
+<span class="sd">    (an argument called ``error``), not a header, and is left alone.</span>
 
 <span class="sd">    &gt;&gt;&gt; normalize_text("Returns: a thing that\\nspans two lines.\\n\\nNext.", rules=[google_one_liners])</span>
 <span class="sd">    'Returns:\\n    a thing that\\n    spans two lines.\\n\\nNext.'</span>
 <span class="sd">    &gt;&gt;&gt; normalize_text("Returns: a thing.\\n## Notes\\nText.", rules=[google_one_liners])</span>
 <span class="sd">    'Returns:\\n    a thing.\\n\\n## Notes\\nText.'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("Note: be careful.\\n:return: the thing", rules=[google_one_liners])</span>
+<span class="sd">    'Note:\\n    be careful.\\n\\n:return: the thing'</span>
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">bodies</span> <span class="o">=</span> <span class="n">google_section_bodies</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">_SECTION_ONE_LINER_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-            <span class="n">m</span> <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_PROSE_LIKE</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">GOOGLE_SECTIONS</span>
+            <span class="n">m</span>
+            <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_PROSE_LIKE</span>
+            <span class="ow">and</span> <span class="n">bodies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">GOOGLE_SECTIONS</span>
         <span class="p">):</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -579,7 +785,9 @@
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">while</span> <span class="p">(</span>
             <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_PROSE_LIKE</span>
+            <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_PROSE_LIKE</span>  <span class="c1"># a wrapped sentence, wherever it sits</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">_BULLET_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>  <span class="c1"># ... but a new bullet ends it</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">_FIELD_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>  <span class="c1"># ... and so does a field</span>
             <span class="ow">and</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">indent</span><span class="p">)</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">_SECTION_ONE_LINER_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_section_header</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
@@ -627,21 +835,42 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">markdown_headings_to_rubrics</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Render ``## Heading`` as a rubric instead of a literal ``##``.</span>
 
-<span class="sd">    A ``#`` line right after code is left alone: it is most likely a comment</span>
-<span class="sd">    that fell out of a doctest.</span>
+<span class="sd">    A ``#`` line is also how a code comment, a commented-out doctest and its</span>
+<span class="sd">    output (``# True``) or a commented-out paragraph look, so the rule wants a</span>
+<span class="sd">    heading shape: ``#`` marks, a space, then a title that starts with a</span>
+<span class="sd">    capital letter, a digit or a backtick, holds no code (``=``, ``(``,</span>
+<span class="sd">    ``&gt;&gt;&gt;``) and no trailing ``:`` or ``.``, and is not a ``TODO:`` tag. A</span>
+<span class="sd">    single ``#`` must also follow a blank line (or open the docstring);</span>
+<span class="sd">    ``##`` and deeper may sit against prose. No heading of any level sits</span>
+<span class="sd">    against another ``#`` line (that is a commented-out paragraph or doctest)</span>
+<span class="sd">    or right after code.</span>
 
 <span class="sd">    &gt;&gt;&gt; normalize_text("Intro.\\n## Usage\\nText.", rules=[markdown_headings_to_rubrics])</span>
 <span class="sd">    'Intro.\\n\\n.. rubric:: Usage\\n\\nText.'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("# &gt;&gt;&gt; f()\\n# True", rules=[markdown_headings_to_rubrics])</span>
+<span class="sd">    '# &gt;&gt;&gt; f()\\n# True'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("# Making a signature\\nText.", rules=[markdown_headings_to_rubrics])</span>
+<span class="sd">    '.. rubric:: Making a signature\\n\\nText.'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("Intro.\\n# Not a heading\\n\\nText.", rules=[markdown_headings_to_rubrics])</span>
+<span class="sd">    'Intro.\\n# Not a heading\\n\\nText.'</span>
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">_MD_HEADING_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span> <span class="ow">or</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">PROSE</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isalnum</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">m</span> <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROSE</span> <span class="ow">and</span> <span class="n">_is_heading_title</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))):</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_CODE_CONTEXTS</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">neighbours</span> <span class="o">=</span> <span class="p">[</span><span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">neighbours</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>  <span class="c1"># one of a run of comment lines</span>
+            <span class="k">continue</span>
+        <span class="n">single</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"# "</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">single</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>  <span class="c1"># a lone ``#`` glued to the text above is a comment</span>
             <span class="k">continue</span>
         <span class="n">_ensure_trailing_blank</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">.. rubric:: </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -656,10 +885,24 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">literal_block_after_colon</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Make ``text:`` followed by an indented block a proper ``::`` literal block.</span>
 
+<span class="sd">    Only when the block is unmistakably code (:func:`_looks_like_code`: no</span>
+<span class="sd">    line reads as prose and some line carries a code signal such as ``=``,</span>
+<span class="sd">    ``(`` or ``#``), and never inside a Google section body, where ``x:`` is an</span>
+<span class="sd">    argument. A lead-in over an indented paragraph is a definition list the</span>
+<span class="sd">    author may have meant; it is left alone and DR014 reports it. A lone</span>
+<span class="sd">    ``Usage:`` or ``Output:`` over a command or a value is code all the same.</span>
+
 <span class="sd">    &gt;&gt;&gt; normalize_text("For example:\\n    x = f(1)\\nThen more.", rules=[literal_block_after_colon])</span>
 <span class="sd">    'For example::\\n\\n    x = f(1)\\n\\nThen more.'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("Usage:\\n    python run.py  # top 12", rules=[literal_block_after_colon])</span>
+<span class="sd">    'Usage::\\n\\n    python run.py  # top 12'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("specifying:\\n    the name of the thing to do.", rules=[literal_block_after_colon])</span>
+<span class="sd">    'specifying:\\n    the name of the thing to do.'</span>
+<span class="sd">    &gt;&gt;&gt; normalize_text("Args:\\n    x:\\n        The x.", rules=[literal_block_after_colon])</span>
+<span class="sd">    'Args:\\n    x:\\n        The x.'</span>
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">bodies</span> <span class="o">=</span> <span class="n">google_section_bodies</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
@@ -669,6 +912,7 @@
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">eligible</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROSE</span>
+            <span class="ow">and</span> <span class="n">bodies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="ow">and</span> <span class="n">stripped</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">stripped</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"::"</span><span class="p">)</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_section_header</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -676,23 +920,27 @@
             <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="ow">and</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">contexts</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">,</span> <span class="n">ART</span><span class="p">)</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">_BULLET_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">eligible</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">continue</span>
+        <span class="n">block_indent</span> <span class="o">=</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="k">while</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">end</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">block_indent</span>
+        <span class="p">):</span>
+            <span class="n">end</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_looks_like_code</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">end</span><span class="p">]):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>  <span class="c1"># an indented paragraph or a definition, not code: report, do not rewrite</span>
         <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">stripped</span> <span class="o">+</span> <span class="s2">":"</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-        <span class="n">block_indent</span> <span class="o">=</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">block_indent</span>
-        <span class="p">):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">end</span>
     <span class="k">return</span> <span class="n">out</span></div>
 
 
@@ -712,23 +960,40 @@
 <span class="sd">    'Prose\\n\\n:param x: y\\n    more\\n:param z: w'</span>
 <span class="sd">    &gt;&gt;&gt; normalize_text("Text:\\n    indented\\nback", rules=[blank_lines_between_blocks])</span>
 <span class="sd">    'Text:\\n    indented\\n\\nback'</span>
+
+<span class="sd">    Inside a Google section body the entries are a definition list, where</span>
+<span class="sd">    consecutive terms need no blank line between them, so a dedent from a</span>
+<span class="sd">    wrapped ``Args:`` entry to the next entry is left as written:</span>
+
+<span class="sd">    &gt;&gt;&gt; normalize_text("Args:\\n    a: one that\\n        wraps.\\n    b: two.", rules=[blank_lines_between_blocks])</span>
+<span class="sd">    'Args:\\n    a: one that\\n        wraps.\\n    b: two.'</span>
 <span class="sd">    """</span>
     <span class="n">contexts</span> <span class="o">=</span> <span class="n">line_contexts</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">bodies</span> <span class="o">=</span> <span class="n">google_section_bodies</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
     <span class="n">out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">prev_ctx</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">=</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">contexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># A blank line *before* a block that follows a drawing is outside the</span>
+            <span class="c1"># drawing, and a doctest glued to one still has to be separated to run.</span>
             <span class="n">starts_block</span> <span class="o">=</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DOCTEST</span><span class="p">,</span> <span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">)</span> <span class="ow">and</span> <span class="n">prev_ctx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
                 <span class="n">ctx</span><span class="p">,</span> <span class="n">DOCTEST</span><span class="p">,</span> <span class="n">FENCE</span><span class="p">,</span> <span class="n">LITERAL</span><span class="p">,</span>
             <span class="p">)</span>  <span class="c1"># fmt: skip</span>
             <span class="n">next_is_deeper</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="ow">and</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">indent_of</span><span class="p">(</span>
                 <span class="n">line</span>
             <span class="p">)</span>
+            <span class="n">next_entry</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">bodies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="n">bodies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="n">prev_ctx</span> <span class="o">==</span> <span class="n">PROSE</span>
+                <span class="ow">and</span> <span class="n">ctx</span> <span class="o">==</span> <span class="n">PROSE</span>
+            <span class="p">)</span>
             <span class="n">dedents</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">indent_of</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
                 <span class="ow">and</span> <span class="n">ctx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_CODE_CONTEXTS</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ctx</span> <span class="o">==</span> <span class="n">prev_ctx</span> <span class="ow">and</span> <span class="n">ctx</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LIST</span><span class="p">,</span> <span class="n">FIELD</span><span class="p">))</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="n">next_is_deeper</span>  <span class="c1"># a new definition-list term, not a return to prose</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">next_entry</span>  <span class="c1"># the next ``Args:`` entry after a wrapped one</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">starts_block</span> <span class="ow">or</span> <span class="n">dedents</span><span class="p">:</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
@@ -1038,7 +1303,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

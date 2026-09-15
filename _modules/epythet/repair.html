@@ -302,7 +302,15 @@
 <span class="sd">  prose ``*args`` is *not* source-safe (it changes what the author wrote,</span>
 <span class="sd">  and a later reader may not know why the backslash is there), so it stays a</span>
 <span class="sd">  diagnostic (DR010), like unmatched backticks and every other artifact the</span>
-<span class="sd">  normalizer cannot fix.</span>
+<span class="sd">  normalizer cannot fix. Nor is turning a bare ``Examples:`` header into a</span>
+<span class="sd">  rubric: napoleon renders it as that rubric already, so the rewrite would</span>
+<span class="sd">  churn the source for no change on the page (:data:`UNSAFE_RULES` lists both</span>
+<span class="sd">  with the reason).</span>
+<span class="sd">- The normalizer's own rule applies twice over here: **rewrite only what is</span>
+<span class="sd">  unambiguous, otherwise report.** A ``#`` line that could be a comment, a</span>
+<span class="sd">  ``term:`` over an indented paragraph, an entry inside an ``Args:`` body, a</span>
+<span class="sd">  drawing made of arrows: none is touched, and the author's blank lines</span>
+<span class="sd">  before the closing quotes are kept as written.</span>
 <span class="sd">- Every doctest keeps its source lines byte for byte (checked with</span>
 <span class="sd">  :mod:`doctest`'s own parser); a rewrite that would change one is skipped.</span>
 <span class="sd">- Every rewritten docstring is re-validated at level 0.5: a rewrite that</span>
@@ -347,14 +355,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.docstrings</span><span class="w"> </span><span class="kn">import</span> <span class="n">Docstring</span><span class="p">,</span> <span class="n">iter_python_files</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.validation.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Finding</span>
 
-<span class="c1">#: The normalizer rules whose rewrite is safe to commit to source, in normalizer order.</span>
-<span class="n">SOURCE_SAFE_RULES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-    <span class="n">rule</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">DEFAULT_RULES</span> <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">N</span><span class="o">.</span><span class="n">escape_unmatched_stars</span>
-<span class="p">)</span>
 <span class="c1">#: Normalizer rules that stay build-time only, and why.</span>
 <span class="n">UNSAFE_RULES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">N</span><span class="o">.</span><span class="n">escape_unmatched_stars</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s2">"escaping *args in prose changes what the author wrote; reported as DR010 instead"</span><span class="p">,</span>
+    <span class="n">N</span><span class="o">.</span><span class="n">bare_headers_to_rubrics</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="s2">"napoleon already renders a bare Examples: header as that rubric, so the rewrite changes the source without changing the page; a bare Note: is ambiguous and reported as DR002 instead"</span><span class="p">,</span>
 <span class="p">}</span>
+<span class="c1">#: The normalizer rules whose rewrite is safe to commit to source, in normalizer order.</span>
+<span class="n">SOURCE_SAFE_RULES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">N</span><span class="o">.</span><span class="n">Rule</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+    <span class="n">rule</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">DEFAULT_RULES</span> <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">UNSAFE_RULES</span>
+<span class="p">)</span>
 <span class="n">FENCE_STYLES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"code-block"</span><span class="p">,</span> <span class="s2">"literal"</span><span class="p">)</span>
 <span class="n">_PREFIX_CHARS</span> <span class="o">=</span> <span class="s2">"rRbBuUfF"</span>
 <span class="n">_DOCTEST_FAILURES_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\*\*\*Test Failed\*\*\* (\d+) failure"</span><span class="p">)</span>
@@ -481,6 +490,20 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">indent_of</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_trailing_blank_count</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""How many blank lines end ``lines``.</span>
+
+<span class="sd">    &gt;&gt;&gt; _trailing_blank_count(["a", "", ""]), _trailing_blank_count(["a"])</span>
+<span class="sd">    (2, 0)</span>
+<span class="sd">    """</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">count</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_doctest_sources</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Doctest example sources, or ``None`` when :mod:`doctest` cannot parse the text."""</span>
     <span class="k">try</span><span class="p">:</span>
@@ -524,8 +547,12 @@
     <span class="k">if</span> <span class="n">before_sources</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="s2">"doctest could not parse the docstring; fix the doctest first"</span>
     <span class="n">normalized</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">normalize_docstring</span><span class="p">(</span><span class="n">dedented</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">)</span>
-    <span class="k">while</span> <span class="n">normalized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">normalized</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="n">trailing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">normalized</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">trailing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># A rule may leave a blank line at the end; the author's own blank lines</span>
+        <span class="c1"># before the closing quotes are kept exactly as they were.</span>
+        <span class="n">blank_tail</span> <span class="o">=</span> <span class="n">_trailing_blank_count</span><span class="p">(</span><span class="n">dedented</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">_trailing_blank_count</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">blank_tail</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">normalized</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">normalized</span> <span class="o">==</span> <span class="n">dedented</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">segment</span><span class="p">,</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">quote</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -1096,7 +1123,7 @@
 <span class="sd">    :param path: A .py file, a package directory, or a project root.</span>
 <span class="sd">    :param write: Apply the changes (after re-validating each docstring and re-running doctests).</span>
 <span class="sd">    :param fence_style: What a Markdown fence becomes: code-block or literal.</span>
-<span class="sd">    :param ignore: Skip files whose path contains this string (repeat -i for several).</span>
+<span class="sd">    :param ignore: Skip files whose path contains any of these strings (several after one -i, or -i repeated).</span>
 <span class="sd">    :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.</span>
 <span class="sd">    :param no_napoleon: Re-validate without napoleon's Google/NumPy pre-processing.</span>
 <span class="sd">    :param no_doctests: Do not run each touched file's doctests before and after writing.</span>
@@ -1133,6 +1160,10 @@
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">verification</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">written</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">changed</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="s2">"a written file had to be restored; see above"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
+
+
+<span class="c1">#: ``-i a -i b`` accumulates, as for ``epythet validate``.</span>
+<span class="n">repair_command</span><span class="o">.</span><span class="n">_cw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"ignore"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"action"</span><span class="p">:</span> <span class="s2">"extend"</span><span class="p">,</span> <span class="s2">"nargs"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">}}}</span>
 
 
 <div class="viewcode-block" id="render_repair">
@@ -1206,7 +1237,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

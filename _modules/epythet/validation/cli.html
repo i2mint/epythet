@@ -344,7 +344,7 @@
 <span class="sd">    :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.</span>
 <span class="sd">    :param style: Docstring convention for the linters: google, numpy, or sphinx.</span>
 <span class="sd">    :param no_napoleon: Parse docstrings without napoleon's Google/NumPy pre-processing.</span>
-<span class="sd">    :param ignore: Skip files whose path contains this string (repeat -i for several).</span>
+<span class="sd">    :param ignore: Skip files whose path contains any of these strings (several after one -i, or -i repeated).</span>
 <span class="sd">    :param docsrc: Sphinx source directory for level 2 (default: &lt;project&gt;/docsrc).</span>
 <span class="sd">    :param no_observe: Do not append findings to the ledger's observations file.</span>
 <span class="sd">    :param no_linters: Level 0 without ruff and pydoclint (coverage detectors only).</span>
@@ -427,6 +427,10 @@
 
 
 
+<span class="c1">#: ``-i a -i b`` accumulates (argparse would keep only the last ``-i``); cw reads</span>
+<span class="c1">#: this attribute as per-parameter ``add_argument`` particulars.</span>
+<span class="n">validate</span><span class="o">.</span><span class="n">_cw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"ignore"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"action"</span><span class="p">:</span> <span class="s2">"extend"</span><span class="p">,</span> <span class="s2">"nargs"</span><span class="p">:</span> <span class="s2">"*"</span><span class="p">}}}</span>
+
 <span class="n">COMMANDS</span> <span class="o">=</span> <span class="p">[</span><span class="n">validate</span><span class="p">]</span>
 </pre></div>
         </article>
@@ -456,7 +460,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=dfb2ad43"></script>
+</div><script src="../../../_static/documentation_options.js?v=76f2d925"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
