@@ -124,6 +124,8 @@ def test_remote_credentials_never_reach_the_record(repo):
         ("thor@myserver.local:repos/demo.git", "myserver.local:repos/demo.git"),
         ("ssh://me:pw@host.example/r.git", "ssh://host.example/r.git"),
         ("/Users/someone/bare/demo.git", None),
+        ("C:\\Users\\someone\\repo", None),
+        ("https://github.com/o/r.git/", "https://github.com/o/r.git"),
         ("file:///srv/git/demo.git", None),
         ("../sibling-checkout", None),
     ],
@@ -224,7 +226,8 @@ def test_ref_names_are_escaped_in_the_about_page(repo):
     info = collect_build_info(load_config(repo), check_pypi=False)
     page = render_about_page(info)
     assert "<b>BOLD</b>" not in page and "&lt;b&gt;BOLD&lt;/b&gt;" in page
-    assert "| Tags at this commit | <code>t|pipe</code>, <code>v0.0.1</code> |" in page
+    assert "<code>t&#124;pipe</code>, <code>v0.0.1</code>" in page
+    assert "&#96;&lt;b&gt;BOLD&lt;/b&gt;&#96;" in page  # no code span opened
     line = render_footer_line(info)
     assert "<b>" not in line and "&lt;b&gt;" in line
 

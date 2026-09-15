@@ -12,7 +12,7 @@ FIXED_BUILD_EPOCH = "1789473600"
 
 
 @pytest.fixture(autouse=True, scope="session")
-def _hermetic_provenance():
+def _hermetic_provenance(tmp_path_factory):
     """Provenance in the test suite: no network, a fixed build time, isolated git.
 
     ``EPYTHET_PYPI_CHECK=0`` keeps PyPI out (offline CI, determinism);
@@ -26,6 +26,8 @@ def _hermetic_provenance():
         mp.setenv("SOURCE_DATE_EPOCH", FIXED_BUILD_EPOCH)
         mp.setenv("GIT_CONFIG_GLOBAL", os.devnull)
         mp.setenv("GIT_CONFIG_NOSYSTEM", "1")
+        # A fixture project that is not a repo must not find one above the temp dir.
+        mp.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path_factory.getbasetemp()))
         yield
 
 

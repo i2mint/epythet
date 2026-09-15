@@ -67,7 +67,11 @@ def _provenance_page_context(app, pagename, templatename, context, doctree):
     try:
         if pagename == app.config.root_doc:
             has_page = ABOUT_PAGE_DOCNAME in app.env.found_docs
-            about_href = f"{ABOUT_PAGE_DOCNAME}.html" if has_page else None
+            about_href = (
+                app.builder.get_relative_uri(pagename, ABOUT_PAGE_DOCNAME)
+                if has_page
+                else None
+            )
             context["body"] += "\n" + render_footer_line(info, about_href=about_href)
         elif pagename == ABOUT_PAGE_DOCNAME:
             block = _site_counts_html(site_counts(app.env))

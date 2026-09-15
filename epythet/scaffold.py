@@ -126,16 +126,39 @@ def scaffold(
             render_autosummary_module_template(config.api_ignore), encoding="utf-8"
         )
     gitignore = docsrc / ".gitignore"
-    # Refresh epythet's own .gitignore (legacy or generated); keep a hand-written one.
-    if not gitignore.exists() or _is_generated_gitignore(
-        gitignore.read_text(encoding="utf-8")
-    ):
-        if (
-            not gitignore.exists()
-            or gitignore.read_text(encoding="utf-8") != templates.docsrc_gitignore
-        ):
-            gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
+    refresh_docsrc_gitignore(docsrc / ".gitignore")
     return docsrc
+
+
+def refresh_docsrc_gitignore(gitignore: Path) -> None:
+    """Bring ``docsrc/.gitignore`` up to date without losing anyone's lines.
+
+    A missing file, a 0.1.x file or an earlier generated version is replaced;
+    a generated file the user appended to gets the missing generated entries
+    appended; a hand-written file is left alone.
+    """
+    if not gitignore.exists():
+        gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
+        return
+    text = gitignore.read_text(encoding="utf-8")
+    if text == templates.docsrc_gitignore:
+        return
+    if text.strip() in templates.LEGACY_DOCSRC_GITIGNORES or text.strip() in (
+        t.strip() for t in templates.PREVIOUS_DOCSRC_GITIGNORES
+    ):
+        gitignore.write_text(templates.docsrc_gitignore, encoding="utf-8")
+        return
+    if text.startswith(templates.DOCSRC_GITIGNORE_HEADER):
+        present = {line.strip() for line in text.splitlines()}
+        missing = [
+            line
+            for line in templates.docsrc_gitignore.splitlines()
+            if line.strip() and line.strip() not in present
+        ]
+        if missing:
+            gitignore.write_text(
+                text.rstrip("\n") + "\n" + "\n".join(missing) + "\n", encoding="utf-8"
+            )
 
 
 def render_autosummary_module_template(ignore: Sequence[str]) -> str:
@@ -227,13 +250,6 @@ def make_autodocs(
     :param ignore: path substrings to skip, overriding ``[tool.epythet] ignore``
     """
     return make_docsrc(project_dir, verbose=False, ignore=ignore)
-
-
-def _is_generated_gitignore(text: str) -> bool:
-    """A 0.1.x ``.gitignore`` or one that starts with epythet's generated header."""
-    return text.strip() in templates.LEGACY_DOCSRC_GITIGNORES or text.startswith(
-        templates.DOCSRC_GITIGNORE_HEADER
-    )
 
 
 def _remove_legacy_files(docsrc: Path, say) -> None:

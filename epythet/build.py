@@ -29,8 +29,10 @@ from pathlib import Path
 from epythet.agent_outputs import inject_link_relations_into_site, write_aggregates
 from epythet.config import DocsConfig, load_config
 from epythet.provenance import (
+    ABOUT_PAGE_DOCNAME,
     ABOUT_PAGE_FILENAME,
     BUILD_INFO_ENV,
+    BUILD_INFO_FILENAME,
     about_page,
     about_template,
     collect_build_info,
@@ -42,6 +44,8 @@ from epythet.templates import INDEX_MARKER
 
 BUILD_DIRNAME = "_build"
 COPY_TARGETS = {"github": "docs", "gitlab": "public"}
+#: Builders that produce a browsable site and therefore carry provenance.
+HTML_TARGETS = ("html", "dirhtml")
 
 
 class BuildError(RuntimeError):
@@ -83,6 +87,12 @@ def build(
         html_dir = build(config, "html", overrides=overrides)
         destination = config.project_dir / COPY_TARGETS[target]
         shutil.copytree(html_dir, destination, dirs_exist_ok=True)
+        # copytree never deletes: drop provenance files the fresh site no longer has.
+        prune_site(
+            destination,
+            keep_page=(html_dir / f"{ABOUT_PAGE_DOCNAME}.html").is_file(),
+            keep_json=(html_dir / BUILD_INFO_FILENAME).is_file(),
+        )
         return destination
 
     outdir = build_dir / target
@@ -104,7 +114,7 @@ def build(
     env = dict(os.environ)
     env["EPYTHET_PROJECT_DIR"] = str(config.project_dir)
     env["EPYTHET_OVERRIDES"] = json.dumps(overrides)
-    info = prepare_provenance(config) if target == "html" else None
+    info = prepare_provenance(config) if target in HTML_TARGETS else None
     if info is not None:
         env[BUILD_INFO_ENV] = json.dumps(info)
     result = subprocess.run(command, cwd=str(docsrc), env=env)
@@ -113,10 +123,11 @@ def build(
             f"sphinx-build -b {target} failed with exit status {result.returncode} "
             f"(sources: {docsrc})"
         )
-    if target == "html":
+    if target in HTML_TARGETS:
+        # A source file that survived prepare_provenance is hand-written: keep its page.
         prune_site(
             outdir,
-            keep_page=info is not None and config.provenance != "minimal",
+            keep_page=(config.docsrc_dir / ABOUT_PAGE_FILENAME).is_file(),
             keep_json=info is not None,
         )
     if target == "html" and config.agent_outputs:

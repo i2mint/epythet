@@ -128,6 +128,7 @@ def project(tmp_path_factory) -> Path:
     (pkg / "tests" / "__init__.py").write_text("")
     (pkg / "tests" / "test_x.py").write_text(TEST_MODULE)
     _git_init(root, remote="https://github.com/org/demo.git", tag="v0.1.0")
+    subprocess.run(["git", "tag", "t|pipe"], cwd=root, check=True)  # a legal ref name
     (pkg / "core.py").write_text(CORE + "\n# uncommitted change: the tree is dirty\n")
     return root
 
@@ -222,7 +223,9 @@ def test_provenance_footer_page_and_json(project, site):
     git = info["git"]
     assert info["schema_version"] == 1 and info["package"]["version"] == "0.1.0"
     assert (
-        git["branch"] == "main" and git["tags"] == ["v0.1.0"] and git["dirty"] is True
+        git["branch"] == "main"
+        and git["tags"] == ["t|pipe", "v0.1.0"]
+        and git["dirty"] is True
     )
     assert git["commit_url"] == f"https://github.com/org/demo/commit/{git['commit']}"
     assert info["site"]["modules_documented"] >= 4
@@ -245,6 +248,10 @@ def test_provenance_footer_page_and_json(project, site):
 
     about = (site / "about-this-build.html").read_text()
     assert "may be misaligned" in about and git["commit"] in about
+    # A "|" in a ref name must not split the table row (rendered HTML, not the source).
+    row = about[about.index("Tags at this commit") :]
+    row = row[: row.index("</tr>")]
+    assert "<code>t|pipe</code>" in row and row.count("<td") == 1
     assert "Modules documented" in about and about.index(
         "Modules documented"
     ) < about.index('id="reproduce"')
@@ -262,6 +269,8 @@ def test_provenance_off_and_minimal(project):
     shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
     quickstart(other)  # provenance on: the page source exists
     assert (other / "docsrc" / "about-this-build.md").is_file()
+    docs = build(load_config(other), "github")
+    assert (docs / "about-this-build.html").is_file()
 
     (other / "pyproject.toml").write_text(
         PYPROJECT + "[tool.epythet]\nprovenance = false\n"
@@ -269,6 +278,10 @@ def test_provenance_off_and_minimal(project):
     html = quickstart(other)
     assert not (other / "docsrc" / "about-this-build.md").exists()  # no stale page
     assert not (html / "build_info.json").exists()
+    assert not (html / "about-this-build.html").exists()
+    docs = build(load_config(other), "github")
+    assert not (docs / "about-this-build.html").exists()  # copy target pruned too
+    assert not (docs / "build_info.json").exists()
     assert not (html / "about-this-build.html").exists()
     assert "epythet-provenance" not in (html / "index.html").read_text()
 
@@ -298,9 +311,65 @@ def test_provenance_template_override(project):
     html = quickstart(other)
     about = (html / "about-this-build.html").read_text()
     assert "<h1>Build" in about and "demo 0.1.0" in about and "Reproduce" not in about
+    # Front matter in the template stays front matter (the marker goes after it).
+    (other / "misc" / "about.md").write_text(
+        "---\ntitle: Custom\n---\n# Build\n\n{summary}\n"
+    )
+    about = (quickstart(other) / "about-this-build.html").read_text()
+    assert "<h1>Build" in about and "title: Custom" not in about
+    assert "orphan" not in about
     (other / "misc" / "about.md").write_text("{no_such_field}\n")
     with pytest.raises(ConfigError, match="no_such_field"):
         quickstart(other)
+    (other / "misc" / "about.md").write_text("{summary.foo}\n")
+    with pytest.raises(ConfigError, match="foo"):
+        quickstart(other)
+
+
+def test_hand_written_about_page_survives_provenance_off(project):
+    other = project.parent / "handabout"
+    shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
+    (other / "pyproject.toml").write_text(
+        PYPROJECT + "[tool.epythet]\nprovenance = false\n"
+    )
+    (other / "docsrc").mkdir()
+    (other / "docsrc" / "about-this-build.md").write_text(
+        "---\norphan: true\n---\n# Our build notes\n"
+    )
+    html = quickstart(other)
+    assert "Our build notes" in (html / "about-this-build.html").read_text()
+
+
+def test_dirhtml_carries_provenance_with_the_right_link(project):
+    out = build(load_config(project), "dirhtml")
+    assert (out / "about-this-build" / "index.html").is_file()
+    assert (out / "build_info.json").is_file()
+    assert (
+        'href="about-this-build/">about this build</a>'
+        in (out / "index.html").read_text()
+    )
+
+
+def test_docsrc_gitignore_refresh(make_project):
+    from epythet.scaffold import refresh_docsrc_gitignore
+    from epythet.templates import (
+        DOCSRC_GITIGNORE_HEADER,
+        PREVIOUS_DOCSRC_GITIGNORES,
+        docsrc_gitignore,
+    )
+
+    project = make_project("gi", {})
+    target = project / ".gitignore"
+    target.write_text(PREVIOUS_DOCSRC_GITIGNORES[0])
+    refresh_docsrc_gitignore(target)
+    assert target.read_text() == docsrc_gitignore  # an earlier version: replaced
+    target.write_text(DOCSRC_GITIGNORE_HEADER + "\n_build/\n\n# mine\nscratch/\n")
+    refresh_docsrc_gitignore(target)
+    text = target.read_text()
+    assert "scratch/" in text and "about-this-build.md" in text  # edited: appended to
+    target.write_text("_build/\nmine/\n")
+    refresh_docsrc_gitignore(target)
+    assert target.read_text() == "_build/\nmine/\n"  # hand-written: kept
 
 
 def test_theme_is_deterministic_and_rebuild_is_stable(project, site):

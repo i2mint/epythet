@@ -289,6 +289,8 @@ def publishable_remote(url: str) -> str | None:
     'git@github.com:o/r.git'
     >>> publishable_remote("/Users/me/bare/demo.git") is None
     True
+    >>> publishable_remote("D:/repos/x.git") is None
+    True
     >>> publishable_remote("file:///srv/git/demo.git") is None
     True
     """
@@ -297,9 +299,9 @@ def publishable_remote(url: str) -> str | None:
     if scheme:
         if scheme.group(1).lower() == "file":
             return None
-        return strip_credentials(url)
+        return strip_credentials(url).rstrip("/")
     scp = re.match(r"^(?:([^@/:]+)@)?([^/:]+):(.+)$", url)
-    if scp:
+    if scp and len(scp.group(2)) > 1:  # a one-letter "host" is a Windows drive
         user, host, path = scp.groups()
         # ``git@`` is the conventional, anonymous SSH user of the forges: keep it.
         return f"{user}@{host}:{path}" if user == "git" else f"{host}:{path}"
@@ -501,7 +503,7 @@ def _bounded(function, *args, timeout: float):
     def run():
         try:
             result["value"] = function(*args, timeout=timeout)
-        except BaseException as e:  # reported by the caller, never raised here
+        except Exception as e:  # reported by the caller, never raised here
             result["error"] = e
 
     worker = threading.Thread(target=run, daemon=True)
@@ -511,7 +513,9 @@ def _bounded(function, *args, timeout: float):
         raise TimeoutError(f"no answer within {timeout:g}s")
     if "error" in result:
         raise result["error"]
-    return result.get("value")
+    if "value" not in result:
+        raise RuntimeError("the lookup was interrupted")
+    return result["value"]
 
 
 def pypi_latest_version(
@@ -836,8 +840,29 @@ def render_about_page(info: dict, *, template: str = ABOUT_PAGE_TEMPLATE) -> str
     return template.format(**fields)
 
 
+#: Characters that keep their meaning inside inline HTML in a Markdown table
+#: cell or code span (a ``|`` splits the row, a backtick opens a code span).
+_MARKDOWN_ACTIVE = {
+    "|": "&#124;",
+    "`": "&#96;",
+    "*": "&#42;",
+    "_": "&#95;",
+    "[": "&#91;",
+}
+
+
 def _text(value) -> str:
-    return escape(str(value)) if value is not None else ""
+    """HTML-escaped, Markdown-inert text for a value from the repository.
+
+    >>> _text("t|pipe"), _text("x`<b>`")
+    ('t&#124;pipe', 'x&#96;&lt;b&gt;&#96;')
+    """
+    if value is None:
+        return ""
+    text = escape(str(value))
+    for char, entity in _MARKDOWN_ACTIVE.items():
+        text = text.replace(char, entity)
+    return text
 
 
 def _code(value) -> str:
@@ -936,7 +961,7 @@ def about_page(info: dict, *, template: str = ABOUT_PAGE_TEMPLATE):
 
     try:
         content = render_about_page(info, template=template)
-    except (KeyError, IndexError, ValueError) as e:
+    except Exception as e:  # a wrong field, attribute or format spec
         raise ConfigError(
             f"provenance_template: unknown field {e}; the fields are "
             f"{sorted(TEMPLATE_FIELDS)} and literal braces must be doubled ({{{{ and }}}})"
@@ -963,10 +988,46 @@ def about_template(config) -> str:
         raise ConfigError(
             f"[tool.epythet] provenance_template points at {path}, which does not exist"
         )
-    template = path.read_text(encoding="utf-8")
-    if INDEX_MARKER not in template and "{marker}" not in template:
-        template = "{marker}\n\n" + template
-    return template
+    return with_front_matter_and_marker(path.read_text(encoding="utf-8"))
+
+
+def with_front_matter_and_marker(template: str) -> str:
+    """Make a page template an orphan (out of the toctree) that carries the marker.
+
+    YAML front matter must be the very first thing in the file, so the marker
+    goes after it; ``orphan: true`` is added when the front matter lacks it,
+    and front matter is created when there is none.
+
+    >>> print(with_front_matter_and_marker("# Build\\n"))
+    ---
+    orphan: true
+    ---
+    {marker}
+    <BLANKLINE>
+    # Build
+    <BLANKLINE>
+    >>> print(with_front_matter_and_marker("---\\ntitle: x\\n---\\n{marker}\\n# B\\n"))
+    ---
+    title: x
+    orphan: true
+    ---
+    {marker}
+    # B
+    <BLANKLINE>
+    """
+    from epythet.templates import INDEX_MARKER
+
+    has_marker = INDEX_MARKER in template or "{marker}" in template
+    match = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", template, re.DOTALL)
+    if match:
+        front, body = match.group(1), template[match.end() :]
+        if not re.search(r"^orphan\s*:", front, re.MULTILINE):
+            front += "\norphan: true"
+    else:
+        front, body = "orphan: true", template
+    if not has_marker:
+        body = "{marker}\n\n" + body
+    return f"---\n{front}\n---\n{body}"
 
 
 def site_counts(env) -> dict:
@@ -1037,6 +1098,7 @@ def prune_site(html_dir: str | Path, *, keep_page: bool, keep_json: bool) -> lis
         stale += [
             html_dir / f"{ABOUT_PAGE_DOCNAME}.html",
             html_dir / f"{ABOUT_PAGE_DOCNAME}.html.md",
+            html_dir / ABOUT_PAGE_DOCNAME / "index.html",  # dirhtml
         ]
     if not keep_json:
         stale.append(html_dir / BUILD_INFO_FILENAME)
