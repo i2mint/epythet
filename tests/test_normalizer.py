@@ -25,7 +25,11 @@ CASES = sorted(p.stem for p in FIXTURES.glob("*.in"))
 
 
 def _case(name):
-    return (FIXTURES / f"{name}.in").read_text(), (FIXTURES / f"{name}.out").read_text()
+    """The ``.in`` and ``.out`` texts; UTF-8 explicitly, the ASCII-art fixture has box characters."""
+    return (
+        (FIXTURES / f"{name}.in").read_text(encoding="utf-8"),
+        (FIXTURES / f"{name}.out").read_text(encoding="utf-8"),
+    )
 
 
 @pytest.mark.parametrize("name", CASES)
