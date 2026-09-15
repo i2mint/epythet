@@ -17,6 +17,8 @@ from epythet.validation.propose import propose_command as propose
 from epythet.repair import repair_command as repair
 from epythet.migrate import migrate_style_command as migrate_style
 from epythet.sweep import sweep_command as sweep
+from epythet.agentic_readme import ai_readme_check
+from epythet.userconfig import SNIPPET_COMMANDS
 
 
 def quickstart(project_dir, *, ignore: list[str] = None):
@@ -140,6 +142,7 @@ COMMANDS = [
     configure_pages,
     validate,
     ai_artifacts,
+    ai_readme_check,
 ]
 
 #: The v2 source-editing and fleet commands, by their command-line name.
@@ -164,6 +167,13 @@ def mk_epythet_parser(**parser_kwargs):
         LEDGER_COMMANDS,
         group_name="ledger",
         group_kwargs={"title": "Artifact ledger maintenance"},
+        convention=CONVENTION,
+    )
+    cw.add_commands(
+        parser,
+        SNIPPET_COMMANDS,
+        group_name="snippets",
+        group_kwargs={"title": "User-level text snippets (config dir over packaged defaults)"},
         convention=CONVENTION,
     )
     return parser

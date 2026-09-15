@@ -28,6 +28,9 @@ render correctly without edits.
 A repository's agent artifacts (skills, subagents, ``CLAUDE.md`` and friends)
 are discovered by convention and rendered as a "For AI agents" page, see
 :mod:`epythet.ai_artifacts`; epythet's own skills ship in ``epythet/data/skills``.
+Whether the README documents them is :func:`check_readme`
+(``epythet ai-readme-check``), with the user's policy and text snippets from
+:mod:`epythet.userconfig` (``~/.config/epythet``).
 
 GitHub Pages helpers (:func:`check_pages_setup`, :func:`enable_pages`) and
 docstring diagnosis tools (:func:`diagnose_doctest_code_blocks`,
@@ -42,6 +45,8 @@ from epythet.normalizer import normalize_docstring, normalize_text
 from epythet.themes import accent_for, choose_theme, resolve_theme, THEMES
 from epythet.agent_outputs import write_aggregates
 from epythet.ai_artifacts import discover_artifacts, ai_artifacts_page
+from epythet.agentic_readme import check_readme, render_section, write_section
+from epythet.userconfig import config_dir, load_user_config, snippet_text
 
 from epythet.tools import (
     repair_package,

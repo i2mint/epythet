@@ -38,3 +38,11 @@ def data_dir(tmp_path, monkeypatch):
     target = tmp_path / "epythet-data"
     monkeypatch.setenv("EPYTHET_DATA_DIR", str(target))
     return target
+
+
+@pytest.fixture
+def config_dir(tmp_path, monkeypatch):
+    """Point the user config dir (config.toml, snippets/) at a temp dir."""
+    target = tmp_path / "epythet-config"
+    monkeypatch.setenv("EPYTHET_CONFIG_DIR", str(target))
+    return target

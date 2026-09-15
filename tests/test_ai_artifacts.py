@@ -45,6 +45,7 @@ SHIPPED_SKILLS = {
     "epythet-repair-migrate",
     "epythet-theme",
     "epythet-ai-artifacts",
+    "epythet-agentic-readme",
 }
 SHIPPED_AGENTS = {"docs-reviewer", "docs-migrator"}
 
