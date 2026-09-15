@@ -193,7 +193,9 @@ def run_lint_level(
     for runner in (run_ruff, run_pydoclint):
         found, noted = runner(package_dir, project_dir=project_dir, style=style)
         findings.extend(
-            f for f in found if not (f.file and is_ignored(project_dir / f.file, ignore))
+            f
+            for f in found
+            if not (f.file and is_ignored(project_dir / f.file, ignore))
         )
         notes.extend(noted)
     return findings, notes

@@ -103,7 +103,9 @@ _PLAIN_WORD_RE = re.compile(r"^[A-Za-z]+[,.;:!?)]*$")
 #: Box-drawing, block and arrow characters: a line with one is part of a drawing.
 _BOX_CHAR_RE = re.compile(r"[─-◿←-⇿]")
 #: ASCII arrows and box edges that mark a drawing made of plain characters.
-_ASCII_ART_RE = re.compile(r"-{2,}>|<-{2,}|={2,}>|<={2,}|\+-{2,}|-{2,}\+|^\s*[|+]\s*$|\|\s{2,}\|")
+_ASCII_ART_RE = re.compile(
+    r"-{2,}>|<-{2,}|={2,}>|<={2,}|\+-{2,}|-{2,}\+|^\s*[|+]\s*$|\|\s{2,}\|"
+)
 
 BLANK, PROSE, DOCTEST, LITERAL, LIST, FIELD, FENCE, ART = (
     "blank", "prose", "doctest", "literal", "list", "field", "fence", "art",

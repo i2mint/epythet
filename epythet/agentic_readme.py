@@ -641,9 +641,7 @@ def ships_tooling(artifacts: AIArtifacts) -> bool:
     documentation (``llms.txt``, ``<package>.md``) does not, because it is a
     view of the docs rather than tooling.
     """
-    return bool(
-        artifacts.skills or artifacts.subagents or artifacts.instruction_files
-    )
+    return bool(artifacts.skills or artifacts.subagents or artifacts.instruction_files)
 
 
 def section_snippet_for(artifacts: AIArtifacts) -> str:
