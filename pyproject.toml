@@ -83,6 +83,12 @@ doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 # epythet/ledger holds rule fixtures (.py files that are not modules to document)
 ignore = ["tests/", "scrap/", "examples/", "ledger/"]
 
+[tool.epythet.readme]
+# The generated "For AI agents" README section: pinned here so `epythet ai-readme-check . --write`
+# gives the same text on any machine, whatever ~/.config/epythet/config.toml says.
+humor = true
+agentic_first = true
+
 [tool.wads.ci]
 project_name = ""
 

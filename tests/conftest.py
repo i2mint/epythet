@@ -10,7 +10,9 @@ import pytest
 def make_project(tmp_path):
     """``make_project(name, {"mod.py": source, ...})`` -> project root with a pyproject."""
 
-    def build(name: str, files: dict[str, str], *, init: str = '"""The package."""\n') -> Path:
+    def build(
+        name: str, files: dict[str, str], *, init: str = '"""The package."""\n'
+    ) -> Path:
         project = tmp_path / name
         (project / name).mkdir(parents=True)
         (project / "pyproject.toml").write_text(
@@ -37,4 +39,12 @@ def data_dir(tmp_path, monkeypatch):
     """Point every user-data write (observations, packets, proposals) at a temp dir."""
     target = tmp_path / "epythet-data"
     monkeypatch.setenv("EPYTHET_DATA_DIR", str(target))
+    return target
+
+
+@pytest.fixture
+def config_dir(tmp_path, monkeypatch):
+    """Point the user config dir (config.toml, snippets/) at a temp dir."""
+    target = tmp_path / "epythet-config"
+    monkeypatch.setenv("EPYTHET_CONFIG_DIR", str(target))
     return target

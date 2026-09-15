@@ -20,27 +20,37 @@ Open `/path/to/project/docsrc/_build/html/index.html`. You get:
 
 Nothing has to be added to the package. Everything is read from `pyproject.toml` (or `setup.cfg`), the README and the docstrings.
 
-# AI agents
+<!-- epythet:agentic-readme:start -->
+# For AI agents
 
-epythet ships skills and subagents for coding agents, and documents them on every site it builds.
+`epythet` ships tooling for coding agents. If you are one, start here.
 
+**Skills** ([Agent Skills](https://agentskills.io) format), for any agent host. Install one with `gh skill`:
 ```bash
 gh skill install i2mint/epythet epythet-setup --agent claude-code   # or copilot, cursor, codex, gemini
 ```
 
 | Skill | Use it to |
 |---|---|
-| `epythet-setup` | set up docs for a package: quickstart, `[tool.epythet]`, the Pages workflow |
-| `epythet-pages` | diagnose and fix GitHub Pages publishing (the 404 after the first CI run) |
-| `epythet-docstring-style` | write docstrings that render and that help agents: the dialect, the quality rubric, the behaviour-claim policy |
-| `epythet-validate` | run `epythet validate`, read its findings and exit codes, propose ledger rules |
-| `epythet-repair-migrate` | the per-repository documentation sweep, step by step |
-| `epythet-theme` | choose and parametrize a theme, set a brand colour |
-| `epythet-ai-artifacts` | find a repository's skills, agents and instruction files; read a site as an agent |
+| `epythet-agentic-readme` | make sure a repository's README documents its agentic aspects |
+| `epythet-ai-artifacts` | find, install and document a repository's AI agent artifacts |
+| `epythet-docstring-style` | write and improve Python docstrings that render correctly in epythet/Sphinx and that help both humans and AI agents |
+| `epythet-pages` | diagnose and fix GitHub Pages publishing for Python documentation built with epythet (or any Sphinx site pushed to a gh-pages branch) |
+| `epythet-repair-migrate` | the per-repository documentation sweep for packages documented with epythet |
+| `epythet-setup` | set up documentation for a Python package with epythet |
+| `epythet-theme` | choose and parametrize the Sphinx theme of an epythet documentation site |
+| `epythet-validate` | check a Python package's docstrings for rendering artifacts and build problems with `epythet validate` |
 
-Subagents `docs-reviewer` (reviews rendered pages and proposes ledger rules) and `docs-migrator` (runs the sweep on one repository) are in `epythet/data/agents/`; copy one into your project's `.claude/agents/`. The same skills are inside the wheel (`epythet/data/skills/`), so `pip install epythet` already has them offline.
+The same skills are inside the wheel, under `epythet/data/skills/`.
 
-For agents reading the documentation: every epythet site serves `llms.txt`, a `.md` twin of every page, the whole documentation as one file at `<site>/<package>.md`, and `objects.inv`. epythet's own are at [i2mint.github.io/epythet/epythet.md](https://i2mint.github.io/epythet/epythet.md); the full list, with install commands, is on the site's [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page, which epythet generates for any repository that has such artifacts (see below).
+**Subagents**: `docs-migrator` (runs the epythet documentation sweep on one repository end to end), `docs-reviewer` (reviews the rendered documentation of a Python package), in `epythet/data/agents/`. Copy one into your project's `.claude/agents/` (or your host's equivalent).
+
+**Instruction files**: `.claude/CLAUDE.md` (Claude Code).
+
+**The documentation, machine-readable**: [`llms.txt`](https://i2mint.github.io/epythet/llms.txt) indexes every page; [`epythet.md`](https://i2mint.github.io/epythet/epythet.md) is the whole documentation in one file; every page has a `.md` twin; [`objects.inv`](https://i2mint.github.io/epythet/objects.inv) maps symbols to URLs. The full list, with install lines, is on the site's [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page.
+
+If you would rather understand than delegate, the rest of this README is written for you, starting at [What it fixes without touching your docstrings](#what-it-fixes-without-touching-your-docstrings).
+<!-- epythet:agentic-readme:end -->
 
 # What it fixes without touching your docstrings
 
@@ -83,6 +93,10 @@ docs_dir = "docsrc"             # where the Sphinx sources are generated
 
 [tool.epythet.theme_options]    # verbatim passthrough into Sphinx's html_theme_options; always wins
 announcement = "v2 is in beta"
+
+[tool.epythet.readme]           # pins the generated "For AI agents" README section (see "For agents"); wins over ~/.config/epythet
+humor = true
+agentic_first = true
 ```
 
 `setup.cfg` projects put the same keys under `[metadata]` (`display_name`, `copyright`) or a `[tool.epythet]` section. When both files exist, `pyproject.toml` wins.
@@ -115,6 +129,8 @@ Every site also serves, next to the HTML:
 - `objects.inv`: the Sphinx inventory, a machine-readable symbol-to-URL index (`sphobjinv convert plain objects.inv -`).
 
 Set `agent_outputs = false` to skip the second (Markdown) build pass.
+
+**The README.** `epythet ai-readme-check PROJECT_DIR` reports which of these a project has (skills, subagents, instruction files, the outputs above) and whether its README mentions each; `--format json` for machines, `--fail-on warn` for CI (the exit code is 0 otherwise). `--draft` prints a "For AI agents" README section rendered from text snippets; `--write` adds it between marker comments and updates it in place on later runs, wherever you moved it (the section at the top of this README is one). What to do about a missing section is a user-level policy in `~/.config/epythet/config.toml`: `[readme] agentic_aspects = "warn"` (the packaged default) or `"add"`, `humor = true` to draw the "for humans" line from a pool, `agentic_first = true` to put the section before every other; a project pins the keys that shape its committed text in `[tool.epythet.readme]`, which wins. The wording is yours too: `epythet snippets list | show NAME | init | diff` resolve a snippet from `~/.config/epythet/snippets/` over the packaged default; `init` copies the defaults out once, with a header recording the epythet version, and never overwrites; `diff` shows how your copy differs from the current default after an upgrade. The `epythet-agentic-readme` skill walks an agent through the whole thing.
 
 **The "For AI agents" page.** When the repository ships anything for agents, epythet adds an `ai-agents` page to the site listing it: skills (`<pkg>/data/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`) with their `gh skill install` lines and source folders, subagents (`<pkg>/data/agents/*.md`, `.claude/agents/*.md`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules`, `.codex`), and the outputs above with their URLs. Symlinks are followed and duplicates removed. `epythet ai-artifacts PROJECT_DIR` prints the same inventory (`--format json` for machines). Turn the page off with `ai_artifacts = false` (or, for a whole CI fleet, the environment variable `EPYTHET_AI_ARTIFACTS=0`), or replace its template with `ai_artifacts_template = "path/to/template.md"` (a `str.format` template; see `epythet.ai_artifacts`). A hand-written `docsrc/ai-agents.md` is left alone. A malformed `SKILL.md` never fails the build: the skill is listed by folder name.
 

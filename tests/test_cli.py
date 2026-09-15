@@ -62,7 +62,7 @@ EXPECTED_USAGE = {
     (): (
         "usage: epythet [-h] "
         "{make-docsrc,make-autodocs,make,quickstart,check-pages,configure-pages,validate,"
-        "ai-artifacts,repair,migrate-style,sweep,ledger} ..."
+        "ai-artifacts,ai-readme-check,repair,migrate-style,sweep,ledger,snippets} ..."
     ),
     (
         "make-docsrc",
@@ -78,6 +78,12 @@ EXPECTED_USAGE = {
         "usage: epythet configure-pages [-h] [-b BRANCH] [-p PATH] repo"
     ),
     ("ai-artifacts",): "usage: epythet ai-artifacts [-h] [-f FORMAT] project-dir",
+    # WP8: the README check for agentic aspects and the user-level snippets group.
+    ("ai-readme-check",): (
+        "usage: epythet ai-readme-check [-h] [--format FORMAT] [--fail-on FAIL_ON] "
+        "[-d] [-w] project-dir"
+    ),
+    ("snippets",): "usage: epythet snippets [-h] {list,show,init,diff} ...",
     # v2 (0.2.3): the source-editing and fleet commands, and the ledger group.
     ("repair",): (
         "usage: epythet repair [-h] [-w] [-f FENCE_STYLE] [-i [IGNORE ...]] [-l LEDGER] "
@@ -115,10 +121,12 @@ def test_command_set_and_order():
         "configure-pages",
         "validate",
         "ai-artifacts",
+        "ai-readme-check",
         "repair",
         "migrate-style",
         "sweep",
         "ledger",
+        "snippets",
     ]
 
 

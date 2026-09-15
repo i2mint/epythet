@@ -15,7 +15,7 @@ This file is the map: where things are and which artifact to read for which task
 ```
 epythet/
   __init__.py        # public API re-exports; quickstart()
-  cli.py             # cw-based CLI: make-docsrc make-autodocs make quickstart check-pages configure-pages validate ai-artifacts
+  cli.py             # cw-based CLI: make-docsrc make-autodocs make quickstart check-pages configure-pages validate ai-artifacts ai-readme-check; groups ledger, snippets
   config.py          # DocsConfig SSOT: pyproject [project] + [tool.epythet], setup.cfg fallback
   confgen.py         # DocsConfig -> Sphinx conf namespace (sphinx_settings)
   sphinx_conf.py     # the star-import target of the generated two-line conf.py
@@ -27,10 +27,13 @@ epythet/
   themes.py          # curated theme registry, theme="auto", OKLCH accent
   agent_outputs.py   # llms.txt, .md twins, <link rel=alternate>, <pkg>.md / .pdf
   ai_artifacts.py    # discovers skills/agents/CLAUDE.md by convention; "For AI agents" page
+  agentic_readme.py  # does the README document them? check, render, place the marked section (ai-readme-check)
+  userconfig.py      # ~/.config/epythet: config.toml [readme] policy, snippets (user over packaged), init/diff
   validation/        # epythet validate: levels 0 / 0.5 / 1, Finding/Report model, ledger loader
   ledger/rules/      # one YAML per rule (DRnnn) + sibling .py fixture (rendering/, source/, build_warnings/)
   data/skills/       # SHIPPED consumer skills (real files; gh skill + pip)
   data/agents/       # SHIPPED subagents (real files)
+  data/snippets/     # packaged default text snippets (README section template, humour pool, instruction)
   tools/             # docstring diagnosis/repair, GitHub Pages helpers
 actions/publish-github-pages/action.yml   # composite action the fleet's docs CI runs
 .claude/skills/, .claude/agents/          # relative symlinks into epythet/data/ (Claude Code bridge)
@@ -47,6 +50,7 @@ tests/                                    # pytest; Sphinx smoke build in test_b
 - **Optional dependencies** are imported lazily under `suppress(ImportError)`: `pandas`, `hubcap`, `tec`, `pyyaml` (validate), `playwright` / `weasyprint` (pdf).
 - **Module docstrings everywhere** (ruff `D100` is the one lint rule on).
 - Never commit data derived from private repos: validate observations go to `~/.local/share/epythet/ledger/` (`EPYTHET_DATA_DIR`), never into the repo.
+- **Two user-level roots, same shape**: data in `~/.local/share/epythet` (`user_data_dir()`, `EPYTHET_DATA_DIR`), config in `~/.config/epythet` (`userconfig.config_dir()`, `EPYTHET_CONFIG_DIR`). Policy is `config.toml` (unknown keys raise); text is `snippets/<name>.md` over `epythet/data/snippets/`. Never add a third root.
 
 ## AI artifacts: consumer vs dev
 
@@ -59,7 +63,7 @@ tests/                                    # pytest; Sphinx smoke build in test_b
 | Install | `gh skill install i2mint/epythet <name> --agent <host>`; also in the wheel | not distributed |
 | Documented | README "AI agents", https://i2mint.github.io/epythet/ai-agents.html | this file |
 
-Shipped skills: `epythet-setup`, `epythet-pages`, `epythet-docstring-style`, `epythet-validate`, `epythet-repair-migrate`, `epythet-theme`, `epythet-ai-artifacts`. Shipped agents: `docs-reviewer` (Level 3 review packets that propose ledger rules), `docs-migrator` (the per-repo sweep). `tests/test_ai_artifacts.py` enforces the spec rules and the symlink layout. Policy for layout and shipping: the user-level `skill-package-setup` and `skill-enable` skills; dev skills: `dev-skills-workflow`.
+Shipped skills: `epythet-setup`, `epythet-pages`, `epythet-docstring-style`, `epythet-validate`, `epythet-repair-migrate`, `epythet-theme`, `epythet-ai-artifacts`, `epythet-agentic-readme`. Shipped agents: `docs-reviewer` (Level 3 review packets that propose ledger rules), `docs-migrator` (the per-repo sweep). `tests/test_ai_artifacts.py` enforces the spec rules and the symlink layout. Policy for layout and shipping: the user-level `skill-package-setup` and `skill-enable` skills; dev skills: `dev-skills-workflow`.
 
 ## Which artifact for which task
 
@@ -70,6 +74,7 @@ Shipped skills: `epythet-setup`, `epythet-pages`, `epythet-docstring-style`, `ep
 - The per-repo sweep (WP6): `.claude/skills/epythet-repair-migrate`, agent `docs-migrator`
 - Choosing a theme or accent: `.claude/skills/epythet-theme`
 - Finding a repo's skills/agents, the "For AI agents" page: `.claude/skills/epythet-ai-artifacts`
+- Does the README document them? policy warn/add, humour, snippets: `.claude/skills/epythet-agentic-readme` (`epythet ai-readme-check`, `epythet snippets`)
 
 ## Testing
 
@@ -78,6 +83,7 @@ pytest tests/ -v                      # includes two Sphinx smoke builds (second
 python -m doctest epythet/ai_artifacts.py epythet/normalizer.py
 epythet validate . --level 2          # dogfood
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/   # the site, incl. ai-agents.html
+EPYTHET_CONFIG_DIR=/nonexistent epythet ai-readme-check . --write   # dogfood: refresh the marked README section with the packaged wording ([tool.epythet.readme] pins humor/agentic_first; user snippets under ~/.config/epythet would otherwise apply)
 ```
 
 Run from the repo root (or with `PYTHONPATH` set to it in a worktree) so `import epythet` resolves to the checkout rather than an installed wheel.

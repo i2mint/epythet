@@ -33,6 +33,7 @@ The ``[tool.epythet]`` keys, all optional::
     docs_dir = "docsrc"           # where the Sphinx sources live
 
     [tool.epythet.theme_options]  # verbatim passthrough into html_theme_options
+    [tool.epythet.readme]         # project override of the user-level README policy (see epythet.userconfig)
     announcement = "v2 is in beta"
 
 >>> import tempfile, pathlib
@@ -115,6 +116,7 @@ class DocsConfig:
     accent: str = ""
     mode: str = "auto"
     theme_options: dict[str, Any] = field(default_factory=dict)
+    readme: dict[str, Any] = field(default_factory=dict)
     ignore: tuple[str, ...] = DEFAULT_IGNORE
     api_generator: str = "auto"
     agent_outputs: bool = True
@@ -378,8 +380,8 @@ def _coerce_tool_fields(tool: dict[str, Any]) -> dict[str, Any]:
             ]
         elif key in _BOOL_KEYS and isinstance(value, str):
             value = value.strip().lower() in ("1", "true", "yes", "on")
-        elif key == "theme_options" and not isinstance(value, dict):
-            raise ConfigError("[tool.epythet.theme_options] must be a table")
+        elif key in ("theme_options", "readme") and not isinstance(value, dict):
+            raise ConfigError(f"[tool.epythet.{key}] must be a table")
         out[key] = value
     unknown = set(out) - set(DocsConfig.__dataclass_fields__) - {"project_dir"}
     if unknown:
