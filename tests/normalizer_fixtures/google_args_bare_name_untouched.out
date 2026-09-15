@@ -1,0 +1,9 @@
+Do a thing.
+
+Args:
+    x:
+        The x, described on the next line.
+    error:
+        Not a section, an argument called error.
+    y (int):
+        The y.

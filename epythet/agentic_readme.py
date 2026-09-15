@@ -69,8 +69,11 @@ README_NAMES = (
 )
 #: The kinds a check reports on, in display order.
 KINDS = ("skills", "subagents", "instruction_files", "agent_docs", "section")
-#: The snippet names the section is rendered from.
+#: The snippet names the section is rendered from. A project whose only agentic
+#: aspect is its agent-readable documentation gets the shorter docs-only variant:
+#: it ships no tooling, so the section must not say it does.
 SECTION_SNIPPET = "agentic-readme-section"
+DOCS_ONLY_SECTION_SNIPPET = "agentic-readme-section-docs-only"
 HUMOR_SNIPPET = "agentic-readme-humor"
 INSTRUCTION_SNIPPET = "agentic-readme-instruction"
 #: The opener used when ``humor`` is off.
@@ -599,7 +602,8 @@ def render_section(
     name = config.name if config is not None else artifacts.project_dir.name
     repo_stub = repo_stub_for(config.repo_url) if config is not None else ""
     site_url = site_url_for(config.repo_url) if config is not None else ""
-    template = snippets(SECTION_SNIPPET)
+    snippet_name = section_snippet_for(artifacts)
+    template = snippets(snippet_name)
     fields = dict(
         marker_start=MARKER_START,
         marker_end=MARKER_END,
@@ -618,16 +622,37 @@ def render_section(
         rendered = template.format(**fields)
     except Exception as e:  # str.format raises Key/Index/Value/Attribute/TypeError
         raise SectionError(
-            f"snippet {SECTION_SNIPPET!r} does not format: {e!r}; the fields are "
+            f"snippet {snippet_name!r} does not format: {e!r}; the fields are "
             f"{sorted(SECTION_FIELDS)} and literal braces must be doubled ({{{{ and }}}})"
         ) from e
     rendered = rendered.strip("\n") + "\n"
     if marker_span(rendered, strict=False) != (0, len(rendered)):
         raise SectionError(
-            f"snippet {SECTION_SNIPPET!r} must start with {{marker_start}} and end with "
+            f"snippet {snippet_name!r} must start with {{marker_start}} and end with "
             "{marker_end}, each on its own line, or the section cannot be updated in place"
         )
     return rendered
+
+
+def ships_tooling(artifacts: AIArtifacts) -> bool:
+    """Whether the project ships anything an agent installs or reads as instructions.
+
+    Skills, subagents and instruction files count; published agent-readable
+    documentation (``llms.txt``, ``<package>.md``) does not, because it is a
+    view of the docs rather than tooling.
+    """
+    return bool(
+        artifacts.skills or artifacts.subagents or artifacts.instruction_files
+    )
+
+
+def section_snippet_for(artifacts: AIArtifacts) -> str:
+    """The name of the section snippet ``artifacts`` calls for.
+
+    :data:`SECTION_SNIPPET` when the project ships tooling, else the shorter
+    :data:`DOCS_ONLY_SECTION_SNIPPET`, which makes no "ships tooling" claim.
+    """
+    return SECTION_SNIPPET if ships_tooling(artifacts) else DOCS_ONLY_SECTION_SNIPPET
 
 
 def _for_humans_intro(name: str, policy: ReadmePolicy, pool_text: str) -> str:

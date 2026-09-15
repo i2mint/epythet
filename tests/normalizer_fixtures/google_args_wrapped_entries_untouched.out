@@ -1,0 +1,11 @@
+Do a thing.
+
+Args:
+    func: The method to be decorated. If not provided, a partially applied
+        decorator will be returned for later application.
+    maxsize: The maximum size of the cache.
+    typed: If True, cache entries will be different based on argument types,
+        such as distinguishing between ``1`` and ``1.0``.
+
+Returns:
+    The decorated method.

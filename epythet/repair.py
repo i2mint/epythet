@@ -18,7 +18,15 @@ narrow:
   prose ``*args`` is *not* source-safe (it changes what the author wrote,
   and a later reader may not know why the backslash is there), so it stays a
   diagnostic (DR010), like unmatched backticks and every other artifact the
-  normalizer cannot fix.
+  normalizer cannot fix. Nor is turning a bare ``Examples:`` header into a
+  rubric: napoleon renders it as that rubric already, so the rewrite would
+  churn the source for no change on the page (:data:`UNSAFE_RULES` lists both
+  with the reason).
+- The normalizer's own rule applies twice over here: **rewrite only what is
+  unambiguous, otherwise report.** A ``#`` line that could be a comment, a
+  ``term:`` over an indented paragraph, an entry inside an ``Args:`` body, a
+  drawing made of arrows: none is touched, and the author's blank lines
+  before the closing quotes are kept as written.
 - Every doctest keeps its source lines byte for byte (checked with
   :mod:`doctest`'s own parser); a rewrite that would change one is skipped.
 - Every rewritten docstring is re-validated at level 0.5: a rewrite that
@@ -63,14 +71,15 @@ from epythet import normalizer as N
 from epythet.validation.docstrings import Docstring, iter_python_files
 from epythet.validation.model import Finding
 
-#: The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
-SOURCE_SAFE_RULES: tuple[N.Rule, ...] = tuple(
-    rule for rule in N.DEFAULT_RULES if rule is not N.escape_unmatched_stars
-)
 #: Normalizer rules that stay build-time only, and why.
 UNSAFE_RULES: dict[str, str] = {
     N.escape_unmatched_stars.__name__: "escaping *args in prose changes what the author wrote; reported as DR010 instead",
+    N.bare_headers_to_rubrics.__name__: "napoleon already renders a bare Examples: header as that rubric, so the rewrite changes the source without changing the page; a bare Note: is ambiguous and reported as DR002 instead",
 }
+#: The normalizer rules whose rewrite is safe to commit to source, in normalizer order.
+SOURCE_SAFE_RULES: tuple[N.Rule, ...] = tuple(
+    rule for rule in N.DEFAULT_RULES if rule.__name__ not in UNSAFE_RULES
+)
 FENCE_STYLES = ("code-block", "literal")
 _PREFIX_CHARS = "rRbBuUfF"
 _DOCTEST_FAILURES_RE = re.compile(r"\*\*\*Test Failed\*\*\* (\d+) failure")
@@ -188,6 +197,20 @@ def _body_indented(lines: Sequence[str]) -> bool:
     return bool(rest) and all(N.indent_of(line) > 0 for line in rest)
 
 
+def _trailing_blank_count(lines: Sequence[str]) -> int:
+    """How many blank lines end ``lines``.
+
+    >>> _trailing_blank_count(["a", "", ""]), _trailing_blank_count(["a"])
+    (2, 0)
+    """
+    count = 0
+    for line in reversed(lines):
+        if line.strip():
+            break
+        count += 1
+    return count
+
+
 def _doctest_sources(text: str) -> list[str] | None:
     """Doctest example sources, or ``None`` when :mod:`doctest` cannot parse the text."""
     try:
@@ -229,8 +252,12 @@ def rewrite_docstring_literal(
     if before_sources is None:
         return segment, "doctest could not parse the docstring; fix the doctest first"
     normalized = N.normalize_docstring(dedented, rules=rules)
-    while normalized and not normalized[-1].strip() and trailing is not None:
-        normalized.pop()
+    if trailing is not None:
+        # A rule may leave a blank line at the end; the author's own blank lines
+        # before the closing quotes are kept exactly as they were.
+        blank_tail = _trailing_blank_count(dedented)
+        while _trailing_blank_count(normalized) > blank_tail and len(normalized) > 1:
+            normalized.pop()
     if normalized == dedented:
         return segment, None
     if len(quote) == 1 and (len(normalized) > 1 or "\n" in normalized[0]):
@@ -771,7 +798,7 @@ def repair_command(
     :param path: A .py file, a package directory, or a project root.
     :param write: Apply the changes (after re-validating each docstring and re-running doctests).
     :param fence_style: What a Markdown fence becomes: code-block or literal.
-    :param ignore: Skip files whose path contains this string (repeat -i for several).
+    :param ignore: Skip files whose path contains any of these strings (several after one -i, or -i repeated).
     :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.
     :param no_napoleon: Re-validate without napoleon's Google/NumPy pre-processing.
     :param no_doctests: Do not run each touched file's doctests before and after writing.
@@ -807,6 +834,10 @@ def repair_command(
     print(render_repair(report, diff=not quiet))
     if any(f.verification and not f.written for f in report.changed):
         raise cw.CommandError("a written file had to be restored; see above", code=3)
+
+
+#: ``-i a -i b`` accumulates, as for ``epythet validate``.
+repair_command._cw = {"params": {"ignore": {"action": "extend", "nargs": "*"}}}
 
 
 def render_repair(report: RepairReport, *, diff: bool = True) -> str:

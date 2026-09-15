@@ -58,7 +58,7 @@ def validate(
     :param ledger: Directory of extra rule YAML files overlaid on the bundled ledger.
     :param style: Docstring convention for the linters: google, numpy, or sphinx.
     :param no_napoleon: Parse docstrings without napoleon's Google/NumPy pre-processing.
-    :param ignore: Skip files whose path contains this string (repeat -i for several).
+    :param ignore: Skip files whose path contains any of these strings (several after one -i, or -i repeated).
     :param docsrc: Sphinx source directory for level 2 (default: <project>/docsrc).
     :param no_observe: Do not append findings to the ledger's observations file.
     :param no_linters: Level 0 without ruff and pydoclint (coverage detectors only).
@@ -139,5 +139,9 @@ def validate(
             code=code,
         )
 
+
+#: ``-i a -i b`` accumulates (argparse would keep only the last ``-i``); cw reads
+#: this attribute as per-parameter ``add_argument`` particulars.
+validate._cw = {"params": {"ignore": {"action": "extend", "nargs": "*"}}}
 
 COMMANDS = [validate]

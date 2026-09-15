@@ -33,6 +33,7 @@ from epythet.userconfig import (
 
 EXPECTED_SNIPPETS = {
     "agentic-readme-section",
+    "agentic-readme-section-docs-only",
     "agentic-readme-humor",
     "agentic-readme-instruction",
 }

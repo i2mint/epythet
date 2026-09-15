@@ -126,10 +126,24 @@ EXPECTED_DIFF = '''\
 '''
 
 
-def test_source_safe_rules_exclude_only_the_star_escaper():
-    assert N.escape_unmatched_stars not in SOURCE_SAFE_RULES
-    assert set(N.DEFAULT_RULES) - set(SOURCE_SAFE_RULES) == {N.escape_unmatched_stars}
-    assert "escape_unmatched_stars" in UNSAFE_RULES
+def test_source_safe_rules_exclude_the_star_escaper_and_the_bare_header_rubric():
+    """The two build-time-only rules: one changes the author's text, one changes nothing on the page."""
+    excluded = {N.escape_unmatched_stars, N.bare_headers_to_rubrics}
+    assert set(N.DEFAULT_RULES) - set(SOURCE_SAFE_RULES) == excluded
+    assert set(UNSAFE_RULES) == {rule.__name__ for rule in excluded}
+    # napoleon renders a bare ``Examples:`` as that rubric already: the source keeps its header
+    literal = '"""Do it.\n\n    Examples:\n\n    >>> f()\n    1\n    """'
+    assert rewrite_docstring_literal(literal) == (literal, None)
+
+
+def test_trailing_blank_lines_before_the_closing_quotes_are_kept():
+    """A docstring ending in a blank line is not "rewritten" to drop it."""
+    literal = '"""Do it.\n\n    >>> f()\n    1\n\n    """'
+    assert rewrite_docstring_literal(literal) == (literal, None)
+    # and a real fix keeps the author's trailing blank line too
+    glued = '"""Do it.\n    >>> f()\n    1\n\n    """'
+    new, reason = rewrite_docstring_literal(glued)
+    assert reason is None and new == '"""Do it.\n\n    >>> f()\n    1\n\n    """'
 
 
 def test_split_literal_shapes():

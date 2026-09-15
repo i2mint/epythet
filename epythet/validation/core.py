@@ -261,7 +261,10 @@ def validate(
         with Timer(report.durations, "0"):
             if linters:
                 found, notes = run_lint_level(
-                    resolved.package_dir, project_dir=resolved.project_dir, style=style
+                    resolved.package_dir,
+                    project_dir=resolved.project_dir,
+                    style=style,
+                    ignore=ignore,
                 )
                 findings += found
                 report.notes += notes

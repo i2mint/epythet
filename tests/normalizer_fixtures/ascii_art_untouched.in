@@ -1,0 +1,19 @@
+The pipeline, as a drawing:
+
+    ┌───┐     ┌───┐
+    │ 0 │ ──▶ │ 2 │
+    └───┘     └───┘
+      │         ▲
+      ▼         │
+    ┌───┐       │
+    │ 4 │ ──────┘
+    └───┘
+
+and in plain characters:
+
+    func1 --+
+            +--> merge
+    func2 --+
+    - - - - - - - -
+
+Back to prose.
