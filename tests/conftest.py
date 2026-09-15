@@ -10,7 +10,9 @@ import pytest
 def make_project(tmp_path):
     """``make_project(name, {"mod.py": source, ...})`` -> project root with a pyproject."""
 
-    def build(name: str, files: dict[str, str], *, init: str = '"""The package."""\n') -> Path:
+    def build(
+        name: str, files: dict[str, str], *, init: str = '"""The package."""\n'
+    ) -> Path:
         project = tmp_path / name
         (project / name).mkdir(parents=True)
         (project / "pyproject.toml").write_text(

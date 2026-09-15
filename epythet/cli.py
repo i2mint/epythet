@@ -173,7 +173,9 @@ def mk_epythet_parser(**parser_kwargs):
         parser,
         SNIPPET_COMMANDS,
         group_name="snippets",
-        group_kwargs={"title": "User-level text snippets (config dir over packaged defaults)"},
+        group_kwargs={
+            "title": "User-level text snippets (config dir over packaged defaults)"
+        },
         convention=CONVENTION,
     )
     return parser

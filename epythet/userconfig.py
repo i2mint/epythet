@@ -65,8 +65,8 @@ SNIPPET_SUFFIX = ".md"
 AGENTIC_ASPECTS_POLICIES = ("warn", "add")
 
 _HEADER_RE = re.compile(
-    r"\A<!--\s*epythet snippet\s+\"(?P<name>[^\"\n]+)\"\s+copied from epythet\s+"
-    r"(?P<version>[^\s.]+(?:\.[^\s.]+)*?)\.?(?:\s[^\n]*?)?-->[ \t]*\n?"
+    r"\A<!--[ \t]*epythet snippet[ \t]+\"(?P<name>[^\"\n]+)\"[ \t]+copied from epythet[ \t]+"
+    r"(?P<version>[^\s.]+(?:\.[^\s.]+)*?)\.?(?:[ \t][^\n]*?)?-->[ \t]*\n?"
 )
 
 
@@ -155,7 +155,9 @@ class UserConfig:
     snippets: SnippetsConfig = field(default_factory=SnippetsConfig)
     path: Path | None = None
 
-    def readme_for(self, project_overrides: Mapping[str, Any] | None = None) -> ReadmePolicy:
+    def readme_for(
+        self, project_overrides: Mapping[str, Any] | None = None
+    ) -> ReadmePolicy:
         """The effective policy for one project: ``[tool.epythet.readme]`` keys override the user's.
 
         Committed READMEs should not depend on who ran the tool, so a project
@@ -178,7 +180,12 @@ class UserConfig:
             raise UserConfigError(
                 f"unknown key(s) {sorted(extra)} in [tool.epythet.readme]; known: {sorted(allowed)}"
             )
-        return replace(self.readme, **overrides)
+        try:
+            return replace(self.readme, **overrides)
+        except UserConfigError as e:
+            raise UserConfigError(
+                str(e).replace("[readme]", "[tool.epythet.readme]")
+            ) from e
 
     def to_dict(self, project_overrides: Mapping[str, Any] | None = None) -> dict:
         """A JSON-ready view (the ``policy`` block of ``ai-readme-check --format json``).
@@ -189,8 +196,12 @@ class UserConfig:
         effective = self.readme_for(project_overrides)
         return {
             "path": str(self.path) if self.path else None,
-            "readme": {f.name: getattr(effective, f.name) for f in fields(ReadmePolicy)},
-            "user": {f.name: getattr(self.readme, f.name) for f in fields(ReadmePolicy)},
+            "readme": {
+                f.name: getattr(effective, f.name) for f in fields(ReadmePolicy)
+            },
+            "user": {
+                f.name: getattr(self.readme, f.name) for f in fields(ReadmePolicy)
+            },
             "project": dict(project_overrides or {}),
             "snippets": {"dir": self.snippets.dir},
         }
@@ -422,7 +433,9 @@ def diff_snippet(name: str, *, user_dir: Path | None = None) -> str:
         return ""
     packaged = PACKAGED_SNIPPETS_DIR / f"{name}{SNIPPET_SUFFIX}"
     upstream = packaged.read_text(encoding="utf-8") if packaged.is_file() else ""
-    origin = f" (copied from epythet {resolved.copied_from})" if resolved.copied_from else ""
+    origin = (
+        f" (copied from epythet {resolved.copied_from})" if resolved.copied_from else ""
+    )
     return "".join(
         difflib.unified_diff(
             upstream.splitlines(keepends=True),
@@ -436,7 +449,10 @@ def diff_snippet(name: str, *, user_dir: Path | None = None) -> str:
 def snippets_table(*, user_dir: Path | None = None) -> str:
     """The ``epythet snippets list`` output: name, source, provenance, whether modified."""
     user_dir = user_dir if user_dir is not None else snippets_dir()
-    lines = [f"Snippets (user folder: {user_dir}; packaged: {PACKAGED_SNIPPETS_DIR})", ""]
+    lines = [
+        f"Snippets (user folder: {user_dir}; packaged: {PACKAGED_SNIPPETS_DIR})",
+        "",
+    ]
     lines.append(f"{'name':<32} {'source':<9} {'copied from':<12} {'status'}")
     for item in iter_snippets(user_dir=user_dir):
         if item.source == "packaged":
@@ -509,7 +525,9 @@ def snippets_diff(name: str = ""):
     import cw
 
     def collect():
-        names = [name] if name else [s.name for s in iter_snippets() if s.source == "user"]
+        names = (
+            [name] if name else [s.name for s in iter_snippets() if s.source == "user"]
+        )
         return [text for text in (diff_snippet(item) for item in names) if text]
 
     diffs = _guarded(collect)

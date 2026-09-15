@@ -83,7 +83,7 @@ pytest tests/ -v                      # includes two Sphinx smoke builds (second
 python -m doctest epythet/ai_artifacts.py epythet/normalizer.py
 epythet validate . --level 2          # dogfood
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/   # the site, incl. ai-agents.html
-epythet ai-readme-check . --write     # dogfood: refresh the marked README section ([tool.epythet.readme] pins humor/agentic_first; --write is explicit)
+EPYTHET_CONFIG_DIR=/nonexistent epythet ai-readme-check . --write   # dogfood: refresh the marked README section with the packaged wording ([tool.epythet.readme] pins humor/agentic_first; user snippets under ~/.config/epythet would otherwise apply)
 ```
 
 Run from the repo root (or with `PYTHONPATH` set to it in a worktree) so `import epythet` resolves to the checkout rather than an installed wheel.
