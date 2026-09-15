@@ -226,7 +226,7 @@ def test_agent_outputs_and_aggregate(site):
 
 def test_provenance_footer_page_and_json(project, site):
     """WP7: the landing line, the orphan about page and build_info.json agree."""
-    info = json.loads((site / "build_info.json").read_text())
+    info = json.loads((site / "build_info.json").read_text(encoding="utf-8"))
     git = info["git"]
     assert info["schema_version"] == 1 and info["package"]["version"] == "0.1.0"
     assert (
@@ -244,16 +244,15 @@ def test_provenance_footer_page_and_json(project, site):
         and "uncommitted" in info["alignment"]["notes"][0]
     )
 
-    index = (site / "index.html").read_text()
+    index = (site / "index.html").read_text(encoding="utf-8")
     assert index.count('class="epythet-provenance"') == 1
     assert f">{git['short_commit']}+dirty</a> (main) · demo 0.1.0 · " in index
     assert '<a href="about-this-build.html">about this build</a>' in index
-    assert (
-        'class="epythet-provenance"'
-        not in (site / "_autosummary" / "demo.core.html").read_text()
-    )
+    assert 'class="epythet-provenance"' not in (
+        site / "_autosummary" / "demo.core.html"
+    ).read_text(encoding="utf-8")
 
-    about = (site / "about-this-build.html").read_text()
+    about = (site / "about-this-build.html").read_text(encoding="utf-8")
     assert "may be misaligned" in about and git["commit"] in about
     # A "|" in a ref name must not split the table row (rendered HTML, not the source).
     row = about[about.index("Tags at this commit") :]
@@ -268,9 +267,11 @@ def test_provenance_footer_page_and_json(project, site):
         "about-this-build" not in index.split('class="epythet-provenance"')[0]
     )  # not in the nav
     assert (site / "about-this-build.html.md").is_file()
-    assert "build_info.json" in (site / "llms.txt").read_text()
-    assert (site / "demo.md").read_text().startswith("> built ")
-    assert "about-this-build.md" in (project / "docsrc" / ".gitignore").read_text()
+    assert "build_info.json" in (site / "llms.txt").read_text(encoding="utf-8")
+    assert (site / "demo.md").read_text(encoding="utf-8").startswith("> built ")
+    assert "about-this-build.md" in (project / "docsrc" / ".gitignore").read_text(
+        encoding="utf-8"
+    )
 
 
 def test_provenance_off_and_minimal(project):
