@@ -1,0 +1,58 @@
+epythet.userconfig
+==================
+
+.. automodule:: epythet.userconfig
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      CONFIG_DIR_ENV
+      CONFIG_FILENAME
+      SNIPPETS_DIRNAME
+      PACKAGED_SNIPPETS_DIR
+      AGENTIC_ASPECTS_POLICIES
+      SNIPPET_COMMANDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      config_dir
+      config_path
+      diff_snippet
+      epythet_version
+      header_version
+      init_snippets
+      iter_snippets
+      load_user_config
+      packaged_snippet_names
+      pool_lines
+      snippet
+      snippet_header
+      snippet_names
+      snippet_text
+      snippets_diff
+      snippets_dir
+      snippets_init
+      snippets_list
+      snippets_show
+      snippets_table
+      strip_header
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ReadmePolicy
+      Snippet
+      SnippetsConfig
+      UserConfig
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      UserConfigError
+   

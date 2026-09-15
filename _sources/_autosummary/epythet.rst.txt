@@ -17,6 +17,7 @@
    :recursive:
 
    agent_outputs
+   agentic_readme
    ai_artifacts
    build
    call_make
@@ -36,4 +37,5 @@
    templates
    themes
    tools
+   userconfig
    validation

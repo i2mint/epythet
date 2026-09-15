@@ -10,6 +10,16 @@ machine-readable copies of this documentation.
 
 Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.io) format): a description that tells an agent when to use it and a body with the procedure. Install one into your agent with `gh skill` (any host: `--agent claude-code`, `copilot`, `cursor`, `codex`, `gemini`), or use the copy bundled in the wheel.
 
+### `epythet-agentic-readme`
+
+Make sure a repository’s README documents its agentic aspects: the skills, subagents and instruction files it ships (`<pkg>/data/skills`, `.claude/skills`, `.claude/agents`, `CLAUDE.md`, `AGENTS.md`) and the agent-readable docs its site publishes (`llms.txt`, `<package>.md`). Runs `epythet ai-readme-check`, reads the user’s policy (`~/.config/epythet/config.toml`: warn or add, humour, agents first) and either reports what is missing or adds and updates a marked “For AI agents” section rendered from user-overridable snippets (`epythet snippets`). Use when asked “does the README mention the skills”, “add the agent section to the README”, “document the agentic aspects”, when finishing a docs sweep, or before releasing a package that ships skills.
+
+```bash
+gh skill install i2mint/epythet epythet-agentic-readme --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-agentic-readme`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-agentic-readme) (bundled with the pip package).
+
 ### `epythet-ai-artifacts`
 
 Find, install and document a repository’s AI agent artifacts: skills (`SKILL.md` folders under `<pkg>/data/skills`, `skills/`, `.claude/skills`), subagents (`.claude/agents`, `<pkg>/data/agents`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules`, `.codex`), and the machine-readable documentation a site publishes (`llms.txt`, `<package>.md`, `.md` page twins, `objects.inv`). Use when arriving in an unfamiliar repo and asking “does this project ship skills or agents”, “how do I install this package’s skill”, “where is the agent-readable version of these docs”, or when adding artifacts to a package so that epythet documents them.

@@ -24,27 +24,40 @@ Open `/path/to/project/docsrc/_build/html/index.html`. You get:
 
 Nothing has to be added to the package. Everything is read from `pyproject.toml` (or `setup.cfg`), the README and the docstrings.
 
-# AI agents
+<!-- epythet:agentic-readme:start -->
 
-epythet ships skills and subagents for coding agents, and documents them on every site it builds.
+# For AI agents
+
+`epythet` ships tooling for coding agents. If you are one, start here.
+
+**Skills** ([Agent Skills](https://agentskills.io) format), for any agent host. Install one with `gh skill`:
 
 ```bash
 gh skill install i2mint/epythet epythet-setup --agent claude-code   # or copilot, cursor, codex, gemini
 ```
 
-| Skill                     | Use it to                                                                                                      |
-|---------------------------|----------------------------------------------------------------------------------------------------------------|
-| `epythet-setup`           | set up docs for a package: quickstart, `[tool.epythet]`, the Pages workflow                                    |
-| `epythet-pages`           | diagnose and fix GitHub Pages publishing (the 404 after the first CI run)                                      |
-| `epythet-docstring-style` | write docstrings that render and that help agents: the dialect, the quality rubric, the behaviour-claim policy |
-| `epythet-validate`        | run `epythet validate`, read its findings and exit codes, propose ledger rules                                 |
-| `epythet-repair-migrate`  | the per-repository documentation sweep, step by step                                                           |
-| `epythet-theme`           | choose and parametrize a theme, set a brand colour                                                             |
-| `epythet-ai-artifacts`    | find a repository’s skills, agents and instruction files; read a site as an agent                              |
+| Skill                     | Use it to                                                                                                                             |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `epythet-agentic-readme`  | make sure a repository’s README documents its agentic aspects                                                                         |
+| `epythet-ai-artifacts`    | find, install and document a repository’s AI agent artifacts                                                                          |
+| `epythet-docstring-style` | write and improve Python docstrings that render correctly in epythet/Sphinx and that help both humans and AI agents                   |
+| `epythet-pages`           | diagnose and fix GitHub Pages publishing for Python documentation built with epythet (or any Sphinx site pushed to a gh-pages branch) |
+| `epythet-repair-migrate`  | the per-repository documentation sweep for packages documented with epythet                                                           |
+| `epythet-setup`           | set up documentation for a Python package with epythet                                                                                |
+| `epythet-theme`           | choose and parametrize the Sphinx theme of an epythet documentation site                                                              |
+| `epythet-validate`        | check a Python package’s docstrings for rendering artifacts and build problems with `epythet validate`                                |
 
-Subagents `docs-reviewer` (reviews rendered pages and proposes ledger rules) and `docs-migrator` (runs the sweep on one repository) are in `epythet/data/agents/`; copy one into your project’s `.claude/agents/`. The same skills are inside the wheel (`epythet/data/skills/`), so `pip install epythet` already has them offline.
+The same skills are inside the wheel, under `epythet/data/skills/`.
 
-For agents reading the documentation: every epythet site serves `llms.txt`, a `.md` twin of every page, the whole documentation as one file at `<site>/<package>.md`, and `objects.inv`. epythet’s own are at [i2mint.github.io/epythet/epythet.md](https://i2mint.github.io/epythet/epythet.md); the full list, with install commands, is on the site’s [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page, which epythet generates for any repository that has such artifacts (see below).
+**Subagents**: `docs-migrator` (runs the epythet documentation sweep on one repository end to end), `docs-reviewer` (reviews the rendered documentation of a Python package), in `epythet/data/agents/`. Copy one into your project’s `.claude/agents/` (or your host’s equivalent).
+
+**Instruction files**: `.claude/CLAUDE.md` (Claude Code).
+
+**The documentation, machine-readable**: [`llms.txt`](https://i2mint.github.io/epythet/llms.txt) indexes every page; [`epythet.md`](https://i2mint.github.io/epythet/epythet.md) is the whole documentation in one file; every page has a `.md` twin; [`objects.inv`](https://i2mint.github.io/epythet/objects.inv) maps symbols to URLs. The full list, with install lines, is on the site’s [For AI agents](https://i2mint.github.io/epythet/ai-agents.html) page.
+
+If you would rather understand than delegate, the rest of this README is written for you, starting at [What it fixes without touching your docstrings]().
+
+<!-- epythet:agentic-readme:end -->
 
 # What it fixes without touching your docstrings
 
@@ -87,6 +100,10 @@ docs_dir = "docsrc"             # where the Sphinx sources are generated
 
 [tool.epythet.theme_options]    # verbatim passthrough into Sphinx's html_theme_options; always wins
 announcement = "v2 is in beta"
+
+[tool.epythet.readme]           # pins the generated "For AI agents" README section (see "For agents"); wins over ~/.config/epythet
+humor = true
+agentic_first = true
 ```
 
 `setup.cfg` projects put the same keys under `[metadata]` (`display_name`, `copyright`) or a `[tool.epythet]` section. When both files exist, `pyproject.toml` wins.
@@ -119,6 +136,8 @@ Every site also serves, next to the HTML:
 - `objects.inv`: the Sphinx inventory, a machine-readable symbol-to-URL index (`sphobjinv convert plain objects.inv -`).
 
 Set `agent_outputs = false` to skip the second (Markdown) build pass.
+
+**The README.** `epythet ai-readme-check PROJECT_DIR` reports which of these a project has (skills, subagents, instruction files, the outputs above) and whether its README mentions each; `--format json` for machines, `--fail-on warn` for CI (the exit code is 0 otherwise). `--draft` prints a “For AI agents” README section rendered from text snippets; `--write` adds it between marker comments and updates it in place on later runs, wherever you moved it (the section at the top of this README is one). What to do about a missing section is a user-level policy in `~/.config/epythet/config.toml`: `[readme] agentic_aspects = "warn"` (the packaged default) or `"add"`, `humor = true` to draw the “for humans” line from a pool, `agentic_first = true` to put the section before every other; a project pins the keys that shape its committed text in `[tool.epythet.readme]`, which wins. The wording is yours too: `epythet snippets list | show NAME | init | diff` resolve a snippet from `~/.config/epythet/snippets/` over the packaged default; `init` copies the defaults out once, with a header recording the epythet version, and never overwrites; `diff` shows how your copy differs from the current default after an upgrade. The `epythet-agentic-readme` skill walks an agent through the whole thing.
 
 **The “For AI agents” page.** When the repository ships anything for agents, epythet adds an `ai-agents` page to the site listing it: skills (`<pkg>/data/skills/*/SKILL.md`, `skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`) with their `gh skill install` lines and source folders, subagents (`<pkg>/data/agents/*.md`, `.claude/agents/*.md`), instruction files (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules`, `.codex`), and the outputs above with their URLs. Symlinks are followed and duplicates removed. `epythet ai-artifacts PROJECT_DIR` prints the same inventory (`--format json` for machines). Turn the page off with `ai_artifacts = false` (or, for a whole CI fleet, the environment variable `EPYTHET_AI_ARTIFACTS=0`), or replace its template with `ai_artifacts_template = "path/to/template.md"` (a `str.format` template; see `epythet.ai_artifacts`). A hand-written `docsrc/ai-agents.md` is left alone. A malformed `SKILL.md` never fails the build: the skill is listed by folder name.
 
@@ -395,6 +414,381 @@ The `.md` aggregate is the Markdown build’s `llms-full.txt` renamed, and
 `llms.txt` is rewritten to point at it. The `.pdf` aggregate is rendered
 from the `.md` one by [`markdown_to_pdf()`](_autosummary/epythet.agent_outputs.html.md#epythet.agent_outputs.markdown_to_pdf), which needs an optional
 renderer; when none is installed the PDF is skipped with a notice.
+
+
+# _autosummary/epythet.agentic_readme.html.md
+
+# epythet.agentic_readme
+
+Check that a README documents a project’s agentic aspects; render and place the section.
+
+A project that ships skills, subagents or instruction files, and whose site
+publishes agent-readable documentation (`llms.txt`, `<package>.md`), should
+say so in its README: that is where an agent arriving at the repository looks
+first. [`check_readme()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.check_readme) reuses [`epythet.ai_artifacts.discover_artifacts()`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.discover_artifacts)
+to learn what exists and reads the README to see whether each kind is mentioned
+(a `gh skill install` line, a skill or agent name, `CLAUDE.md`, `llms.txt`,
+a heading about agents). The result is a [`ReadmeReport`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.ReadmeReport): one
+[`KindCheck`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.KindCheck) per kind, each `ok`, `warn` or `n/a`. The check is a
+heuristic: a mention counts whatever the sentence around it says.
+
+[`render_section()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.render_section) produces the README section from the effective snippets
+([`epythet.userconfig`](_autosummary/epythet.userconfig.html.md#module-epythet.userconfig): the user’s `agentic-readme-section.md` and
+`agentic-readme-humor.md` over the packaged defaults) and the effective
+[`ReadmePolicy`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.ReadmePolicy) (the user’s `config.toml`, with a
+project’s `[tool.epythet.readme]` keys on top so a committed README does not
+depend on who ran the tool). [`place_section()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.place_section) puts it between two marker
+comments so a later run updates it in place: before the first heading after the
+title when `agentic_first` is on, at the end otherwise. The “for humans” line
+links to the heading that follows the section.
+
+```pycon
+>>> readme = "# pkg\n\nTagline.\n\n# Install\n\npip install pkg\n"
+>>> start, end, heading, level = place_section(readme, agentic_first=True)
+>>> readme[start:end], heading.title, level
+('', 'Install', 1)
+>>> humans_link_for(heading)
+'[Install](#install)'
+```
+
+### Module Attributes
+
+| [`MARKER_START`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.MARKER_START)      | The comments that delimit the generated section in a README (each on its own line).   |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [`README_NAMES`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.README_NAMES)      | README filenames, in order of preference.                                             |
+| [`KINDS`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.KINDS)             | The kinds a check reports on, in display order.                                       |
+| [`SECTION_SNIPPET`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SECTION_SNIPPET)   | The snippet names the section is rendered from.                                       |
+| [`NEUTRAL_INTRO`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.NEUTRAL_INTRO)     | The opener used when `humor` is off.                                                  |
+| [`MAX_BLURB`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.MAX_BLURB)         | Longest blurb (first sentence of a description) shown per skill or agent.             |
+| [`HEADLINE_SUFFIXES`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.HEADLINE_SUFFIXES) | Skill name suffixes that make a skill the one named in the install line.              |
+| [`SECTION_FIELDS`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SECTION_FIELDS)    | The fields a section snippet may use.                                                 |
+
+### Functions
+
+| [`ai_readme_check`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.ai_readme_check)(project_dir, \*[, format, ...])    | Report whether the README documents the project's agentic aspects; draft or write the section.   |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| [`blurb`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.blurb)(description, \*[, max_length])               | The first sentence of a skill or agent description, short enough for a table cell.               |
+| [`check_readme`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.check_readme)(project_dir, \*[, config, ...])       | Which agentic aspects the project has, and whether its README mentions each.                     |
+| [`draft_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.draft_section)(project_dir, \*[, user_config, ...]) | Render the section for a project as it would be placed: `(section, readme_text, start, end)`.    |
+| [`find_readme`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.find_readme)(project_dir)                           | The project's README, by the usual names (`None` when there is none).                            |
+| [`github_anchor`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.github_anchor)(title)                               | GitHub's anchor for a heading title.                                                             |
+| [`headings_of`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.headings_of)(text)                                  | Every ATX heading outside fenced code blocks.                                                    |
+| [`headline_skill`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.headline_skill)(skills)                             | The skill named in the install line: a `*-setup`-like one if any, else the first installable.    |
+| [`humans_link_for`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.humans_link_for)(heading)                           | `[Title](#anchor)` for the heading after the section, or a plain fallback.                       |
+| [`instruction_text`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.instruction_text)(\*[, snippets])                   | The instruction the skill hands an agent when the policy is `add`.                               |
+| [`load`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.load)(project_dir, \*[, config, artifacts, ...])    | Resolve a project once; each argument given is used instead of being loaded.                     |
+| [`load_project`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.load_project)(project_dir)                          | `(config, artifacts)` for a project; `config` is `None` for a non-Python tree.                   |
+| [`marker_span`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.marker_span)(text, \*[, strict])                    | The character span of the marked section (`None` when there is none).                            |
+| [`place_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.place_section)(text, \*, agentic_first)             | Where the section goes in `text`: `(start, end, next_heading, level)`.                           |
+| [`read_readme`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.read_readme)(path)                                  | `(text, newline)`: the README with `\n` line ends, and the style to write back.                  |
+| [`render_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.render_section)(artifacts, config, \*, policy)      | The README section for `artifacts`, from the effective snippets and `policy`.                    |
+| [`splice_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.splice_section)(text, section, \*, start, end)      | `text` with `section` in place of `text[start:end]`, blank lines kept sane.                      |
+| [`write_section`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.write_section)(project_dir, \*[, user_config])      | Add or update the marked section in the project's README; returns `(path, outcome)`.             |
+
+### Classes
+
+| [`Heading`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.Heading)(line, level, title)                    | A Markdown ATX heading: its line index, level and title text.                                   |
+|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| [`KindCheck`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.KindCheck)(kind, present, documented[, ...])    | One artifact kind: whether the project has it and whether the README covers it.                 |
+| [`Project`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.Project)(root, config, artifacts, readme, ...)  | What every entry point needs once: config, artifacts, README, effective policy.                 |
+| [`ReadmeReport`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.ReadmeReport)(project_dir, readme, checks, ...) | The outcome of [`check_readme()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.check_readme) for one project. |
+
+### Exceptions
+
+| [`SectionError`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError)   | The README or a snippet is in a state the tool will not write over.   |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------|
+
+### epythet.agentic_readme.HEADLINE_SUFFIXES *= ('-setup', '-quickstart', '-start')*
+
+Skill name suffixes that make a skill the one named in the install line.
+
+### *class* epythet.agentic_readme.Heading(line, level, title)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+A Markdown ATX heading: its line index, level and title text.
+
+### epythet.agentic_readme.KINDS *= ('skills', 'subagents', 'instruction_files', 'agent_docs', 'section')*
+
+The kinds a check reports on, in display order.
+
+### *class* epythet.agentic_readme.KindCheck(kind, present, documented, items=(), evidence='')
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One artifact kind: whether the project has it and whether the README covers it.
+
+#### *property* status *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+`n/a` when absent from the project, else `ok` or `warn`.
+
+### epythet.agentic_readme.MARKER_START *= '<!-- epythet:agentic-readme:start -->'*
+
+The comments that delimit the generated section in a README (each on its own line).
+
+### epythet.agentic_readme.MAX_BLURB *= 140*
+
+Longest blurb (first sentence of a description) shown per skill or agent.
+
+### epythet.agentic_readme.NEUTRAL_INTRO *= 'If you are a human'*
+
+The opener used when `humor` is off.
+
+### *class* epythet.agentic_readme.Project(root, config, artifacts, readme, user_config, policy, project_overrides)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+What every entry point needs once: config, artifacts, README, effective policy.
+
+### epythet.agentic_readme.README_NAMES *= ('README.md', 'readme.md', 'README.markdown', 'README.rst', 'README.txt', 'README')*
+
+README filenames, in order of preference.
+
+### *class* epythet.agentic_readme.ReadmeReport(project_dir, readme, checks, policy, user_config, project_overrides)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The outcome of [`check_readme()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.check_readme) for one project.
+
+`policy` is the effective `ReadmePolicy`; `user_config` and
+`project_overrides` are where it came from.
+
+#### *property* status *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+`warn` when anything present is undocumented, else `ok`.
+
+#### table()
+
+The plain-text listing (the default CLI output).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+#### to_dict()
+
+A JSON-ready view (`--format json`).
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+#### *property* warnings *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[KindCheck](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.KindCheck), ...]*
+
+The kinds present in the project but missing from the README.
+
+### epythet.agentic_readme.SECTION_FIELDS *= frozenset({'docs_block', 'for_humans_intro', 'heading', 'humans_link', 'instructions_block', 'marker_end', 'marker_start', 'name', 'repo_stub', 'site_url', 'skills_block', 'subagents_block'})*
+
+The fields a section snippet may use.
+
+### epythet.agentic_readme.SECTION_SNIPPET *= 'agentic-readme-section'*
+
+The snippet names the section is rendered from.
+
+### *exception* epythet.agentic_readme.SectionError
+
+Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueError)
+
+The README or a snippet is in a state the tool will not write over.
+
+Raised for unpaired or repeated markers, a README that is not UTF-8 or not
+Markdown, and a section snippet that fails to format or drops the markers.
+
+### epythet.agentic_readme.ai_readme_check(project_dir, , format='table', fail_on='', draft=False, write=False)
+
+Report whether the README documents the project’s agentic aspects; draft or write the section.
+
+Reuses `epythet ai-artifacts` discovery (skills, subagents, instruction
+files) plus the agent-readable outputs the site publishes, and looks for
+each in the README: a `gh skill install` line or skill name, a subagent
+name, `CLAUDE.md` / `AGENTS.md`, `llms.txt` / `<package>.md`, and a
+heading about agents (or epythet’s own section markers). The effective
+policy (`~/.config/epythet/config.toml` `[readme]`, overridden by the
+project’s `[tool.epythet.readme]`) is part of the output so a skill can
+read it. `--write` is explicit: it writes whatever the policy says.
+
+* **Parameters:**
+  * **project_dir** – the project root
+  * **format** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – table (human) or json
+  * **fail_on** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – `warn` to exit 1 when anything present is undocumented (default: exit 0)
+  * **draft** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – print the README section rendered from the effective snippets and policy, without writing
+  * **write** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – add or update the section in `README.md` between epythet’s markers
+
+### epythet.agentic_readme.blurb(description, , max_length=140)
+
+The first sentence of a skill or agent description, short enough for a table cell.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+```pycon
+>>> blurb("Find and fix things. Use when asked to fix.")
+'find and fix things'
+>>> blurb("Do the thing and then some: a, b, c, " + "and more " * 30)
+'do the thing and then some'
+```
+
+### epythet.agentic_readme.check_readme(project_dir, , config=None, artifacts=None, user_config=None)
+
+Which agentic aspects the project has, and whether its README mentions each.
+
+* **Parameters:**
+  * **config** – the [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) (loaded when omitted)
+  * **artifacts** ([`AIArtifacts`](_autosummary/epythet.ai_artifacts.html.md#epythet.ai_artifacts.AIArtifacts) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – discovery result (computed when omitted)
+  * **user_config** ([`UserConfig`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.UserConfig) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – the user’s policy (read from the config dir when omitted)
+* **Return type:**
+  [`ReadmeReport`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.ReadmeReport)
+
+### epythet.agentic_readme.draft_section(project_dir, , user_config=None, config=None, artifacts=None)
+
+Render the section for a project as it would be placed: `(section, readme_text, start, end)`.
+
+`readme_text` is the current README (`""` when none exists); `start`
+and `end` delimit the span the section replaces.
+
+* **Raises:**
+  [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – on unpaired markers, a non-UTF-8 README, or a broken snippet
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
+
+### epythet.agentic_readme.find_readme(project_dir)
+
+The project’s README, by the usual names (`None` when there is none).
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+### epythet.agentic_readme.github_anchor(title)
+
+GitHub’s anchor for a heading title.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+```pycon
+>>> github_anchor("For AI agents"), github_anchor("What it *fixes*: `x`")
+('for-ai-agents', 'what-it-fixes-x')
+>>> github_anchor("my_function and [links](https://x)")
+'my_function-and-links'
+```
+
+### epythet.agentic_readme.headings_of(text)
+
+Every ATX heading outside fenced code blocks.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Heading`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.Heading)]
+
+```pycon
+>>> [h.title for h in headings_of("# A\n```\n# not one\n```\n## B\n")]
+['A', 'B']
+```
+
+### epythet.agentic_readme.headline_skill(skills)
+
+The skill named in the install line: a `*-setup`-like one if any, else the first installable.
+
+### epythet.agentic_readme.humans_link_for(heading)
+
+`[Title](#anchor)` for the heading after the section, or a plain fallback.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.instruction_text(\*, snippets=<function snippet_text>)
+
+The instruction the skill hands an agent when the policy is `add`.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.load(project_dir, , config=None, artifacts=None, user_config=None)
+
+Resolve a project once; each argument given is used instead of being loaded.
+
+* **Return type:**
+  [`Project`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.Project)
+
+### epythet.agentic_readme.load_project(project_dir)
+
+`(config, artifacts)` for a project; `config` is `None` for a non-Python tree.
+
+A tree without `pyproject.toml` or `setup.cfg` is inspected without a
+config. A tree that has one but cannot be loaded raises
+[`ConfigError`](_autosummary/epythet.config.html.md#epythet.config.ConfigError): a broken `[tool.epythet]` must not
+silently change what gets written.
+
+### epythet.agentic_readme.marker_span(text, , strict=True)
+
+The character span of the marked section (`None` when there is none).
+
+Markers count only on their own line outside fenced code, so a README that
+shows them in an example is not mistaken for one that has the section.
+
+* **Parameters:**
+  **strict** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – raise [`SectionError`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) on an unpaired or repeated marker
+  (`False`: report such a README as having no section)
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+### epythet.agentic_readme.place_section(text, , agentic_first)
+
+Where the section goes in `text`: `(start, end, next_heading, level)`.
+
+`text[start:end]` is the span to replace: the existing marked section when
+there is one (its position is kept, wherever the author moved it), else an
+empty span right before the first heading after the title (`agentic_first`)
+or at the end of the file. `next_heading` is the heading that follows the
+span (the “for humans” target) and `level` the heading level the section
+should use to sit among its siblings. Headings inside the existing section
+are ignored, so rewriting never changes the level.
+
+* **Raises:**
+  [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – on unpaired markers
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int), [`Heading`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.Heading) | [`None`](https://docs.python.org/3/builtins/constants.html#None), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
+
+### epythet.agentic_readme.read_readme(path)
+
+`(text, newline)`: the README with `\n` line ends, and the style to write back.
+
+* **Raises:**
+  [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – when the file is not UTF-8
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+### epythet.agentic_readme.render_section(artifacts, config, \*, policy, level=1, humans_link='the top of the page', snippets=<function snippet_text>, agent='claude-code')
+
+The README section for `artifacts`, from the effective snippets and `policy`.
+
+* **Parameters:**
+  * **level** ([`int`](https://docs.python.org/3/builtins/functions.html#int)) – heading level (`1` renders `# For AI agents`)
+  * **humans_link** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – what the “for humans” sentence points at
+  * **snippets** ([`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – `name -> text` resolver (the seam tests use to inject text)
+  * **agent** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – the host named in the `gh skill install` line
+* **Raises:**
+  [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – when the section snippet fails to format or drops a marker
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.splice_section(text, section, , start, end)
+
+`text` with `section` in place of `text[start:end]`, blank lines kept sane.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.agentic_readme.write_section(project_dir, , user_config=None)
+
+Add or update the marked section in the project’s README; returns `(path, outcome)`.
+
+`outcome` is `added`, `updated` or `unchanged`. The README must be
+Markdown (`README.md`); a missing README is created with the section alone.
+Line endings are kept as found (CRLF stays CRLF).
+
+* **Raises:**
+  [**SectionError**](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.SectionError) – when there is nothing agentic to document, the README is
+  not Markdown or not UTF-8, it has unpaired markers, or the snippet is broken
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 
 # _autosummary/epythet.ai_artifacts.html.md
@@ -776,7 +1170,7 @@ and writes it to `PROJECT_DIR/docsrc/_build/html`.
 | [`mk_epythet_parser`](_autosummary/epythet.cli.html.md#epythet.cli.mk_epythet_parser)(\*\*parser_kwargs)      | The full `epythet` parser: the flat commands, the tool commands, the `ledger` group.  |
 | [`quickstart`](_autosummary/epythet.cli.html.md#epythet.cli.quickstart)(project_dir, \*[, ignore])     | Scaffold docsrc and build the HTML documentation in one go.                           |
 
-### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>]*
+### epythet.cli.COMMANDS *= [<function make_docsrc>, <function make_autodocs>, <function make>, <function quickstart>, <function check_pages>, <function configure_pages>, <function validate>, <function ai_artifacts>, <function ai_readme_check>]*
 
 The commands `epythet` exposes, in the order they appear in `--help`.
 
@@ -969,6 +1363,7 @@ package_dir = "src/dol"       # default: found by convention
 docs_dir = "docsrc"           # where the Sphinx sources live
 
 [tool.epythet.theme_options]  # verbatim passthrough into html_theme_options
+[tool.epythet.readme]         # project override of the user-level README policy (see epythet.userconfig)
 announcement = "v2 is in beta"
 ```
 
@@ -1043,7 +1438,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, readme=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -1252,6 +1647,9 @@ render correctly without edits.
 A repository’s agent artifacts (skills, subagents, `CLAUDE.md` and friends)
 are discovered by convention and rendered as a “For AI agents” page, see
 [`epythet.ai_artifacts`](_autosummary/epythet.ai_artifacts.html.md#module-epythet.ai_artifacts); epythet’s own skills ship in `epythet/data/skills`.
+Whether the README documents them is `check_readme()`
+(`epythet ai-readme-check`), with the user’s policy and text snippets from
+[`epythet.userconfig`](_autosummary/epythet.userconfig.html.md#module-epythet.userconfig) (`~/.config/epythet`).
 
 GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
 docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
@@ -1274,6 +1672,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 
 | [`agent_outputs`](_autosummary/epythet.agent_outputs.html.md#module-epythet.agent_outputs)              | Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.                                                        |
 |----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| [`agentic_readme`](_autosummary/epythet.agentic_readme.html.md#module-epythet.agentic_readme)            | Check that a README documents a project's agentic aspects; render and place the section.                                             |
 | [`ai_artifacts`](_autosummary/epythet.ai_artifacts.html.md#module-epythet.ai_artifacts)                | Discover a repository's AI agent artifacts and render the "For AI agents" page.                                                      |
 | [`build`](_autosummary/epythet.build.html.md#epythet.build)(config[, target, overrides])        | Run one build target for a loaded configuration; returns the output directory.                                                       |
 | [`call_make`](_autosummary/epythet.call_make.html.md#module-epythet.call_make)                      | Compatibility module: `make` now lives in [`epythet.build`](_autosummary/epythet.build.html.md#epythet.build).              |
@@ -1293,6 +1692,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`templates`](_autosummary/epythet.templates.html.md#module-epythet.templates)                      | Text templates for the generated `docsrc` files.                                                                                     |
 | [`themes`](_autosummary/epythet.themes.html.md#module-epythet.themes)                            | Theme registry, deterministic theme choice, and the OKLCH accent palette.                                                            |
 | [`tools`](_autosummary/epythet.tools.html.md#module-epythet.tools)                              | Tools to diagnose (and sometimes, repair) documentation                                                                              |
+| [`userconfig`](_autosummary/epythet.userconfig.html.md#module-epythet.userconfig)                    | User-level defaults and parametrizable text snippets.                                                                                |
 | [`validation`](_autosummary/epythet.validation.html.md#module-epythet.validation)                    | `epythet validate`: tiered documentation validation with a growing artifact ledger.                                                  |
 
 
@@ -2077,7 +2477,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.5', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.6', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -3194,6 +3594,386 @@ Extract the `owner/repo` slug from a local git checkout’s remote URL.
 >>> repo_url_to_repo_docs_url('https://github.com/i2mint/i2')
 'https://github.com/i2mint/i2/tree/master/docs'
 ```
+
+
+# _autosummary/epythet.userconfig.html.md
+
+# epythet.userconfig
+
+User-level defaults and parametrizable text snippets.
+
+epythet ships opinions (what a README section for agents should say, which
+humour lines introduce the “for humans” pointer, whether a missing section is a
+warning or something to add). A user who wants different opinions sets them
+once, outside any repository, and every project on that machine picks them up.
+Two things live under the user’s config directory:
+
+- `config.toml`: policy. The `[readme]` table decides what the
+  `epythet-agentic-readme` skill does (`agentic_aspects = "warn" | "add"`,
+  `humor`, `agentic_first`); the `[snippets]` table can point `dir` at
+  a different snippet folder.
+- `snippets/<name>.md`: text overrides. A snippet is looked up in the user’s
+  folder first, then in the packaged defaults (`epythet/data/snippets`).
+  `epythet snippets init` copies the packaged defaults out **once**, with a
+  header recording the epythet version they came from, and never overwrites a
+  file that exists; `epythet snippets diff` shows how a user’s copy differs
+  from the current packaged default, so upstream changes are visible without
+  ever being applied silently.
+
+The config directory is `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`,
+else `~/.config/epythet`: the config-side twin of
+`epythet.validation.ledger.user_data_dir()`, which holds mutable data
+(ledger observations) under `~/.local/share/epythet`. Skills stay prose: they
+call `epythet snippets show <name>` and `epythet ai-readme-check --format json`
+and let this module do the resolving.
+
+```pycon
+>>> import os, tempfile
+>>> _saved = os.environ.get("EPYTHET_CONFIG_DIR")
+>>> os.environ["EPYTHET_CONFIG_DIR"] = tempfile.mkdtemp()
+>>> load_user_config().readme
+ReadmePolicy(agentic_aspects='warn', humor=False, agentic_first=False)
+>>> snippet("agentic-readme-humor").source
+'packaged'
+>>> written = init_snippets()
+>>> snippet("agentic-readme-humor").source
+'user'
+>>> init_snippets()          # a second init writes nothing
+[]
+>>> _ = os.environ.pop("EPYTHET_CONFIG_DIR") if _saved is None else os.environ.__setitem__("EPYTHET_CONFIG_DIR", _saved)
+```
+
+### Module Attributes
+
+| [`CONFIG_DIR_ENV`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.CONFIG_DIR_ENV)           | Environment variable overriding the whole config directory.                              |
+|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| [`CONFIG_FILENAME`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.CONFIG_FILENAME)          | The policy file inside the config directory.                                             |
+| [`SNIPPETS_DIRNAME`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.SNIPPETS_DIRNAME)         | The snippet folder inside the config directory (unless `[snippets] dir` says otherwise). |
+| [`PACKAGED_SNIPPETS_DIR`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.PACKAGED_SNIPPETS_DIR)    | Where the packaged default snippets live.                                                |
+| [`AGENTIC_ASPECTS_POLICIES`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.AGENTIC_ASPECTS_POLICIES) | What `agentic_aspects` may be.                                                           |
+| [`SNIPPET_COMMANDS`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.SNIPPET_COMMANDS)         | The `epythet snippets` group, by command-line name.                                      |
+
+### Functions
+
+| [`config_dir`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.config_dir)()                                | `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`, else `~/.config/epythet`.                                            |
+|----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| [`config_path`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.config_path)()                               | The policy file: `<config dir>/config.toml`.                                                                                 |
+| [`diff_snippet`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.diff_snippet)(name, \*[, user_dir])          | A unified diff from the current packaged default to the user's copy (`""` when equal).                                       |
+| [`epythet_version`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.epythet_version)()                           | epythet's version: the checkout's `pyproject.toml` when running from source, else the installed metadata.                    |
+| [`header_version`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.header_version)(text)                        | The epythet version recorded in a user copy's header (`""` when absent).                                                     |
+| [`init_snippets`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.init_snippets)(\*[, user_dir, force, names]) | Copy the packaged defaults into the user snippet folder; returns the paths written.                                          |
+| [`iter_snippets`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.iter_snippets)(\*[, user_dir])               | Every available snippet, resolved, in name order.                                                                            |
+| [`load_user_config`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.load_user_config)([path])                    | Read `config.toml` (default: [`config_path()`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.config_path)); a missing file means defaults. |
+| [`packaged_snippet_names`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.packaged_snippet_names)()                    | The names of the snippets epythet ships, sorted.                                                                             |
+| [`pool_lines`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.pool_lines)(text)                            | The non-empty, non-comment lines of a pool snippet (one candidate per line).                                                 |
+| [`snippet`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippet)(name, \*[, user_dir])               | Resolve `name`: the user's `<name>.md` wins over the packaged default.                                                       |
+| [`snippet_header`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippet_header)(name, version)               | The provenance line `init` writes at the top of a user copy.                                                                 |
+| [`snippet_names`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippet_names)(\*[, user_dir])               | Every snippet name available: packaged plus user-only files, sorted.                                                         |
+| [`snippet_text`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippet_text)(name, \*[, user_dir])          | The effective body of `name` (header stripped).                                                                              |
+| [`snippets_diff`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_diff)([name])                       | Show how the user's copy of a snippet differs from the current packaged default.                                             |
+| [`snippets_dir`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_dir)([config])                      | Where user snippets are read: `[snippets] dir` if set, else `<config dir>/snippets`.                                         |
+| [`snippets_init`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_init)(\*[, force])                  | Copy the packaged default snippets into the user snippet folder, once.                                                       |
+| [`snippets_list`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_list)()                             | List every snippet with its source (user or packaged), provenance and status.                                                |
+| [`snippets_show`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_show)(name)                         | Print the effective text of a snippet: the user's copy if it exists, else the packaged default.                              |
+| [`snippets_table`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.snippets_table)(\*[, user_dir])              | The `epythet snippets list` output: name, source, provenance, whether modified.                                              |
+| [`strip_header`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.strip_header)(text)                          | `text` without the provenance header, if it has one.                                                                         |
+
+### Classes
+
+| [`ReadmePolicy`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.ReadmePolicy)([agentic_aspects, humor, ...])      | The `[readme]` table: what to do about agentic aspects missing from a README.   |
+|---------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| [`Snippet`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.Snippet)(name, path, source, text[, copied_from]) | One resolved snippet: its text and where it came from.                          |
+| [`SnippetsConfig`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.SnippetsConfig)([dir])                            | The `[snippets]` table: `dir` overrides where user snippets are read.           |
+| [`UserConfig`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.UserConfig)([readme, snippets, path])             | Everything `config.toml` can say, with defaults for what it does not.           |
+
+### Exceptions
+
+| [`UserConfigError`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.UserConfigError)   | `config.toml` has a key epythet does not know or a value it cannot use.   |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------|
+
+### epythet.userconfig.AGENTIC_ASPECTS_POLICIES *= ('warn', 'add')*
+
+What `agentic_aspects` may be.
+
+### epythet.userconfig.CONFIG_DIR_ENV *= 'EPYTHET_CONFIG_DIR'*
+
+Environment variable overriding the whole config directory.
+
+### epythet.userconfig.CONFIG_FILENAME *= 'config.toml'*
+
+The policy file inside the config directory.
+
+### epythet.userconfig.PACKAGED_SNIPPETS_DIR *= PosixPath('/home/runner/work/epythet/epythet/epythet/data/snippets')*
+
+Where the packaged default snippets live.
+
+### *class* epythet.userconfig.ReadmePolicy(agentic_aspects='warn', humor=False, agentic_first=False)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The `[readme]` table: what to do about agentic aspects missing from a README.
+
+`agentic_aspects` is `"warn"` (report only; the packaged default) or
+`"add"` (write or update the section). `humor` draws the “for humans”
+line from the humour pool; `agentic_first` places the section right after
+the README’s intro rather than at the end.
+
+### epythet.userconfig.SNIPPETS_DIRNAME *= 'snippets'*
+
+The snippet folder inside the config directory (unless `[snippets] dir` says otherwise).
+
+### epythet.userconfig.SNIPPET_COMMANDS *= {'diff': <function snippets_diff>, 'init': <function snippets_init>, 'list': <function snippets_list>, 'show': <function snippets_show>}*
+
+The `epythet snippets` group, by command-line name.
+
+### *class* epythet.userconfig.Snippet(name, path, source, text, copied_from='')
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One resolved snippet: its text and where it came from.
+
+`source` is `"user"` or `"packaged"`; `copied_from` is the epythet
+version recorded in a user copy’s header (`""` for a packaged snippet or
+a user file written by hand).
+
+#### *property* body *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The text without the provenance header (what templates and pools use).
+
+### *class* epythet.userconfig.SnippetsConfig(dir='')
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The `[snippets]` table: `dir` overrides where user snippets are read.
+
+A relative `dir` is taken relative to the config directory, so the same
+`config.toml` means the same folder from any shell.
+
+### *class* epythet.userconfig.UserConfig(readme=<factory>, snippets=<factory>, path=None)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+Everything `config.toml` can say, with defaults for what it does not.
+
+#### readme_for(project_overrides=None)
+
+The effective policy for one project: `[tool.epythet.readme]` keys override the user’s.
+
+Committed READMEs should not depend on who ran the tool, so a project
+can pin what matters for its text (`humor`, `agentic_first`) in its
+`pyproject.toml`; `agentic_aspects` may be pinned too.
+
+* **Return type:**
+  [`ReadmePolicy`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.ReadmePolicy)
+
+```pycon
+>>> UserConfig().readme_for({"humor": True}).humor
+True
+>>> UserConfig().readme_for({"humour": True})
+Traceback (most recent call last):
+...
+UserConfigError: unknown key(s) ['humour'] in [tool.epythet.readme]
+```
+
+#### to_dict(project_overrides=None)
+
+A JSON-ready view (the `policy` block of `ai-readme-check --format json`).
+
+`readme` is the effective policy after `project_overrides`; `user`
+the user’s own table, `project` the overrides, `path` the config file.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+### *exception* epythet.userconfig.UserConfigError
+
+Bases: [`ConfigError`](_autosummary/epythet.config.html.md#epythet.config.ConfigError)
+
+`config.toml` has a key epythet does not know or a value it cannot use.
+
+### epythet.userconfig.config_dir()
+
+`$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`, else `~/.config/epythet`.
+
+XDG-style on every platform, like `epythet.validation.ledger.user_data_dir()`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+```pycon
+>>> _saved = os.environ.get(CONFIG_DIR_ENV)
+>>> os.environ[CONFIG_DIR_ENV] = "/tmp/x"; config_dir().as_posix()
+'/tmp/x'
+>>> _ = os.environ.pop(CONFIG_DIR_ENV) if _saved is None else os.environ.__setitem__(CONFIG_DIR_ENV, _saved)
+```
+
+### epythet.userconfig.config_path()
+
+The policy file: `<config dir>/config.toml`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### epythet.userconfig.diff_snippet(name, , user_dir=None)
+
+A unified diff from the current packaged default to the user’s copy (`""` when equal).
+
+Headers are ignored, so a freshly `init`-ed copy has no diff. A user-only
+snippet (no packaged default) diffs against nothing, so every line is an
+addition.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.userconfig.epythet_version()
+
+epythet’s version: the checkout’s `pyproject.toml` when running from source, else the installed metadata.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.userconfig.header_version(text)
+
+The epythet version recorded in a user copy’s header (`""` when absent).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+```pycon
+>>> header_version(snippet_header("x", "0.2.5") + "body")
+'0.2.5'
+>>> header_version("no header")
+''
+```
+
+### epythet.userconfig.init_snippets(, user_dir=None, force=False, names=None)
+
+Copy the packaged defaults into the user snippet folder; returns the paths written.
+
+A file that already exists is left alone unless `force` is true (then it
+is replaced; `epythet snippets diff` first is the way to see what you lose).
+
+* **Parameters:**
+  **names** – which snippets to copy (default: all packaged)
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
+
+### epythet.userconfig.iter_snippets(, user_dir=None)
+
+Every available snippet, resolved, in name order.
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`Snippet`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.Snippet)]
+
+### epythet.userconfig.load_user_config(path=None)
+
+Read `config.toml` (default: [`config_path()`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.config_path)); a missing file means defaults.
+
+* **Raises:**
+  [**UserConfigError**](_autosummary/epythet.userconfig.html.md#epythet.userconfig.UserConfigError) – on an unknown table or key, or an invalid value
+* **Return type:**
+  [`UserConfig`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.UserConfig)
+
+### epythet.userconfig.packaged_snippet_names()
+
+The names of the snippets epythet ships, sorted.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+### epythet.userconfig.pool_lines(text)
+
+The non-empty, non-comment lines of a pool snippet (one candidate per line).
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+```pycon
+>>> pool_lines("# a comment\n\nIf you are a control freak\n  If you like it \n")
+['If you are a control freak', 'If you like it']
+```
+
+### epythet.userconfig.snippet(name, , user_dir=None)
+
+Resolve `name`: the user’s `<name>.md` wins over the packaged default.
+
+* **Raises:**
+  [**KeyError**](https://docs.python.org/3/builtins/exceptions.html#KeyError) – when neither exists
+* **Return type:**
+  [`Snippet`](_autosummary/epythet.userconfig.html.md#epythet.userconfig.Snippet)
+
+### epythet.userconfig.snippet_header(name, version)
+
+The provenance line `init` writes at the top of a user copy.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.userconfig.snippet_names(, user_dir=None)
+
+Every snippet name available: packaged plus user-only files, sorted.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
+### epythet.userconfig.snippet_text(name, , user_dir=None)
+
+The effective body of `name` (header stripped).
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.userconfig.snippets_diff(name='')
+
+Show how the user’s copy of a snippet differs from the current packaged default.
+
+Without `--name`, every user copy that differs is shown. Exit code 1 when any
+difference exists, like `diff`, so scripts can tell.
+
+* **Parameters:**
+  **name** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – one snippet, or omitted for all
+
+### epythet.userconfig.snippets_dir(config=None)
+
+Where user snippets are read: `[snippets] dir` if set, else `<config dir>/snippets`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### epythet.userconfig.snippets_init(, force=False)
+
+Copy the packaged default snippets into the user snippet folder, once.
+
+Each copy starts with a header recording the epythet version it came from.
+Existing files are never overwritten unless `--force` is given.
+
+* **Parameters:**
+  **force** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – replace existing user copies (run `diff` first to see what you lose)
+
+### epythet.userconfig.snippets_list()
+
+List every snippet with its source (user or packaged), provenance and status.
+
+### epythet.userconfig.snippets_show(name)
+
+Print the effective text of a snippet: the user’s copy if it exists, else the packaged default.
+
+* **Parameters:**
+  **name** – the snippet name (`epythet snippets list` shows them)
+
+### epythet.userconfig.snippets_table(, user_dir=None)
+
+The `epythet snippets list` output: name, source, provenance, whether modified.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### epythet.userconfig.strip_header(text)
+
+`text` without the provenance header, if it has one.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 
 # _autosummary/epythet.validation.build.html.md
@@ -4936,6 +5716,16 @@ machine-readable copies of this documentation.
 ## Skills
 
 Skills are folders holding a `SKILL.md` (the [Agent Skills](https://agentskills.io) format): a description that tells an agent when to use it and a body with the procedure. Install one into your agent with `gh skill` (any host: `--agent claude-code`, `copilot`, `cursor`, `codex`, `gemini`), or use the copy bundled in the wheel.
+
+### `epythet-agentic-readme`
+
+Make sure a repository’s README documents its agentic aspects: the skills, subagents and instruction files it ships (`<pkg>/data/skills`, `.claude/skills`, `.claude/agents`, `CLAUDE.md`, `AGENTS.md`) and the agent-readable docs its site publishes (`llms.txt`, `<package>.md`). Runs `epythet ai-readme-check`, reads the user’s policy (`~/.config/epythet/config.toml`: warn or add, humour, agents first) and either reports what is missing or adds and updates a marked “For AI agents” section rendered from user-overridable snippets (`epythet snippets`). Use when asked “does the README mention the skills”, “add the agent section to the README”, “document the agentic aspects”, when finishing a docs sweep, or before releasing a package that ships skills.
+
+```bash
+gh skill install i2mint/epythet epythet-agentic-readme --agent claude-code
+```
+
+Source: [`epythet/data/skills/epythet-agentic-readme`](https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-agentic-readme) (bundled with the pip package).
 
 ### `epythet-ai-artifacts`
 

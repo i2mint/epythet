@@ -1,0 +1,1651 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+<link rel="alternate" type="text/markdown" href="agentic_readme.html.md">
+<link rel="describedby" href="../../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>epythet.agentic_readme - epythet</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #3f6500;
+  --color-brand-content: #3f6500;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #9cc86c;
+  --color-brand-content: #9cc86c;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">epythet</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">epythet</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.agentic_readme.html">epythet.agentic_readme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.build.html">epythet.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.call_make.html">epythet.call_make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.cli.html">epythet.cli</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.confgen.html">epythet.confgen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config.html">epythet.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.config_parser.html">epythet.config_parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.docs_gen.html">epythet.docs_gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.migrate.html">epythet.migrate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_ext.html">epythet.sphinx_ext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sweep.html">epythet.sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.templates.html">epythet.templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.themes.html">epythet.themes</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.tools.html">epythet.tools</a><input aria-label="Toggle navigation of epythet.tools" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.docstring_diagnosis.html">epythet.tools.docstring_diagnosis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.userconfig.html">epythet.userconfig</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../_autosummary/epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.core.html">epythet.validation.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.propose.html">epythet.validation.propose</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.render.html">epythet.validation.render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.rendered.html">epythet.validation.rendered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/epythet.validation.review.html">epythet.validation.review</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-agents.html">For AI agents</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for epythet.agentic_readme</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Check that a README documents a project's agentic aspects; render and place the section.</span>
+
+<span class="sd">A project that ships skills, subagents or instruction files, and whose site</span>
+<span class="sd">publishes agent-readable documentation (``llms.txt``, ``&lt;package&gt;.md``), should</span>
+<span class="sd">say so in its README: that is where an agent arriving at the repository looks</span>
+<span class="sd">first. :func:`check_readme` reuses :func:`epythet.ai_artifacts.discover_artifacts`</span>
+<span class="sd">to learn what exists and reads the README to see whether each kind is mentioned</span>
+<span class="sd">(a ``gh skill install`` line, a skill or agent name, ``CLAUDE.md``, ``llms.txt``,</span>
+<span class="sd">a heading about agents). The result is a :class:`ReadmeReport`: one</span>
+<span class="sd">:class:`KindCheck` per kind, each ``ok``, ``warn`` or ``n/a``. The check is a</span>
+<span class="sd">heuristic: a mention counts whatever the sentence around it says.</span>
+
+<span class="sd">:func:`render_section` produces the README section from the effective snippets</span>
+<span class="sd">(:mod:`epythet.userconfig`: the user's ``agentic-readme-section.md`` and</span>
+<span class="sd">``agentic-readme-humor.md`` over the packaged defaults) and the effective</span>
+<span class="sd">:class:`~epythet.userconfig.ReadmePolicy` (the user's ``config.toml``, with a</span>
+<span class="sd">project's ``[tool.epythet.readme]`` keys on top so a committed README does not</span>
+<span class="sd">depend on who ran the tool). :func:`place_section` puts it between two marker</span>
+<span class="sd">comments so a later run updates it in place: before the first heading after the</span>
+<span class="sd">title when ``agentic_first`` is on, at the end otherwise. The "for humans" line</span>
+<span class="sd">links to the heading that follows the section.</span>
+
+<span class="sd">&gt;&gt;&gt; readme = "# pkg\\n\\nTagline.\\n\\n# Install\\n\\npip install pkg\\n"</span>
+<span class="sd">&gt;&gt;&gt; start, end, heading, level = place_section(readme, agentic_first=True)</span>
+<span class="sd">&gt;&gt;&gt; readme[start:end], heading.title, level</span>
+<span class="sd">('', 'Install', 1)</span>
+<span class="sd">&gt;&gt;&gt; humans_link_for(heading)</span>
+<span class="sd">'[Install](#install)'</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Mapping</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.ai_artifacts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_AGENT_HOST</span><span class="p">,</span>
+    <span class="n">AIArtifacts</span><span class="p">,</span>
+    <span class="n">agent_outputs_for</span><span class="p">,</span>
+    <span class="n">discover_artifacts</span><span class="p">,</span>
+    <span class="n">enabled_by_environment</span><span class="p">,</span>
+    <span class="n">repo_stub_for</span><span class="p">,</span>
+    <span class="n">site_url_for</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.userconfig</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ReadmePolicy</span><span class="p">,</span>
+    <span class="n">UserConfig</span><span class="p">,</span>
+    <span class="n">load_user_config</span><span class="p">,</span>
+    <span class="n">pool_lines</span><span class="p">,</span>
+    <span class="n">snippet_text</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1">#: The comments that delimit the generated section in a README (each on its own line).</span>
+<span class="n">MARKER_START</span> <span class="o">=</span> <span class="s2">"&lt;!-- epythet:agentic-readme:start --&gt;"</span>
+<span class="n">MARKER_END</span> <span class="o">=</span> <span class="s2">"&lt;!-- epythet:agentic-readme:end --&gt;"</span>
+<span class="c1">#: README filenames, in order of preference.</span>
+<span class="n">README_NAMES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"README.md"</span><span class="p">,</span>
+    <span class="s2">"readme.md"</span><span class="p">,</span>
+    <span class="s2">"README.markdown"</span><span class="p">,</span>
+    <span class="s2">"README.rst"</span><span class="p">,</span>
+    <span class="s2">"README.txt"</span><span class="p">,</span>
+    <span class="s2">"README"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1">#: The kinds a check reports on, in display order.</span>
+<span class="n">KINDS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"skills"</span><span class="p">,</span> <span class="s2">"subagents"</span><span class="p">,</span> <span class="s2">"instruction_files"</span><span class="p">,</span> <span class="s2">"agent_docs"</span><span class="p">,</span> <span class="s2">"section"</span><span class="p">)</span>
+<span class="c1">#: The snippet names the section is rendered from.</span>
+<span class="n">SECTION_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-section"</span>
+<span class="n">HUMOR_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-humor"</span>
+<span class="n">INSTRUCTION_SNIPPET</span> <span class="o">=</span> <span class="s2">"agentic-readme-instruction"</span>
+<span class="c1">#: The opener used when ``humor`` is off.</span>
+<span class="n">NEUTRAL_INTRO</span> <span class="o">=</span> <span class="s2">"If you are a human"</span>
+<span class="c1">#: Longest blurb (first sentence of a description) shown per skill or agent.</span>
+<span class="n">MAX_BLURB</span> <span class="o">=</span> <span class="mi">140</span>
+<span class="c1">#: Skill name suffixes that make a skill the one named in the install line.</span>
+<span class="n">HEADLINE_SUFFIXES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"-setup"</span><span class="p">,</span> <span class="s2">"-quickstart"</span><span class="p">,</span> <span class="s2">"-start"</span><span class="p">)</span>
+<span class="c1">#: The fields a section snippet may use.</span>
+<span class="n">SECTION_FIELDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"marker_start"</span><span class="p">,</span>
+        <span class="s2">"marker_end"</span><span class="p">,</span>
+        <span class="s2">"heading"</span><span class="p">,</span>
+        <span class="s2">"name"</span><span class="p">,</span>
+        <span class="s2">"repo_stub"</span><span class="p">,</span>
+        <span class="s2">"site_url"</span><span class="p">,</span>
+        <span class="s2">"skills_block"</span><span class="p">,</span>
+        <span class="s2">"subagents_block"</span><span class="p">,</span>
+        <span class="s2">"instructions_block"</span><span class="p">,</span>
+        <span class="s2">"docs_block"</span><span class="p">,</span>
+        <span class="s2">"for_humans_intro"</span><span class="p">,</span>
+        <span class="s2">"humans_link"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">_HEADING_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(#{1,6})\s+(.+?)\s*#*\s*$"</span><span class="p">)</span>
+<span class="n">_FENCE_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^\s*(```|~~~)"</span><span class="p">)</span>
+<span class="n">_AGENT_HEADING_RE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\bagents?\b|\bagentic\b|\bllms?\b"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SectionError">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.SectionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SectionError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The README or a snippet is in a state the tool will not write over.</span>
+
+<span class="sd">    Raised for unpaired or repeated markers, a README that is not UTF-8 or not</span>
+<span class="sd">    Markdown, and a section snippet that fails to format or drops the markers.</span>
+<span class="sd">    """</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Model</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="KindCheck">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.KindCheck">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">KindCheck</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""One artifact kind: whether the project has it and whether the README covers it."""</span>
+
+    <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">present</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">documented</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">items</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">evidence</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``n/a`` when absent from the project, else ``ok`` or ``warn``."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">present</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"n/a"</span>
+        <span class="k">return</span> <span class="s2">"ok"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">documented</span> <span class="k">else</span> <span class="s2">"warn"</span></div>
+
+
+
+<div class="viewcode-block" id="ReadmeReport">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ReadmeReport">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReadmeReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The outcome of :func:`check_readme` for one project.</span>
+
+<span class="sd">    ``policy`` is the effective :class:`ReadmePolicy`; ``user_config`` and</span>
+<span class="sd">    ``project_overrides`` are where it came from.</span>
+<span class="sd">    """</span>
+
+    <span class="n">project_dir</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">readme</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">checks</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">KindCheck</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">policy</span><span class="p">:</span> <span class="n">ReadmePolicy</span>
+    <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span>
+    <span class="n">project_overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">KindCheck</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""The kinds present in the project but missing from the README."""</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">"warn"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""``warn`` when anything present is undocumented, else ``ok``."""</span>
+        <span class="k">return</span> <span class="s2">"warn"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span> <span class="k">else</span> <span class="s2">"ok"</span>
+
+<div class="viewcode-block" id="ReadmeReport.to_dict">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ReadmeReport.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""A JSON-ready view (``--format json``)."""</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"project_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="p">),</span>
+            <span class="s2">"readme"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readme</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">readme</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"status"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="s2">"policy"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_overrides</span><span class="p">),</span>
+            <span class="s2">"checks"</span><span class="p">:</span> <span class="p">[{</span><span class="o">**</span><span class="n">asdict</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s2">"status"</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">status</span><span class="p">}</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">],</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ReadmeReport.table">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ReadmeReport.table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""The plain-text listing (the default CLI output)."""</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"Agentic aspects of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"README: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readme</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">readme</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'none found'</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_config</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_config</span><span class="o">.</span><span class="n">path</span>
+            <span class="k">else</span> <span class="s2">"  (packaged defaults)"</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">"  + [tool.epythet.readme]"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_overrides</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"policy: agentic_aspects=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">agentic_aspects</span><span class="si">}</span><span class="s2"> humor=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">humor</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"agentic_first=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">agentic_first</span><span class="si">}{</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'kind'</span><span class="si">:</span><span class="s2">&lt;18</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'status'</span><span class="si">:</span><span class="s2">&lt;6</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'in project'</span><span class="si">:</span><span class="s2">&lt;28</span><span class="si">}</span><span class="s2"> evidence"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">checks</span><span class="p">:</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">check</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">check</span><span class="o">.</span><span class="n">items</span>
+                <span class="k">else</span> <span class="p">(</span><span class="s2">"yes"</span> <span class="k">if</span> <span class="n">check</span><span class="o">.</span><span class="n">present</span> <span class="k">else</span> <span class="s2">"-"</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">check</span><span class="o">.</span><span class="n">kind</span><span class="si">:</span><span class="s2">&lt;18</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">check</span><span class="o">.</span><span class="n">status</span><span class="si">:</span><span class="s2">&lt;6</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_shorten</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="p">)</span><span class="si">:</span><span class="s2">&lt;28</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">check</span><span class="o">.</span><span class="n">evidence</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+            <span class="n">kinds</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">kind</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"warn: the README does not document: </span><span class="si">{</span><span class="n">kinds</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"ok: every agentic aspect present is documented in the README"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_shorten</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">text</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">width</span> <span class="k">else</span> <span class="n">text</span><span class="p">[:</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"…"</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># The project: README, config, artifacts, effective policy</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="find_readme">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.find_readme">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_readme</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The project's README, by the usual names (``None`` when there is none)."""</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">README_NAMES</span><span class="p">:</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">candidate</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="read_readme">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.read_readme">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_readme</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``(text, newline)``: the README with ``\\n`` line ends, and the style to write back.</span>
+
+<span class="sd">    :raises SectionError: when the file is not UTF-8</span>
+<span class="sd">    """</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not UTF-8 (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">); only UTF-8 READMEs are edited"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="k">if</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">text</span> <span class="k">else</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span> <span class="n">newline</span></div>
+
+
+
+<div class="viewcode-block" id="load_project">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.load_project">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_project</span><span class="p">(</span><span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""``(config, artifacts)`` for a project; ``config`` is ``None`` for a non-Python tree.</span>
+
+<span class="sd">    A tree without ``pyproject.toml`` or ``setup.cfg`` is inspected without a</span>
+<span class="sd">    config. A tree that has one but cannot be loaded raises</span>
+<span class="sd">    :class:`~epythet.config.ConfigError`: a broken ``[tool.epythet]`` must not</span>
+<span class="sd">    silently change what gets written.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"pyproject.toml"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">root</span> <span class="o">/</span> <span class="s2">"setup.cfg"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">discover_artifacts</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span><span class="p">,</span> <span class="n">discover_artifacts</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">package_dir</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">package_dir</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Project">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.Project">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Project</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""What every entry point needs once: config, artifacts, README, effective policy."""</span>
+
+    <span class="n">root</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span>
+    <span class="n">readme</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span>
+    <span class="n">policy</span><span class="p">:</span> <span class="n">ReadmePolicy</span>
+    <span class="n">project_overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Project</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Resolve a project once; each argument given is used instead of being loaded."""</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">artifacts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">loaded_config</span><span class="p">,</span> <span class="n">loaded_artifacts</span> <span class="o">=</span> <span class="n">load_project</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loaded_config</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="n">artifacts</span> <span class="k">if</span> <span class="n">artifacts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loaded_artifacts</span>
+    <span class="n">user_config</span> <span class="o">=</span> <span class="n">user_config</span> <span class="k">if</span> <span class="n">user_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">load_user_config</span><span class="p">()</span>
+    <span class="n">overrides</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"readme"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Project</span><span class="p">(</span>
+        <span class="n">root</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">artifacts</span><span class="p">,</span>
+        <span class="n">find_readme</span><span class="p">(</span><span class="n">root</span><span class="p">),</span>
+        <span class="n">user_config</span><span class="p">,</span>
+        <span class="n">user_config</span><span class="o">.</span><span class="n">readme_for</span><span class="p">(</span><span class="n">overrides</span><span class="p">),</span>
+        <span class="n">overrides</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># The check</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="check_readme">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.check_readme">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_readme</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReadmeReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Which agentic aspects the project has, and whether its README mentions each.</span>
+
+<span class="sd">    :param config: the :class:`~epythet.config.DocsConfig` (loaded when omitted)</span>
+<span class="sd">    :param artifacts: discovery result (computed when omitted)</span>
+<span class="sd">    :param user_config: the user's policy (read from the config dir when omitted)</span>
+<span class="sd">    """</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span>
+        <span class="n">project_dir</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">artifacts</span><span class="o">=</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span>
+    <span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">readme</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">readme</span>
+        <span class="k">else</span> <span class="s2">""</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">ReadmeReport</span><span class="p">(</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">root</span><span class="p">,</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">readme</span><span class="p">,</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">_checks_for</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">text</span><span class="p">)),</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">user_config</span><span class="p">,</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">project_overrides</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mentioned</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">needle</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``needle`` in ``text`` as a whole token (not inside a longer word or name).</span>
+
+<span class="sd">    &gt;&gt;&gt; _mentioned("use pages-tool", "pages"), _mentioned("the pages skill", "pages")</span>
+<span class="sd">    (False, True)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">rf</span><span class="s2">"(?&lt;![\w-])</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">needle</span><span class="p">)</span><span class="si">}</span><span class="s2">(?![\w-])"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_checks_for</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">KindCheck</span><span class="p">]:</span>
+    <span class="n">headings</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headings_of</span><span class="p">(</span><span class="n">text</span><span class="p">)]</span>
+    <span class="n">agent_headings</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headings</span> <span class="k">if</span> <span class="n">_AGENT_HEADING_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">h</span><span class="p">)]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">mentions</span><span class="p">(</span><span class="o">*</span><span class="n">needles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">needles</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">_mentioned</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+
+    <span class="n">skills</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">mentions</span><span class="p">(</span><span class="s2">"gh skill install"</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">))</span>
+    <span class="k">yield</span> <span class="n">KindCheck</span><span class="p">(</span>
+        <span class="s2">"skills"</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">skills</span><span class="p">),</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">),</span>
+        <span class="n">_evidence</span><span class="p">(</span><span class="n">hits</span><span class="p">,</span> <span class="s2">"no `gh skill install` line and no skill name"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">agents</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">mentions</span><span class="p">(</span>
+        <span class="s2">"subagent"</span><span class="p">,</span> <span class="s2">"subagents"</span><span class="p">,</span> <span class="s2">"sub-agent"</span><span class="p">,</span> <span class="s2">"sub-agents"</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">yield</span> <span class="n">KindCheck</span><span class="p">(</span>
+        <span class="s2">"subagents"</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">agents</span><span class="p">),</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">agents</span><span class="p">),</span>
+        <span class="n">_evidence</span><span class="p">(</span><span class="n">hits</span><span class="p">,</span> <span class="s2">"no subagent name"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">source</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">mentions</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">source</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dir</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">))</span>
+    <span class="k">yield</span> <span class="n">KindCheck</span><span class="p">(</span>
+        <span class="s2">"instruction_files"</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">files</span><span class="p">),</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span>
+        <span class="n">names</span><span class="p">,</span>
+        <span class="n">_evidence</span><span class="p">(</span><span class="n">hits</span><span class="p">,</span> <span class="s2">"no instruction file named"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">agent_docs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">o</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">_published_outputs</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s2">"objects_inv"</span>
+    <span class="p">]</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="n">mentions</span><span class="p">(</span><span class="o">*</span><span class="n">agent_docs</span><span class="p">,</span> <span class="s2">"objects.inv"</span><span class="p">,</span> <span class="s2">".md twin"</span><span class="p">,</span> <span class="s2">"ai-agents.html"</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">KindCheck</span><span class="p">(</span>
+        <span class="s2">"agent_docs"</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">agent_docs</span><span class="p">),</span>
+        <span class="nb">bool</span><span class="p">(</span><span class="n">hits</span><span class="p">),</span>
+        <span class="nb">tuple</span><span class="p">(</span><span class="n">agent_docs</span><span class="p">),</span>
+        <span class="n">_evidence</span><span class="p">(</span><span class="n">hits</span><span class="p">,</span> <span class="s2">"no `llms.txt`, `&lt;package&gt;.md` or `objects.inv` mention"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">anything</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">skills</span> <span class="ow">or</span> <span class="n">agents</span> <span class="ow">or</span> <span class="n">files</span> <span class="ow">or</span> <span class="n">agent_docs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">marker_span</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">evidence</span><span class="p">,</span> <span class="n">documented</span> <span class="o">=</span> <span class="s2">"epythet section markers"</span><span class="p">,</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">agent_headings</span><span class="p">:</span>
+        <span class="n">evidence</span><span class="p">,</span> <span class="n">documented</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"heading </span><span class="si">{</span><span class="n">agent_headings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">evidence</span><span class="p">,</span> <span class="n">documented</span> <span class="o">=</span> <span class="s2">"no heading about agents"</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">yield</span> <span class="n">KindCheck</span><span class="p">(</span><span class="s2">"section"</span><span class="p">,</span> <span class="n">anything</span><span class="p">,</span> <span class="n">documented</span><span class="p">,</span> <span class="p">(),</span> <span class="n">evidence</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_published_outputs</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The agent-readable outputs the project publishes at a known URL (else none).</span>
+
+<span class="sd">    Without a GitHub URL there is no site to point at, so the outputs are not</span>
+<span class="sd">    an aspect the README can be asked to document.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">site_url_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">agent_outputs_for</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_evidence</span><span class="p">(</span><span class="n">hits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">missing</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">"mentions "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">`"</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span> <span class="k">if</span> <span class="n">hits</span> <span class="k">else</span> <span class="n">missing</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># README structure: headings and markers outside fences, placement, anchors</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="Heading">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.Heading">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Heading</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A Markdown ATX heading: its line index, level and title text."""</span>
+
+    <span class="n">line</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_lines_outside_fences</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="n">fence</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">fence_match</span> <span class="o">=</span> <span class="n">_FENCE_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fence_match</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="n">fence_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fence</span> <span class="o">=</span> <span class="n">marker</span>
+            <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="n">fence</span><span class="p">:</span>
+                <span class="n">fence</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">fence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span>
+
+
+<div class="viewcode-block" id="headings_of">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.headings_of">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">headings_of</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Heading</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Every ATX heading outside fenced code blocks.</span>
+
+<span class="sd">    &gt;&gt;&gt; [h.title for h in headings_of("# A\\n```\\n# not one\\n```\\n## B\\n")]</span>
+<span class="sd">    ['A', 'B']</span>
+<span class="sd">    """</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_lines_outside_fences</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">_HEADING_RE</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Heading</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">found</span></div>
+
+
+
+<div class="viewcode-block" id="marker_span">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.marker_span">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">marker_span</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The character span of the marked section (``None`` when there is none).</span>
+
+<span class="sd">    Markers count only on their own line outside fenced code, so a README that</span>
+<span class="sd">    shows them in an example is not mistaken for one that has the section.</span>
+
+<span class="sd">    :param strict: raise :class:`SectionError` on an unpaired or repeated marker</span>
+<span class="sd">        (``False``: report such a README as having no section)</span>
+<span class="sd">    """</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">offsets</span> <span class="o">=</span> <span class="n">_line_offsets</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">starts</span><span class="p">,</span> <span class="n">ends</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_lines_outside_fences</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">stripped</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">stripped</span> <span class="o">==</span> <span class="n">MARKER_START</span><span class="p">:</span>
+            <span class="n">starts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">stripped</span> <span class="o">==</span> <span class="n">MARKER_END</span><span class="p">:</span>
+            <span class="n">ends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">starts</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ends</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">ends</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ends</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">strict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"the README has unpaired or repeated epythet markers (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span><span class="si">}</span><span class="s2"> start, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ends</span><span class="p">)</span><span class="si">}</span><span class="s2"> end); fix them by hand before writing the section"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">offsets</span><span class="p">[</span><span class="n">starts</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">offsets</span><span class="p">[</span><span class="n">ends</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="github_anchor">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.github_anchor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">github_anchor</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""GitHub's anchor for a heading title.</span>
+
+<span class="sd">    &gt;&gt;&gt; github_anchor("For AI agents"), github_anchor("What it *fixes*: `x`")</span>
+<span class="sd">    ('for-ai-agents', 'what-it-fixes-x')</span>
+<span class="sd">    &gt;&gt;&gt; github_anchor("my_function and [links](https://x)")</span>
+<span class="sd">    'my_function-and-links'</span>
+<span class="sd">    """</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[([^\]]*)\]\([^)]*\)"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1"</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[`*]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">cleaned</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^\w\- ]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">cleaned</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cleaned</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="humans_link_for">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.humans_link_for">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">humans_link_for</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="n">Heading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``[Title](#anchor)`` for the heading after the section, or a plain fallback."""</span>
+    <span class="k">if</span> <span class="n">heading</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"the top of the page"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">](#</span><span class="si">{</span><span class="n">github_anchor</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span></div>
+
+
+
+<div class="viewcode-block" id="place_section">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.place_section">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">place_section</span><span class="p">(</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">agentic_first</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Heading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Where the section goes in ``text``: ``(start, end, next_heading, level)``.</span>
+
+<span class="sd">    ``text[start:end]`` is the span to replace: the existing marked section when</span>
+<span class="sd">    there is one (its position is kept, wherever the author moved it), else an</span>
+<span class="sd">    empty span right before the first heading after the title (``agentic_first``)</span>
+<span class="sd">    or at the end of the file. ``next_heading`` is the heading that follows the</span>
+<span class="sd">    span (the "for humans" target) and ``level`` the heading level the section</span>
+<span class="sd">    should use to sit among its siblings. Headings inside the existing section</span>
+<span class="sd">    are ignored, so rewriting never changes the level.</span>
+
+<span class="sd">    :raises SectionError: on unpaired markers</span>
+<span class="sd">    """</span>
+    <span class="n">offsets</span> <span class="o">=</span> <span class="n">_line_offsets</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">span</span> <span class="o">=</span> <span class="n">marker_span</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">span</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">span</span>
+        <span class="n">outside</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">headings_of</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">offsets</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">line</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">]</span>
+        <span class="n">next_heading</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">outside</span> <span class="k">if</span> <span class="n">offsets</span><span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">line</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">end</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">next_heading</span><span class="p">,</span> <span class="n">_section_level</span><span class="p">(</span><span class="n">outside</span><span class="p">,</span> <span class="n">next_heading</span><span class="p">)</span>
+    <span class="n">headings</span> <span class="o">=</span> <span class="n">headings_of</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">agentic_first</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">headings</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">headings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">offsets</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">line</span><span class="p">],</span>
+            <span class="n">offsets</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">line</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">_section_level</span><span class="p">(</span><span class="n">headings</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_section_level</span><span class="p">(</span><span class="n">headings</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_line_offsets</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">offsets</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">offsets</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_section_level</span><span class="p">(</span><span class="n">headings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Heading</span><span class="p">],</span> <span class="n">next_heading</span><span class="p">:</span> <span class="n">Heading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">next_heading</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">next_heading</span><span class="o">.</span><span class="n">level</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">headings</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">headings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">level</span>
+    <span class="k">if</span> <span class="n">headings</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">headings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="splice_section">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.splice_section">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">splice_section</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">section</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``text`` with ``section`` in place of ``text[start:end]``, blank lines kept sane."""</span>
+    <span class="n">before</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="n">text</span><span class="p">[:</span><span class="n">start</span><span class="p">],</span> <span class="n">text</span><span class="p">[</span><span class="n">end</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="n">before</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">before</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
+        <span class="n">before</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">before</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">before</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">):</span>
+        <span class="n">before</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">block</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">after</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">after</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
+        <span class="n">block</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="n">before</span> <span class="o">+</span> <span class="n">block</span> <span class="o">+</span> <span class="n">after</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Rendering</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="render_section">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.render_section">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">render_section</span><span class="p">(</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">,</span>
+    <span class="n">config</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">policy</span><span class="p">:</span> <span class="n">ReadmePolicy</span><span class="p">,</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">humans_link</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"the top of the page"</span><span class="p">,</span>
+    <span class="n">snippets</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">snippet_text</span><span class="p">,</span>
+    <span class="n">agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_AGENT_HOST</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The README section for ``artifacts``, from the effective snippets and ``policy``.</span>
+
+<span class="sd">    :param level: heading level (``1`` renders ``# For AI agents``)</span>
+<span class="sd">    :param humans_link: what the "for humans" sentence points at</span>
+<span class="sd">    :param snippets: ``name -&gt; text`` resolver (the seam tests use to inject text)</span>
+<span class="sd">    :param agent: the host named in the ``gh skill install`` line</span>
+<span class="sd">    :raises SectionError: when the section snippet fails to format or drops a marker</span>
+<span class="sd">    """</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">project_dir</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">repo_stub</span> <span class="o">=</span> <span class="n">repo_stub_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">site_url</span> <span class="o">=</span> <span class="n">site_url_for</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">repo_url</span><span class="p">)</span> <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">snippets</span><span class="p">(</span><span class="n">SECTION_SNIPPET</span><span class="p">)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">marker_start</span><span class="o">=</span><span class="n">MARKER_START</span><span class="p">,</span>
+        <span class="n">marker_end</span><span class="o">=</span><span class="n">MARKER_END</span><span class="p">,</span>
+        <span class="n">heading</span><span class="o">=</span><span class="s2">"#"</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">repo_stub</span><span class="o">=</span><span class="n">repo_stub</span><span class="p">,</span>
+        <span class="n">site_url</span><span class="o">=</span><span class="n">site_url</span><span class="p">,</span>
+        <span class="n">skills_block</span><span class="o">=</span><span class="n">_skills_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">,</span> <span class="n">agent</span><span class="p">),</span>
+        <span class="n">subagents_block</span><span class="o">=</span><span class="n">_subagents_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">),</span>
+        <span class="n">instructions_block</span><span class="o">=</span><span class="n">_instructions_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">),</span>
+        <span class="n">docs_block</span><span class="o">=</span><span class="n">_docs_block</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">,</span> <span class="n">site_url</span><span class="p">),</span>
+        <span class="n">for_humans_intro</span><span class="o">=</span><span class="n">_for_humans_intro</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">policy</span><span class="p">,</span> <span class="n">snippets</span><span class="p">(</span><span class="n">HUMOR_SNIPPET</span><span class="p">)),</span>
+        <span class="n">humans_link</span><span class="o">=</span><span class="n">humans_link</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rendered</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># str.format raises Key/Index/Value/Attribute/TypeError</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">SECTION_SNIPPET</span><span class="si">!r}</span><span class="s2"> does not format: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">; the fields are "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">SECTION_FIELDS</span><span class="p">)</span><span class="si">}</span><span class="s2"> and literal braces must be doubled (</span><span class="se">{{{{</span><span class="s2"> and </span><span class="se">}}}}</span><span class="s2">)"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="n">rendered</span> <span class="o">=</span> <span class="n">rendered</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">if</span> <span class="n">marker_span</span><span class="p">(</span><span class="n">rendered</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rendered</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"snippet </span><span class="si">{</span><span class="n">SECTION_SNIPPET</span><span class="si">!r}</span><span class="s2"> must start with </span><span class="se">{{</span><span class="s2">marker_start</span><span class="se">}}</span><span class="s2"> and end with "</span>
+            <span class="s2">"</span><span class="si">{marker_end}</span><span class="s2">, each on its own line, or the section cannot be updated in place"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">rendered</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_for_humans_intro</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">policy</span><span class="p">:</span> <span class="n">ReadmePolicy</span><span class="p">,</span> <span class="n">pool_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The opener: a stable pick from the humour pool when ``humor`` is on, else neutral."""</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">pool_lines</span><span class="p">(</span><span class="n">pool_text</span><span class="p">)</span> <span class="k">if</span> <span class="n">policy</span><span class="o">.</span><span class="n">humor</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">NEUTRAL_INTRO</span>
+    <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">",.;: "</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="blurb">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.blurb">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">blurb</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MAX_BLURB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The first sentence of a skill or agent description, short enough for a table cell.</span>
+
+<span class="sd">    &gt;&gt;&gt; blurb("Find and fix things. Use when asked to fix.")</span>
+<span class="sd">    'find and fix things'</span>
+<span class="sd">    &gt;&gt;&gt; blurb("Do the thing and then some: a, b, c, " + "and more " * 30)</span>
+<span class="sd">    'do the thing and then some'</span>
+<span class="sd">    """</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;=[.!?])\s"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">".!?"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">_first_clause</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">first</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">first</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">first</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">first</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_first_clause</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Cut at the first clause boundary (colon, semicolon, comma, parenthesis) past 20 characters, else at a word."""</span>
+    <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[:;,]| \("</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">boundaries</span> <span class="ow">and</span> <span class="n">boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">max_length</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">[:</span> <span class="n">boundaries</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">cut</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span><span class="p">[:</span> <span class="n">cut</span> <span class="k">if</span> <span class="n">cut</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">max_length</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">",;: "</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"…"</span>
+
+
+<div class="viewcode-block" id="headline_skill">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.headline_skill">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">headline_skill</span><span class="p">(</span><span class="n">skills</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The skill named in the install line: a ``*-setup``-like one if any, else the first installable."""</span>
+    <span class="n">installable</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">installable</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">HEADLINE_SUFFIXES</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">installable</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">skill</span>
+    <span class="k">return</span> <span class="n">installable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">installable</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_skills_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">,</span> <span class="n">repo_stub</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">skills</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">skills</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">skills</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"</span><span class="se">\n</span><span class="s2">**Skills** ([Agent Skills](https://agentskills.io) format), for any agent host."</span>
+    <span class="p">]</span>
+    <span class="n">headline</span> <span class="o">=</span> <span class="n">headline_skill</span><span class="p">(</span><span class="n">skills</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">headline</span><span class="o">.</span><span class="n">install_command</span><span class="p">(</span><span class="n">repo_stub</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="n">agent</span><span class="p">)</span> <span class="k">if</span> <span class="n">headline</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">command</span><span class="p">:</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">" Install one with `gh skill`:"</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">```bash</span><span class="se">\n</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">   # or copilot, cursor, codex, gemini</span><span class="se">\n</span><span class="s2">```</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">| Skill | Use it to |</span><span class="se">\n</span><span class="s2">|---|---|</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"| `</span><span class="si">{</span><span class="n">skill</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">` | </span><span class="si">{</span><span class="n">blurb</span><span class="p">(</span><span class="n">skill</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">skill</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2"> |</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">shipped</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">):</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">source</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">skills</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">shipped</span><span class="p">))</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">The same skills are inside the wheel, under `</span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s2">/`.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_subagents_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">agents</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">subagents</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">agents</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">described</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`"</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">" (</span><span class="si">{</span><span class="n">blurb</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">description</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">description</span> <span class="k">else</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">agents</span>
+    <span class="p">)</span>
+    <span class="n">folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">agents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">**Subagents**: </span><span class="si">{</span><span class="n">described</span><span class="si">}</span><span class="s2">, in `</span><span class="si">{</span><span class="n">folder</span><span class="si">}</span><span class="s2">/`. Copy one into your project's "</span>
+        <span class="s2">"`.claude/agents/` (or your host's equivalent).</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_instructions_block</span><span class="p">(</span><span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">instruction_files</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">listed</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2">` (</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">audience</span><span class="si">}</span><span class="s2">)"</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">**Instruction files**: </span><span class="si">{</span><span class="n">listed</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_docs_block</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span><span class="p">,</span> <span class="n">site_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span> <span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">_published_outputs</span><span class="p">(</span><span class="n">config</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="s2">"llms"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">link</span><span class="p">(</span><span class="n">kind</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"[`</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">`](</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">url</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">`"</span>
+        <span class="p">)</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">**The documentation, machine-readable**: </span><span class="si">{</span><span class="n">link</span><span class="p">(</span><span class="s1">'llms'</span><span class="p">)</span><span class="si">}</span><span class="s2"> indexes every page"</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="s2">"aggregate_md"</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"; </span><span class="si">{</span><span class="n">link</span><span class="p">(</span><span class="s1">'aggregate_md'</span><span class="p">)</span><span class="si">}</span><span class="s2"> is the whole documentation in one file"</span><span class="p">)</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"; every page has a `.md` twin"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"objects_inv"</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"; </span><span class="si">{</span><span class="n">link</span><span class="p">(</span><span class="s1">'objects_inv'</span><span class="p">)</span><span class="si">}</span><span class="s2"> maps symbols to URLs"</span><span class="p">)</span>
+    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+    <span class="n">page_on</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"ai_artifacts"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="n">enabled_by_environment</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">site_url</span> <span class="ow">and</span> <span class="n">page_on</span> <span class="ow">and</span> <span class="n">artifacts</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">" The full list, with install lines, is on the site's "</span>
+            <span class="sa">f</span><span class="s2">"[For AI agents](</span><span class="si">{</span><span class="n">site_url</span><span class="si">}</span><span class="s2">ai-agents.html) page."</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+
+
+<div class="viewcode-block" id="instruction_text">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.instruction_text">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">instruction_text</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">snippets</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">snippet_text</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The instruction the skill hands an agent when the policy is ``add``."""</span>
+    <span class="k">return</span> <span class="n">snippets</span><span class="p">(</span><span class="n">INSTRUCTION_SNIPPET</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># Draft and write</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="draft_section">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.draft_section">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">draft_section</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">artifacts</span><span class="p">:</span> <span class="n">AIArtifacts</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Render the section for a project as it would be placed: ``(section, readme_text, start, end)``.</span>
+
+<span class="sd">    ``readme_text`` is the current README (``""`` when none exists); ``start``</span>
+<span class="sd">    and ``end`` delimit the span the section replaces.</span>
+
+<span class="sd">    :raises SectionError: on unpaired markers, a non-UTF-8 README, or a broken snippet</span>
+<span class="sd">    """</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span>
+        <span class="n">project_dir</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">artifacts</span><span class="o">=</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span>
+    <span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">read_readme</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">readme</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">readme</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">next_heading</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">place_section</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">agentic_first</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">agentic_first</span>
+    <span class="p">)</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="n">render_section</span><span class="p">(</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">artifacts</span><span class="p">,</span>
+        <span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">policy</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">policy</span><span class="p">,</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span>
+        <span class="n">humans_link</span><span class="o">=</span><span class="n">humans_link_for</span><span class="p">(</span><span class="n">next_heading</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">section</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span></div>
+
+
+
+<div class="viewcode-block" id="write_section">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.write_section">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_section</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">user_config</span><span class="p">:</span> <span class="n">UserConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Add or update the marked section in the project's README; returns ``(path, outcome)``.</span>
+
+<span class="sd">    ``outcome`` is ``added``, ``updated`` or ``unchanged``. The README must be</span>
+<span class="sd">    Markdown (``README.md``); a missing README is created with the section alone.</span>
+<span class="sd">    Line endings are kept as found (CRLF stays CRLF).</span>
+
+<span class="sd">    :raises SectionError: when there is nothing agentic to document, the README is</span>
+<span class="sd">        not Markdown or not UTF-8, it has unpaired markers, or the snippet is broken</span>
+<span class="sd">    """</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span>
+    <span class="n">readme</span> <span class="o">=</span> <span class="n">find_readme</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">readme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">readme</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">".md"</span><span class="p">,</span> <span class="s2">".markdown"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">readme</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not Markdown; only README.md is edited"</span><span class="p">)</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">project</span><span class="o">.</span><span class="n">artifacts</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_published_outputs</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">SectionError</span><span class="p">(</span>
+            <span class="s2">"nothing agentic to document: no skills, subagents, instruction files, "</span>
+            <span class="s2">"or published agent-readable docs (a GitHub URL is needed for the latter)"</span>
+        <span class="p">)</span>
+    <span class="n">section</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">draft_section</span><span class="p">(</span>
+        <span class="n">root</span><span class="p">,</span>
+        <span class="n">user_config</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">user_config</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+        <span class="n">artifacts</span><span class="o">=</span><span class="n">project</span><span class="o">.</span><span class="n">artifacts</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">newline</span> <span class="o">=</span> <span class="n">read_readme</span><span class="p">(</span><span class="n">readme</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">readme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">new_text</span> <span class="o">=</span> <span class="n">splice_section</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">readme</span> <span class="ow">or</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">"README.md"</span>
+    <span class="k">if</span> <span class="n">readme</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">new_text</span> <span class="o">==</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">target</span><span class="p">,</span> <span class="s2">"unchanged"</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">new_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">newline</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">target</span><span class="p">,</span> <span class="s2">"updated"</span> <span class="k">if</span> <span class="n">marker_span</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"added"</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------</span>
+<span class="c1"># CLI</span>
+<span class="c1"># --------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="ai_readme_check">
+<a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ai_readme_check">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ai_readme_check</span><span class="p">(</span>
+    <span class="n">project_dir</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"table"</span><span class="p">,</span>
+    <span class="n">fail_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+    <span class="n">draft</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Report whether the README documents the project's agentic aspects; draft or write the section.</span>
+
+<span class="sd">    Reuses ``epythet ai-artifacts`` discovery (skills, subagents, instruction</span>
+<span class="sd">    files) plus the agent-readable outputs the site publishes, and looks for</span>
+<span class="sd">    each in the README: a ``gh skill install`` line or skill name, a subagent</span>
+<span class="sd">    name, ``CLAUDE.md`` / ``AGENTS.md``, ``llms.txt`` / ``&lt;package&gt;.md``, and a</span>
+<span class="sd">    heading about agents (or epythet's own section markers). The effective</span>
+<span class="sd">    policy (``~/.config/epythet/config.toml`` ``[readme]``, overridden by the</span>
+<span class="sd">    project's ``[tool.epythet.readme]``) is part of the output so a skill can</span>
+<span class="sd">    read it. ``--write`` is explicit: it writes whatever the policy says.</span>
+
+<span class="sd">    :param project_dir: the project root</span>
+<span class="sd">    :param format: table (human) or json</span>
+<span class="sd">    :param fail_on: ``warn`` to exit 1 when anything present is undocumented (default: exit 0)</span>
+<span class="sd">    :param draft: print the README section rendered from the effective snippets and policy, without writing</span>
+<span class="sd">    :param write: add or update the section in ``README.md`` between epythet's markers</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cw</span>
+
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"table"</span><span class="p">,</span> <span class="s2">"json"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="s2">"--format must be table or json"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fail_on</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="s2">"warn"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="s2">"--fail-on must be warn (or omitted)"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">draft</span> <span class="ow">and</span> <span class="n">write</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="s2">"--draft and --write are exclusive"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"not a directory: </span><span class="si">{</span><span class="n">project_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user_config</span> <span class="o">=</span> <span class="n">load_user_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">draft</span><span class="p">:</span>
+            <span class="n">section</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">draft_section</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">written</span> <span class="o">=</span> <span class="n">write_section</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span><span class="p">)</span> <span class="k">if</span> <span class="n">write</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">check_readme</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="n">user_config</span><span class="o">=</span><span class="n">user_config</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">SectionError</span><span class="p">,</span> <span class="n">ConfigError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="k">else</span> <span class="n">e</span><span class="p">),</span> <span class="n">code</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">"json"</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">written</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">"write"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">written</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s2">"outcome"</span><span class="p">:</span> <span class="n">written</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">written</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">written</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">written</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">table</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">fail_on</span> <span class="o">==</span> <span class="s2">"warn"</span> <span class="ow">and</span> <span class="n">report</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cw</span><span class="o">.</span><span class="n">CommandError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"undocumented agentic aspects: </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">kind</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">report</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=d4852862"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=fd10adb8"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    </body>
+</html>

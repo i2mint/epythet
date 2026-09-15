@@ -203,6 +203,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/epythet.html">epythet</a><input aria-label="Toggle navigation of epythet" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.agent_outputs.html">epythet.agent_outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.agentic_readme.html">epythet.agentic_readme</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.ai_artifacts.html">epythet.ai_artifacts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.build.html">epythet.build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.call_make.html">epythet.call_make</a></li>
@@ -226,6 +227,7 @@
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.tools.published_docs.html">epythet.tools.published_docs</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/epythet.userconfig.html">epythet.userconfig</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/epythet.validation.html">epythet.validation</a><input aria-label="Toggle navigation of epythet.validation" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.build.html">epythet.validation.build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.cli.html">epythet.validation.cli</a></li>
@@ -294,6 +296,14 @@ machine-readable copies of this documentation.</p>
 <section id="skills">
 <h2>Skills<a class="headerlink" href="#skills" title="Link to this heading">¶</a></h2>
 <p>Skills are folders holding a <code class="docutils literal notranslate"><span class="pre">SKILL.md</span></code> (the <a class="reference external" href="https://agentskills.io">Agent Skills</a> format): a description that tells an agent when to use it and a body with the procedure. Install one into your agent with <code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">skill</span></code> (any host: <code class="docutils literal notranslate"><span class="pre">--agent</span> <span class="pre">claude-code</span></code>, <code class="docutils literal notranslate"><span class="pre">copilot</span></code>, <code class="docutils literal notranslate"><span class="pre">cursor</span></code>, <code class="docutils literal notranslate"><span class="pre">codex</span></code>, <code class="docutils literal notranslate"><span class="pre">gemini</span></code>), or use the copy bundled in the wheel.</p>
+<section id="epythet-agentic-readme">
+<h3><code class="docutils literal notranslate"><span class="pre">epythet-agentic-readme</span></code><a class="headerlink" href="#epythet-agentic-readme" title="Link to this heading">¶</a></h3>
+<p>Make sure a repository’s README documents its agentic aspects: the skills, subagents and instruction files it ships (<code class="docutils literal notranslate"><span class="pre">&lt;pkg&gt;/data/skills</span></code>, <code class="docutils literal notranslate"><span class="pre">.claude/skills</span></code>, <code class="docutils literal notranslate"><span class="pre">.claude/agents</span></code>, <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>, <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>) and the agent-readable docs its site publishes (<code class="docutils literal notranslate"><span class="pre">llms.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>). Runs <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">ai-readme-check</span></code>, reads the user’s policy (<code class="docutils literal notranslate"><span class="pre">~/.config/epythet/config.toml</span></code>: warn or add, humour, agents first) and either reports what is missing or adds and updates a marked “For AI agents” section rendered from user-overridable snippets (<code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">snippets</span></code>). Use when asked “does the README mention the skills”, “add the agent section to the README”, “document the agentic aspects”, when finishing a docs sweep, or before releasing a package that ships skills.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>skill<span class="w"> </span>install<span class="w"> </span>i2mint/epythet<span class="w"> </span>epythet-agentic-readme<span class="w"> </span>--agent<span class="w"> </span>claude-code
+</pre></div>
+</div>
+<p>Source: <a class="reference external" href="https://github.com/i2mint/epythet/tree/HEAD/epythet/data/skills/epythet-agentic-readme"><code class="docutils literal notranslate"><span class="pre">epythet/data/skills/epythet-agentic-readme</span></code></a> (bundled with the pip package).</p>
+</section>
 <section id="epythet-ai-artifacts">
 <h3><code class="docutils literal notranslate"><span class="pre">epythet-ai-artifacts</span></code><a class="headerlink" href="#epythet-ai-artifacts" title="Link to this heading">¶</a></h3>
 <p>Find, install and document a repository’s AI agent artifacts: skills (<code class="docutils literal notranslate"><span class="pre">SKILL.md</span></code> folders under <code class="docutils literal notranslate"><span class="pre">&lt;pkg&gt;/data/skills</span></code>, <code class="docutils literal notranslate"><span class="pre">skills/</span></code>, <code class="docutils literal notranslate"><span class="pre">.claude/skills</span></code>), subagents (<code class="docutils literal notranslate"><span class="pre">.claude/agents</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;pkg&gt;/data/agents</span></code>), instruction files (<code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>, <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.cursor/rules</span></code>, <code class="docutils literal notranslate"><span class="pre">.codex</span></code>), and the machine-readable documentation a site publishes (<code class="docutils literal notranslate"><span class="pre">llms.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;.md</span></code>, <code class="docutils literal notranslate"><span class="pre">.md</span></code> page twins, <code class="docutils literal notranslate"><span class="pre">objects.inv</span></code>). Use when arriving in an unfamiliar repo and asking “does this project ship skills or agents”, “how do I install this package’s skill”, “where is the agent-readable version of these docs”, or when adding artifacts to a package so that epythet documents them.</p>
@@ -430,6 +440,7 @@ machine-readable copies of this documentation.</p>
             <ul>
 <li><a class="reference internal" href="#">For AI agents</a><ul>
 <li><a class="reference internal" href="#skills">Skills</a><ul>
+<li><a class="reference internal" href="#epythet-agentic-readme"><code class="docutils literal notranslate"><span class="pre">epythet-agentic-readme</span></code></a></li>
 <li><a class="reference internal" href="#epythet-ai-artifacts"><code class="docutils literal notranslate"><span class="pre">epythet-ai-artifacts</span></code></a></li>
 <li><a class="reference internal" href="#epythet-docstring-style"><code class="docutils literal notranslate"><span class="pre">epythet-docstring-style</span></code></a></li>
 <li><a class="reference internal" href="#epythet-pages"><code class="docutils literal notranslate"><span class="pre">epythet-pages</span></code></a></li>
@@ -457,7 +468,7 @@ machine-readable copies of this documentation.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f434b289"></script>
+</div><script src="_static/documentation_options.js?v=d4852862"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

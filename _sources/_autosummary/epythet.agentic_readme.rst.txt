@@ -1,0 +1,57 @@
+epythet.agentic\_readme
+=======================
+
+.. automodule:: epythet.agentic_readme
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MARKER_START
+      README_NAMES
+      KINDS
+      SECTION_SNIPPET
+      NEUTRAL_INTRO
+      MAX_BLURB
+      HEADLINE_SUFFIXES
+      SECTION_FIELDS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ai_readme_check
+      blurb
+      check_readme
+      draft_section
+      find_readme
+      github_anchor
+      headings_of
+      headline_skill
+      humans_link_for
+      instruction_text
+      load
+      load_project
+      marker_span
+      place_section
+      read_readme
+      render_section
+      splice_section
+      write_section
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Heading
+      KindCheck
+      Project
+      ReadmeReport
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      SectionError
+   

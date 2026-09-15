@@ -34,6 +34,9 @@ render correctly without edits.
 A repository’s agent artifacts (skills, subagents, `CLAUDE.md` and friends)
 are discovered by convention and rendered as a “For AI agents” page, see
 [`epythet.ai_artifacts`](epythet.ai_artifacts.html.md#module-epythet.ai_artifacts); epythet’s own skills ship in `epythet/data/skills`.
+Whether the README documents them is `check_readme()`
+(`epythet ai-readme-check`), with the user’s policy and text snippets from
+[`epythet.userconfig`](epythet.userconfig.html.md#module-epythet.userconfig) (`~/.config/epythet`).
 
 GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
 docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
@@ -56,6 +59,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 
 | [`agent_outputs`](epythet.agent_outputs.html.md#module-epythet.agent_outputs)              | Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.                                                        |
 |----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| [`agentic_readme`](epythet.agentic_readme.html.md#module-epythet.agentic_readme)            | Check that a README documents a project's agentic aspects; render and place the section.                                             |
 | [`ai_artifacts`](epythet.ai_artifacts.html.md#module-epythet.ai_artifacts)                | Discover a repository's AI agent artifacts and render the "For AI agents" page.                                                      |
 | [`build`](epythet.build.html.md#epythet.build)(config[, target, overrides])        | Run one build target for a loaded configuration; returns the output directory.                                                       |
 | [`call_make`](epythet.call_make.html.md#module-epythet.call_make)                      | Compatibility module: `make` now lives in [`epythet.build`](epythet.build.html.md#epythet.build).              |
@@ -75,4 +79,5 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`templates`](epythet.templates.html.md#module-epythet.templates)                      | Text templates for the generated `docsrc` files.                                                                                     |
 | [`themes`](epythet.themes.html.md#module-epythet.themes)                            | Theme registry, deterministic theme choice, and the OKLCH accent palette.                                                            |
 | [`tools`](epythet.tools.html.md#module-epythet.tools)                              | Tools to diagnose (and sometimes, repair) documentation                                                                              |
+| [`userconfig`](epythet.userconfig.html.md#module-epythet.userconfig)                    | User-level defaults and parametrizable text snippets.                                                                                |
 | [`validation`](epythet.validation.html.md#module-epythet.validation)                    | `epythet validate`: tiered documentation validation with a growing artifact ledger.                                                  |

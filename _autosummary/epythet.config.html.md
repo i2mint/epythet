@@ -36,6 +36,7 @@ package_dir = "src/dol"       # default: found by convention
 docs_dir = "docsrc"           # where the Sphinx sources live
 
 [tool.epythet.theme_options]  # verbatim passthrough into html_theme_options
+[tool.epythet.readme]         # project override of the user-level README policy (see epythet.userconfig)
 announcement = "v2 is in beta"
 ```
 
@@ -110,7 +111,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, readme=<factory>, ignore=('tests/', 'scrap/', 'examples/'), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
