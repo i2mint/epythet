@@ -15,7 +15,7 @@ This file is the map: where things are and which artifact to read for which task
 ```
 epythet/
   __init__.py        # public API re-exports; quickstart()
-  cli.py             # cw-based CLI: make-docsrc make-autodocs make quickstart check-pages configure-pages validate ai-artifacts ai-readme-check build-info; groups ledger, snippets
+  cli.py             # cw-based CLI: make-docsrc make-autodocs make quickstart check-pages configure-pages validate ai-artifacts ai-readme-check build-info repair migrate-style sweep; groups ledger, snippets
   config.py          # DocsConfig SSOT: pyproject [project] + [tool.epythet], setup.cfg fallback
   confgen.py         # DocsConfig -> Sphinx conf namespace (sphinx_settings)
   sphinx_conf.py     # the star-import target of the generated two-line conf.py
