@@ -17,7 +17,7 @@ dependencies = [
     "sphinx-autodoc-typehints>=3",
     "sphinx-copybutton>=0.5",
     "sphinxcontrib-mermaid>=1",
-    "sphinx-llm>=1,<2",
+    "sphinx-llm>=1.1,<2",  # 1.1 added llms_txt_suffix_mode="append" (agent_outputs)
     "sphinx-markdown-builder>=0.6",
     "furo>=2024",
     "shibuya>=2025",
