@@ -84,6 +84,12 @@ The Sphinx configuration values for the agent outputs.
 `llms_txt_full_build` stays on because its concatenation is the `<pkg>.md`
 aggregate; [`write_aggregates()`](#epythet.agent_outputs.write_aggregates) renames it after the build.
 
+`llms_txt_suffix_mode` is pinned to `"append"` (`<page>.html.md`), the
+spelling [`link_relation_tags()`](#epythet.agent_outputs.link_relation_tags) and [`inject_link_relations_into_site()`](#epythet.agent_outputs.inject_link_relations_into_site)
+reference. sphinx-llm’s default, `"auto"`, also publishes the `replace`
+spelling (`<page>.md`), which collides with the twin of a sibling page
+whenever a module is named `html` and aborts the build.
+
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 

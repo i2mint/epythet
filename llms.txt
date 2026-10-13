@@ -40,7 +40,6 @@
 - [epythet.validation.coverage](_autosummary/epythet.validation.coverage.html.md): Level 0 coverage and quality smells: the queue signals, computed from the &#96;ast&#96; alone.
 - [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by &#96;detector.function&#96;.
 - [epythet.validation.docstrings](_autosummary/epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
-- [epythet.validation.ledger](_autosummary/epythet.validation.ledger.html.md): The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
 - [epythet.validation.lint](_autosummary/epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
 - [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of &#96;epythet validate&#96;.
 - [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
@@ -49,7 +48,7 @@
 - [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the &#42;rendered&#42; output (XML, HTML, text) and report what the build hid.
 - [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review &#42;packet&#42; for an in-session agent, and the ingestion of its reply.
 - [For AI agents](ai-agents.html.md): &#96;epythet&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-13 03:08 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-13 05:41 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
 ## Optional
 

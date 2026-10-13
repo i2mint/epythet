@@ -5,19 +5,19 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-10-13 03:08 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 05:41 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/22afdc5efe6235575fb298bf7266f068938e7a42"><code>22afdc5</code></a> on branch <code>master</code>, for **epythet 0.2.13** (from <code>pyproject.toml</code>).
 
 :::{warning}
 The documentation and the package may be misaligned:
 
-- The documented version (0.2.12) is behind the latest release on PyPI (0.2.13): `pip install epythet` gives newer code than these docs describe.
+- The documented version (0.2.13) is behind the latest release on PyPI (0.2.14): `pip install epythet` gives newer code than these docs describe.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af82d948a62580237beea768492331eaba9</code></a> |
+| Commit | <a href="https://github.com/i2mint/epythet/commit/22afdc5efe6235575fb298bf7266f068938e7a42"><code>22afdc5efe6235575fb298bf7266f068938e7a42</code></a> |
 | Branch | <code>master</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,15 +28,15 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>i2mint/epythet</code> |
-| Run | <a href="https://github.com/i2mint/epythet/actions/runs/38340061512">38340061512</a> |
+| Run | <a href="https://github.com/i2mint/epythet/actions/runs/38352490073">38352490073</a> |
 | Ref | <code>refs/heads/master</code> |
-| Event commit | <code>0d780af82d948a62580237beea768492331eaba9</code> (in the history of the built commit) |
+| Event commit | <code>22afdc5efe6235575fb298bf7266f068938e7a42</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.12 |
+| epythet | 0.2.13 |
 | Sphinx | 9.1.0 |
 | docutils | 0.22.4 |
 | Python | 3.12.15 |
@@ -48,22 +48,22 @@ The documentation and the package may be misaligned:
 | theme | <code>auto</code> (Sphinx theme <code>furo</code>) |
 | accent | <code>#3f6500</code> |
 | api_generator | <code>autosummary</code> |
-| ignore | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code> |
+| ignore | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code>, <code>ledger/</code> |
 | agent_outputs | <code>true</code> |
 | aggregates | <code>md</code> |
 | ai_artifacts | <code>true</code> |
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.13/">0.2.13</a>, newer than the documented version (0.2.12).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.14/">0.2.14</a>, newer than the documented version (0.2.13).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 0d780af82d948a62580237beea768492331eaba9
-pip install "epythet==0.2.12"
-epythet quickstart . --ignore tests/ scrap/ examples/
+git checkout 22afdc5efe6235575fb298bf7266f068938e7a42
+pip install "epythet==0.2.13"
+epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 
 The same data, for machines: <a href="build_info.json"><code>build_info.json</code></a> (schema version 1).

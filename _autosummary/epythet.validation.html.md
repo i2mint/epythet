@@ -24,7 +24,6 @@ reviewer proposes go to an overlay there too (`epythet ledger propose`).
 | [`coverage`](epythet.validation.coverage.html.md#module-epythet.validation.coverage)                           | Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone. |
 | [`detectors`](epythet.validation.detectors.html.md#module-epythet.validation.detectors)                         | Named doctree detectors, referenced from ledger rules by `detector.function`.          |
 | [`docstrings`](epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)                       | Docstring extraction from Python source, without importing anything.                   |
-| [`ledger`](epythet.validation.ledger.html.md#module-epythet.validation.ledger)                               | The artifact ledger: rule definitions (bundled YAML) and observations (user data dir). |
 | [`lint`](epythet.validation.lint.html.md#module-epythet.validation.lint)                                   | Level 0: static docstring linters, normalised into the finding model.                  |
 | [`model`](epythet.validation.model.html.md#module-epythet.validation.model)                                 | The finding and report model shared by every level of `epythet validate`.              |
 | [`parse`](epythet.validation.parse.html.md#module-epythet.validation.parse)                                 | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.     |
