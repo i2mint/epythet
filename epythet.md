@@ -1,4 +1,4 @@
-> built 2026-09-15 12:35 UTC from 7f52d70 (master) · epythet 0.2.12. Details: build_info.json
+> built 2026-10-13 03:08 UTC from 0d780af (master) · epythet 0.2.12. Details: build_info.json
 
 # index.html.md
 
@@ -3187,7 +3187,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.12', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.12', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/'), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -3349,7 +3349,7 @@ Validate every package under `dirs` and `manifest` read-only; return the result.
   * **manifest** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – A `.pth`-style file of project directories, read only.
   * **levels** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]) – The validate levels to run (`0` coverage, `0.5` parse by default).
   * **ignore** ([`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – Path substrings to skip inside each package.
-  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – The rule catalog (`None` = bundled).
+  * **ledger** ([`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – The rule catalog (`None` = bundled).
   * **napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Parse docstrings with napoleon’s pre-processing.
   * **linters** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Also shell out to ruff and pydoclint at level 0.
   * **observe** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Append each package’s findings to the observations file.
@@ -4348,7 +4348,7 @@ Two things live under the user’s config directory:
 
 The config directory is `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`,
 else `~/.config/epythet`: the config-side twin of
-`epythet.validation.ledger.user_data_dir()`, which holds mutable data
+[`epythet.validation.ledger.user_data_dir()`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir), which holds mutable data
 (ledger observations) under `~/.local/share/epythet`. Skills stay prose: they
 call `epythet snippets show <name>` and `epythet ai-readme-check --format json`
 and let this module do the resolving.
@@ -4521,7 +4521,7 @@ Bases: [`ConfigError`](_autosummary/epythet.config.html.md#epythet.config.Config
 
 `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`, else `~/.config/epythet`.
 
-XDG-style on every platform, like `epythet.validation.ledger.user_data_dir()`.
+XDG-style on every platform, like [`epythet.validation.ledger.user_data_dir()`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir).
 
 * **Return type:**
   [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
@@ -4863,7 +4863,7 @@ Sphinx’s exit status when the only problem was warnings under `-W`.
 The first build-warning rule that matches, most specific first.
 
 * **Return type:**
-  `Rule` | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+  [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.build.default_sphinx_build()
 
@@ -5027,7 +5027,7 @@ Validate a package’s documentation and return a `Report`.
     `4` the review packet.
   * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
     overrides `level` when given.
-  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
+  * **ledger** ([`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
   * **backend** – The build backend for level 1 (default: `SphinxBackend()`).
   * **fail_on** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Severity threshold recorded on the report for exit codes.
   * **napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Pre-process Google/NumPy sections the way the fleet’s
@@ -5571,6 +5571,7 @@ reviewer proposes go to an overlay there too (`epythet ledger propose`).
 | [`coverage`](_autosummary/epythet.validation.coverage.html.md#module-epythet.validation.coverage)                           | Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone. |
 | [`detectors`](_autosummary/epythet.validation.detectors.html.md#module-epythet.validation.detectors)                         | Named doctree detectors, referenced from ledger rules by `detector.function`.          |
 | [`docstrings`](_autosummary/epythet.validation.docstrings.html.md#module-epythet.validation.docstrings)                       | Docstring extraction from Python source, without importing anything.                   |
+| [`ledger`](_autosummary/epythet.validation.ledger.html.md#module-epythet.validation.ledger)                               | The artifact ledger: rule definitions (bundled YAML) and observations (user data dir). |
 | [`lint`](_autosummary/epythet.validation.lint.html.md#module-epythet.validation.lint)                                   | Level 0: static docstring linters, normalised into the finding model.                  |
 | [`model`](_autosummary/epythet.validation.model.html.md#module-epythet.validation.model)                                 | The finding and report model shared by every level of `epythet validate`.              |
 | [`parse`](_autosummary/epythet.validation.parse.html.md#module-epythet.validation.parse)                                 | Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.     |
@@ -5578,6 +5579,264 @@ reviewer proposes go to an overlay there too (`epythet ledger propose`).
 | [`render`](_autosummary/epythet.validation.render.html.md#epythet.validation.render)(report[, format])                    | Render with the named format (`table`, `json` or `jsonl`).                             |
 | [`rendered`](_autosummary/epythet.validation.rendered.html.md#module-epythet.validation.rendered)                           | Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.   |
 | [`review`](_autosummary/epythet.validation.review.html.md#module-epythet.validation.review)                               | Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.    |
+
+
+# _autosummary/epythet.validation.ledger.html.md
+
+# epythet.validation.ledger
+
+The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
+
+Storage is split by mutability, as decided in the v2 decision record (D8):
+
+- **Rules** are one YAML file per rule under `epythet/ledger/rules/<group>/`
+  (the `build` namespace lives in `build_warnings/`: a directory named
+  `build/` is dropped from wheels by the project’s `.gitignore`)
+  with a sibling `.py` fixture that doubles as the regression test. They are
+  human-edited, rarely, and ship inside epythet.
+- **Proposals** (rules level 3 or a human drafted, `status: {proposed: ...}`)
+  are written by `epythet ledger propose` into an overlay directory under the
+  user data dir ([`proposed_rules_dir()`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.proposed_rules_dir)) and never gate anyone until a
+  maintainer moves them into the bundled tree.
+- **Observations** (occurrences with file paths and snippets from real repos)
+  are append-only JSONL under the user data dir, never inside the repo, because
+  they are derived from repositories that are not all public. Occurrence counts
+  are a *derived view* over that file, computed on read.
+
+The `ledger=` seam of `epythet.validation.validate()` accepts `None`
+(bundled rules), a directory (bundled rules plus a package-local overlay,
+same id overrides) or a ready [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger).
+
+### Module Attributes
+
+| [`PARSE_KINDS`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.PARSE_KINDS)   | Detector kinds evaluated per docstring at level 0.5.                     |
+|----------------------------------------------------------------|--------------------------------------------------------------------------|
+| [`FIXTURE_KINDS`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.FIXTURE_KINDS) | Detector kinds that carry a sibling `.py` fixture with tagged specimens. |
+
+### Functions
+
+| [`append_observations`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.append_observations)(findings, \*, package[, ...])   | Append one JSONL line per finding; returns how many were written.                        |
+|------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| [`iter_fixture_cases`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.iter_fixture_cases)(fixture_path)                    | Yield the tagged specimens of a fixture file.                                            |
+| [`iter_rule_files`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.iter_rule_files)(rules_dir)                          | Every `*.yaml` under `rules_dir`, in a stable order.                                     |
+| [`load_ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.load_ledger)([ledger])                               | Resolve the `ledger=` seam to a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger). |
+| [`load_rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.load_rule)(path)                                     | Load and validate one rule file.                                                         |
+| [`observation_record`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.observation_record)(finding, \*, package, ...)       | The JSONL line written for one finding.                                                  |
+| [`observations_path`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.observations_path)()                                 | Where observations are appended: `<user data dir>/ledger/observations.jsonl`.            |
+| [`occurrence_counts`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.occurrence_counts)([path])                           | Occurrences per rule id over the whole observations file (empty if absent).              |
+| [`proposed_rules_dir`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.proposed_rules_dir)()                                | Where `epythet ledger propose` writes: `<user data dir>/ledger/proposed`.                |
+| [`user_data_dir`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir)()                                     | `$EPYTHET_DATA_DIR`, else `$XDG_DATA_HOME/epythet`, else `~/.local/share/epythet`.       |
+
+### Classes
+
+| [`FixtureCase`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.FixtureCase)(name, line, expect_hit, ...)         | One specimen function in a fixture: its docstring and what the tag promises.   |
+|---------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger)([rules, sources])                         | The loaded rule catalog: bundled rules plus any overlay, keyed by id.          |
+| [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)(id, title, namespace, severity, ...[, ...]) | One ledger rule, loaded from its YAML file and validated.                      |
+
+### Exceptions
+
+| [`LedgerError`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.LedgerError)   | A rule file is schema-invalid, a rule id is duplicated, or a fixture is missing.   |
+|----------------------------------------------------------------|------------------------------------------------------------------------------------|
+
+### epythet.validation.ledger.FIXTURE_KINDS *= ('regex', 'source', 'doctree', 'coverage')*
+
+Detector kinds that carry a sibling `.py` fixture with tagged specimens.
+
+### *class* epythet.validation.ledger.FixtureCase(name, line, expect_hit, rule_ids, docstring)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One specimen function in a fixture: its docstring and what the tag promises.
+
+### *class* epythet.validation.ledger.Ledger(rules=<factory>, sources=<factory>)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+The loaded rule catalog: bundled rules plus any overlay, keyed by id.
+
+#### add_dir(rules_dir, , allow_override=False)
+
+Load every rule under `rules_dir`; duplicates are an error unless overriding.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+#### check_build_examples()
+
+Every build-warning rule’s `example_warning` must classify to that rule.
+
+* **Return type:**
+  [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+#### of_kind(\*kinds, include_proposed=False)
+
+Rules whose detector kind is one of `kinds`, in id order.
+
+Proposed rules (`status: {proposed: ...}`) are left out unless asked
+for: a proposal from level 3 must not gate anyone until a maintainer
+promotes it.
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)]
+
+### *exception* epythet.validation.ledger.LedgerError
+
+Bases: [`Exception`](https://docs.python.org/3/builtins/exceptions.html#Exception)
+
+A rule file is schema-invalid, a rule id is duplicated, or a fixture is missing.
+
+`epythet validate` maps this to exit code 20 so CI can tell “the catalog is
+broken” apart from “the package has problems”.
+
+### epythet.validation.ledger.PARSE_KINDS *= ('regex', 'source', 'doctree')*
+
+Detector kinds evaluated per docstring at level 0.5.
+
+### *class* epythet.validation.ledger.Rule(id, title, namespace, severity, precision, detector, message, fix=<factory>, status=<factory>, applies_to=<factory>, explanation='', references=<factory>, path=None)
+
+Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
+
+One ledger rule, loaded from its YAML file and validated.
+
+`detector` is the raw mapping from the YAML; the compiled regex (for
+`regex` and `source` kinds) is available as [`pattern`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule.pattern).
+
+#### applies(, napoleon)
+
+Whether the rule is live under the given napoleon setting.
+
+A rule that declares `applies_to: {napoleon: false}` only makes sense
+when Google/NumPy sections are *not* pre-processed (DR012 is the case).
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
+
+#### *property* autofixable *: [bool](https://docs.python.org/3/builtins/functions.html#bool)*
+
+Whether `epythet repair` (WP3) can rewrite this one mechanically.
+
+#### finding(, level, evidence='', file=None, line=None, object=None, message=None)
+
+A `Finding` for this rule at one location.
+
+* **Return type:**
+  [`Finding`](_autosummary/epythet.validation.model.html.md#epythet.validation.model.Finding)
+
+#### *property* fix_hint *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+The one-line fix hint shown next to each finding.
+
+#### *property* fixture_path *: [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [None](https://docs.python.org/3/builtins/constants.html#None)*
+
+The sibling `.py` fixture, when the rule has one.
+
+#### format_message(match)
+
+Fill the rule’s message template with the matched evidence.
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+#### *property* is_proposed *: [bool](https://docs.python.org/3/builtins/functions.html#bool)*
+
+Whether the rule is still a proposal (level 3 or a human wrote it, nobody promoted it).
+
+#### *property* kind *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+one of `DETECTOR_KINDS`.
+
+* **Type:**
+  The detector kind
+
+#### *property* pattern *: [Pattern](https://docs.python.org/3/library/re.html#re.Pattern) | [None](https://docs.python.org/3/builtins/constants.html#None)*
+
+Compiled `detector.pattern` (multiline; case-insensitive on request).
+
+### epythet.validation.ledger.append_observations(findings, , package, package_version=None, path=None)
+
+Append one JSONL line per finding; returns how many were written.
+
+* **Return type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
+
+### epythet.validation.ledger.iter_fixture_cases(fixture_path)
+
+Yield the tagged specimens of a fixture file.
+
+A specimen is a `def` (or `class`) whose header line carries a
+`# ruleid: DR001` (must fire) or `# ok: DR001` (must not fire) comment,
+Semgrep style. Several ids may be listed, comma-separated.
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`FixtureCase`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.FixtureCase)]
+
+### epythet.validation.ledger.iter_rule_files(rules_dir)
+
+Every `*.yaml` under `rules_dir`, in a stable order.
+
+* **Return type:**
+  [`Iterator`](https://docs.python.org/3/library/typing.html#typing.Iterator)[[`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)]
+
+### epythet.validation.ledger.load_ledger(ledger=None)
+
+Resolve the `ledger=` seam to a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger).
+
+`None` loads the bundled rules; a path loads the bundled rules and then
+overlays the directory (same id overrides); a [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) is returned
+as is.
+
+* **Return type:**
+  [`Ledger`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger)
+
+### epythet.validation.ledger.load_rule(path)
+
+Load and validate one rule file.
+
+* **Return type:**
+  [`Rule`](_autosummary/epythet.validation.ledger.html.md#epythet.validation.ledger.Rule)
+
+### epythet.validation.ledger.observation_record(finding, , package, package_version, run_id)
+
+The JSONL line written for one finding.
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
+
+### epythet.validation.ledger.observations_path()
+
+Where observations are appended: `<user data dir>/ledger/observations.jsonl`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### epythet.validation.ledger.occurrence_counts(path=None)
+
+Occurrences per rule id over the whole observations file (empty if absent).
+
+This is the derived view that replaces an `occurrences` field in the rule
+files; a malformed line is skipped rather than failing the run.
+
+* **Return type:**
+  [`Counter`](https://docs.python.org/3/library/collections.html#collections.Counter)
+
+### epythet.validation.ledger.proposed_rules_dir()
+
+Where `epythet ledger propose` writes: `<user data dir>/ledger/proposed`.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
+### epythet.validation.ledger.user_data_dir()
+
+`$EPYTHET_DATA_DIR`, else `$XDG_DATA_HOME/epythet`, else `~/.local/share/epythet`.
+
+Deliberately XDG-style on every platform (not `platformdirs`’s macOS
+`Application Support`): it matches where the rest of epythet’s local
+data already lives, and it is what the decision record names.
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
 
 
 # _autosummary/epythet.validation.lint.html.md
@@ -6471,18 +6730,20 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-09-15 12:35 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d70</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 03:08 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.2.12) is behind the latest release on PyPI (0.2.13): `pip install epythet` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d703fd6794b5b324d868b15d5b1e14ce5461</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af82d948a62580237beea768492331eaba9</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
-| Tags at this commit | <code>0.2.12</code>                                                                                                                                   |
+| Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
 | Remote              | <code>https://github.com/i2mint/epythet</code>                                                                                                        |
 
@@ -6491,9 +6752,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34969390270">34969390270</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/38340061512">38340061512</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>dd8a8c87eb214bb424972795b0687751924963fc</code> (in the history of the built commit) |
+| Event commit | <code>0d780af82d948a62580237beea768492331eaba9</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -6502,31 +6763,31 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | epythet  | 0.2.12  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
-|               |                                                                                        |
-|---------------|----------------------------------------------------------------------------------------|
-| theme         | <code>auto</code> (Sphinx theme <code>furo</code>)                                     |
-| accent        | <code>#3f6500</code>                                                                   |
-| api_generator | <code>autosummary</code>                                                               |
-| ignore        | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code>, <code>ledger/</code> |
-| agent_outputs | <code>true</code>                                                                      |
-| aggregates    | <code>md</code>                                                                        |
-| ai_artifacts  | <code>true</code>                                                                      |
+|               |                                                                  |
+|---------------|------------------------------------------------------------------|
+| theme         | <code>auto</code> (Sphinx theme <code>furo</code>)               |
+| accent        | <code>#3f6500</code>                                             |
+| api_generator | <code>autosummary</code>                                         |
+| ignore        | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code> |
+| agent_outputs | <code>true</code>                                                |
+| aggregates    | <code>md</code>                                                  |
+| ai_artifacts  | <code>true</code>                                                |
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.12/">0.2.12</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/epythet/0.2.13/">0.2.13</a>, newer than the documented version (0.2.12).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 7f52d703fd6794b5b324d868b15d5b1e14ce5461
+git checkout 0d780af82d948a62580237beea768492331eaba9
 pip install "epythet==0.2.12"
-epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
+epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
 The same data, for machines: <a href="build_info.json"><code>build_info.json</code></a> (schema version 1).

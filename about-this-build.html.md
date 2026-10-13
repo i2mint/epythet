@@ -2,18 +2,20 @@
 
 # About this build
 
-This documentation was built on **2026-09-15 12:35 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d70</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 03:08 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af</code></a> on branch <code>master</code>, for **epythet 0.2.12** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.2.12) is behind the latest release on PyPI (0.2.13): `pip install epythet` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461"><code>7f52d703fd6794b5b324d868b15d5b1e14ce5461</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9"><code>0d780af82d948a62580237beea768492331eaba9</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
-| Tags at this commit | <code>0.2.12</code>                                                                                                                                   |
+| Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
 | Remote              | <code>https://github.com/i2mint/epythet</code>                                                                                                        |
 
@@ -22,9 +24,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/34969390270">34969390270</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/38340061512">38340061512</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>dd8a8c87eb214bb424972795b0687751924963fc</code> (in the history of the built commit) |
+| Event commit | <code>0d780af82d948a62580237beea768492331eaba9</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -33,31 +35,31 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | epythet  | 0.2.12  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
-|               |                                                                                        |
-|---------------|----------------------------------------------------------------------------------------|
-| theme         | <code>auto</code> (Sphinx theme <code>furo</code>)                                     |
-| accent        | <code>#3f6500</code>                                                                   |
-| api_generator | <code>autosummary</code>                                                               |
-| ignore        | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code>, <code>ledger/</code> |
-| agent_outputs | <code>true</code>                                                                      |
-| aggregates    | <code>md</code>                                                                        |
-| ai_artifacts  | <code>true</code>                                                                      |
+|               |                                                                  |
+|---------------|------------------------------------------------------------------|
+| theme         | <code>auto</code> (Sphinx theme <code>furo</code>)               |
+| accent        | <code>#3f6500</code>                                             |
+| api_generator | <code>autosummary</code>                                         |
+| ignore        | <code>tests/</code>, <code>scrap/</code>, <code>examples/</code> |
+| agent_outputs | <code>true</code>                                                |
+| aggregates    | <code>md</code>                                                  |
+| ai_artifacts  | <code>true</code>                                                |
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.12/">0.2.12</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/epythet/0.2.13/">0.2.13</a>, newer than the documented version (0.2.12).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 7f52d703fd6794b5b324d868b15d5b1e14ce5461
+git checkout 0d780af82d948a62580237beea768492331eaba9
 pip install "epythet==0.2.12"
-epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
+epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
 The same data, for machines: <a href="build_info.json"><code>build_info.json</code></a> (schema version 1).

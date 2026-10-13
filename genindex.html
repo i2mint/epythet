@@ -234,6 +234,7 @@
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autosummary/epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -303,6 +304,8 @@
 </li>
         <li><a href="_autosummary/epythet.themes.html#epythet.themes.ACCENT_SALT">ACCENT_SALT (in module epythet.themes)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Ledger.add_dir">add_dir() (epythet.validation.ledger.Ledger method)</a>
+</li>
         <li><a href="_autosummary/epythet.tools.docstring_diagnosis.html#epythet.tools.docstring_diagnosis.add_newlines_before_doctests_when_missing">add_newlines_before_doctests_when_missing() (in module epythet.tools.docstring_diagnosis)</a>
 </li>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.AGENT_LOCATIONS">AGENT_LOCATIONS (in module epythet.ai_artifacts)</a>
@@ -321,10 +324,10 @@
 </li>
         <li><a href="_autosummary/epythet.templates.html#epythet.templates.aggregates_block">aggregates_block (in module epythet.templates)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.cli.html#epythet.cli.ai_artifacts">ai_artifacts() (in module epythet.cli)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.ai_artifacts_page">ai_artifacts_page() (in module epythet.ai_artifacts)</a>
 </li>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.ai_readme_check">ai_readme_check() (in module epythet.agentic_readme)</a>
@@ -343,6 +346,10 @@
 </li>
         <li><a href="_autosummary/epythet.confgen.html#epythet.confgen.api_toctree_entry">api_toctree_entry() (in module epythet.confgen)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.append_observations">append_observations() (in module epythet.validation.ledger)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.applies">applies() (epythet.validation.ledger.Rule method)</a>
+</li>
         <li><a href="_autosummary/epythet.repair.html#epythet.repair.apply_span_edits">apply_span_edits() (in module epythet.repair)</a>
 </li>
         <li><a href="_autosummary/epythet.repair.html#epythet.repair.apply_with_libcst">apply_with_libcst() (in module epythet.repair)</a>
@@ -354,6 +361,8 @@
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.artifacts_table">artifacts_table() (in module epythet.ai_artifacts)</a>
 </li>
         <li><a href="_autosummary/epythet.themes.html#epythet.themes.AUTO_POOL">AUTO_POOL (in module epythet.themes)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.autofixable">autofixable (epythet.validation.ledger.Rule property)</a>
 </li>
         <li><a href="_autosummary/epythet.templates.html#epythet.templates.autosummary_module_rst">autosummary_module_rst (in module epythet.templates)</a>
 </li>
@@ -424,6 +433,8 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.validation.rendered.html#epythet.validation.rendered.changed_pages">changed_pages() (in module epythet.validation.rendered)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Ledger.check_build_examples">check_build_examples() (epythet.validation.ledger.Ledger method)</a>
 </li>
         <li><a href="_autosummary/epythet.cli.html#epythet.cli.check_pages">check_pages() (in module epythet.cli)</a>
 </li>
@@ -713,8 +724,6 @@
           <li><a href="_autosummary/epythet.sweep.html#module-epythet.sweep">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     epythet.templates
 
@@ -722,6 +731,8 @@
           <li><a href="_autosummary/epythet.templates.html#module-epythet.templates">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     epythet.themes
 
@@ -807,6 +818,13 @@
 </li>
         </ul></li>
         <li>
+    epythet.validation.ledger
+
+        <ul>
+          <li><a href="_autosummary/epythet.validation.ledger.html#module-epythet.validation.ledger">module</a>
+</li>
+        </ul></li>
+        <li>
     epythet.validation.lint
 
         <ul>
@@ -877,19 +895,31 @@
 </li>
         <li><a href="_autosummary/epythet.repair.html#epythet.repair.FileRepair">FileRepair (class in epythet.repair)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.config.html#epythet.config.find_package_dir">find_package_dir() (in module epythet.config)</a>
 </li>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.find_readme">find_readme() (in module epythet.agentic_readme)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.model.html#epythet.validation.model.Finding">Finding (class in epythet.validation.model)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.finding">finding() (epythet.validation.ledger.Rule method)</a>
+</li>
         <li><a href="_autosummary/epythet.validation.parse.html#epythet.validation.parse.findings_for">findings_for() (in module epythet.validation.parse)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.fix_hint">fix_hint (epythet.validation.ledger.Rule property)</a>
 </li>
         <li><a href="_autosummary/epythet.normalizer.html#epythet.normalizer.fix_short_underlines">fix_short_underlines() (in module epythet.normalizer)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.FIXTURE_KINDS">FIXTURE_KINDS (in module epythet.validation.ledger)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.fixture_path">fixture_path (epythet.validation.ledger.Rule property)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.FixtureCase">FixtureCase (class in epythet.validation.ledger)</a>
+</li>
         <li><a href="_autosummary/epythet.provenance.html#epythet.provenance.footer_text">footer_text() (in module epythet.provenance)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.format_message">format_message() (epythet.validation.ledger.Rule method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -977,15 +1007,17 @@
 </li>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.INSTRUCTION_LOCATIONS">INSTRUCTION_LOCATIONS (in module epythet.ai_artifacts)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.instruction_text">instruction_text() (in module epythet.agentic_readme)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.InstructionFile">InstructionFile (class in epythet.ai_artifacts)</a>
 </li>
         <li><a href="_autosummary/epythet.normalizer.html#epythet.normalizer.is_art_line">is_art_line() (in module epythet.normalizer)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.docstrings.html#epythet.validation.docstrings.is_ignored">is_ignored() (in module epythet.validation.docstrings)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.is_proposed">is_proposed (epythet.validation.ledger.Rule property)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.coverage.html#epythet.validation.coverage.iter_coverage_cases">iter_coverage_cases() (in module epythet.validation.coverage)</a>
 </li>
@@ -995,9 +1027,13 @@
 </li>
         <li><a href="_autosummary/epythet.validation.docstrings.html#epythet.validation.docstrings.iter_file_docstrings">iter_file_docstrings() (in module epythet.validation.docstrings)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.iter_fixture_cases">iter_fixture_cases() (in module epythet.validation.ledger)</a>
+</li>
         <li><a href="_autosummary/epythet.validation.coverage.html#epythet.validation.coverage.iter_public_objects">iter_public_objects() (in module epythet.validation.coverage)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.docstrings.html#epythet.validation.docstrings.iter_python_files">iter_python_files() (in module epythet.validation.docstrings)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.iter_rule_files">iter_rule_files() (in module epythet.validation.ledger)</a>
 </li>
         <li><a href="_autosummary/epythet.userconfig.html#epythet.userconfig.iter_snippets">iter_snippets() (in module epythet.userconfig)</a>
 </li>
@@ -1009,10 +1045,12 @@
   <h2>K</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.KindCheck">KindCheck (class in epythet.agentic_readme)</a>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.kind">kind (epythet.validation.ledger.Rule property)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.KindCheck">KindCheck (class in epythet.agentic_readme)</a>
+</li>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.KINDS">KINDS (in module epythet.agentic_readme)</a>
 </li>
     </ul></td>
@@ -1023,7 +1061,11 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Ledger">Ledger (class in epythet.validation.ledger)</a>
+</li>
         <li><a href="_autosummary/epythet.cli.html#epythet.cli.LEDGER_COMMANDS">LEDGER_COMMANDS (in module epythet.cli)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.LedgerError">LedgerError</a>
 </li>
         <li><a href="_autosummary/epythet.templates.html#epythet.templates.LEGACY_CONF_MARKER">LEGACY_CONF_MARKER (in module epythet.templates)</a>
 </li>
@@ -1059,9 +1101,13 @@
 </li>
         <li><a href="_autosummary/epythet.config.html#epythet.config.load_config">load_config() (in module epythet.config)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.load_ledger">load_ledger() (in module epythet.validation.ledger)</a>
+</li>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.load_project">load_project() (in module epythet.agentic_readme)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.review.html#epythet.validation.review.load_reply">load_reply() (in module epythet.validation.review)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.load_rule">load_rule() (in module epythet.validation.ledger)</a>
 </li>
         <li><a href="_autosummary/epythet.userconfig.html#epythet.userconfig.load_user_config">load_user_config() (in module epythet.userconfig)</a>
 </li>
@@ -1173,6 +1219,8 @@
 </li>
           <li><a href="_autosummary/epythet.validation.docstrings.html#module-epythet.validation.docstrings">epythet.validation.docstrings</a>
 </li>
+          <li><a href="_autosummary/epythet.validation.ledger.html#module-epythet.validation.ledger">epythet.validation.ledger</a>
+</li>
           <li><a href="_autosummary/epythet.validation.lint.html#module-epythet.validation.lint">epythet.validation.lint</a>
 </li>
           <li><a href="_autosummary/epythet.validation.model.html#module-epythet.validation.model">epythet.validation.model</a>
@@ -1224,12 +1272,20 @@
   <h2>O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.observation_record">observation_record() (in module epythet.validation.ledger)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.observations_path">observations_path() (in module epythet.validation.ledger)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.occurrence_counts">occurrence_counts() (in module epythet.validation.ledger)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Ledger.of_kind">of_kind() (epythet.validation.ledger.Ledger method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.validation.build.html#epythet.validation.build.RenderResult.ok">ok (epythet.validation.build.RenderResult property)</a>
 </li>
         <li><a href="_autosummary/epythet.themes.html#epythet.themes.oklch_to_hex">oklch_to_hex() (in module epythet.themes)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.validation.parse.html#epythet.validation.parse.ONE_ARGUMENT_DIRECTIVES">ONE_ARGUMENT_DIRECTIVES (in module epythet.validation.parse)</a>
 </li>
         <li><a href="_autosummary/epythet.sphinx_conf.html#epythet.sphinx_conf.OVERRIDES_ENV">OVERRIDES_ENV (in module epythet.sphinx_conf)</a>
@@ -1274,15 +1330,19 @@
 </li>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.parse_frontmatter">parse_frontmatter() (in module epythet.ai_artifacts)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.PARSE_KINDS">PARSE_KINDS (in module epythet.validation.ledger)</a>
+</li>
         <li><a href="_autosummary/epythet.validation.parse.html#epythet.validation.parse.parse_rst">parse_rst() (in module epythet.validation.parse)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.build.html#epythet.validation.build.parse_warning_line">parse_warning_line() (in module epythet.validation.build)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.build.html#epythet.validation.build.parse_warning_stream">parse_warning_stream() (in module epythet.validation.build)</a>
 </li>
+        <li><a href="_autosummary/epythet.validation.parse.html#epythet.validation.parse.ParsedDocstring">ParsedDocstring (class in epythet.validation.parse)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/epythet.validation.parse.html#epythet.validation.parse.ParsedDocstring">ParsedDocstring (class in epythet.validation.parse)</a>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule.pattern">pattern (epythet.validation.ledger.Rule property)</a>
 </li>
         <li><a href="_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.place_section">place_section() (in module epythet.agentic_readme)</a>
 </li>
@@ -1299,6 +1359,8 @@
         <li><a href="_autosummary/epythet.sphinx_conf.html#epythet.sphinx_conf.PROJECT_DIR_ENV">PROJECT_DIR_ENV (in module epythet.sphinx_conf)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.propose.html#epythet.validation.propose">propose() (in module epythet.validation)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.proposed_rules_dir">proposed_rules_dir() (in module epythet.validation.ledger)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.detectors.html#epythet.validation.detectors.prose_definition_term">prose_definition_term() (in module epythet.validation.detectors)</a>
 </li>
@@ -1420,10 +1482,10 @@
 </li>
         <li><a href="_autosummary/epythet.ai_artifacts.html#epythet.ai_artifacts.repo_stub_for">repo_stub_for() (in module epythet.ai_artifacts)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.tools.published_docs.html#epythet.tools.published_docs.repo_stub_from_local_dir">repo_stub_from_local_dir() (in module epythet.tools.published_docs)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.tools.published_docs.html#epythet.tools.published_docs.repo_url_to_docs_url">repo_url_to_docs_url() (in module epythet.tools.published_docs)</a>
 </li>
         <li><a href="_autosummary/epythet.tools.published_docs.html#epythet.tools.published_docs.repo_url_to_repo_docs_url">repo_url_to_repo_docs_url() (in module epythet.tools.published_docs)</a>
@@ -1471,6 +1533,8 @@
         <li><a href="_autosummary/epythet.validation.lint.html#epythet.validation.lint.RUFF_D_IGNORE">RUFF_D_IGNORE (in module epythet.validation.lint)</a>
 </li>
         <li><a href="_autosummary/epythet.validation.lint.html#epythet.validation.lint.ruff_severity">ruff_severity() (in module epythet.validation.lint)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.Rule">Rule (class in epythet.validation.ledger)</a>
 </li>
         <li><a href="_autosummary/epythet.sweep.html#epythet.sweep.RULE_WEIGHTS">RULE_WEIGHTS (in module epythet.sweep)</a>
 </li>
@@ -1706,11 +1770,13 @@
 </li>
         <li><a href="_autosummary/epythet.validation.review.html#epythet.validation.review.UNRULED">UNRULED (in module epythet.validation.review)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.repair.html#epythet.repair.UNSAFE_RULES">UNSAFE_RULES (in module epythet.repair)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/epythet.validation.rendered.html#epythet.validation.rendered.update_snapshots">update_snapshots() (in module epythet.validation.rendered)</a>
+</li>
+        <li><a href="_autosummary/epythet.validation.ledger.html#epythet.validation.ledger.user_data_dir">user_data_dir() (in module epythet.validation.ledger)</a>
 </li>
         <li><a href="_autosummary/epythet.userconfig.html#epythet.userconfig.UserConfig">UserConfig (class in epythet.userconfig)</a>
 </li>

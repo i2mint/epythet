@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "built_at": "2026-09-15T12:35:01Z",
+  "built_at": "2026-10-13T03:08:15Z",
   "package": {
     "name": "epythet",
     "version": "0.2.12",
@@ -9,33 +9,31 @@
   },
   "git": {
     "available": true,
-    "commit": "7f52d703fd6794b5b324d868b15d5b1e14ce5461",
-    "short_commit": "7f52d70",
+    "commit": "0d780af82d948a62580237beea768492331eaba9",
+    "short_commit": "0d780af",
     "branch": "master",
-    "tags": [
-      "0.2.12"
-    ],
+    "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/epythet",
-    "commit_url": "https://github.com/i2mint/epythet/commit/7f52d703fd6794b5b324d868b15d5b1e14ce5461",
+    "commit_url": "https://github.com/i2mint/epythet/commit/0d780af82d948a62580237beea768492331eaba9",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/epythet",
-    "sha": "dd8a8c87eb214bb424972795b0687751924963fc",
+    "sha": "0d780af82d948a62580237beea768492331eaba9",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "34969390270",
-    "run_url": "https://github.com/i2mint/epythet/actions/runs/34969390270",
+    "run_id": "38340061512",
+    "run_url": "https://github.com/i2mint/epythet/actions/runs/38340061512",
     "server_url": "https://github.com"
   },
   "tools": {
     "epythet": "0.2.12",
     "sphinx": "9.1.0",
     "docutils": "0.22.4",
-    "python": "3.12.14"
+    "python": "3.12.15"
   },
   "config": {
     "theme": "auto",
@@ -46,8 +44,7 @@
     "ignore": [
       "tests/",
       "scrap/",
-      "examples/",
-      "ledger/"
+      "examples/"
     ],
     "agent_outputs": true,
     "aggregates": [
@@ -58,19 +55,21 @@
     "docs_dir": "docsrc"
   },
   "site": {
-    "modules_documented": 40,
-    "objects_documented": 460
+    "modules_documented": 41,
+    "objects_documented": 488
   },
   "pypi": {
     "checked": true,
-    "latest": "0.2.12",
-    "relation": "same",
+    "latest": "0.2.13",
+    "relation": "behind",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 7f52d703fd6794b5b324d868b15d5b1e14ce5461\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
+  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 0d780af82d948a62580237beea768492331eaba9\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
-    "aligned": true,
-    "notes": []
+    "aligned": false,
+    "notes": [
+      "The documented version (0.2.12) is behind the latest release on PyPI (0.2.13): `pip install epythet` gives newer code than these docs describe."
+    ]
   }
 }

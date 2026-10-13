@@ -22,7 +22,7 @@ Two things live under the user’s config directory:
 
 The config directory is `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`,
 else `~/.config/epythet`: the config-side twin of
-`epythet.validation.ledger.user_data_dir()`, which holds mutable data
+[`epythet.validation.ledger.user_data_dir()`](epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir), which holds mutable data
 (ledger observations) under `~/.local/share/epythet`. Skills stay prose: they
 call `epythet snippets show <name>` and `epythet ai-readme-check --format json`
 and let this module do the resolving.
@@ -195,7 +195,7 @@ Bases: [`ConfigError`](epythet.config.html.md#epythet.config.ConfigError)
 
 `$EPYTHET_CONFIG_DIR`, else `$XDG_CONFIG_HOME/epythet`, else `~/.config/epythet`.
 
-XDG-style on every platform, like `epythet.validation.ledger.user_data_dir()`.
+XDG-style on every platform, like [`epythet.validation.ledger.user_data_dir()`](epythet.validation.ledger.html.md#epythet.validation.ledger.user_data_dir).
 
 * **Return type:**
   [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)

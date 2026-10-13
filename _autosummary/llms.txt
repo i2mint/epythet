@@ -1,0 +1,52 @@
+# epythet
+
+> Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages
+
+
+## Pages in this subsection
+
+- [epythet](epythet.html.md): Beautiful, correct documentation from a Python package, with no boilerplate.
+- [epythet.agent_outputs](epythet.agent_outputs.html.md): Agent-facing outputs: &#96;llms.txt&#96;, Markdown twins, link relations, aggregates.
+- [epythet.agentic_readme](epythet.agentic_readme.html.md): Check that a README documents a project’s agentic aspects; render and place the section.
+- [epythet.ai_artifacts](epythet.ai_artifacts.html.md): Discover a repository’s AI agent artifacts and render the “For AI agents” page.
+- [epythet.build](epythet.build.html.md): Run one build target for a loaded configuration; returns the output directory.
+- [epythet.call_make](epythet.call_make.html.md): Compatibility module: &#96;make&#96; now lives in &#96;epythet.build&#96;.
+- [epythet.cli](epythet.cli.html.md): Command line access to epythet.
+- [epythet.confgen](epythet.confgen.html.md): Generate the Sphinx configuration from a &#96;DocsConfig&#96;.
+- [epythet.config](epythet.config.html.md): Single source of truth for a project’s documentation configuration.
+- [epythet.config_parser](epythet.config_parser.html.md): Legacy configuration accessor kept for the frozen &#96;docsrc/conf.py&#96; copies.
+- [epythet.docs_gen](epythet.docs_gen.html.md): Documentation generation entry points (re-exported for compatibility).
+- [epythet.migrate](epythet.migrate.html.md): &#96;epythet migrate-style&#96;: rewrite RST field lists as Google (or NumPy) sections, opt-in.
+- [epythet.normalizer](epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
+- [epythet.provenance](epythet.provenance.html.md): Build provenance: which code, which version, which tools produced a site.
+- [epythet.repair](epythet.repair.html.md): &#96;epythet repair&#96;: apply the normalizer’s source-safe rewrites to docstrings in place.
+- [epythet.scaffold](epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
+- [epythet.setup_docsrc](epythet.setup_docsrc.html.md): Compatibility module: &#96;make_docsrc&#96; now lives in &#96;epythet.scaffold&#96;.
+- [epythet.sphinx_conf](epythet.sphinx_conf.html.md): The star-import target for a project’s &#96;docsrc/conf.py&#96;.
+- [epythet.sphinx_ext](epythet.sphinx_ext.html.md): epythet’s Sphinx extension: the normalizer, agent link relations and theme CSS.
+- [epythet.sweep](epythet.sweep.html.md): &#96;epythet sweep&#96;: validate many packages read-only and rank the queue.
+- [epythet.templates](epythet.templates.html.md): Text templates for the generated &#96;docsrc&#96; files.
+- [epythet.themes](epythet.themes.html.md): Theme registry, deterministic theme choice, and the OKLCH accent palette.
+- [epythet.tools](epythet.tools.html.md): Tools to diagnose (and sometimes, repair) documentation
+- [epythet.tools.docstring_diagnosis](epythet.tools.docstring_diagnosis.html.md): Tools to manipulate documentation elements
+- [epythet.tools.published_docs](epythet.tools.published_docs.html.md): Elements for a tool to setup docs and check if docs are published, and if not, why.
+- [epythet.userconfig](epythet.userconfig.html.md): User-level defaults and parametrizable text snippets.
+- [epythet.validation](epythet.validation.html.md): &#96;epythet validate&#96;: tiered documentation validation with a growing artifact ledger.
+- [epythet.validation.build](epythet.validation.build.html.md): Level 1: run the documentation build and turn its warning stream into findings.
+- [epythet.validation.cli](epythet.validation.cli.html.md): The &#96;epythet validate&#96; command: the CLI adapter over &#96;epythet.validation.validate()&#96;.
+- [epythet.validation.core](epythet.validation.core.html.md): The &#96;validate&#96; orchestrator: resolve the package, run the levels, build the report.
+- [epythet.validation.coverage](epythet.validation.coverage.html.md): Level 0 coverage and quality smells: the queue signals, computed from the &#96;ast&#96; alone.
+- [epythet.validation.detectors](epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by &#96;detector.function&#96;.
+- [epythet.validation.docstrings](epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
+- [epythet.validation.ledger](epythet.validation.ledger.html.md): The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
+- [epythet.validation.lint](epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
+- [epythet.validation.model](epythet.validation.model.html.md): The finding and report model shared by every level of &#96;epythet validate&#96;.
+- [epythet.validation.parse](epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
+- [epythet.validation.propose](epythet.validation.propose.html.md): Write every &#96;proposed_rules&#96; entry of a reply into &#96;overlay&#96; as a proposed rule.
+- [epythet.validation.render](epythet.validation.render.html.md): Render with the named format (&#96;table&#96;, &#96;json&#96; or &#96;jsonl&#96;).
+- [epythet.validation.rendered](epythet.validation.rendered.html.md): Level 2: read the &#42;rendered&#42; output (XML, HTML, text) and report what the build hid.
+- [epythet.validation.review](epythet.validation.review.html.md): Level 3: a review &#42;packet&#42; for an in-session agent, and the ingestion of its reply.
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

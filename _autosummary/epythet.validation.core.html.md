@@ -57,7 +57,7 @@ Validate a package’s documentation and return a `Report`.
     `4` the review packet.
   * **levels** ([`Optional`](https://docs.python.org/3/library/typing.html#typing.Optional)[[`Iterable`](https://docs.python.org/3/library/typing.html#typing.Iterable)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]]) – An explicit set of levels (`[0.5]` for a parse-only sweep);
     overrides `level` when given.
-  * **ledger** (`Ledger` | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
+  * **ledger** ([`Ledger`](epythet.validation.ledger.html.md#epythet.validation.ledger.Ledger) | [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) | [`None`](https://docs.python.org/3/builtins/constants.html#None)) – `None` for the bundled rules, or a directory overlay.
   * **backend** – The build backend for level 1 (default: `SphinxBackend()`).
   * **fail_on** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Severity threshold recorded on the report for exit codes.
   * **napoleon** ([`bool`](https://docs.python.org/3/builtins/functions.html#bool)) – Pre-process Google/NumPy sections the way the fleet’s

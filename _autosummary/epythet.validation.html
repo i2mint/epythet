@@ -5,7 +5,9 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="alternate" type="text/markdown" href="epythet.validation.html.md">
-<link rel="describedby" href="../llms.txt" type="text/markdown"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.validation.build" href="epythet.validation.build.html"><link rel="prev" title="epythet.userconfig" href="epythet.userconfig.html">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+<link rel="alternate" type="text/markdown" href="epythet.validation.html.md">
+<link rel="describedby" href="llms.txt"><link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="epythet.validation.build" href="epythet.validation.build.html"><link rel="prev" title="epythet.userconfig" href="epythet.userconfig.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>epythet.validation - epythet</title>
@@ -236,6 +238,7 @@
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.coverage.html">epythet.validation.coverage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.detectors.html">epythet.validation.detectors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.docstrings.html">epythet.validation.docstrings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epythet.validation.ledger.html">epythet.validation.ledger</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.lint.html">epythet.validation.lint</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.model.html">epythet.validation.model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="epythet.validation.parse.html">epythet.validation.parse</a></li>
@@ -324,25 +327,28 @@ reviewer proposes go to an overlay there too (<code class="docutils literal notr
 <tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.docstrings.html#module-epythet.validation.docstrings" title="epythet.validation.docstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">docstrings</span></code></a></p></td>
 <td><p>Docstring extraction from Python source, without importing anything.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.lint.html#module-epythet.validation.lint" title="epythet.validation.lint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lint</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.ledger.html#module-epythet.validation.ledger" title="epythet.validation.ledger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ledger</span></code></a></p></td>
+<td><p>The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.lint.html#module-epythet.validation.lint" title="epythet.validation.lint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lint</span></code></a></p></td>
 <td><p>Level 0: static docstring linters, normalised into the finding model.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.model.html#module-epythet.validation.model" title="epythet.validation.model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.model.html#module-epythet.validation.model" title="epythet.validation.model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model</span></code></a></p></td>
 <td><p>The finding and report model shared by every level of <code class="docutils literal notranslate"><span class="pre">epythet</span> <span class="pre">validate</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.parse.html#module-epythet.validation.parse" title="epythet.validation.parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.parse.html#module-epythet.validation.parse" title="epythet.validation.parse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse</span></code></a></p></td>
 <td><p>Level 0.5: parse each docstring's docutils doctree and run the ledger's detectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.propose.html#epythet.validation.propose" title="epythet.validation.propose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">propose</span></code></a>(reply_path, *[, overlay, ledger])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.propose.html#epythet.validation.propose" title="epythet.validation.propose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">propose</span></code></a>(reply_path, *[, overlay, ledger])</p></td>
 <td><p>Write every <code class="docutils literal notranslate"><span class="pre">proposed_rules</span></code> entry of a reply into <code class="docutils literal notranslate"><span class="pre">overlay</span></code> as a proposed rule.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.render.html#epythet.validation.render" title="epythet.validation.render"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render</span></code></a>(report[, format])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.render.html#epythet.validation.render" title="epythet.validation.render"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render</span></code></a>(report[, format])</p></td>
 <td><p>Render with the named format (<code class="docutils literal notranslate"><span class="pre">table</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code> or <code class="docutils literal notranslate"><span class="pre">jsonl</span></code>).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.rendered.html#module-epythet.validation.rendered" title="epythet.validation.rendered"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rendered</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.rendered.html#module-epythet.validation.rendered" title="epythet.validation.rendered"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rendered</span></code></a></p></td>
 <td><p>Level 2: read the <em>rendered</em> output (XML, HTML, text) and report what the build hid.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="epythet.validation.review.html#module-epythet.validation.review" title="epythet.validation.review"><code class="xref py py-obj docutils literal notranslate"><span class="pre">review</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="epythet.validation.review.html#module-epythet.validation.review" title="epythet.validation.review"><code class="xref py py-obj docutils literal notranslate"><span class="pre">review</span></code></a></p></td>
 <td><p>Level 3: a review <em>packet</em> for an in-session agent, and the ingestion of its reply.</p></td>
 </tr>
 </tbody>

@@ -1,0 +1,89 @@
+# epythet
+
+Beautiful, correct documentation from a Python package, with no boilerplate.
+
+Point epythet at a project and its conventions (README, docstrings, package
+layout, `pyproject.toml` metadata) produce the site:
+
+```default
+epythet quickstart PROJECT_DIR --ignore tests/ scrap/ examples/
+```
+
+which writes `PROJECT_DIR/docsrc/_build/html/`: a landing page that *is* the
+README, a nested API tree, a light/dark theme with an accent derived from the
+package name, and agent-facing twins (`llms.txt`, a `.md` per page, a flat
+`<package>.md`, `objects.inv`).
+
+The same, from Python:
+
+```default
+from epythet import quickstart
+quickstart(PROJECT_DIR, ignore=["tests/"])
+```
+
+Or step by step: `make_docsrc()` writes `docsrc/` (a two-line `conf.py`
+shim and `index.md`), `make()` runs Sphinx (`html` by default). All
+configuration lives in `[tool.epythet]` of `pyproject.toml`; see
+[`epythet.config`](epythet.config.md#module-epythet.config) for the keys and [`epythet.themes`](epythet.themes.md#module-epythet.themes) for the themes.
+
+Rendering fixes for common docstring slips (a doctest glued to the prose above
+it, a Markdown fence, `Returns: text` on one line, a stray `*args`) are
+applied at build time by [`epythet.normalizer`](epythet.normalizer.md#module-epythet.normalizer), so existing docstrings
+render correctly without edits.
+
+A repository’s agent artifacts (skills, subagents, `CLAUDE.md` and friends)
+are discovered by convention and rendered as a “For AI agents” page, see
+[`epythet.ai_artifacts`](epythet.ai_artifacts.md#module-epythet.ai_artifacts); epythet’s own skills ship in `epythet/data/skills`.
+Whether the README documents them is `check_readme()`
+(`epythet ai-readme-check`), with the user’s policy and text snippets from
+[`epythet.userconfig`](epythet.userconfig.md#module-epythet.userconfig) (`~/.config/epythet`).
+
+Every site states its provenance: a one-line footer on the landing page (build
+time, commit, package version), an `about-this-build` page with the full
+diagnosis and a `build_info.json` for machines, see [`epythet.provenance`](epythet.provenance.md#module-epythet.provenance)
+and `collect_build_info()`.
+
+GitHub Pages helpers (`check_pages_setup()`, `enable_pages()`) and
+docstring diagnosis tools (`diagnose_doctest_code_blocks()`,
+`repair_package()`) live in [`epythet.tools`](epythet.tools.md#module-epythet.tools).
+
+### Functions
+
+| [`quickstart`](#epythet.quickstart)(project_dir, \*[, ignore])   | Scaffold `docsrc` and build the HTML site; returns the output directory.   |
+|------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+
+### epythet.quickstart(project_dir, , ignore=None)
+
+Scaffold `docsrc` and build the HTML site; returns the output directory.
+
+* **Parameters:**
+  * **project_dir** – the project root
+  * **ignore** – path substrings to skip (default: `[tool.epythet] ignore`)
+
+### Modules
+
+| [`agent_outputs`](epythet.agent_outputs.md#module-epythet.agent_outputs)              | Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.                                                        |
+|----------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| [`agentic_readme`](epythet.agentic_readme.md#module-epythet.agentic_readme)            | Check that a README documents a project's agentic aspects; render and place the section.                                             |
+| [`ai_artifacts`](epythet.ai_artifacts.md#module-epythet.ai_artifacts)                | Discover a repository's AI agent artifacts and render the "For AI agents" page.                                                      |
+| [`build`](epythet.build.md#epythet.build)(config[, target, overrides])        | Run one build target for a loaded configuration; returns the output directory.                                                       |
+| [`call_make`](epythet.call_make.md#module-epythet.call_make)                      | Compatibility module: `make` now lives in [`epythet.build`](epythet.build.md#epythet.build).              |
+| [`cli`](epythet.cli.md#module-epythet.cli)                                  | Command line access to epythet.                                                                                                      |
+| [`confgen`](epythet.confgen.md#module-epythet.confgen)                          | Generate the Sphinx configuration from a [`DocsConfig`](epythet.config.md#epythet.config.DocsConfig).      |
+| [`config`](epythet.config.md#module-epythet.config)                            | Single source of truth for a project's documentation configuration.                                                                  |
+| [`config_parser`](epythet.config_parser.md#module-epythet.config_parser)              | Legacy configuration accessor kept for the frozen `docsrc/conf.py` copies.                                                           |
+| [`docs_gen`](epythet.docs_gen.md#module-epythet.docs_gen)                        | Documentation generation entry points (re-exported for compatibility).                                                               |
+| [`migrate`](epythet.migrate.md#module-epythet.migrate)                          | `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.                                              |
+| [`normalizer`](epythet.normalizer.md#module-epythet.normalizer)                    | Build-time docstring normalizer: fix the markup artifacts people actually write.                                                     |
+| [`provenance`](epythet.provenance.md#module-epythet.provenance)                    | Build provenance: which code, which version, which tools produced a site.                                                            |
+| [`repair`](epythet.repair.md#module-epythet.repair)                            | `epythet repair`: apply the normalizer's source-safe rewrites to docstrings in place.                                                |
+| [`scaffold`](epythet.scaffold.md#epythet.scaffold)(config, \*[, verbose, pages]) | Write the docsrc files for an already-loaded configuration.                                                                          |
+| [`setup_docsrc`](epythet.setup_docsrc.md#module-epythet.setup_docsrc)                | Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.md#epythet.scaffold). |
+| [`sphinx_conf`](epythet.sphinx_conf.md#module-epythet.sphinx_conf)                  | The star-import target for a project's `docsrc/conf.py`.                                                                             |
+| [`sphinx_ext`](epythet.sphinx_ext.md#module-epythet.sphinx_ext)                    | epythet's Sphinx extension: the normalizer, agent link relations and theme CSS.                                                      |
+| [`sweep`](epythet.sweep.md#module-epythet.sweep)                              | `epythet sweep`: validate many packages read-only and rank the queue.                                                                |
+| [`templates`](epythet.templates.md#module-epythet.templates)                      | Text templates for the generated `docsrc` files.                                                                                     |
+| [`themes`](epythet.themes.md#module-epythet.themes)                            | Theme registry, deterministic theme choice, and the OKLCH accent palette.                                                            |
+| [`tools`](epythet.tools.md#module-epythet.tools)                              | Tools to diagnose (and sometimes, repair) documentation                                                                              |
+| [`userconfig`](epythet.userconfig.md#module-epythet.userconfig)                    | User-level defaults and parametrizable text snippets.                                                                                |
+| [`validation`](epythet.validation.md#module-epythet.validation)                    | `epythet validate`: tiered documentation validation with a growing artifact ledger.                                                  |

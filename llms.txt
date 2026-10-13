@@ -6,53 +6,54 @@
 ## Pages
 
 - [epythet](index.html.md): Beautiful, correct documentation from a Python package, with no boilerplate in the package.
-- [API reference](api.html.md): | [`epythet`](_autosummary/epythet.html.md#module-epythet)   | Beautiful, correct documentation from...
+- [API reference](api.html.md): | &#96;epythet&#96;   | Beautiful, correct documentation from a Python package, with no boilerplate.   |
 - [epythet](_autosummary/epythet.html.md): Beautiful, correct documentation from a Python package, with no boilerplate.
-- [epythet.agent_outputs](_autosummary/epythet.agent_outputs.html.md): Agent-facing outputs: `llms.txt`, Markdown twins, link relations, aggregates.
+- [epythet.agent_outputs](_autosummary/epythet.agent_outputs.html.md): Agent-facing outputs: &#96;llms.txt&#96;, Markdown twins, link relations, aggregates.
 - [epythet.agentic_readme](_autosummary/epythet.agentic_readme.html.md): Check that a README documents a project’s agentic aspects; render and place the section.
 - [epythet.ai_artifacts](_autosummary/epythet.ai_artifacts.html.md): Discover a repository’s AI agent artifacts and render the “For AI agents” page.
 - [epythet.build](_autosummary/epythet.build.html.md): Run one build target for a loaded configuration; returns the output directory.
-- [epythet.call_make](_autosummary/epythet.call_make.html.md): Compatibility module: `make` now lives in [`epythet.build`](epythet.build.html.md#epythet.build).
+- [epythet.call_make](_autosummary/epythet.call_make.html.md): Compatibility module: &#96;make&#96; now lives in &#96;epythet.build&#96;.
 - [epythet.cli](_autosummary/epythet.cli.html.md): Command line access to epythet.
-- [epythet.confgen](_autosummary/epythet.confgen.html.md): Generate the Sphinx configuration from a [`DocsConfig`](epythet.config.html.md#epythet.config.DocsCo...
+- [epythet.confgen](_autosummary/epythet.confgen.html.md): Generate the Sphinx configuration from a &#96;DocsConfig&#96;.
 - [epythet.config](_autosummary/epythet.config.html.md): Single source of truth for a project’s documentation configuration.
-- [epythet.config_parser](_autosummary/epythet.config_parser.html.md): Legacy configuration accessor kept for the frozen `docsrc/conf.py` copies.
+- [epythet.config_parser](_autosummary/epythet.config_parser.html.md): Legacy configuration accessor kept for the frozen &#96;docsrc/conf.py&#96; copies.
 - [epythet.docs_gen](_autosummary/epythet.docs_gen.html.md): Documentation generation entry points (re-exported for compatibility).
-- [epythet.migrate](_autosummary/epythet.migrate.html.md): `epythet migrate-style`: rewrite RST field lists as Google (or NumPy) sections, opt-in.
+- [epythet.migrate](_autosummary/epythet.migrate.html.md): &#96;epythet migrate-style&#96;: rewrite RST field lists as Google (or NumPy) sections, opt-in.
 - [epythet.normalizer](_autosummary/epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
 - [epythet.provenance](_autosummary/epythet.provenance.html.md): Build provenance: which code, which version, which tools produced a site.
-- [epythet.repair](_autosummary/epythet.repair.html.md): `epythet repair`: apply the normalizer’s source-safe rewrites to docstrings in place.
+- [epythet.repair](_autosummary/epythet.repair.html.md): &#96;epythet repair&#96;: apply the normalizer’s source-safe rewrites to docstrings in place.
 - [epythet.scaffold](_autosummary/epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
-- [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](epythet.scaffold.html.md#epyth...
-- [epythet.sphinx_conf](_autosummary/epythet.sphinx_conf.html.md): The star-import target for a project’s `docsrc/conf.py`.
+- [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: &#96;make_docsrc&#96; now lives in &#96;epythet.scaffold&#96;.
+- [epythet.sphinx_conf](_autosummary/epythet.sphinx_conf.html.md): The star-import target for a project’s &#96;docsrc/conf.py&#96;.
 - [epythet.sphinx_ext](_autosummary/epythet.sphinx_ext.html.md): epythet’s Sphinx extension: the normalizer, agent link relations and theme CSS.
-- [epythet.sweep](_autosummary/epythet.sweep.html.md): `epythet sweep`: validate many packages read-only and rank the queue.
-- [epythet.templates](_autosummary/epythet.templates.html.md): Text templates for the generated `docsrc` files.
+- [epythet.sweep](_autosummary/epythet.sweep.html.md): &#96;epythet sweep&#96;: validate many packages read-only and rank the queue.
+- [epythet.templates](_autosummary/epythet.templates.html.md): Text templates for the generated &#96;docsrc&#96; files.
 - [epythet.themes](_autosummary/epythet.themes.html.md): Theme registry, deterministic theme choice, and the OKLCH accent palette.
 - [epythet.tools](_autosummary/epythet.tools.html.md): Tools to diagnose (and sometimes, repair) documentation
 - [epythet.tools.docstring_diagnosis](_autosummary/epythet.tools.docstring_diagnosis.html.md): Tools to manipulate documentation elements
 - [epythet.tools.published_docs](_autosummary/epythet.tools.published_docs.html.md): Elements for a tool to setup docs and check if docs are published, and if not, why.
 - [epythet.userconfig](_autosummary/epythet.userconfig.html.md): User-level defaults and parametrizable text snippets.
-- [epythet.validation](_autosummary/epythet.validation.html.md): `epythet validate`: tiered documentation validation with a growing artifact ledger.
+- [epythet.validation](_autosummary/epythet.validation.html.md): &#96;epythet validate&#96;: tiered documentation validation with a growing artifact ledger.
 - [epythet.validation.build](_autosummary/epythet.validation.build.html.md): Level 1: run the documentation build and turn its warning stream into findings.
-- [epythet.validation.cli](_autosummary/epythet.validation.cli.html.md): The `epythet validate` command: the CLI adapter over `epythet.validation.validate()`.
-- [epythet.validation.core](_autosummary/epythet.validation.core.html.md): The `validate` orchestrator: resolve the package, run the levels, build the report.
-- [epythet.validation.coverage](_autosummary/epythet.validation.coverage.html.md): Level 0 coverage and quality smells: the queue signals, computed from the `ast` alone.
-- [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by `detector.function`.
+- [epythet.validation.cli](_autosummary/epythet.validation.cli.html.md): The &#96;epythet validate&#96; command: the CLI adapter over &#96;epythet.validation.validate()&#96;.
+- [epythet.validation.core](_autosummary/epythet.validation.core.html.md): The &#96;validate&#96; orchestrator: resolve the package, run the levels, build the report.
+- [epythet.validation.coverage](_autosummary/epythet.validation.coverage.html.md): Level 0 coverage and quality smells: the queue signals, computed from the &#96;ast&#96; alone.
+- [epythet.validation.detectors](_autosummary/epythet.validation.detectors.html.md): Named doctree detectors, referenced from ledger rules by &#96;detector.function&#96;.
 - [epythet.validation.docstrings](_autosummary/epythet.validation.docstrings.html.md): Docstring extraction from Python source, without importing anything.
+- [epythet.validation.ledger](_autosummary/epythet.validation.ledger.html.md): The artifact ledger: rule definitions (bundled YAML) and observations (user data dir).
 - [epythet.validation.lint](_autosummary/epythet.validation.lint.html.md): Level 0: static docstring linters, normalised into the finding model.
-- [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of `epythet validate`.
+- [epythet.validation.model](_autosummary/epythet.validation.model.html.md): The finding and report model shared by every level of &#96;epythet validate&#96;.
 - [epythet.validation.parse](_autosummary/epythet.validation.parse.html.md): Level 0.5: parse each docstring’s docutils doctree and run the ledger’s detectors.
-- [epythet.validation.propose](_autosummary/epythet.validation.propose.html.md): Write every `proposed_rules` entry of a reply into `overlay` as a proposed rule.
-- [epythet.validation.render](_autosummary/epythet.validation.render.html.md): Render with the named format (`table`, `json` or `jsonl`).
-- [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the *rendered* output (XML, HTML, text) and report what the build hid.
-- [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review *packet* for an in-session agent, and the ingestion of its reply.
-- [For AI agents](ai-agents.html.md): `epythet` ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on **2026-09-15 12:35 UTC** from commit <a href="https://github.com/i2m...
+- [epythet.validation.propose](_autosummary/epythet.validation.propose.html.md): Write every &#96;proposed_rules&#96; entry of a reply into &#96;overlay&#96; as a proposed rule.
+- [epythet.validation.render](_autosummary/epythet.validation.render.html.md): Render with the named format (&#96;table&#96;, &#96;json&#96; or &#96;jsonl&#96;).
+- [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the &#42;rendered&#42; output (XML, HTML, text) and report what the build hid.
+- [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review &#42;packet&#42; for an in-session agent, and the ingestion of its reply.
+- [For AI agents](ai-agents.html.md): &#96;epythet&#96; ships artifacts for coding agents alongside its code. This page lists
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-13 03:08 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
----
+## Optional
 
-For more comprehensive documentation, see [epythet.md](epythet.md)
+- [epythet.md](epythet.md): Complete documentation in a single file.
 
 ## Build
 

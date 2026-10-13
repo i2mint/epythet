@@ -16,6 +16,7 @@ epythet.validation
    coverage
    detectors
    docstrings
+   ledger
    lint
    model
    parse
