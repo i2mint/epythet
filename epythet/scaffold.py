@@ -309,7 +309,7 @@ def write_generated_file(
             return
         if existing == content:
             return
-        if keep_extended and existing.startswith(content):
+        if keep_extended and existing.lstrip("\ufeff").startswith(content):
             say(f"Keeping {path.name}: it extends the generated template")
             return
     path.write_text(content, encoding="utf-8")

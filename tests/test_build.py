@@ -546,3 +546,16 @@ def test_conf_py_extended_below_the_shim_is_kept(tmp_path):
     conf.write_text("from epythet.sphinx_conf import *\n# old\n")
     write_generated_file(conf, templates.conf_py_shim, markers=markers, keep_extended=True)
     assert conf.read_text() == templates.conf_py_shim
+
+
+def test_conf_py_extended_with_bom_is_kept(tmp_path):
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    mine = "\ufeff" + templates.conf_py_shim + "\nhtml_title = 'x'\n"
+    conf.write_text(mine, encoding="utf-8")
+    write_generated_file(
+        conf, templates.conf_py_shim, markers=(templates.CONF_SHIM_MARKER,), keep_extended=True
+    )
+    assert conf.read_text(encoding="utf-8") == mine
