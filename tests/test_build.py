@@ -528,3 +528,21 @@ def test_main_and_ignored_modules_get_no_page(all_site):
     pages = {p.name for p in (all_site / "_autosummary").glob("*.html")}
     assert "allpkg.__main__.html" not in pages
     assert not any(".tests." in p or ".scrap." in p for p in pages)
+
+
+def test_conf_py_extended_below_the_shim_is_kept(tmp_path):
+    """Overrides appended under the generated import survive a rebuild (#36)."""
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    markers = (templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER)
+    write_generated_file(conf, templates.conf_py_shim, markers=markers)
+    mine = templates.conf_py_shim + "\nllms_txt_suffix_mode = 'auto'\n"
+    conf.write_text(mine)
+    write_generated_file(conf, templates.conf_py_shim, markers=markers, keep_extended=True)
+    assert conf.read_text() == mine
+    # a stale shim (marker present, not an extension of the template) is still refreshed
+    conf.write_text("from epythet.sphinx_conf import *\n# old\n")
+    write_generated_file(conf, templates.conf_py_shim, markers=markers, keep_extended=True)
+    assert conf.read_text() == templates.conf_py_shim
