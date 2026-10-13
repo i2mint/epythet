@@ -32,9 +32,16 @@ def sphinx_settings(*, description: str = "") -> dict:
 
     ``llms_txt_full_build`` stays on because its concatenation is the ``<pkg>.md``
     aggregate; :func:`write_aggregates` renames it after the build.
+
+    ``llms_txt_suffix_mode`` is pinned to ``"append"`` (``<page>.html.md``), the
+    spelling :func:`link_relation_tags` and :func:`inject_link_relations_into_site`
+    reference. sphinx-llm's default, ``"auto"``, also publishes the ``replace``
+    spelling (``<page>.md``), which collides with the twin of a sibling page
+    whenever a module is named ``html`` and aborts the build.
     """
     return {
         "llms_txt_enabled": True,
+        "llms_txt_suffix_mode": "append",
         "llms_txt_full_build": True,
         "llms_txt_description": description,
         "llms_txt_summary_enabled": False,

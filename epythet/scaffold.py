@@ -100,6 +100,7 @@ def scaffold(
         templates.conf_py_shim,
         markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
         say=say,
+        keep_extended=True,
     )
     if (docsrc / "index.rst").is_file():
         say("Keeping hand-written index.rst (no index.md written)")
@@ -290,11 +291,15 @@ def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
             say(f"Removed stale generated {filename}")
 
 
-def write_generated_file(path: Path, content: str, *, markers, say=None) -> None:
+def write_generated_file(
+    path: Path, content: str, *, markers, say=None, keep_extended: bool = False
+) -> None:
     """Write a generated file unless a hand-written one (no marker) is in the way.
 
     :param markers: strings, any of which identifies an epythet-generated file
     :param say: a ``print``-like reporter (``None`` for silence)
+    :param keep_extended: when true, a file that starts with exactly ``content`` and
+        has more lines below it is left alone: the user appended to the template
     """
     say = say or (lambda *a, **k: None)
     if path.exists():
@@ -303,6 +308,9 @@ def write_generated_file(path: Path, content: str, *, markers, say=None) -> None
             say(f"Keeping hand-written {path.name} (no epythet marker found)")
             return
         if existing == content:
+            return
+        if keep_extended and existing.lstrip("\ufeff").startswith(content):
+            say(f"Keeping {path.name}: it extends the generated template")
             return
     path.write_text(content, encoding="utf-8")
     say(f"Wrote {path}")

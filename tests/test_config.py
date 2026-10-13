@@ -229,3 +229,11 @@ def test_empty_ignore_override_keeps_default(tmp_path):
     assert split_ignore([""]) == ()
     assert split_ignore(["", " , "]) == ()
     assert DocsConfig(project_dir="/tmp/x", name="x").ignore == DEFAULT_IGNORE
+
+
+def test_ignore_extra_is_additive_and_survives_cli_override(tmp_path):
+    """``ignore_extra`` is unioned into ``ignore`` even when ``--ignore`` replaces it (#37)."""
+    pyproject = PYPROJECT + '\n[tool.epythet]\nignore_extra = ["ledger/"]\n'
+    cfg = load_config(_project(tmp_path, pyproject=pyproject), ignore=["x/"])
+    assert cfg.ignore == ("x/", "ledger/")
+    assert cfg.with_overrides(ignore=("y/",)).ignore == ("y/", "ledger/")

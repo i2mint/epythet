@@ -24,6 +24,7 @@ The ``[tool.epythet]`` keys, all optional::
     accent = "#3661ac"            # default: derived from the package name (OKLCH)
     mode = "auto"                 # "auto" | "light" | "dark"
     ignore = ["tests/", "scrap/", "examples/"]  # path substrings to skip
+    ignore_extra = ["ledger/"]    # skipped in addition to `ignore`, even when `--ignore` overrides it
     api_generator = "auto"        # "auto" | "autosummary" (imports the package) | "autoapi" (static)
     agent_outputs = true          # llms.txt + .md twins of every page
     aggregates = ["md"]           # flat single-document twins at the site root
@@ -121,6 +122,7 @@ class DocsConfig:
     theme_options: dict[str, Any] = field(default_factory=dict)
     readme: dict[str, Any] = field(default_factory=dict)
     ignore: tuple[str, ...] = DEFAULT_IGNORE
+    ignore_extra: tuple[str, ...] = ()
     api_generator: str = "auto"
     agent_outputs: bool = True
     aggregates: tuple[str, ...] = ("md",)
@@ -150,7 +152,11 @@ class DocsConfig:
             raise ConfigError(
                 f'provenance must be true, false or "minimal", not {self.provenance!r}'
             )
-        object.__setattr__(self, "ignore", split_ignore(self.ignore))
+        extra = split_ignore(self.ignore_extra)
+        object.__setattr__(self, "ignore_extra", extra)
+        object.__setattr__(
+            self, "ignore", tuple(dict.fromkeys((*split_ignore(self.ignore), *extra)))
+        )
         object.__setattr__(self, "aggregates", tuple(self.aggregates))
         object.__setattr__(self, "project_dir", Path(self.project_dir).absolute())
         if self.package_dir is not None:
@@ -375,7 +381,7 @@ def _fields_from_setup_cfg(setup_cfg: Path) -> dict[str, Any]:
     return fields
 
 
-_LIST_KEYS = ("ignore", "aggregates")
+_LIST_KEYS = ("ignore", "ignore_extra", "aggregates")
 _BOOL_KEYS = ("agent_outputs", "ai_artifacts")
 
 

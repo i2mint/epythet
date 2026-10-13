@@ -162,3 +162,8 @@ def test_css_file_only_when_theme_needs_it():
     assert sphinx_settings(_cfg(theme="furo"))["html_css_files"] == []
     assert sphinx_settings(_cfg(theme="alabaster"))["html_css_files"] == []
     assert sphinx_settings(_cfg(theme="pydata"))["html_css_files"] == ["epythet.css"]
+
+
+def test_llms_txt_suffix_mode_is_append():
+    """sphinx-llm's "auto" mode collides the twins of a module named ``html`` (#36)."""
+    assert sphinx_settings(_cfg())["llms_txt_suffix_mode"] == "append"
