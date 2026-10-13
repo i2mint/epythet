@@ -312,8 +312,12 @@ def write_generated_file(
         text below it is kept
     """
     say = say or (lambda *a, **k: None)
+    if isinstance(previous_versions, str) or not all(previous_versions):
+        raise TypeError("previous_versions must be a collection of non-empty strings")
+    newline = None
     if path.exists():
-        existing = path.read_text(encoding="utf-8", errors="replace")
+        raw = path.read_bytes()
+        existing = raw.decode("utf-8", errors="replace").replace("\r\n", "\n")
         if not any(marker in existing for marker in markers):
             say(f"Keeping hand-written {path.name} (no epythet marker found)")
             return
@@ -322,17 +326,30 @@ def write_generated_file(
         if keep_extended:
             bom = "\ufeff" if existing.startswith("\ufeff") else ""
             body = existing[len(bom) :]
-            # the longest known version the file starts with decides: a version that is
-            # a prefix of another must not hide the longer one
-            known = sorted({content, *previous_versions}, key=len, reverse=True)
-            version = next((v for v in known if body.startswith(v)), None)
-            if version == content:
+            # an exact earlier version is refreshed; else a file starting with the
+            # current template is the user's extension of it (an earlier version that
+            # is a prefix of the file must not make us eat their text); else the
+            # longest earlier version the file starts with is refreshed, tail kept
+            old = [v for v in previous_versions if v != content]
+            if body.startswith(content) and body not in old:
                 say(f"Keeping {path.name}: it extends the generated template")
                 return
+            version = next(
+                (v for v in sorted(old, key=len, reverse=True) if body.startswith(v)),
+                None,
+            )
             if version is not None:
+                try:
+                    raw.decode("utf-8")
+                except UnicodeDecodeError:
+                    say(f"Keeping {path.name}: it is not valid UTF-8, left untouched")
+                    return
                 content = bom + content + body[len(version) :]
+                if b"\r\n" in raw:  # keep the file's line endings
+                    newline = "\r\n"
                 say(f"Refreshing the template part of {path.name}; keeping your additions")
-    path.write_text(content, encoding="utf-8")
+    with path.open("w", encoding="utf-8", newline=newline) as fp:
+        fp.write(content)
     say(f"Wrote {path}")
 
 

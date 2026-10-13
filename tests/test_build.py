@@ -607,3 +607,32 @@ def test_editing_the_conf_shim_template_must_record_the_old_text():
 
     digest = hashlib.sha256(templates.conf_py_shim.encode()).hexdigest()
     assert digest == "d9db3757017d3a193221b6cfc932185457d9fb676d9e3708116549cb54631b2c"
+
+
+def test_write_generated_file_review_cases(tmp_path):
+    """Repeated runs leave a user's extension alone; CRLF and bad input are handled."""
+    from epythet.scaffold import write_generated_file
+
+    C = _OLD_SHIM + "# new\n"
+    kw = dict(markers=("epythet",), keep_extended=True)
+    p = tmp_path / "conf.py"
+    # an earlier version that is the template plus "\n" must not eat the user's text
+    p.write_text(C + "\n\n\nx=1\n")
+    for _ in range(3):
+        write_generated_file(p, C, previous_versions=(C + "\n",), **kw)
+    assert p.read_text() == C + "\n\n\nx=1\n"
+    # an untouched earlier version that starts with the new template is refreshed
+    p.write_text(C + "\n")
+    write_generated_file(p, C, previous_versions=(C + "\n",), **kw)
+    assert p.read_text() == C
+    # CRLF files stay CRLF; a file that is not UTF-8 is left untouched
+    p.write_bytes(_OLD_SHIM.replace("\n", "\r\n").encode() + b"x = 1\r\n")
+    write_generated_file(p, C, previous_versions=(_OLD_SHIM,), **kw)
+    assert p.read_bytes() == C.replace("\n", "\r\n").encode() + b"x = 1\r\n"
+    odd = _OLD_SHIM.encode() + b"# caf\xe9\n"
+    p.write_bytes(odd)
+    write_generated_file(p, C, previous_versions=(_OLD_SHIM,), **kw)
+    assert p.read_bytes() == odd
+    for bad in ("", (""), ("a", "")):
+        with pytest.raises(TypeError):
+            write_generated_file(p, C, previous_versions=bad, **kw)
