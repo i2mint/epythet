@@ -559,3 +559,51 @@ def test_conf_py_extended_with_bom_is_kept(tmp_path):
         conf, templates.conf_py_shim, markers=(templates.CONF_SHIM_MARKER,), keep_extended=True
     )
     assert conf.read_text(encoding="utf-8") == mine
+
+
+_OLD_SHIM = '"""Old shim."""\n\nfrom epythet.sphinx_conf import *  # noqa\n'
+
+
+def test_conf_py_extended_below_an_older_shim_is_refreshed_keeping_the_tail(tmp_path):
+    """A user-extended conf.py of an earlier template version gets the current
+    template, and keeps their text (#38)."""
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    markers = (templates.CONF_SHIM_MARKER,)
+    kwargs = dict(markers=markers, keep_extended=True, previous_versions=(_OLD_SHIM,))
+    conf.write_text("﻿" + _OLD_SHIM + "\nhtml_title = 'x'\n", encoding="utf-8")
+    write_generated_file(conf, templates.conf_py_shim, **kwargs)
+    assert conf.read_text(encoding="utf-8") == (
+        "﻿" + templates.conf_py_shim + "\nhtml_title = 'x'\n"
+    )
+    # an untouched old shim becomes the current template
+    conf.write_text(_OLD_SHIM)
+    write_generated_file(conf, templates.conf_py_shim, **kwargs)
+    assert conf.read_text() == templates.conf_py_shim
+
+
+def test_a_previous_version_that_is_a_prefix_of_the_template_does_not_win(tmp_path):
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    new = _OLD_SHIM + "# more\n"  # the old text is a prefix of the new template
+    conf.write_text(new + "x = 1\n")
+    write_generated_file(
+        conf, new, markers=("epythet",), keep_extended=True, previous_versions=(_OLD_SHIM,)
+    )
+    assert conf.read_text() == new + "x = 1\n"  # extends the NEW template: kept as is
+
+
+def test_editing_the_conf_shim_template_must_record_the_old_text():
+    """If this fails, you changed ``templates.conf_py_shim``: append its previous text
+    to ``CONF_SHIM_PREVIOUS_VERSIONS`` (so extended conf.py files are refreshed, not
+    overwritten), then update the hash below."""
+    import hashlib
+
+    from epythet import templates
+
+    digest = hashlib.sha256(templates.conf_py_shim.encode()).hexdigest()
+    assert digest == "d9db3757017d3a193221b6cfc932185457d9fb676d9e3708116549cb54631b2c"

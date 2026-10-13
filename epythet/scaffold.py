@@ -101,6 +101,7 @@ def scaffold(
         markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
         say=say,
         keep_extended=True,
+        previous_versions=templates.CONF_SHIM_PREVIOUS_VERSIONS,
     )
     if (docsrc / "index.rst").is_file():
         say("Keeping hand-written index.rst (no index.md written)")
@@ -292,7 +293,13 @@ def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
 
 
 def write_generated_file(
-    path: Path, content: str, *, markers, say=None, keep_extended: bool = False
+    path: Path,
+    content: str,
+    *,
+    markers,
+    say=None,
+    keep_extended: bool = False,
+    previous_versions=(),
 ) -> None:
     """Write a generated file unless a hand-written one (no marker) is in the way.
 
@@ -300,6 +307,9 @@ def write_generated_file(
     :param say: a ``print``-like reporter (``None`` for silence)
     :param keep_extended: when true, a file that starts with exactly ``content`` and
         has more lines below it is left alone: the user appended to the template
+    :param previous_versions: earlier texts of ``content``. With ``keep_extended``, a
+        file that starts with one of them is refreshed to ``content`` and the user's
+        text below it is kept
     """
     say = say or (lambda *a, **k: None)
     if path.exists():
@@ -309,9 +319,19 @@ def write_generated_file(
             return
         if existing == content:
             return
-        if keep_extended and existing.lstrip("\ufeff").startswith(content):
-            say(f"Keeping {path.name}: it extends the generated template")
-            return
+        if keep_extended:
+            bom = "\ufeff" if existing.startswith("\ufeff") else ""
+            body = existing[len(bom) :]
+            # the longest known version the file starts with decides: a version that is
+            # a prefix of another must not hide the longer one
+            known = sorted({content, *previous_versions}, key=len, reverse=True)
+            version = next((v for v in known if body.startswith(v)), None)
+            if version == content:
+                say(f"Keeping {path.name}: it extends the generated template")
+                return
+            if version is not None:
+                content = bom + content + body[len(version) :]
+                say(f"Refreshing the template part of {path.name}; keeping your additions")
     path.write_text(content, encoding="utf-8")
     say(f"Wrote {path}")
 
