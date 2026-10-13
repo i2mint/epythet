@@ -101,6 +101,7 @@ def scaffold(
         markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
         say=say,
         keep_extended=True,
+        previous_versions=templates.CONF_SHIM_PREVIOUS_VERSIONS,
     )
     if (docsrc / "index.rst").is_file():
         say("Keeping hand-written index.rst (no index.md written)")
@@ -292,7 +293,13 @@ def _remove_stale_generated_pages(docsrc: Path, pages, say) -> None:
 
 
 def write_generated_file(
-    path: Path, content: str, *, markers, say=None, keep_extended: bool = False
+    path: Path,
+    content: str,
+    *,
+    markers,
+    say=None,
+    keep_extended: bool = False,
+    previous_versions=(),
 ) -> None:
     """Write a generated file unless a hand-written one (no marker) is in the way.
 
@@ -300,19 +307,49 @@ def write_generated_file(
     :param say: a ``print``-like reporter (``None`` for silence)
     :param keep_extended: when true, a file that starts with exactly ``content`` and
         has more lines below it is left alone: the user appended to the template
+    :param previous_versions: earlier texts of ``content``. With ``keep_extended``, a
+        file that starts with one of them is refreshed to ``content`` and the user's
+        text below it is kept
     """
     say = say or (lambda *a, **k: None)
+    if isinstance(previous_versions, str) or not all(previous_versions):
+        raise TypeError("previous_versions must be a collection of non-empty strings")
+    newline = None
     if path.exists():
-        existing = path.read_text(encoding="utf-8", errors="replace")
+        raw = path.read_bytes()
+        existing = raw.decode("utf-8", errors="replace").replace("\r\n", "\n")
         if not any(marker in existing for marker in markers):
             say(f"Keeping hand-written {path.name} (no epythet marker found)")
             return
         if existing == content:
             return
-        if keep_extended and existing.lstrip("\ufeff").startswith(content):
-            say(f"Keeping {path.name}: it extends the generated template")
-            return
-    path.write_text(content, encoding="utf-8")
+        if keep_extended:
+            bom = "\ufeff" if existing.startswith("\ufeff") else ""
+            body = existing[len(bom) :]
+            # an exact earlier version is refreshed; else a file starting with the
+            # current template is the user's extension of it (an earlier version that
+            # is a prefix of the file must not make us eat their text); else the
+            # longest earlier version the file starts with is refreshed, tail kept
+            old = [v for v in previous_versions if v != content]
+            if body.startswith(content) and body not in old:
+                say(f"Keeping {path.name}: it extends the generated template")
+                return
+            version = next(
+                (v for v in sorted(old, key=len, reverse=True) if body.startswith(v)),
+                None,
+            )
+            if version is not None:
+                try:
+                    raw.decode("utf-8")
+                except UnicodeDecodeError:
+                    say(f"Keeping {path.name}: it is not valid UTF-8, left untouched")
+                    return
+                content = bom + content + body[len(version) :]
+                if b"\r\n" in raw:  # keep the file's line endings
+                    newline = "\r\n"
+                say(f"Refreshing the template part of {path.name}; keeping your additions")
+    with path.open("w", encoding="utf-8", newline=newline) as fp:
+        fp.write(content)
     say(f"Wrote {path}")
 
 
