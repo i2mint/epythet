@@ -1,9 +1,10 @@
 """Write the ``docsrc`` directory: a two-line ``conf.py`` shim and ``index.md``.
 
 The directory is regenerated on every build, so committing it is optional. A
-committed ``conf.py`` is overwritten only when it is one epythet generated
-(the v2 shim or the 0.1.x template); a hand-written one is left alone and
-reported.
+committed ``conf.py`` is touched only when it is one epythet generated (the v2
+shim or the 0.1.x template): a customised v2 shim is kept, an older or edited
+template is replaced after a copy is saved as ``conf.py.bak``, and a hand-written
+file is left alone and reported.
 
 >>> import tempfile, pathlib
 >>> d = pathlib.Path(tempfile.mkdtemp())
@@ -19,6 +20,8 @@ reported.
 ...
 """
 
+import itertools
+import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -98,7 +101,8 @@ def scaffold(
     write_generated_file(
         docsrc / "conf.py",
         templates.conf_py_shim,
-        markers=(templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER),
+        markers=templates.CONF_MARKERS,
+        keep_if_marked=(templates.CONF_SHIM_MARKER,),
         say=say,
         keep_extended=True,
         previous_versions=templates.CONF_SHIM_PREVIOUS_VERSIONS,
@@ -300,6 +304,7 @@ def write_generated_file(
     say=None,
     keep_extended: bool = False,
     previous_versions=(),
+    keep_if_marked=(),
 ) -> None:
     """Write a generated file unless a hand-written one (no marker) is in the way.
 
@@ -310,6 +315,11 @@ def write_generated_file(
     :param previous_versions: earlier texts of ``content``. With ``keep_extended``, a
         file that starts with one of them is refreshed to ``content`` and the user's
         text below it is kept
+    :param keep_if_marked: with ``keep_extended``, markers whose files are kept even
+        when they match no known template: a file the user customised keeps working,
+        and keeping it never loses data. Any other file that matches no known template
+        is backed up beside itself (``<name>.bak``, reused when an identical backup
+        exists) before it is rewritten, and the backup is reported
     """
     say = say or (lambda *a, **k: None)
     if isinstance(previous_versions, str) or not all(previous_versions):
@@ -335,7 +345,11 @@ def write_generated_file(
                 say(f"Keeping {path.name}: it extends the generated template")
                 return
             version = next(
-                (v for v in sorted(old, key=len, reverse=True) if body.startswith(v)),
+                (
+                    v
+                    for v in sorted(old, key=len, reverse=True)
+                    if body.startswith(v) or body.rstrip() == v.rstrip()
+                ),
                 None,
             )
             if version is not None:
@@ -350,9 +364,36 @@ def write_generated_file(
                 say(
                     f"Refreshing the template part of {path.name}; keeping your additions"
                 )
+            elif body.rstrip() == content.rstrip():
+                pass  # only the final newline differs: rewrite, nothing to back up
+            elif any(marker in existing for marker in keep_if_marked):
+                say(
+                    f"Keeping {path.name}: customised, and it carries the epythet marker "
+                    "(it is no longer refreshed from the template)"
+                )
+                return
+            else:
+                backup = _backup_beside(path)
+                say(
+                    f"Warning: replacing {path.name}, which matches no current epythet "
+                    f"template (an older or edited one). Your copy is kept as {backup.name}"
+                )
     with path.open("w", encoding="utf-8", newline=newline) as fp:
         fp.write(content)
     say(f"Wrote {path}")
+
+
+def _backup_beside(path: Path) -> Path:
+    """The backup of ``path`` beside it: an identical ``<name>.bak*`` if one exists, else a new
+    first-free ``<name>.bak``, ``<name>.bak1``..."""
+    content = path.read_bytes()
+    for i in itertools.count():
+        candidate = path.with_name(f"{path.name}.bak{i or ''}")
+        if not os.path.lexists(candidate):
+            shutil.copy2(path, candidate)
+            return candidate
+        if candidate.is_file() and not candidate.is_symlink() and candidate.read_bytes() == content:
+            return candidate
 
 
 def remove_generated_file(path: Path, *, markers, say=None) -> bool:
