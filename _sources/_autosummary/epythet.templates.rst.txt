@@ -10,6 +10,7 @@ epythet.templates
    
       CONF_SHIM_MARKER
       LEGACY_CONF_MARKER
+      CONF_SHIM_PREVIOUS_VERSIONS
       INDEX_MARKER
       aggregates_block
       LEGACY_DOCSRC_GITIGNORES
