@@ -1,9 +1,10 @@
 """Write the ``docsrc`` directory: a two-line ``conf.py`` shim and ``index.md``.
 
 The directory is regenerated on every build, so committing it is optional. A
-committed ``conf.py`` is overwritten only when it is one epythet generated
-(the v2 shim or the 0.1.x template); a hand-written one is left alone and
-reported.
+committed ``conf.py`` is touched only when it is one epythet generated (the v2
+shim or the 0.1.x template): a customised v2 shim is kept, an older or edited
+template is replaced after a copy is saved as ``conf.py.bak``, and a hand-written
+file is left alone and reported.
 
 >>> import tempfile, pathlib
 >>> d = pathlib.Path(tempfile.mkdtemp())
@@ -344,7 +345,11 @@ def write_generated_file(
                 say(f"Keeping {path.name}: it extends the generated template")
                 return
             version = next(
-                (v for v in sorted(old, key=len, reverse=True) if body.startswith(v)),
+                (
+                    v
+                    for v in sorted(old, key=len, reverse=True)
+                    if body.startswith(v) or body.rstrip() == v.rstrip()
+                ),
                 None,
             )
             if version is not None:
@@ -359,10 +364,15 @@ def write_generated_file(
                 say(
                     f"Refreshing the template part of {path.name}; keeping your additions"
                 )
+            elif body.rstrip() == content.rstrip():
+                pass  # only the final newline differs: rewrite, nothing to back up
             elif any(marker in existing for marker in keep_if_marked):
-                say(f"Keeping {path.name}: customised, and it carries the epythet marker")
+                say(
+                    f"Keeping {path.name}: customised, and it carries the epythet marker "
+                    "(it is no longer refreshed from the template)"
+                )
                 return
-            elif body.rstrip() != content.rstrip():  # not merely a missing final newline
+            else:
                 backup = _backup_beside(path)
                 say(
                     f"Warning: replacing {path.name}, which matches no current epythet "
@@ -382,7 +392,7 @@ def _backup_beside(path: Path) -> Path:
         if not os.path.lexists(candidate):
             shutil.copy2(path, candidate)
             return candidate
-        if candidate.is_file() and candidate.read_bytes() == content:
+        if candidate.is_file() and not candidate.is_symlink() and candidate.read_bytes() == content:
             return candidate
 
 

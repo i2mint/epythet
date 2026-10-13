@@ -648,8 +648,37 @@ def test_a_missing_final_newline_is_not_a_reason_for_a_backup(tmp_path):
 
     conf = tmp_path / "conf.py"
     conf.write_text(templates.conf_py_shim.rstrip("\n"))
-    write_generated_file(conf, templates.conf_py_shim, markers=templates.CONF_MARKERS, keep_extended=True)
+    write_generated_file(
+        conf, templates.conf_py_shim, markers=templates.CONF_MARKERS, keep_extended=True,
+        keep_if_marked=(templates.CONF_SHIM_MARKER,),
+    )
     assert conf.read_text() == templates.conf_py_shim and len(list(tmp_path.iterdir())) == 1
+
+
+def test_an_earlier_template_missing_its_final_newline_is_still_refreshed(tmp_path):
+    """Review of #42: the keep path must not strand a file on an old template."""
+    from epythet.scaffold import write_generated_file
+
+    old = _OLD_SHIM
+    new = old + "from epythet.sphinx_conf import setup  # noqa\n"
+    kw = dict(markers=("epythet",), keep_extended=True, previous_versions=(old,),
+              keep_if_marked=("epythet",))
+    conf = tmp_path / "conf.py"
+    conf.write_text(old.rstrip("\n"))
+    write_generated_file(conf, new, **kw)
+    assert conf.read_text() == new and len(list(tmp_path.iterdir())) == 1
+
+
+def test_a_backup_that_is_a_symlink_to_the_file_is_not_reused(tmp_path):
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    legacy = "from epythet.config_parser import parse_config\nx = 1\n"
+    conf.write_text(legacy)
+    (tmp_path / "conf.py.bak").symlink_to(conf)
+    write_generated_file(conf, templates.conf_py_shim, markers=templates.CONF_MARKERS, keep_extended=True)
+    assert (tmp_path / "conf.py.bak1").read_text() == legacy
 
 
 def test_every_recorded_conf_template_carries_a_recognised_marker():
