@@ -347,7 +347,9 @@ def write_generated_file(
                 content = bom + content + body[len(version) :]
                 if b"\r\n" in raw:  # keep the file's line endings
                     newline = "\r\n"
-                say(f"Refreshing the template part of {path.name}; keeping your additions")
+                say(
+                    f"Refreshing the template part of {path.name}; keeping your additions"
+                )
     with path.open("w", encoding="utf-8", newline=newline) as fp:
         fp.write(content)
     say(f"Wrote {path}")
