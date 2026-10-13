@@ -310,27 +310,36 @@ data in <a class="reference internal" href="epythet.provenance.html#module-epyth
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.CONF_SHIM_PREVIOUS_VERSIONS" title="epythet.templates.CONF_SHIM_PREVIOUS_VERSIONS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONF_SHIM_PREVIOUS_VERSIONS</span></code></a></p></td>
 <td><p>Earlier texts of <code class="docutils literal notranslate"><span class="pre">conf_py_shim</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.INDEX_MARKER" title="epythet.templates.INDEX_MARKER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INDEX_MARKER</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.CONF_MARKERS" title="epythet.templates.CONF_MARKERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONF_MARKERS</span></code></a></p></td>
+<td><p>Every marker that identifies an epythet-generated conf.py.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.INDEX_MARKER" title="epythet.templates.INDEX_MARKER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INDEX_MARKER</span></code></a></p></td>
 <td><p>Marker in the generated index.md, used to decide whether to overwrite it.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.aggregates_block" title="epythet.templates.aggregates_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregates_block</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.aggregates_block" title="epythet.templates.aggregates_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aggregates_block</span></code></a></p></td>
 <td><p>Footer of the landing page pointing at the single-document twins.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.LEGACY_DOCSRC_GITIGNORES" title="epythet.templates.LEGACY_DOCSRC_GITIGNORES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LEGACY_DOCSRC_GITIGNORES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.LEGACY_DOCSRC_GITIGNORES" title="epythet.templates.LEGACY_DOCSRC_GITIGNORES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LEGACY_DOCSRC_GITIGNORES</span></code></a></p></td>
 <td><p>What 0.1.x wrote to docsrc/.gitignore; safe to replace.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.autosummary_module_rst" title="epythet.templates.autosummary_module_rst"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autosummary_module_rst</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.autosummary_module_rst" title="epythet.templates.autosummary_module_rst"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autosummary_module_rst</span></code></a></p></td>
 <td><p>autosummary's stock <code class="docutils literal notranslate"><span class="pre">module.rst</span></code> (Sphinx 9) with two changes to the <code class="docutils literal notranslate"><span class="pre">modules</span></code> block: (1) the recursion runs over <code class="docutils literal notranslate"><span class="pre">all_modules</span></code> (every submodule, minus <code class="docutils literal notranslate"><span class="pre">_</span></code>-prefixed ones unless <code class="docutils literal notranslate"><span class="pre">__all__</span></code> names them) rather than <code class="docutils literal notranslate"><span class="pre">modules</span></code>, because with <code class="docutils literal notranslate"><span class="pre">autosummary_ignore_module_all</span> <span class="pre">=</span> <span class="pre">False</span></code> a package whose <code class="docutils literal notranslate"><span class="pre">__init__</span></code> declares an <code class="docutils literal notranslate"><span class="pre">__all__</span></code> of <em>objects</em> would otherwise get no submodule pages at all (a third of the fleet declares one); (2) submodules matching the ignore fragments are left out of the recursion, so no stub is generated (and no second import attempted) for tests/, scrap/, examples/.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.DOCSRC_GITIGNORE_HEADER" title="epythet.templates.DOCSRC_GITIGNORE_HEADER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCSRC_GITIGNORE_HEADER</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.DOCSRC_GITIGNORE_HEADER" title="epythet.templates.DOCSRC_GITIGNORE_HEADER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCSRC_GITIGNORE_HEADER</span></code></a></p></td>
 <td><p>First line of the generated docsrc/.gitignore; a file starting with it is epythet's own: an exact earlier version is replaced, an edited one is appended to (<code class="xref py py-func docutils literal notranslate"><span class="pre">epythet.scaffold.refresh_docsrc_gitignore()</span></code>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#epythet.templates.PREVIOUS_DOCSRC_GITIGNORES" title="epythet.templates.PREVIOUS_DOCSRC_GITIGNORES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PREVIOUS_DOCSRC_GITIGNORES</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#epythet.templates.PREVIOUS_DOCSRC_GITIGNORES" title="epythet.templates.PREVIOUS_DOCSRC_GITIGNORES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PREVIOUS_DOCSRC_GITIGNORES</span></code></a></p></td>
 <td><p>Earlier generated versions, replaced wholesale when found verbatim.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<dl class="py data">
+<dt class="sig sig-object py" id="epythet.templates.CONF_MARKERS">
+<span class="sig-prename descclassname"><span class="pre">epythet.templates.</span></span><span class="sig-name descname"><span class="pre">CONF_MARKERS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('from</span> <span class="pre">epythet.sphinx_conf</span> <span class="pre">import</span> <span class="pre">*',</span> <span class="pre">'from</span> <span class="pre">epythet.config_parser</span> <span class="pre">import</span> <span class="pre">parse_config')</span></span><a class="headerlink" href="#epythet.templates.CONF_MARKERS" title="Link to this definition">¶</a></dt>
+<dd><p>Every marker that identifies an epythet-generated conf.py.</p>
+</dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="epythet.templates.CONF_SHIM_MARKER">
 <span class="sig-prename descclassname"><span class="pre">epythet.templates.</span></span><span class="sig-name descname"><span class="pre">CONF_SHIM_MARKER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'from</span> <span class="pre">epythet.sphinx_conf</span> <span class="pre">import</span> <span class="pre">*'</span></span><a class="headerlink" href="#epythet.templates.CONF_SHIM_MARKER" title="Link to this definition">¶</a></dt>
@@ -374,7 +383,7 @@ appended to (<code class="xref py py-func docutils literal notranslate"><span cl
 
 <dl class="py data">
 <dt class="sig sig-object py" id="epythet.templates.PREVIOUS_DOCSRC_GITIGNORES">
-<span class="sig-prename descclassname"><span class="pre">epythet.templates.</span></span><span class="sig-name descname"><span class="pre">PREVIOUS_DOCSRC_GITIGNORES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('#</span> <span class="pre">Generated</span> <span class="pre">by</span> <span class="pre">epythet</span> <span class="pre">at</span> <span class="pre">build</span> <span class="pre">time\n_build/\napi/\n_autosummary/\n_templates/\n_static/epythet.css\n',)</span></span><a class="headerlink" href="#epythet.templates.PREVIOUS_DOCSRC_GITIGNORES" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.templates.</span></span><span class="sig-name descname"><span class="pre">PREVIOUS_DOCSRC_GITIGNORES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('#</span> <span class="pre">Generated</span> <span class="pre">by</span> <span class="pre">epythet</span> <span class="pre">at</span> <span class="pre">build</span> <span class="pre">time\n_build/\napi/\n_autosummary/\n_templates/\n_static/epythet.css\n',</span> <span class="pre">'#</span> <span class="pre">Generated</span> <span class="pre">by</span> <span class="pre">epythet</span> <span class="pre">at</span> <span class="pre">build</span> <span class="pre">time\n_build/\napi/\n_autosummary/\n_templates/\n_static/epythet.css\nabout-this-build.md\n')</span></span><a class="headerlink" href="#epythet.templates.PREVIOUS_DOCSRC_GITIGNORES" title="Link to this definition">¶</a></dt>
 <dd><p>Earlier generated versions, replaced wholesale when found verbatim.</p>
 </dd></dl>
 
@@ -453,6 +462,7 @@ generated (and no second import attempted) for tests/, scrap/, examples/.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">epythet.templates</a><ul>
+<li><a class="reference internal" href="#epythet.templates.CONF_MARKERS"><code class="docutils literal notranslate"><span class="pre">CONF_MARKERS</span></code></a></li>
 <li><a class="reference internal" href="#epythet.templates.CONF_SHIM_MARKER"><code class="docutils literal notranslate"><span class="pre">CONF_SHIM_MARKER</span></code></a></li>
 <li><a class="reference internal" href="#epythet.templates.CONF_SHIM_PREVIOUS_VERSIONS"><code class="docutils literal notranslate"><span class="pre">CONF_SHIM_PREVIOUS_VERSIONS</span></code></a></li>
 <li><a class="reference internal" href="#epythet.templates.DOCSRC_GITIGNORE_HEADER"><code class="docutils literal notranslate"><span class="pre">DOCSRC_GITIGNORE_HEADER</span></code></a></li>
@@ -473,7 +483,7 @@ generated (and no second import attempted) for tests/, scrap/, examples/.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=c9c0081b"></script>
+</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

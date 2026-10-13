@@ -1,4 +1,4 @@
-> built 2026-10-13 14:43 UTC from fce9052 (master) · epythet 0.2.15. Details: build_info.json
+> built 2026-10-13 15:54 UTC from ff3dfe2 (master) · epythet 0.2.16. Details: build_info.json
 
 # index.html.md
 
@@ -3195,7 +3195,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.15', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.16', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -3417,12 +3417,17 @@ data in [`epythet.provenance`](_autosummary/epythet.provenance.html.md#module-ep
 |------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`LEGACY_CONF_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_CONF_MARKER)          | The old (0.1.x) template's signature line, also safe to overwrite.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [`CONF_SHIM_PREVIOUS_VERSIONS`](_autosummary/epythet.templates.html.md#epythet.templates.CONF_SHIM_PREVIOUS_VERSIONS) | Earlier texts of `conf_py_shim`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [`CONF_MARKERS`](_autosummary/epythet.templates.html.md#epythet.templates.CONF_MARKERS)                | Every marker that identifies an epythet-generated conf.py.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [`INDEX_MARKER`](_autosummary/epythet.templates.html.md#epythet.templates.INDEX_MARKER)                | Marker in the generated index.md, used to decide whether to overwrite it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [`aggregates_block`](_autosummary/epythet.templates.html.md#epythet.templates.aggregates_block)            | Footer of the landing page pointing at the single-document twins.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | [`LEGACY_DOCSRC_GITIGNORES`](_autosummary/epythet.templates.html.md#epythet.templates.LEGACY_DOCSRC_GITIGNORES)    | What 0.1.x wrote to docsrc/.gitignore; safe to replace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [`autosummary_module_rst`](_autosummary/epythet.templates.html.md#epythet.templates.autosummary_module_rst)      | autosummary's stock `module.rst` (Sphinx 9) with two changes to the `modules` block: (1) the recursion runs over `all_modules` (every submodule, minus `_`-prefixed ones unless `__all__` names them) rather than `modules`, because with `autosummary_ignore_module_all = False` a package whose `__init__` declares an `__all__` of *objects* would otherwise get no submodule pages at all (a third of the fleet declares one); (2) submodules matching the ignore fragments are left out of the recursion, so no stub is generated (and no second import attempted) for tests/, scrap/, examples/. |
 | [`DOCSRC_GITIGNORE_HEADER`](_autosummary/epythet.templates.html.md#epythet.templates.DOCSRC_GITIGNORE_HEADER)     | First line of the generated docsrc/.gitignore; a file starting with it is epythet's own: an exact earlier version is replaced, an edited one is appended to (`epythet.scaffold.refresh_docsrc_gitignore()`).                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`PREVIOUS_DOCSRC_GITIGNORES`](_autosummary/epythet.templates.html.md#epythet.templates.PREVIOUS_DOCSRC_GITIGNORES)  | Earlier generated versions, replaced wholesale when found verbatim.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+
+### epythet.templates.CONF_MARKERS *= ('from epythet.sphinx_conf import \*', 'from epythet.config_parser import parse_config')*
+
+Every marker that identifies an epythet-generated conf.py.
 
 ### epythet.templates.CONF_SHIM_MARKER *= 'from epythet.sphinx_conf import \*'*
 
@@ -3453,7 +3458,7 @@ The old (0.1.x) template’s signature line, also safe to overwrite.
 
 What 0.1.x wrote to docsrc/.gitignore; safe to replace.
 
-### epythet.templates.PREVIOUS_DOCSRC_GITIGNORES *= ('# Generated by epythet at build time\\n_build/\\napi/\\n_autosummary/\\n_templates/\\n_static/epythet.css\\n',)*
+### epythet.templates.PREVIOUS_DOCSRC_GITIGNORES *= ('# Generated by epythet at build time\\n_build/\\napi/\\n_autosummary/\\n_templates/\\n_static/epythet.css\\n', '# Generated by epythet at build time\\n_build/\\napi/\\n_autosummary/\\n_templates/\\n_static/epythet.css\\nabout-this-build.md\\n')*
 
 Earlier generated versions, replaced wholesale when found verbatim.
 
@@ -6486,18 +6491,18 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-10-13 14:43 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/fce9052bcc53e245ef7a41763cf43ec8dbaf9ebd"><code>fce9052</code></a> on branch <code>master</code>, for **epythet 0.2.15** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 15:54 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/ff3dfe255f8e6577eb66c3d3c61353683ba26467"><code>ff3dfe2</code></a> on branch <code>master</code>, for **epythet 0.2.16** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.2.15) is behind the latest release on PyPI (0.2.16): `pip install epythet` gives newer code than these docs describe.
+- The documented version (0.2.16) is behind the latest release on PyPI (0.2.17): `pip install epythet` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/fce9052bcc53e245ef7a41763cf43ec8dbaf9ebd"><code>fce9052bcc53e245ef7a41763cf43ec8dbaf9ebd</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/ff3dfe255f8e6577eb66c3d3c61353683ba26467"><code>ff3dfe255f8e6577eb66c3d3c61353683ba26467</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -6508,15 +6513,15 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/38415431111">38415431111</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/38425735910">38425735910</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>fce9052bcc53e245ef7a41763cf43ec8dbaf9ebd</code> (in the history of the built commit) |
+| Event commit | <code>ff3dfe255f8e6577eb66c3d3c61353683ba26467</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.15  |
+| epythet  | 0.2.16  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
@@ -6535,14 +6540,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.16/">0.2.16</a>, newer than the documented version (0.2.15).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.17/">0.2.17</a>, newer than the documented version (0.2.16).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout fce9052bcc53e245ef7a41763cf43ec8dbaf9ebd
-pip install "epythet==0.2.15"
+git checkout ff3dfe255f8e6577eb66c3d3c61353683ba26467
+pip install "epythet==0.2.16"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

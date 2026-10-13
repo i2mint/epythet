@@ -285,9 +285,10 @@
 <span></span><span class="sd">"""Write the ``docsrc`` directory: a two-line ``conf.py`` shim and ``index.md``.</span>
 
 <span class="sd">The directory is regenerated on every build, so committing it is optional. A</span>
-<span class="sd">committed ``conf.py`` is overwritten only when it is one epythet generated</span>
-<span class="sd">(the v2 shim or the 0.1.x template); a hand-written one is left alone and</span>
-<span class="sd">reported.</span>
+<span class="sd">committed ``conf.py`` is touched only when it is one epythet generated (the v2</span>
+<span class="sd">shim or the 0.1.x template): a customised v2 shim is kept, an older or edited</span>
+<span class="sd">template is replaced after a copy is saved as ``conf.py.bak``, and a hand-written</span>
+<span class="sd">file is left alone and reported.</span>
 
 <span class="sd">&gt;&gt;&gt; import tempfile, pathlib</span>
 <span class="sd">&gt;&gt;&gt; d = pathlib.Path(tempfile.mkdtemp())</span>
@@ -303,6 +304,8 @@
 <span class="sd">...</span>
 <span class="sd">"""</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -384,7 +387,8 @@
     <span class="n">write_generated_file</span><span class="p">(</span>
         <span class="n">docsrc</span> <span class="o">/</span> <span class="s2">"conf.py"</span><span class="p">,</span>
         <span class="n">templates</span><span class="o">.</span><span class="n">conf_py_shim</span><span class="p">,</span>
-        <span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">CONF_SHIM_MARKER</span><span class="p">,</span> <span class="n">templates</span><span class="o">.</span><span class="n">LEGACY_CONF_MARKER</span><span class="p">),</span>
+        <span class="n">markers</span><span class="o">=</span><span class="n">templates</span><span class="o">.</span><span class="n">CONF_MARKERS</span><span class="p">,</span>
+        <span class="n">keep_if_marked</span><span class="o">=</span><span class="p">(</span><span class="n">templates</span><span class="o">.</span><span class="n">CONF_SHIM_MARKER</span><span class="p">,),</span>
         <span class="n">say</span><span class="o">=</span><span class="n">say</span><span class="p">,</span>
         <span class="n">keep_extended</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">previous_versions</span><span class="o">=</span><span class="n">templates</span><span class="o">.</span><span class="n">CONF_SHIM_PREVIOUS_VERSIONS</span><span class="p">,</span>
@@ -587,6 +591,7 @@
     <span class="n">say</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">keep_extended</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">previous_versions</span><span class="o">=</span><span class="p">(),</span>
+    <span class="n">keep_if_marked</span><span class="o">=</span><span class="p">(),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Write a generated file unless a hand-written one (no marker) is in the way.</span>
 
@@ -597,6 +602,11 @@
 <span class="sd">    :param previous_versions: earlier texts of ``content``. With ``keep_extended``, a</span>
 <span class="sd">        file that starts with one of them is refreshed to ``content`` and the user's</span>
 <span class="sd">        text below it is kept</span>
+<span class="sd">    :param keep_if_marked: with ``keep_extended``, markers whose files are kept even</span>
+<span class="sd">        when they match no known template: a file the user customised keeps working,</span>
+<span class="sd">        and keeping it never loses data. Any other file that matches no known template</span>
+<span class="sd">        is backed up beside itself (``&lt;name&gt;.bak``, reused when an identical backup</span>
+<span class="sd">        exists) before it is rewritten, and the backup is reported</span>
 <span class="sd">    """</span>
     <span class="n">say</span> <span class="o">=</span> <span class="n">say</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">previous_versions</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">previous_versions</span><span class="p">):</span>
@@ -622,7 +632,11 @@
                 <span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keeping </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: it extends the generated template"</span><span class="p">)</span>
                 <span class="k">return</span>
             <span class="n">version</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">v</span><span class="p">)),</span>
+                <span class="p">(</span>
+                    <span class="n">v</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">body</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                <span class="p">),</span>
                 <span class="kc">None</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -634,10 +648,39 @@
                 <span class="n">content</span> <span class="o">=</span> <span class="n">bom</span> <span class="o">+</span> <span class="n">content</span> <span class="o">+</span> <span class="n">body</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="p">:]</span>
                 <span class="k">if</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>  <span class="c1"># keep the file's line endings</span>
                     <span class="n">newline</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
-                <span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Refreshing the template part of </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">; keeping your additions"</span><span class="p">)</span>
+                <span class="n">say</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Refreshing the template part of </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">; keeping your additions"</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">body</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">==</span> <span class="n">content</span><span class="o">.</span><span class="n">rstrip</span><span class="p">():</span>
+                <span class="k">pass</span>  <span class="c1"># only the final newline differs: rewrite, nothing to back up</span>
+            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">marker</span> <span class="ow">in</span> <span class="n">existing</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">keep_if_marked</span><span class="p">):</span>
+                <span class="n">say</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Keeping </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: customised, and it carries the epythet marker "</span>
+                    <span class="s2">"(it is no longer refreshed from the template)"</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">backup</span> <span class="o">=</span> <span class="n">_backup_beside</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">say</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Warning: replacing </span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, which matches no current epythet "</span>
+                    <span class="sa">f</span><span class="s2">"template (an older or edited one). Your copy is kept as </span><span class="si">{</span><span class="n">backup</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
     <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
     <span class="n">say</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Wrote </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_backup_beside</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The backup of ``path`` beside it: an identical ``&lt;name&gt;.bak*`` if one exists, else a new</span>
+<span class="sd">    first-free ``&lt;name&gt;.bak``, ``&lt;name&gt;.bak1``..."""</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.bak</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lexists</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">candidate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">candidate</span>
+        <span class="k">if</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span> <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">()</span> <span class="o">==</span> <span class="n">content</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">candidate</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">remove_generated_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">markers</span><span class="p">,</span> <span class="n">say</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -678,7 +721,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=c9c0081b"></script>
+</div><script src="../../_static/documentation_options.js?v=e97192f0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
