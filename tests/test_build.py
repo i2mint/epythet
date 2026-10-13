@@ -584,38 +584,87 @@ def test_conf_py_extended_below_an_older_shim_is_refreshed_keeping_the_tail(tmp_
     assert conf.read_text() == templates.conf_py_shim
 
 
-def test_a_marker_carrying_conf_py_matching_no_template_is_backed_up(tmp_path):
+def test_a_conf_py_matching_no_template_is_backed_up(tmp_path):
     """The user's settings are never lost with the rewrite (#42)."""
     from epythet import templates
     from epythet.scaffold import write_generated_file
 
     conf = tmp_path / "conf.py"
-    markers = (templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER)
-    kw = dict(markers=markers, keep_extended=True)
+    kw = dict(markers=templates.CONF_MARKERS, keep_extended=True)
     said = []
-    mine = "from epythet.sphinx_conf import *\nhtml_title = 'mine'\n"
-    conf.write_text(mine)
+    legacy = "from epythet.config_parser import parse_config\nhtml_title = 'mine'\n"
+    conf.write_text(legacy)
     write_generated_file(conf, templates.conf_py_shim, say=said.append, **kw)
     assert conf.read_text() == templates.conf_py_shim
-    assert (tmp_path / "conf.py.bak").read_text() == mine
+    assert (tmp_path / "conf.py.bak").read_text() == legacy
     assert any("conf.py.bak" in line and "Warning" in line for line in said)
-    # a second one does not overwrite the first backup
-    conf.write_text("from epythet.config_parser import parse_config\nx = 2\n")
+    # the same stale text again reuses the identical backup; a different one gets a new name
+    conf.write_text(legacy)
     write_generated_file(conf, templates.conf_py_shim, **kw)
-    assert (tmp_path / "conf.py.bak").read_text() == mine
-    assert (tmp_path / "conf.py.bak1").read_text().endswith("x = 2\n")
-    # a file that is already the template, or extends it, leaves no backup
+    conf.write_text(legacy.replace("mine", "other"))
     write_generated_file(conf, templates.conf_py_shim, **kw)
     assert sorted(p.name for p in tmp_path.iterdir()) == ["conf.py", "conf.py.bak", "conf.py.bak1"]
+    assert "other" in (tmp_path / "conf.py.bak1").read_text()
+    # a file that is already the template, or extends it, leaves no further backup
+    write_generated_file(conf, templates.conf_py_shim, **kw)
+    assert len(list(tmp_path.iterdir())) == 3
+
+
+def test_a_customised_v2_shim_is_kept_where_asked(tmp_path):
+    """#42: settings below (or above) the import survive; nothing is rewritten."""
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    mine = "from epythet.sphinx_conf import *\nhtml_title = 'mine'\n"
+    conf.write_text(mine)
+    write_generated_file(
+        conf, templates.conf_py_shim, markers=templates.CONF_MARKERS, keep_extended=True,
+        keep_if_marked=(templates.CONF_SHIM_MARKER,),
+    )
+    assert conf.read_text() == mine and [p.name for p in tmp_path.iterdir()] == ["conf.py"]
+
+
+def test_make_docsrc_keeps_a_customised_shim_and_migrates_a_legacy_conf(project):
+    other = project.parent / "customised"
+    shutil.copytree(project, other, ignore=shutil.ignore_patterns("docsrc"))
+    docsrc = other / "docsrc"
+    docsrc.mkdir()
+    mine = "from epythet.sphinx_conf import *\nhtml_title = 'mine'\n"
+    (docsrc / "conf.py").write_text(mine)
+    make_docsrc(other, verbose=False)
+    assert (docsrc / "conf.py").read_text() == mine and not (docsrc / "conf.py.bak").exists()
+    legacy = "from epythet.config_parser import parse_config\nx = 1\n"
+    (docsrc / "conf.py").write_text(legacy)
+    make_docsrc(other, verbose=False)
+    assert CONF_SHIM_MARKER in (docsrc / "conf.py").read_text()
+    assert (docsrc / "conf.py.bak").read_text() == legacy
+    assert "conf.py.bak*" in (docsrc / ".gitignore").read_text()
+
+
+def test_a_missing_final_newline_is_not_a_reason_for_a_backup(tmp_path):
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    conf.write_text(templates.conf_py_shim.rstrip("\n"))
+    write_generated_file(conf, templates.conf_py_shim, markers=templates.CONF_MARKERS, keep_extended=True)
+    assert conf.read_text() == templates.conf_py_shim and len(list(tmp_path.iterdir())) == 1
 
 
 def test_every_recorded_conf_template_carries_a_recognised_marker():
     """A template edit that dropped the marker would orphan its files (#42)."""
     from epythet import templates
 
-    markers = (templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER)
     for text in (templates.conf_py_shim, *templates.CONF_SHIM_PREVIOUS_VERSIONS):
-        assert any(m in text for m in markers)
+        assert any(m in text for m in templates.CONF_MARKERS)
+
+
+def test_the_docsrc_gitignore_ignores_conf_backups():
+    from epythet import templates
+
+    assert "conf.py.bak*" in templates.docsrc_gitignore.splitlines()
+    assert any("conf.py.bak" not in t for t in templates.PREVIOUS_DOCSRC_GITIGNORES)
 
 
 def test_a_previous_version_that_is_a_prefix_of_the_template_does_not_win(tmp_path):
