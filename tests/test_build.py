@@ -584,6 +584,40 @@ def test_conf_py_extended_below_an_older_shim_is_refreshed_keeping_the_tail(tmp_
     assert conf.read_text() == templates.conf_py_shim
 
 
+def test_a_marker_carrying_conf_py_matching_no_template_is_backed_up(tmp_path):
+    """The user's settings are never lost with the rewrite (#42)."""
+    from epythet import templates
+    from epythet.scaffold import write_generated_file
+
+    conf = tmp_path / "conf.py"
+    markers = (templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER)
+    kw = dict(markers=markers, keep_extended=True)
+    said = []
+    mine = "from epythet.sphinx_conf import *\nhtml_title = 'mine'\n"
+    conf.write_text(mine)
+    write_generated_file(conf, templates.conf_py_shim, say=said.append, **kw)
+    assert conf.read_text() == templates.conf_py_shim
+    assert (tmp_path / "conf.py.bak").read_text() == mine
+    assert any("conf.py.bak" in line and "Warning" in line for line in said)
+    # a second one does not overwrite the first backup
+    conf.write_text("from epythet.config_parser import parse_config\nx = 2\n")
+    write_generated_file(conf, templates.conf_py_shim, **kw)
+    assert (tmp_path / "conf.py.bak").read_text() == mine
+    assert (tmp_path / "conf.py.bak1").read_text().endswith("x = 2\n")
+    # a file that is already the template, or extends it, leaves no backup
+    write_generated_file(conf, templates.conf_py_shim, **kw)
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["conf.py", "conf.py.bak", "conf.py.bak1"]
+
+
+def test_every_recorded_conf_template_carries_a_recognised_marker():
+    """A template edit that dropped the marker would orphan its files (#42)."""
+    from epythet import templates
+
+    markers = (templates.CONF_SHIM_MARKER, templates.LEGACY_CONF_MARKER)
+    for text in (templates.conf_py_shim, *templates.CONF_SHIM_PREVIOUS_VERSIONS):
+        assert any(m in text for m in markers)
+
+
 def test_a_previous_version_that_is_a_prefix_of_the_template_does_not_win(tmp_path):
     from epythet import templates
     from epythet.scaffold import write_generated_file

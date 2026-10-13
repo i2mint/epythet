@@ -19,6 +19,7 @@ reported.
 ...
 """
 
+import itertools
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
@@ -309,7 +310,9 @@ def write_generated_file(
         has more lines below it is left alone: the user appended to the template
     :param previous_versions: earlier texts of ``content``. With ``keep_extended``, a
         file that starts with one of them is refreshed to ``content`` and the user's
-        text below it is kept
+        text below it is kept. A marker-carrying file that matches neither (a stale
+        template, or one a user edited above the import) is backed up next to itself
+        (``conf.py.bak``) before it is rewritten, and the backup is reported
     """
     say = say or (lambda *a, **k: None)
     if isinstance(previous_versions, str) or not all(previous_versions):
@@ -350,9 +353,23 @@ def write_generated_file(
                 say(
                     f"Refreshing the template part of {path.name}; keeping your additions"
                 )
+            else:
+                backup = _backup_beside(path)
+                say(
+                    f"Warning: {path.name} carries the epythet marker but matches no known "
+                    f"template; rewriting it. Your copy is kept as {backup.name}"
+                )
     with path.open("w", encoding="utf-8", newline=newline) as fp:
         fp.write(content)
     say(f"Wrote {path}")
+
+
+def _backup_beside(path: Path) -> Path:
+    """Copy ``path`` to the first free ``<name>.bak``, ``<name>.bak1``... and return it."""
+    candidates = (path.with_name(f"{path.name}.bak{i or ''}") for i in itertools.count())
+    backup = next(c for c in candidates if not c.exists())
+    shutil.copy2(path, backup)
+    return backup
 
 
 def remove_generated_file(path: Path, *, markers, say=None) -> bool:
