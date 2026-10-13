@@ -392,7 +392,11 @@ def _backup_beside(path: Path) -> Path:
         if not os.path.lexists(candidate):
             shutil.copy2(path, candidate)
             return candidate
-        if candidate.is_file() and not candidate.is_symlink() and candidate.read_bytes() == content:
+        if (
+            candidate.is_file()
+            and not candidate.is_symlink()
+            and candidate.read_bytes() == content
+        ):
             return candidate
 
 
