@@ -735,7 +735,9 @@ def _subagents_block(artifacts: AIArtifacts) -> str:
     folder = Path(agents[0].source).parent.as_posix()
     return (
         f"\n**Subagents**: {described}, in `{folder}/`. Copy one into your project's "
-        "`.claude/agents/` (or your host's equivalent).\n"
+        "`.claude/agents/` (or your host's equivalent). A subagent whose frontmatter "
+        "preloads a skill (`skills:`) is that skill running in its own context; the "
+        "skill is the source of truth and the agent file is generated from it.\n"
     )
 
 
