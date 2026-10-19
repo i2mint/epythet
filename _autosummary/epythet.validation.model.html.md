@@ -96,7 +96,7 @@ The review level never gates unless the caller asks for it (decision D8).
 
 The one level-3 finding every packet run emits; “a packet was written” is not a defect.
 
-### *class* epythet.validation.model.Report(package, package_dir, levels_run, findings=<factory>, durations=<factory>, objects_checked=0, objects_undocumented=0, notes=<factory>, epythet_version=None, sphinx_version=None, docutils_version=None, ledger_sources=<factory>, schema_version='1')
+### *class* epythet.validation.model.Report(package, package_dir, levels_run, findings=list(), durations=dict(), objects_checked=0, objects_undocumented=0, notes=list(), epythet_version=None, sphinx_version=None, docutils_version=None, ledger_sources=list(), schema_version='1')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -116,9 +116,6 @@ The process exit code: `0` when clean, else the code of the first failing level.
 The *first* (lowest) failing level is reported because it is the first
 gate a CI pipeline would have stopped at.
 
-* **Return type:**
-  [`int`](https://docs.python.org/3/builtins/functions.html#int)
-
 ```pycon
 >>> r = Report("p", "/p", [0, 0.5])
 >>> r.exit_code()
@@ -136,6 +133,9 @@ gate a CI pipeline would have stopped at.
 >>> r.exit_code(), r.exit_code(fail_on_review=True)
 (0, 14)
 ```
+
+* **Return type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 #### failing_levels(fail_on='error', , fail_on_review=False)
 
@@ -189,9 +189,6 @@ True
 
 The levels a CLI tier runs: every level up to and including the tier’s.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
-
 ```pycon
 >>> levels_for_tier(0)
 [0]
@@ -201,12 +198,12 @@ The levels a CLI tier runs: every level up to and including the tier’s.
 [0, 0.5, 1]
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
+
 ### epythet.validation.model.severity_at_or_above(severity, threshold)
 
 True when `severity` is at least as serious as `threshold`.
-
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> severity_at_or_above("error", "warning")
@@ -214,6 +211,9 @@ True
 >>> severity_at_or_above("info", "warning")
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.validation.model.sort_findings(findings)
 

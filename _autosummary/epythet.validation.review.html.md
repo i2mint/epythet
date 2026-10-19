@@ -71,7 +71,7 @@ Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueEr
 
 A review reply is not valid against `REPLY_SCHEMA`.
 
-### *class* epythet.validation.review.ReviewPacket(path, pages=<factory>, screenshots=<factory>, prompt_hash='', notes=<factory>)
+### *class* epythet.validation.review.ReviewPacket(path, pages=list(), screenshots=list(), prompt_hash='', notes=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -124,15 +124,15 @@ Which pages go into the packet.
 to `sample` (the first `sample` API pages, index first) otherwise;
 `all` takes every page.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> select_pages(["index", "api", "_autosummary/p", "_autosummary/p.m"], mode="sample", sample=2)
 ['index', '_autosummary/p']
 >>> select_pages(["index", "a"], mode="changed", changed=["a"])
 ['a']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.review.validate_reply(reply)
 

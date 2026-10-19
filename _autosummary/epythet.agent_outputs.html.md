@@ -57,15 +57,15 @@ Returns the number of files changed.
 
 The two `<link>` tags for a page, with hrefs relative to that page.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> print(link_relation_tags("_autosummary/pkg.mod"))
 
 <link rel="alternate" type="text/markdown" href="pkg.mod.html.md">
 <link rel="describedby" href="../llms.txt" type="text/markdown">
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.agent_outputs.markdown_to_pdf(md_path, pdf_path)
 

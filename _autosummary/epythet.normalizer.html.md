@@ -138,13 +138,13 @@ napoleon only recognises `Examples:` when its content is indented; when
 the doctest below sits at the same indentation, the header rendered as a
 stray paragraph. A rubric is what napoleon itself emits for the section.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("Examples:\n\n>>> f()\n1", rules=[bare_headers_to_rubrics])
 '.. rubric:: Examples\n\n>>> f()\n1'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.blank_lines_between_blocks(lines)
 
@@ -153,9 +153,6 @@ Separate prose from the doctest, list, field list or indented block after it.
 The missing blank line before `>>>` is the single most common artifact in
 the fleet: without it Sphinx renders the doctest as a paragraph and
 `sphinx.ext.doctest` never runs it.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Prose\n>>> f()\n1", rules=[blank_lines_between_blocks])
@@ -185,6 +182,9 @@ with or without the blank line, so inserting one only trips `D412`
 'Examples:\n    >>> f()\n    1'
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.escape_unmatched_stars(lines)
 
 Escape `*args` and `**kwargs` in prose so they are not read as emphasis.
@@ -192,37 +192,37 @@ Escape `*args` and `**kwargs` in prose so they are not read as emphasis.
 Only a star run that is never closed on the same line is escaped, so real
 `*emphasis*` and `**strong**` are untouched.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("Takes *args and **kwargs, *really*.", rules=[escape_unmatched_stars])
 'Takes \\*args and \\*\\*kwargs, *really*.'
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.fences_to_code_blocks(lines)
 
 Turn Markdown code fences into `.. code-block::` directives.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Run:\n```bash\npip install x\n```\nDone.", rules=[fences_to_code_blocks])
 'Run:\n\n.. code-block:: bash\n\n    pip install x\n\nDone.'
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.fix_short_underlines(lines)
 
 Extend a title underline that is shorter than its title.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("Examples\n----\ntext", rules=[fix_short_underlines])
 'Examples\n--------\ntext'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.google_one_liners(lines)
 
@@ -233,9 +233,6 @@ the section body; a field list, a bullet list, a Markdown heading or another
 section ends it. Inside the body of another section the line is an entry
 (an argument called `error`), not a header, and is left alone.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("Returns: a thing that\nspans two lines.\n\nNext.", rules=[google_one_liners])
 'Returns:\n    a thing that\n    spans two lines.\n\nNext.'
@@ -244,6 +241,9 @@ section ends it. Inside the body of another section the line is an entry
 >>> normalize_text("Note: be careful.\n:return: the thing", rules=[google_one_liners])
 'Note:\n    be careful.\n\n:return: the thing'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.google_section_bodies(lines)
 
@@ -254,32 +254,29 @@ with an indented body below; the body ends at the first non-blank line
 that is not deeper than the header. Rules use this to stay out of section
 bodies, where `x:` is an argument and not a literal-block lead-in.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
-
 ```pycon
 >>> google_section_bodies(["Args:", "    x: the x", "        more", "", "Text."])
 [None, 4, 4, 4, None]
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
+
 ### epythet.normalizer.indent_of(line)
 
 Number of leading spaces (tabs count as one).
-
-* **Return type:**
-  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ```pycon
 >>> indent_of("    x"), indent_of("x"), indent_of("")
 (4, 0, 0)
 ```
 
+* **Return type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
+
 ### epythet.normalizer.is_art_line(line)
 
 Whether `line` is a piece of a drawing: box characters, arrows, or mostly strokes.
-
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> is_art_line("│ 0 │ ──▶ │ 2 │"), is_art_line("  +----+"), is_art_line("- a bullet")
@@ -287,6 +284,9 @@ Whether `line` is a piece of a drawing: box characters, arrows, or mostly stroke
 >>> is_art_line("func1 --> merge"), is_art_line("x = 1  # comment")
 (True, False)
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.normalizer.line_contexts(lines)
 
@@ -296,9 +296,6 @@ The classification is what keeps every rule away from code: a line inside a
 doctest block, a `::` literal block, a directive body, a Markdown fence or
 an ASCII-art drawing is never rewritten.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> line_contexts(["Text:", "", "    >>> 1", "    1", "", "- a", "  b", "", ":param x: y"])
 ['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']
@@ -307,6 +304,9 @@ an ASCII-art drawing is never rewritten.
 >>> line_contexts(["a --> b", "  |", "  v", "- c"])
 ['art', 'art', 'art', 'list']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.literal_block_after_colon(lines)
 
@@ -319,9 +319,6 @@ argument. A lead-in over an indented paragraph is a definition list the
 author may have meant; it is left alone and DR014 reports it. A lone
 `Usage:` or `Output:` over a command or a value is code all the same.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("For example:\n    x = f(1)\nThen more.", rules=[literal_block_after_colon])
 'For example::\n\n    x = f(1)\n\nThen more.'
@@ -332,6 +329,9 @@ author may have meant; it is left alone and DR014 reports it. A lone
 >>> normalize_text("Args:\n    x:\n        The x.", rules=[literal_block_after_colon])
 'Args:\n    x:\n        The x.'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.markdown_headings_to_rubrics(lines)
 
@@ -347,9 +347,6 @@ single `#` must also follow a blank line (or open the docstring);
 against another `#` line (that is a commented-out paragraph or doctest)
 or right after code.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("Intro.\n## Usage\nText.", rules=[markdown_headings_to_rubrics])
 'Intro.\n\n.. rubric:: Usage\n\nText.'
@@ -361,41 +358,44 @@ or right after code.
 'Intro.\n# Not a heading\n\nText.'
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.markdown_links_to_rst(lines)
 
 Rewrite `[text](url)` links as RST hyperlinks, outside code and literals.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_text("See [the docs](https://x.org/a) now.", rules=[markdown_links_to_rst])
 'See `the docs <https://x.org/a>`_ now.'
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.normalize_docstring(lines, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>))
 
 Apply `rules` in order to a docstring given as lines (no trailing newlines).
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> normalize_docstring(["Text", ">>> 1", "1"])
 ['Text', '', '>>> 1', '1']
 ```
 
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.normalizer.normalize_text(text, \*, rules=(<function fences_to_code_blocks>, <function fix_short_underlines>, <function google_one_liners>, <function bare_headers_to_rubrics>, <function markdown_headings_to_rubrics>, <function literal_block_after_colon>, <function reflow_list_continuations>, <function blank_lines_between_blocks>, <function markdown_links_to_rst>, <function escape_unmatched_stars>))
 
 Apply `rules` to a docstring given as one string.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> normalize_text("Text\n>>> 1\n1")
 'Text\n\n>>> 1\n1'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.normalizer.reflow_list_continuations(lines)
 
@@ -406,15 +406,15 @@ RST (the list “ends without a blank line”). Indenting the wrapped line under
 the marker makes it one. A line that reads like a new sentence after a
 finished item is separated with a blank line instead.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> normalize_text("- item that\nwraps\n- two", rules=[reflow_list_continuations])
 '- item that\n  wraps\n- two'
 >>> normalize_text("- item.\nNext paragraph", rules=[reflow_list_continuations])
 '- item.\n\nNext paragraph'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.normalizer.resolve_rules(rules)
 
@@ -423,13 +423,13 @@ Accept rule functions or dotted import paths (`"pkg.mod:func"` or `"pkg.mod.func
 Dotted paths are what a `conf.py` can hold: Sphinx cannot pickle functions
 in its configuration, and a ledger of autofixable rules ships names.
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
-
 ```pycon
 >>> [r.__name__ for r in resolve_rules(["epythet.normalizer.fences_to_code_blocks"])]
 ['fences_to_code_blocks']
 ```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`Callable`](https://docs.python.org/3/library/typing.html#typing.Callable)[[[`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]], [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
 
 ### epythet.normalizer.setup(app)
 

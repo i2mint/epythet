@@ -13,6 +13,7 @@
         <title>epythet.validation.lint - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -377,30 +378,30 @@ documents. Only one side can pass, so the ruff side is dropped.</p>
 <dt class="sig sig-object py" id="epythet.validation.lint.pydoclint_severity">
 <span class="sig-prename descclassname"><span class="pre">epythet.validation.lint.</span></span><span class="sig-name descname"><span class="pre">pydoclint_severity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/lint.html#pydoclint_severity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.lint.pydoclint_severity" title="Link to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">DOC1xx</span></code> (arguments disagree with the signature) are warnings; the rest info.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pydoclint_severity</span><span class="p">(</span><span class="s2">"DOC101"</span><span class="p">),</span> <span class="n">pydoclint_severity</span><span class="p">(</span><span class="s2">"DOC201"</span><span class="p">)</span>
+<span class="go">('warning', 'info')</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pydoclint_severity</span><span class="p">(</span><span class="s2">"DOC101"</span><span class="p">),</span> <span class="n">pydoclint_severity</span><span class="p">(</span><span class="s2">"DOC201"</span><span class="p">)</span>
-<span class="go">('warning', 'info')</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.validation.lint.ruff_severity">
 <span class="sig-prename descclassname"><span class="pre">epythet.validation.lint.</span></span><span class="sig-name descname"><span class="pre">ruff_severity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/lint.html#ruff_severity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.lint.ruff_severity" title="Link to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">D1xx</span></code> (missing docstrings) are warnings; other <code class="docutils literal notranslate"><span class="pre">D</span></code> rules are style, so info.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ruff_severity</span><span class="p">(</span><span class="s2">"D102"</span><span class="p">),</span> <span class="n">ruff_severity</span><span class="p">(</span><span class="s2">"D205"</span><span class="p">)</span>
+<span class="go">('warning', 'info')</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ruff_severity</span><span class="p">(</span><span class="s2">"D102"</span><span class="p">),</span> <span class="n">ruff_severity</span><span class="p">(</span><span class="s2">"D205"</span><span class="p">)</span>
-<span class="go">('warning', 'info')</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -515,7 +516,7 @@ on the file’s full path.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

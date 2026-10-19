@@ -114,7 +114,7 @@ Directory under the project root holding the Sphinx sources.
 
 Path substrings skipped by default when discovering modules to document.
 
-### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=<factory>, readme=<factory>, ignore=('tests/', 'scrap/', 'examples/'), ignore_extra=(), api_generator='auto', agent_outputs=True, aggregates=('md', ), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=None, docs_dir='docsrc')
+### *class* epythet.config.DocsConfig(project_dir, name, version='', author='', description='', display_name='', copyright='', repo_url='', theme='auto', accent='', mode='auto', theme_options=dict(), readme=dict(), ignore=('tests/', 'scrap/', 'examples/'), ignore_extra=(), api_generator='auto', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=None, docs_dir='docsrc')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -180,13 +180,13 @@ Locate the package directory for `name` under `project_dir` by convention.
 Tries `<name>/` then `src/<name>/` (with `-` mapped to `_`), returning
 the first that contains an `__init__.py`; `None` when nothing matches.
 
-* **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> find_package_dir("/nonexistent", "nothing") is None
 True
 ```
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.config.load_config(project_dir, \*\*overrides)
 
@@ -225,10 +225,10 @@ The publish action passes its `ignore` input verbatim as one argument,
 `--ignore tests/,scrap/,examples/`, and `setup.cfg` values are strings;
 both must mean three patterns, not one that never matches.
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]
-
 ```pycon
 >>> split_ignore(["tests/,scrap/", " examples/ ", "", "tests/"])
 ('tests/', 'scrap/', 'examples/')
 ```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`...`](https://docs.python.org/3/builtins/constants.html#Ellipsis)]

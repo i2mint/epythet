@@ -13,6 +13,7 @@
         <title>epythet.confgen - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -351,11 +352,6 @@ consequence of the decision record.</p>
 <dt class="sig sig-object py" id="epythet.confgen.api_toctree_entry">
 <span class="sig-prename descclassname"><span class="pre">epythet.confgen.</span></span><span class="sig-name descname"><span class="pre">api_toctree_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/confgen.html#api_toctree_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.confgen.api_toctree_entry" title="Link to this definition">¶</a></dt>
 <dd><p>The document <code class="docutils literal notranslate"><span class="pre">index.md</span></code>’s toctree points at for the API pages.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">api_toctree_entry</span><span class="p">(</span><span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">api_generator</span><span class="o">=</span><span class="s2">"autosummary"</span><span class="p">))</span>
 <span class="go">'api'</span>
@@ -363,21 +359,26 @@ consequence of the decision record.</p>
 <span class="go">'api/index'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.confgen.merge_settings">
 <span class="sig-prename descclassname"><span class="pre">epythet.confgen.</span></span><span class="sig-name descname"><span class="pre">merge_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/confgen.html#merge_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.confgen.merge_settings" title="Link to this definition">¶</a></dt>
 <dd><p>Merge two settings dicts, concatenating list values instead of replacing them.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">merge_settings</span><span class="p">({</span><span class="s2">"extensions"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">],</span> <span class="s2">"x"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s2">"extensions"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"b"</span><span class="p">],</span> <span class="s2">"x"</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="go">{'extensions': ['a', 'b'], 'x': 2}</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">merge_settings</span><span class="p">({</span><span class="s2">"extensions"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">],</span> <span class="s2">"x"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s2">"extensions"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"b"</span><span class="p">],</span> <span class="s2">"x"</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-<span class="go">{'extensions': ['a', 'b'], 'x': 2}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -386,7 +387,7 @@ consequence of the decision record.</p>
 <dd><p>The complete Sphinx <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> namespace for <code class="docutils literal notranslate"><span class="pre">config</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>build_info</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – the provenance record of this build
+<dd class="field-odd"><p><strong>build_info</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>] | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>) – the provenance record of this build
 (<a class="reference internal" href="epythet.provenance.html#epythet.provenance.collect_build_info" title="epythet.provenance.collect_build_info"><code class="xref py py-func docutils literal notranslate"><span class="pre">epythet.provenance.collect_build_info()</span></code></a>), rendered by the
 extension as the landing-page footer and <code class="docutils literal notranslate"><span class="pre">build_info.json</span></code>; <code class="docutils literal notranslate"><span class="pre">None</span></code>
 renders nothing.</p>
@@ -467,7 +468,7 @@ renders nothing.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

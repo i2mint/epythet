@@ -49,7 +49,7 @@ manifest is exactly that). The manifest is read, never written.
 |------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
 | [`SweepResult`](#epythet.sweep.SweepResult)([packages, levels, started, ...])       | Every package swept, the rule distribution and the ranked queue. |
 
-### *class* epythet.sweep.PackageSweep(path, name, version=None, objects=0, undocumented=0, counts=<factory>, severities=<factory>, duration_s=0.0, error=None, notes=<factory>)
+### *class* epythet.sweep.PackageSweep(path, name, version=None, objects=0, undocumented=0, counts=Counter(), severities=dict(), duration_s=0.0, error=None, notes=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -64,7 +64,7 @@ examples first, then correctness, then the summary, then parameter semantics).
 
 Weight per severity for rendering findings (level 0.5) not listed above.
 
-### *class* epythet.sweep.SweepResult(packages=<factory>, levels=(0, 0.5), started='', duration_s=0.0, ledger_severity=<factory>, ledger_title=<factory>)
+### *class* epythet.sweep.SweepResult(packages=list(), levels=(0, 0.5), started='', duration_s=0.0, ledger_severity=dict(), ledger_title=dict())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 

@@ -13,6 +13,7 @@
         <title>epythet.normalizer - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -471,15 +472,15 @@ not when the block sits directly under its own section header.</p></li>
 <p>napoleon only recognises <code class="docutils literal notranslate"><span class="pre">Examples:</span></code> when its content is indented; when
 the doctest below sits at the same indentation, the header rendered as a
 stray paragraph. A rubric is what napoleon itself emits for the section.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Examples:</span><span class="se">\n\n</span><span class="s2">&gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2">1"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">bare_headers_to_rubrics</span><span class="p">])</span>
+<span class="go">'.. rubric:: Examples\n\n&gt;&gt;&gt; f()\n1'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Examples:</span><span class="se">\n\n</span><span class="s2">&gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2">1"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">bare_headers_to_rubrics</span><span class="p">])</span>
-<span class="go">'.. rubric:: Examples\n\n&gt;&gt;&gt; f()\n1'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -489,11 +490,6 @@ stray paragraph. A rubric is what napoleon itself emits for the section.</p>
 <p>The missing blank line before <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> is the single most common artifact in
 the fleet: without it Sphinx renders the doctest as a paragraph and
 <code class="docutils literal notranslate"><span class="pre">sphinx.ext.doctest</span></code> never runs it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Prose</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2">1"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
 <span class="go">'Prose\n\n&gt;&gt;&gt; f()\n1'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Prose</span><span class="se">\n</span><span class="s2">:param x: y</span><span class="se">\n</span><span class="s2">    more</span><span class="se">\n</span><span class="s2">:param z: w"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">blank_lines_between_blocks</span><span class="p">])</span>
@@ -517,6 +513,11 @@ with or without the blank line, so inserting one only trips <code class="docutil
 <span class="go">'Examples:\n    &gt;&gt;&gt; f()\n    1'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -525,45 +526,45 @@ with or without the blank line, so inserting one only trips <code class="docutil
 <dd><p>Escape <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> in prose so they are not read as emphasis.</p>
 <p>Only a star run that is never closed on the same line is escaped, so real
 <code class="docutils literal notranslate"><span class="pre">*emphasis*</span></code> and <code class="docutils literal notranslate"><span class="pre">**strong**</span></code> are untouched.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Takes *args and **kwargs, *really*."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">escape_unmatched_stars</span><span class="p">])</span>
+<span class="go">'Takes \\*args and \\*\\*kwargs, *really*.'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Takes *args and **kwargs, *really*."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">escape_unmatched_stars</span><span class="p">])</span>
-<span class="go">'Takes \\*args and \\*\\*kwargs, *really*.'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.fences_to_code_blocks">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">fences_to_code_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#fences_to_code_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.fences_to_code_blocks" title="Link to this definition">¶</a></dt>
 <dd><p>Turn Markdown code fences into <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">code-block::</span></code> directives.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Run:</span><span class="se">\n</span><span class="s2">```bash</span><span class="se">\n</span><span class="s2">pip install x</span><span class="se">\n</span><span class="s2">```</span><span class="se">\n</span><span class="s2">Done."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">fences_to_code_blocks</span><span class="p">])</span>
+<span class="go">'Run:\n\n.. code-block:: bash\n\n    pip install x\n\nDone.'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Run:</span><span class="se">\n</span><span class="s2">```bash</span><span class="se">\n</span><span class="s2">pip install x</span><span class="se">\n</span><span class="s2">```</span><span class="se">\n</span><span class="s2">Done."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">fences_to_code_blocks</span><span class="p">])</span>
-<span class="go">'Run:\n\n.. code-block:: bash\n\n    pip install x\n\nDone.'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.fix_short_underlines">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">fix_short_underlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#fix_short_underlines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.fix_short_underlines" title="Link to this definition">¶</a></dt>
 <dd><p>Extend a title underline that is shorter than its title.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Examples</span><span class="se">\n</span><span class="s2">----</span><span class="se">\n</span><span class="s2">text"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">fix_short_underlines</span><span class="p">])</span>
+<span class="go">'Examples\n--------\ntext'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Examples</span><span class="se">\n</span><span class="s2">----</span><span class="se">\n</span><span class="s2">text"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">fix_short_underlines</span><span class="p">])</span>
-<span class="go">'Examples\n--------\ntext'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -574,11 +575,6 @@ with or without the blank line, so inserting one only trips <code class="docutil
 the section body; a field list, a bullet list, a Markdown heading or another
 section ends it. Inside the body of another section the line is an entry
 (an argument called <code class="docutils literal notranslate"><span class="pre">error</span></code>), not a header, and is left alone.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Returns: a thing that</span><span class="se">\n</span><span class="s2">spans two lines.</span><span class="se">\n\n</span><span class="s2">Next."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">google_one_liners</span><span class="p">])</span>
 <span class="go">'Returns:\n    a thing that\n    spans two lines.\n\nNext.'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Returns: a thing.</span><span class="se">\n</span><span class="s2">## Notes</span><span class="se">\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">google_one_liners</span><span class="p">])</span>
@@ -587,6 +583,11 @@ section ends it. Inside the body of another section the line is an entry
 <span class="go">'Note:\n    be careful.\n\n:return: the thing'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -597,47 +598,47 @@ section ends it. Inside the body of another section the line is an entry
 with an indented body below; the body ends at the first non-blank line
 that is not deeper than the header. Rules use this to stay out of section
 bodies, where <code class="docutils literal notranslate"><span class="pre">x:</span></code> is an argument and not a literal-block lead-in.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">google_section_bodies</span><span class="p">([</span><span class="s2">"Args:"</span><span class="p">,</span> <span class="s2">"    x: the x"</span><span class="p">,</span> <span class="s2">"        more"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"Text."</span><span class="p">])</span>
 <span class="go">[None, 4, 4, 4, None]</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.indent_of">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">indent_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#indent_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.indent_of" title="Link to this definition">¶</a></dt>
 <dd><p>Number of leading spaces (tabs count as one).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indent_of</span><span class="p">(</span><span class="s2">"    x"</span><span class="p">),</span> <span class="n">indent_of</span><span class="p">(</span><span class="s2">"x"</span><span class="p">),</span> <span class="n">indent_of</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="go">(4, 0, 0)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indent_of</span><span class="p">(</span><span class="s2">"    x"</span><span class="p">),</span> <span class="n">indent_of</span><span class="p">(</span><span class="s2">"x"</span><span class="p">),</span> <span class="n">indent_of</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-<span class="go">(4, 0, 0)</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.is_art_line">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">is_art_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#is_art_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.is_art_line" title="Link to this definition">¶</a></dt>
 <dd><p>Whether <code class="docutils literal notranslate"><span class="pre">line</span></code> is a piece of a drawing: box characters, arrows, or mostly strokes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_art_line</span><span class="p">(</span><span class="s2">"│ 0 │ ──▶ │ 2 │"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"  +----+"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"- a bullet"</span><span class="p">)</span>
 <span class="go">(True, True, False)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">is_art_line</span><span class="p">(</span><span class="s2">"func1 --&gt; merge"</span><span class="p">),</span> <span class="n">is_art_line</span><span class="p">(</span><span class="s2">"x = 1  # comment"</span><span class="p">)</span>
 <span class="go">(True, False)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -647,11 +648,6 @@ bodies, where <code class="docutils literal notranslate"><span class="pre">x:</s
 <p>The classification is what keeps every rule away from code: a line inside a
 doctest block, a <code class="docutils literal notranslate"><span class="pre">::</span></code> literal block, a directive body, a Markdown fence or
 an ASCII-art drawing is never rewritten.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">line_contexts</span><span class="p">([</span><span class="s2">"Text:"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"    &gt;&gt;&gt; 1"</span><span class="p">,</span> <span class="s2">"    1"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"- a"</span><span class="p">,</span> <span class="s2">"  b"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">":param x: y"</span><span class="p">])</span>
 <span class="go">['prose', 'blank', 'doctest', 'doctest', 'blank', 'list', 'list', 'blank', 'field']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">line_contexts</span><span class="p">([</span><span class="s2">"    &gt;&gt;&gt; 1"</span><span class="p">,</span> <span class="s2">"    1"</span><span class="p">,</span> <span class="s2">"back to prose"</span><span class="p">])</span>
@@ -660,6 +656,11 @@ an ASCII-art drawing is never rewritten.</p>
 <span class="go">['art', 'art', 'art', 'list']</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -672,11 +673,6 @@ line reads as prose and some line carries a code signal such as <code class="doc
 argument. A lead-in over an indented paragraph is a definition list the
 author may have meant; it is left alone and DR014 reports it. A lone
 <code class="docutils literal notranslate"><span class="pre">Usage:</span></code> or <code class="docutils literal notranslate"><span class="pre">Output:</span></code> over a command or a value is code all the same.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"For example:</span><span class="se">\n</span><span class="s2">    x = f(1)</span><span class="se">\n</span><span class="s2">Then more."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
 <span class="go">'For example::\n\n    x = f(1)\n\nThen more.'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Usage:</span><span class="se">\n</span><span class="s2">    python run.py  # top 12"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">literal_block_after_colon</span><span class="p">])</span>
@@ -687,6 +683,11 @@ author may have meant; it is left alone and DR014 reports it. A lone
 <span class="go">'Args:\n    x:\n        The x.'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -702,11 +703,6 @@ single <code class="docutils literal notranslate"><span class="pre">#</span></co
 <code class="docutils literal notranslate"><span class="pre">##</span></code> and deeper may sit against prose. No heading of any level sits
 against another <code class="docutils literal notranslate"><span class="pre">#</span></code> line (that is a commented-out paragraph or doctest)
 or right after code.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Intro.</span><span class="se">\n</span><span class="s2">## Usage</span><span class="se">\n</span><span class="s2">Text."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
 <span class="go">'Intro.\n\n.. rubric:: Usage\n\nText.'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"# &gt;&gt;&gt; f()</span><span class="se">\n</span><span class="s2"># True"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_headings_to_rubrics</span><span class="p">])</span>
@@ -717,51 +713,56 @@ or right after code.</p>
 <span class="go">'Intro.\n# Not a heading\n\nText.'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.markdown_links_to_rst">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">markdown_links_to_rst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#markdown_links_to_rst"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.markdown_links_to_rst" title="Link to this definition">¶</a></dt>
 <dd><p>Rewrite <code class="docutils literal notranslate"><span class="pre">[text](url)</span></code> links as RST hyperlinks, outside code and literals.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"See [the docs](https://x.org/a) now."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_links_to_rst</span><span class="p">])</span>
+<span class="go">'See `the docs &lt;https://x.org/a&gt;`_ now.'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"See [the docs](https://x.org/a) now."</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">markdown_links_to_rst</span><span class="p">])</span>
-<span class="go">'See `the docs &lt;https://x.org/a&gt;`_ now.'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.normalize_docstring">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">normalize_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(&lt;function</span> <span class="pre">fences_to_code_blocks&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">fix_short_underlines&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">google_one_liners&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">bare_headers_to_rubrics&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">markdown_headings_to_rubrics&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">literal_block_after_colon&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">reflow_list_continuations&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">blank_lines_between_blocks&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">markdown_links_to_rst&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">escape_unmatched_stars&gt;)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#normalize_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.normalize_docstring" title="Link to this definition">¶</a></dt>
 <dd><p>Apply <code class="docutils literal notranslate"><span class="pre">rules</span></code> in order to a docstring given as lines (no trailing newlines).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_docstring</span><span class="p">([</span><span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"&gt;&gt;&gt; 1"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">])</span>
+<span class="go">['Text', '', '&gt;&gt;&gt; 1', '1']</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_docstring</span><span class="p">([</span><span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"&gt;&gt;&gt; 1"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">])</span>
-<span class="go">['Text', '', '&gt;&gt;&gt; 1', '1']</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.normalizer.normalize_text">
 <span class="sig-prename descclassname"><span class="pre">epythet.normalizer.</span></span><span class="sig-name descname"><span class="pre">normalize_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(&lt;function</span> <span class="pre">fences_to_code_blocks&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">fix_short_underlines&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">google_one_liners&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">bare_headers_to_rubrics&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">markdown_headings_to_rubrics&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">literal_block_after_colon&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">reflow_list_continuations&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">blank_lines_between_blocks&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">markdown_links_to_rst&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">escape_unmatched_stars&gt;)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/normalizer.html#normalize_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.normalizer.normalize_text" title="Link to this definition">¶</a></dt>
 <dd><p>Apply <code class="docutils literal notranslate"><span class="pre">rules</span></code> to a docstring given as one string.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Text</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; 1</span><span class="se">\n</span><span class="s2">1"</span><span class="p">)</span>
+<span class="go">'Text\n\n&gt;&gt;&gt; 1\n1'</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"Text</span><span class="se">\n</span><span class="s2">&gt;&gt;&gt; 1</span><span class="se">\n</span><span class="s2">1"</span><span class="p">)</span>
-<span class="go">'Text\n\n&gt;&gt;&gt; 1\n1'</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -772,17 +773,17 @@ or right after code.</p>
 RST (the list “ends without a blank line”). Indenting the wrapped line under
 the marker makes it one. A line that reads like a new sentence after a
 finished item is separated with a blank line instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"- item that</span><span class="se">\n</span><span class="s2">wraps</span><span class="se">\n</span><span class="s2">- two"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">reflow_list_continuations</span><span class="p">])</span>
 <span class="go">'- item that\n  wraps\n- two'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_text</span><span class="p">(</span><span class="s2">"- item.</span><span class="se">\n</span><span class="s2">Next paragraph"</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="p">[</span><span class="n">reflow_list_continuations</span><span class="p">])</span>
 <span class="go">'- item.\n\nNext paragraph'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -791,15 +792,15 @@ finished item is separated with a blank line instead.</p>
 <dd><p>Accept rule functions or dotted import paths (<code class="docutils literal notranslate"><span class="pre">&quot;pkg.mod:func&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;pkg.mod.func&quot;</span></code>).</p>
 <p>Dotted paths are what a <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> can hold: Sphinx cannot pickle functions
 in its configuration, and a ledger of autofixable rules ships names.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">resolve_rules</span><span class="p">([</span><span class="s2">"epythet.normalizer.fences_to_code_blocks"</span><span class="p">])]</span>
+<span class="go">['fences_to_code_blocks']</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]], <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">resolve_rules</span><span class="p">([</span><span class="s2">"epythet.normalizer.fences_to_code_blocks"</span><span class="p">])]</span>
-<span class="go">['fences_to_code_blocks']</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -906,7 +907,7 @@ napoleon (priority 500) sees the docstring.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

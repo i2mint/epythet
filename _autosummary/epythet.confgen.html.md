@@ -42,9 +42,6 @@ Extensions every epythet site uses, whatever the API generator.
 
 The document `index.md`’s toctree points at for the API pages.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> from epythet.config import DocsConfig
 >>> api_toctree_entry(DocsConfig(project_dir="/tmp/x", name="x", api_generator="autosummary"))
@@ -53,17 +50,20 @@ The document `index.md`’s toctree points at for the API pages.
 'api/index'
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
 ### epythet.confgen.merge_settings(base, extra)
 
 Merge two settings dicts, concatenating list values instead of replacing them.
-
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ```pycon
 >>> merge_settings({"extensions": ["a"], "x": 1}, {"extensions": ["b"], "x": 2})
 {'extensions': ['a', 'b'], 'x': 2}
 ```
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Any`](https://docs.python.org/3/library/typing.html#typing.Any)]
 
 ### epythet.confgen.sphinx_settings(config, , build_info=None)
 

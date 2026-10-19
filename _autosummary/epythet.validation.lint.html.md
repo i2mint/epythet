@@ -58,25 +58,25 @@ Docstring styles ruff’s pydocstyle convention and pydoclint’s `--style` both
 
 `DOC1xx` (arguments disagree with the signature) are warnings; the rest info.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> pydoclint_severity("DOC101"), pydoclint_severity("DOC201")
 ('warning', 'info')
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
 ### epythet.validation.lint.ruff_severity(code)
 
 `D1xx` (missing docstrings) are warnings; other `D` rules are style, so info.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> ruff_severity("D102"), ruff_severity("D205")
 ('warning', 'info')
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.validation.lint.run_lint_level(package_dir, , project_dir, style='google', ignore=())
 

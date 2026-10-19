@@ -200,15 +200,15 @@ read it. `--write` is explicit: it writes whatever the policy says.
 
 The first sentence of a skill or agent description, short enough for a table cell.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> blurb("Find and fix things. Use when asked to fix.")
 'find and fix things'
 >>> blurb("Do the thing and then some: a, b, c, " + "and more " * 30)
 'do the thing and then some'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.agentic_readme.check_readme(project_dir, , config=None, artifacts=None, user_config=None)
 
@@ -244,9 +244,6 @@ The project’s README, by the usual names (`None` when there is none).
 
 GitHub’s anchor for a heading title.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> github_anchor("For AI agents"), github_anchor("What it *fixes*: `x`")
 ('for-ai-agents', 'what-it-fixes-x')
@@ -254,17 +251,20 @@ GitHub’s anchor for a heading title.
 'my_function-and-links'
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
 ### epythet.agentic_readme.headings_of(text)
 
 Every ATX heading outside fenced code blocks.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Heading`](#epythet.agentic_readme.Heading)]
 
 ```pycon
 >>> [h.title for h in headings_of("# A\n```\n# not one\n```\n## B\n")]
 ['A', 'B']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Heading`](#epythet.agentic_readme.Heading)]
 
 ### epythet.agentic_readme.headline_skill(skills)
 

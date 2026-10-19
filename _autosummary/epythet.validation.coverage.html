@@ -13,6 +13,7 @@
         <title>epythet.validation.coverage - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -414,7 +415,7 @@ subset of the annotation’s tokens (<code class="docutils literal notranslate">
 
 <dl class="py class">
 <dt class="sig sig-object py" id="epythet.validation.coverage.PublicObject">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">PublicObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_entry_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#PublicObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.PublicObject" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">PublicObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">list()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_entry_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#PublicObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.PublicObject" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>One public module, class or function, with what a detector needs to judge it.</p>
 <dl class="field-list simple">
@@ -542,15 +543,15 @@ fixtures use it: they have no package <code class="docutils literal notranslate"
 <dt class="sig sig-object py" id="epythet.validation.coverage.name_words">
 <span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">name_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#name_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.name_words" title="Link to this definition">¶</a></dt>
 <dd><p>Content words of an identifier: <code class="docutils literal notranslate"><span class="pre">load_config</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">{&quot;load&quot;,</span> <span class="pre">&quot;config&quot;}</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"DocsConfig"</span><span class="p">)),</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"mk_parser"</span><span class="p">))</span>
+<span class="go">(['config', 'doc'], ['mk', 'parser'])</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"DocsConfig"</span><span class="p">)),</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">name_words</span><span class="p">(</span><span class="s2">"mk_parser"</span><span class="p">))</span>
-<span class="go">(['config', 'doc'], ['mk', 'parser'])</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -559,11 +560,6 @@ fixtures use it: they have no package <code class="docutils literal notranslate"
 <dd><p><code class="docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">description}</span></code> from an RST, Google or NumPy docstring, first line plus continuations.</p>
 <p>Deliberately not delegated to <code class="docutils literal notranslate"><span class="pre">docstring_parser</span></code> (an optional extra):
 a detector’s verdict must not depend on what is installed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_descriptions</span><span class="p">(</span><span class="s2">":param n: how many</span><span class="se">\n</span><span class="s2">    retries</span><span class="se">\n</span><span class="s2">:param delay: seconds"</span><span class="p">)</span>
 <span class="go">{'n': 'how many retries', 'delay': 'seconds'}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">param_descriptions</span><span class="p">(</span><span class="s2">"Args:</span><span class="se">\n</span><span class="s2">    n (int): how many</span><span class="se">\n</span><span class="s2">    delay: seconds</span><span class="se">\n\n</span><span class="s2">Returns:</span><span class="se">\n</span><span class="s2">    x"</span><span class="p">)</span>
@@ -572,17 +568,17 @@ a detector’s verdict must not depend on what is installed.</p>
 <span class="go">{'n': 'how many', 'delay': 'seconds'}</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.validation.coverage.restates_type">
 <span class="sig-prename descclassname"><span class="pre">epythet.validation.coverage.</span></span><span class="sig-name descname"><span class="pre">restates_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/validation/coverage.html#restates_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.validation.coverage.restates_type" title="Link to this definition">¶</a></dt>
 <dd><p>Whether a parameter’s description only restates its annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">restates_type</span><span class="p">(</span><span class="n">Param</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"int"</span><span class="p">,</span> <span class="s2">"an integer"</span><span class="p">))</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">restates_type</span><span class="p">(</span><span class="n">Param</span><span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"int"</span><span class="p">,</span> <span class="s2">"how many retries before giving up"</span><span class="p">))</span>
@@ -591,6 +587,11 @@ a detector’s verdict must not depend on what is installed.</p>
 <span class="go">False</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -725,7 +726,7 @@ a detector’s verdict must not depend on what is installed.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

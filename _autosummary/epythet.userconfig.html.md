@@ -149,7 +149,7 @@ The `[snippets]` table: `dir` overrides where user snippets are read.
 A relative `dir` is taken relative to the config directory, so the same
 `config.toml` means the same folder from any shell.
 
-### *class* epythet.userconfig.UserConfig(readme=<factory>, snippets=<factory>, path=None)
+### *class* epythet.userconfig.UserConfig(readme=ReadmePolicy(), snippets=SnippetsConfig(), path=None)
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -163,9 +163,6 @@ Committed READMEs should not depend on who ran the tool, so a project
 can pin what matters for its text (`humor`, `agentic_first`) in its
 `pyproject.toml`; `agentic_aspects` may be pinned too.
 
-* **Return type:**
-  [`ReadmePolicy`](#epythet.userconfig.ReadmePolicy)
-
 ```pycon
 >>> UserConfig().readme_for({"humor": True}).humor
 True
@@ -174,6 +171,9 @@ Traceback (most recent call last):
 ...
 UserConfigError: unknown key(s) ['humour'] in [tool.epythet.readme]
 ```
+
+* **Return type:**
+  [`ReadmePolicy`](#epythet.userconfig.ReadmePolicy)
 
 #### to_dict(project_overrides=None)
 
@@ -197,15 +197,15 @@ Bases: [`ConfigError`](epythet.config.html.md#epythet.config.ConfigError)
 
 XDG-style on every platform, like `epythet.validation.ledger.user_data_dir()`.
 
-* **Return type:**
-  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
-
 ```pycon
 >>> _saved = os.environ.get(CONFIG_DIR_ENV)
 >>> os.environ[CONFIG_DIR_ENV] = "/tmp/x"; config_dir().as_posix()
 '/tmp/x'
 >>> _ = os.environ.pop(CONFIG_DIR_ENV) if _saved is None else os.environ.__setitem__(CONFIG_DIR_ENV, _saved)
 ```
+
+* **Return type:**
+  [`Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
 
 ### epythet.userconfig.config_path()
 
@@ -236,15 +236,15 @@ epythet’s version: the checkout’s `pyproject.toml` when running from source,
 
 The epythet version recorded in a user copy’s header (`""` when absent).
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> header_version(snippet_header("x", "0.2.5") + "body")
 '0.2.5'
 >>> header_version("no header")
 ''
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.userconfig.init_snippets(, user_dir=None, force=False, names=None)
 
@@ -285,13 +285,13 @@ The names of the snippets epythet ships, sorted.
 
 The non-empty, non-comment lines of a pool snippet (one candidate per line).
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> pool_lines("# a comment\n\nIf you are a control freak\n  If you like it \n")
 ['If you are a control freak', 'If you like it']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.userconfig.snippet(name, , user_dir=None)
 

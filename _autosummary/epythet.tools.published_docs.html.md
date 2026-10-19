@@ -53,7 +53,7 @@ Check if a branch exists in a repo.
 * **Parameters:**
   * **repo_stub** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – A string of the form `org/repo`.
   * **branch** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – The branch name to check for.
-  * **headers** (`Union`[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – A function that returns a dictionary of headers
+  * **headers** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – A function that returns a dictionary of headers
 
 ### epythet.tools.published_docs.check_pages_setup(repo_stub, , expected_branch='gh-pages', expected_path='/', check_url=True)
 
@@ -118,7 +118,7 @@ Retrieves the default branch and current commit SHA for a given GitHub repositor
 
 * **Parameters:**
   * **repo_stub** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – The GitHub repository in “owner/repo” format.
-  * **headers** (`Union`[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **headers** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   A dictionary containing ‘default_branch’ and ‘commit_sha’.
 * **Return type:**
@@ -147,7 +147,7 @@ Ensures a branch exists. Does nothing if it already does, and creates it if not.
   * **branch** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Name of the branch to be created if it doesn’t exist
   * **commit_sha** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – Commit SHA to base the new branch on. By default,
     it’s the SHA of the most recent commit of the default branch.
-  * **headers** (`Union`[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
+  * **headers** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict), [`Callable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable)[[], [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)]]) – Headers for authentication, e.g., {‘Authorization’: ‘Bearer <token>’}.
 * **Returns:**
   Response from GitHub API as a dictionary.
 * **Return type:**
@@ -181,7 +181,7 @@ installed!) that will tell you if given github `org/repo` url(s) have published
 documentation and if a `docs` folder even exists (in master branch).
 
 * **Parameters:**
-  * **urls** (`Union`[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)]]) – A list of urls, a table containing urls, or a single url pointing to
+  * **urls** ([`Union`](https://docs.python.org/3/library/typing.html#typing.Union)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)], [`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)[[`Iterable`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable)]]) – A list of urls, a table containing urls, or a single url pointing to
     a csv where this table can be downloaded from.
   * **url_column** – When `urls` is a table, what column name contains the urls.
 * **Returns:**

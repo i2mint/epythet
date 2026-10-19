@@ -72,7 +72,7 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 A signature parameter and, if the docstring describes it, that description.
 
-### *class* epythet.validation.coverage.PublicObject(qualname, kind, file, line, docstring, params=<factory>, is_entry_point=False, name='')
+### *class* epythet.validation.coverage.PublicObject(qualname, kind, file, line, docstring, params=list(), is_entry_point=False, name='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -158,13 +158,13 @@ A public module, class or function with no docstring at all (DQ001).
 
 Content words of an identifier: `load_config` -> `{"load", "config"}`.
 
-* **Return type:**
-  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> sorted(name_words("DocsConfig")), sorted(name_words("mk_parser"))
 (['config', 'doc'], ['mk', 'parser'])
 ```
+
+* **Return type:**
+  [`set`](https://docs.python.org/3/builtins/stdtypes.html#set)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.validation.coverage.param_descriptions(docstring)
 
@@ -172,9 +172,6 @@ Content words of an identifier: `load_config` -> `{"load", "config"}`.
 
 Deliberately not delegated to `docstring_parser` (an optional extra):
 a detector’s verdict must not depend on what is installed.
-
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ```pycon
 >>> param_descriptions(":param n: how many\n    retries\n:param delay: seconds")
@@ -185,12 +182,12 @@ a detector’s verdict must not depend on what is installed.
 {'n': 'how many', 'delay': 'seconds'}
 ```
 
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
+
 ### epythet.validation.coverage.restates_type(param)
 
 Whether a parameter’s description only restates its annotation.
-
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ```pycon
 >>> restates_type(Param("n", "int", "an integer"))
@@ -200,6 +197,9 @@ False
 >>> restates_type(Param("n", None, "an integer"))
 False
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.validation.coverage.run_coverage_level(package_dir, ledger, , ignore=())
 

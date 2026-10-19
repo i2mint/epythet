@@ -71,7 +71,7 @@ Rule ids this level reports under (all bundled; see `epythet/ledger/rules`).
 
 Detector name (as in a rule’s `detector.function`) -> function.
 
-### *class* epythet.validation.rendered.RenderArtifacts(outdirs=<factory>, docsrc=None, snapshot=None)
+### *class* epythet.validation.rendered.RenderArtifacts(outdirs=dict(), docsrc=None, snapshot=None)
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -93,7 +93,7 @@ One thing a render detector found on one page.
 
 Where `-b text` snapshots live, relative to the Sphinx source directory.
 
-### *class* epythet.validation.rendered.SnapshotDiff(changed=<factory>, added=<factory>, removed=<factory>, compared=0)
+### *class* epythet.validation.rendered.SnapshotDiff(changed=dict(), added=list(), removed=list(), compared=0)
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 

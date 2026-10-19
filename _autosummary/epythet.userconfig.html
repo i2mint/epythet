@@ -13,6 +13,7 @@
         <title>epythet.userconfig - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -536,7 +537,7 @@ a user file written by hand).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="epythet.userconfig.UserConfig">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.userconfig.</span></span><span class="sig-name descname"><span class="pre">UserConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snippets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/userconfig.html#UserConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.userconfig.UserConfig" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">epythet.userconfig.</span></span><span class="sig-name descname"><span class="pre">UserConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReadmePolicy()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snippets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SnippetsConfig()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/userconfig.html#UserConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.userconfig.UserConfig" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Everything <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> can say, with defaults for what it does not.</p>
 <dl class="field-list simple">
@@ -548,11 +549,6 @@ a user file written by hand).</p>
 <p>Committed READMEs should not depend on who ran the tool, so a project
 can pin what matters for its text (<code class="docutils literal notranslate"><span class="pre">humor</span></code>, <code class="docutils literal notranslate"><span class="pre">agentic_first</span></code>) in its
 <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>; <code class="docutils literal notranslate"><span class="pre">agentic_aspects</span></code> may be pinned too.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.userconfig.ReadmePolicy" title="epythet.userconfig.ReadmePolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReadmePolicy</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">UserConfig</span><span class="p">()</span><span class="o">.</span><span class="n">readme_for</span><span class="p">({</span><span class="s2">"humor"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span><span class="o">.</span><span class="n">humor</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">UserConfig</span><span class="p">()</span><span class="o">.</span><span class="n">readme_for</span><span class="p">({</span><span class="s2">"humour"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
@@ -561,6 +557,11 @@ can pin what matters for its text (<code class="docutils literal notranslate"><s
 <span class="gr">UserConfigError</span>: <span class="n">unknown key(s) ['humour'] in [tool.epythet.readme]</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#epythet.userconfig.ReadmePolicy" title="epythet.userconfig.ReadmePolicy"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReadmePolicy</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -590,17 +591,17 @@ the user’s own table, <code class="docutils literal notranslate"><span class="
 <span class="sig-prename descclassname"><span class="pre">epythet.userconfig.</span></span><span class="sig-name descname"><span class="pre">config_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/userconfig.html#config_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.userconfig.config_dir" title="Link to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">$EPYTHET_CONFIG_DIR</span></code>, else <code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/epythet</span></code>, else <code class="docutils literal notranslate"><span class="pre">~/.config/epythet</span></code>.</p>
 <p>XDG-style on every platform, like <code class="xref py py-func docutils literal notranslate"><span class="pre">epythet.validation.ledger.user_data_dir()</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_saved</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CONFIG_DIR_ENV</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">CONFIG_DIR_ENV</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"/tmp/x"</span><span class="p">;</span> <span class="n">config_dir</span><span class="p">()</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
 <span class="go">'/tmp/x'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">CONFIG_DIR_ENV</span><span class="p">)</span> <span class="k">if</span> <span class="n">_saved</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">CONFIG_DIR_ENV</span><span class="p">,</span> <span class="n">_saved</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -643,17 +644,17 @@ addition.</p>
 <dt class="sig sig-object py" id="epythet.userconfig.header_version">
 <span class="sig-prename descclassname"><span class="pre">epythet.userconfig.</span></span><span class="sig-name descname"><span class="pre">header_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/userconfig.html#header_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.userconfig.header_version" title="Link to this definition">¶</a></dt>
 <dd><p>The epythet version recorded in a user copy’s header (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> when absent).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">header_version</span><span class="p">(</span><span class="n">snippet_header</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"0.2.5"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"body"</span><span class="p">)</span>
 <span class="go">'0.2.5'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">header_version</span><span class="p">(</span><span class="s2">"no header"</span><span class="p">)</span>
 <span class="go">''</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -712,15 +713,15 @@ is replaced; <code class="docutils literal notranslate"><span class="pre">epythe
 <dt class="sig sig-object py" id="epythet.userconfig.pool_lines">
 <span class="sig-prename descclassname"><span class="pre">epythet.userconfig.</span></span><span class="sig-name descname"><span class="pre">pool_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/userconfig.html#pool_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.userconfig.pool_lines" title="Link to this definition">¶</a></dt>
 <dd><p>The non-empty, non-comment lines of a pool snippet (one candidate per line).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pool_lines</span><span class="p">(</span><span class="s2">"# a comment</span><span class="se">\n\n</span><span class="s2">If you are a control freak</span><span class="se">\n</span><span class="s2">  If you like it </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="go">['If you are a control freak', 'If you like it']</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pool_lines</span><span class="p">(</span><span class="s2">"# a comment</span><span class="se">\n\n</span><span class="s2">If you are a control freak</span><span class="se">\n</span><span class="s2">  If you like it </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<span class="go">['If you are a control freak', 'If you like it']</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -950,7 +951,7 @@ Existing files are never overwritten unless <code class="docutils literal notran
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

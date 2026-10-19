@@ -180,9 +180,6 @@ The fields a page template may use.
 
 The machine-readable outputs a configuration produces, with URLs when known.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`AgentOutput`](#epythet.ai_artifacts.AgentOutput)]
-
 ```pycon
 >>> from epythet.config import DocsConfig
 >>> cfg = DocsConfig(project_dir="/tmp/x", name="x", repo_url="https://github.com/o/x")
@@ -191,6 +188,9 @@ The machine-readable outputs a configuration produces, with URLs when known.
 >>> agent_outputs_for(cfg)[0].url
 'https://o.github.io/x/llms.txt'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`AgentOutput`](#epythet.ai_artifacts.AgentOutput)]
 
 ### epythet.ai_artifacts.ai_artifacts_page(config, , artifacts=None)
 
@@ -241,15 +241,15 @@ Find the skills, subagents and instruction files of a project by convention.
 
 False when `EPYTHET_AI_ARTIFACTS` is set to `0`, `false`, `no` or `off`.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> os.environ[DISABLE_ENV] = "0"; enabled_by_environment()
 False
 >>> del os.environ[DISABLE_ENV]; enabled_by_environment()
 True
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.ai_artifacts.parse_frontmatter(text)
 
@@ -260,9 +260,6 @@ unquoted `description: Use when x: y` is a common slip), a small reader
 that understands the subset skills and agents use: `key: value` scalars,
 `>`/`|` block scalars, one level of nested mapping, `[a, b]` flow
 lists and trailing comments. A malformed frontmatter never raises.
-
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ```pycon
 >>> parse_frontmatter("---\ndescription: Use when a: b\nname: x\n---\n")
@@ -276,7 +273,10 @@ lists and trailing comments. A malformed frontmatter never raises.
 {}
 ```
 
-### epythet.ai_artifacts.render_ai_artifacts_page(artifacts, config, , template='{marker}\\\\n\\\\n# For AI agents\\\\n\\\\n\`{name}\` ships artifacts for coding agents alongside its code. This page lists\\\\nthem, says where each lives in the repository, and points at the\\\\nmachine-readable copies of this documentation.\\\\n{skills_section}{subagents_section}{instructions_section}{outputs_section}', agent='claude-code')
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
+### epythet.ai_artifacts.render_ai_artifacts_page(artifacts, config, , template='{marker}\\n\\n# For AI agents\\n\\n\`{name}\` ships artifacts for coding agents alongside its code. This page lists\\nthem, says where each lives in the repository, and points at the\\nmachine-readable copies of this documentation.\\n{skills_section}{subagents_section}{instructions_section}{outputs_section}', agent='claude-code')
 
 Render the “For AI agents” page for `artifacts` and a `DocsConfig`.
 
@@ -295,9 +295,6 @@ Render the “For AI agents” page for `artifacts` and a `DocsConfig`.
 Deeper paths, fragments and queries are dropped, so an `Issues` URL in
 `[project.urls]` still names the repository.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> repo_stub_for("https://github.com/i2mint/epythet.git")
 'i2mint/epythet'
@@ -309,12 +306,12 @@ Deeper paths, fragments and queries are dropped, so an `Issues` URL in
 ''
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
+
 ### epythet.ai_artifacts.site_url_for(repo_url)
 
 The GitHub Pages URL a GitHub repository publishes to (’’ when unknown).
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> site_url_for("https://github.com/i2mint/epythet")
@@ -322,3 +319,6 @@ The GitHub Pages URL a GitHub repository publishes to (’’ when unknown).
 >>> site_url_for("")
 ''
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)

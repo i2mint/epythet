@@ -71,9 +71,6 @@ A block starts at a field line and takes every following field line at
 the same indentation and every continuation (a deeper-indented line, or a
 blank line followed by one of those).
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> field_region(["Summary.", "", ":param x: the x", "    more", ":returns: y", "", "Then prose."])
 (2, 5)
@@ -81,17 +78,20 @@ blank line followed by one of those).
 True
 ```
 
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### epythet.migrate.field_regions(lines)
 
 Every field block of a docstring, in order.
-
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]]
 
 ```pycon
 >>> field_regions([":param x: x", "", "prose", "", ":returns: y"])
 [(0, 1), (4, 5)]
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]]
 
 ### epythet.migrate.migrate_style(path, \*, to='google', write=False, ignore=(), ledger=None, napoleon=True, run_doctests=True, applier=<function apply_span_edits>)
 

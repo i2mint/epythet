@@ -85,13 +85,13 @@ the string nodes).
 | [`FileRepair`](#epythet.repair.FileRepair)(path, original, repaired[, ...])      | What the repair did to one file.                    |
 | [`RepairReport`](#epythet.repair.RepairReport)(root[, files, write, notes])        | Everything one `repair` run did.                    |
 
-### *class* epythet.repair.DocstringEdit(qualname, line, start, end, before, after, reason=None, fixed=<factory>, remaining=<factory>)
+### *class* epythet.repair.DocstringEdit(qualname, line, start, end, before, after, reason=None, fixed=list(), remaining=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One docstring the repair rewrote (or refused to).
 
-### *class* epythet.repair.FileRepair(path, original, repaired, edits=<factory>, skipped=None, written=False, verification=<factory>)
+### *class* epythet.repair.FileRepair(path, original, repaired, edits=list(), skipped=None, written=False, verification=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -114,7 +114,7 @@ the number is the same on the dry run, the write, and the run after.
 * **Type:**
   Docstrings left for a hand
 
-### *class* epythet.repair.RepairReport(root, files=<factory>, write=False, notes=<factory>)
+### *class* epythet.repair.RepairReport(root, files=list(), write=False, notes=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -150,13 +150,13 @@ A literal block needs no directive support and, unlike `code-block`,
 is safe inside a docstring that a doctest runner reads (a `>>>` line
 inside it is still literal, but is never mistaken for a directive body).
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> N.normalize_text("Run:\n```bash\npip install x\n```\nDone.", rules=[fences_to_literal_blocks])
 'Run::\n\n    pip install x\n\nDone.'
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
 
 ### epythet.repair.iter_docstring_nodes(tree)
 
@@ -241,12 +241,12 @@ The rule tuple for a fence style (`literal` swaps the fence rule).
 
 `(prefix, quote, body, closing quote)` of a string literal’s source, or `None`.
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> split_literal('r"""x"""')
 ('r', '"""', 'x', '"""')
 >>> split_literal("'y'")
 ('', "'", 'y', "'")
 ```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)

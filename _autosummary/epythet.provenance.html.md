@@ -149,7 +149,7 @@ seconds since the epoch, fixes `built_at`.
 
 The fields [`render_about_page()`](#epythet.provenance.render_about_page) fills; a custom template may use any subset.
 
-### epythet.provenance.about_page(info, , template='---\\\\norphan: true\\\\n---\\\\n{marker}\\\\n\\\\n# About this build\\\\n\\\\n{summary}\\\\n\\\\n{alignment_block}\\\\n\\\\n## Source\\\\n\\\\n| | |\\\\n|---|---|\\\\n| Commit | {commit_cell} |\\\\n| Branch | {branch} |\\\\n| Tags at this commit | {tags} |\\\\n| Working tree | {tree_state} |\\\\n| Remote | {remote} |\\\\n\\\\n## Continuous integration\\\\n\\\\n{ci_block}\\\\n\\\\n## Tools\\\\n\\\\n| | |\\\\n|---|---|\\\\n| epythet | {epythet_version} |\\\\n| Sphinx | {sphinx_version} |\\\\n| docutils | {docutils_version} |\\\\n| Python | {python_version} |\\\\n\\\\n## Configuration as resolved\\\\n\\\\n| | |\\\\n|---|---|\\\\n| theme | {theme} (Sphinx theme {html_theme}) |\\\\n| accent | {accent} |\\\\n| api_generator | {api_generator} |\\\\n| ignore | {ignore} |\\\\n| agent_outputs | {agent_outputs} |\\\\n| aggregates | {aggregates} |\\\\n| ai_artifacts | {ai_artifacts} |\\\\n\\\\n## Package on PyPI\\\\n\\\\n{pypi_block}\\\\n\\\\n## Reproduce\\\\n\\\\n\`\`\`bash\\\\n{reproduce}\\\\n\`\`\`\\\\n\\\\nThe same data, for machines: <a href="{build_info_filename}"><code>{build_info_filename}</code></a> (schema version {schema_version}).\\\\n')
+### epythet.provenance.about_page(info, , template='---\\norphan: true\\n---\\n{marker}\\n\\n# About this build\\n\\n{summary}\\n\\n{alignment_block}\\n\\n## Source\\n\\n| | |\\n|---|---|\\n| Commit | {commit_cell} |\\n| Branch | {branch} |\\n| Tags at this commit | {tags} |\\n| Working tree | {tree_state} |\\n| Remote | {remote} |\\n\\n## Continuous integration\\n\\n{ci_block}\\n\\n## Tools\\n\\n| | |\\n|---|---|\\n| epythet | {epythet_version} |\\n| Sphinx | {sphinx_version} |\\n| docutils | {docutils_version} |\\n| Python | {python_version} |\\n\\n## Configuration as resolved\\n\\n| | |\\n|---|---|\\n| theme | {theme} (Sphinx theme {html_theme}) |\\n| accent | {accent} |\\n| api_generator | {api_generator} |\\n| ignore | {ignore} |\\n| agent_outputs | {agent_outputs} |\\n| aggregates | {aggregates} |\\n| ai_artifacts | {ai_artifacts} |\\n\\n## Package on PyPI\\n\\n{pypi_block}\\n\\n## Reproduce\\n\\n\`\`\`bash\\n{reproduce}\\n\`\`\`\\n\\nThe same data, for machines: <a href="{build_info_filename}"><code>{build_info_filename}</code></a> (schema version {schema_version}).\\n')
 
 The about page as a `PageSpec`.
 
@@ -184,13 +184,13 @@ judge by. `notes` are the plain-language reasons, in the order shown.
 
 Now in UTC, or the instant `SOURCE_DATE_EPOCH` names when it is set.
 
-* **Return type:**
-  [`datetime`](https://docs.python.org/3/library/datetime.html#datetime.datetime)
-
 ```pycon
 >>> build_time({"SOURCE_DATE_EPOCH": "0"}).strftime("%Y-%m-%d")
 '1970-01-01'
 ```
+
+* **Return type:**
+  [`datetime`](https://docs.python.org/3/library/datetime.html#datetime.datetime)
 
 ### epythet.provenance.ci_info(environ=None)
 
@@ -199,9 +199,6 @@ The GitHub Actions context, when the build runs there (else `None` fields).
 `sha_in_history` says whether the event’s commit is in the built HEAD’s
 history; the publish action fast-forwards to the branch tip before
 building, so HEAD is normally a descendant of `GITHUB_SHA`, not equal to it.
-
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ```pycon
 >>> ci_info({"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "o/r",
@@ -212,17 +209,20 @@ building, so HEAD is normally a descendant of `GITHUB_SHA`, not equal to it.
 True
 ```
 
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
+
 ### epythet.provenance.clone_dirname(remote)
 
 The directory `git clone <remote>` creates.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> clone_dirname("https://github.com/org/demo.git"), clone_dirname("git@github.com:o/r")
 ('demo', 'r')
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.collect_build_info(config, , check_pypi=None, pypi_timeout=3.0, dirty_exclude=None, environ=None, now=None)
 
@@ -249,15 +249,15 @@ The provenance record for one build of `config`’s project.
 
 `same` / `behind` / `ahead` of `latest`, or `unknown` when unparsable.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> compare_versions("0.2.4", "0.2.5"), compare_versions("1.0", "1.0.0")
 ('behind', 'same')
 >>> compare_versions("0.3.0.dev1", "0.2.5"), compare_versions("x", "1")
 ('ahead', 'unknown')
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.config_source(project_dir)
 
@@ -270,15 +270,15 @@ Which file the package metadata came from: the rule of [`epythet.config`](epythe
 
 The provenance line as plain text (no link).
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> info = {"built_at": "2026-09-15T14:02:00Z", "package": {"name": "dol", "version": "0.3.1"},
 ...         "git": {"short_commit": "a1b2c3d", "branch": "master", "dirty": True}}
 >>> footer_text(info)
 'built 2026-09-15 14:02 UTC from a1b2c3d+dirty (master) · dol 0.3.1'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.git_info(project_dir, , exclude=())
 
@@ -298,9 +298,6 @@ credentials, no local paths), see [`publishable_remote()`](#epythet.provenance.p
 
 The `https://github.com/owner/repo` form of a remote URL, or `None`.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> github_web_url("git@github.com:i2mint/epythet.git")
 'https://github.com/i2mint/epythet'
@@ -310,17 +307,20 @@ The `https://github.com/owner/repo` form of a remote URL, or `None`.
 True
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### epythet.provenance.human_time(iso)
 
 `2026-09-15T14:02:00Z` -> `2026-09-15 14:02 UTC`.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> human_time("2026-09-15T14:02:00Z")
 '2026-09-15 14:02 UTC'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.load_build_info(raw)
 
@@ -329,15 +329,15 @@ Parse the JSON the build process hands over in `EPYTHET_BUILD_INFO`.
 Anything that is not a record of this module’s schema is ignored, so a
 stale or foreign value in the environment never breaks a build.
 
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> load_build_info('{"schema_version": 1, "git": {}}')["schema_version"]
 1
 >>> load_build_info('"str"') is None and load_build_info("{") is None
 True
 ```
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.provenance.prune_site(html_dir, , keep_page, keep_json)
 
@@ -358,9 +358,6 @@ Credentials are dropped from scheme URLs, the user part from scp-style
 remotes, and path-shaped remotes (a local or `file://` clone) are not
 published at all.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> publishable_remote("https://me:ghp_secret@github.com/o/r.git")
 'https://github.com/o/r.git'
@@ -375,6 +372,9 @@ True
 >>> publishable_remote("file:///srv/git/demo.git") is None
 True
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.provenance.pypi_info(name, version, , timeout=3.0)
 
@@ -401,7 +401,7 @@ List `build_info.json` in `llms.txt` and stamp the top of `<package>.md`.
 * **Return type:**
   [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
-### epythet.provenance.render_about_page(info, , template='---\\\\norphan: true\\\\n---\\\\n{marker}\\\\n\\\\n# About this build\\\\n\\\\n{summary}\\\\n\\\\n{alignment_block}\\\\n\\\\n## Source\\\\n\\\\n| | |\\\\n|---|---|\\\\n| Commit | {commit_cell} |\\\\n| Branch | {branch} |\\\\n| Tags at this commit | {tags} |\\\\n| Working tree | {tree_state} |\\\\n| Remote | {remote} |\\\\n\\\\n## Continuous integration\\\\n\\\\n{ci_block}\\\\n\\\\n## Tools\\\\n\\\\n| | |\\\\n|---|---|\\\\n| epythet | {epythet_version} |\\\\n| Sphinx | {sphinx_version} |\\\\n| docutils | {docutils_version} |\\\\n| Python | {python_version} |\\\\n\\\\n## Configuration as resolved\\\\n\\\\n| | |\\\\n|---|---|\\\\n| theme | {theme} (Sphinx theme {html_theme}) |\\\\n| accent | {accent} |\\\\n| api_generator | {api_generator} |\\\\n| ignore | {ignore} |\\\\n| agent_outputs | {agent_outputs} |\\\\n| aggregates | {aggregates} |\\\\n| ai_artifacts | {ai_artifacts} |\\\\n\\\\n## Package on PyPI\\\\n\\\\n{pypi_block}\\\\n\\\\n## Reproduce\\\\n\\\\n\`\`\`bash\\\\n{reproduce}\\\\n\`\`\`\\\\n\\\\nThe same data, for machines: <a href="{build_info_filename}"><code>{build_info_filename}</code></a> (schema version {schema_version}).\\\\n')
+### epythet.provenance.render_about_page(info, , template='---\\norphan: true\\n---\\n{marker}\\n\\n# About this build\\n\\n{summary}\\n\\n{alignment_block}\\n\\n## Source\\n\\n| | |\\n|---|---|\\n| Commit | {commit_cell} |\\n| Branch | {branch} |\\n| Tags at this commit | {tags} |\\n| Working tree | {tree_state} |\\n| Remote | {remote} |\\n\\n## Continuous integration\\n\\n{ci_block}\\n\\n## Tools\\n\\n| | |\\n|---|---|\\n| epythet | {epythet_version} |\\n| Sphinx | {sphinx_version} |\\n| docutils | {docutils_version} |\\n| Python | {python_version} |\\n\\n## Configuration as resolved\\n\\n| | |\\n|---|---|\\n| theme | {theme} (Sphinx theme {html_theme}) |\\n| accent | {accent} |\\n| api_generator | {api_generator} |\\n| ignore | {ignore} |\\n| agent_outputs | {agent_outputs} |\\n| aggregates | {aggregates} |\\n| ai_artifacts | {ai_artifacts} |\\n\\n## Package on PyPI\\n\\n{pypi_block}\\n\\n## Reproduce\\n\\n\`\`\`bash\\n{reproduce}\\n\`\`\`\\n\\nThe same data, for machines: <a href="{build_info_filename}"><code>{build_info_filename}</code></a> (schema version {schema_version}).\\n')
 
 The Markdown source of `about-this-build.md` for a collected `info`.
 
@@ -441,15 +441,15 @@ The documentation choices as the build resolved them (theme, accent, generator�
 
 Replace absolute paths in a diagnostic with `<path>`: the record is published.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> scrub_paths("fatal: detected dubious ownership in repository at '/home/me/x'")
 "fatal: detected dubious ownership in repository at '<path>'"
 >>> scrub_paths("fatal: not a git repository (or any of the parent directories): .git")
 'fatal: not a git repository (or any of the parent directories): .git'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.short_commit(sha)
 
@@ -469,13 +469,13 @@ Documented-module and documented-object counts from a Sphinx environment.
 
 A scheme URL without any `user:token@` part (scp-style remotes pass through).
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
-
 ```pycon
 >>> strip_credentials("https://me:ghp_secret@github.com/o/r.git")
 'https://github.com/o/r.git'
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.tool_versions()
 
@@ -491,9 +491,6 @@ Make a page template an orphan (out of the toctree) that carries the marker.
 YAML front matter must be the very first thing in the file, so the marker
 goes after it; `orphan: true` is added when the front matter lacks it,
 and front matter is created when there is none.
-
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ```pycon
 >>> print(with_front_matter_and_marker("# Build\n"))
@@ -514,6 +511,9 @@ orphan: true
 {marker}
 # B
 ```
+
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
 
 ### epythet.provenance.write_build_info(html_dir, info)
 

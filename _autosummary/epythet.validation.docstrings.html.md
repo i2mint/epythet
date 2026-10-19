@@ -60,13 +60,13 @@ Whether `path` matches the `--ignore` list: any token is a substring of its POSI
 The one predicate every level uses, so a file the parse level skips is
 also absent from the lint, coverage and repair results.
 
-* **Return type:**
-  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
-
 ```pycon
 >>> is_ignored("/p/pkg/tests/test_x.py", ["tests/"]), is_ignored("/p/pkg/x.py", ["tests/"])
 (True, False)
 ```
+
+* **Return type:**
+  [`bool`](https://docs.python.org/3/builtins/functions.html#bool)
 
 ### epythet.validation.docstrings.iter_docstrings(package_dir, , ignore=(), on_skip=None)
 

@@ -13,6 +13,7 @@
         <title>epythet.ai_artifacts - epythet</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     
@@ -587,11 +588,6 @@ non-hidden path).</p>
 <dt class="sig sig-object py" id="epythet.ai_artifacts.agent_outputs_for">
 <span class="sig-prename descclassname"><span class="pre">epythet.ai_artifacts.</span></span><span class="sig-name descname"><span class="pre">agent_outputs_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/ai_artifacts.html#agent_outputs_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.ai_artifacts.agent_outputs_for" title="Link to this definition">¶</a></dt>
 <dd><p>The machine-readable outputs a configuration produces, with URLs when known.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.ai_artifacts.AgentOutput" title="epythet.ai_artifacts.AgentOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">AgentOutput</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">epythet.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">DocsConfig</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">DocsConfig</span><span class="p">(</span><span class="n">project_dir</span><span class="o">=</span><span class="s2">"/tmp/x"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">repo_url</span><span class="o">=</span><span class="s2">"https://github.com/o/x"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">filename</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">agent_outputs_for</span><span class="p">(</span><span class="n">cfg</span><span class="p">)]</span>
@@ -600,6 +596,11 @@ non-hidden path).</p>
 <span class="go">'https://o.github.io/x/llms.txt'</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="#epythet.ai_artifacts.AgentOutput" title="epythet.ai_artifacts.AgentOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">AgentOutput</span></code></a>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -659,7 +660,7 @@ renderer does not provide (literal braces must be doubled: <code class="docutils
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>project_dir</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – the repository root</p></li>
-<li><p><strong>package_dir</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – the importable package directory, for <code class="docutils literal notranslate"><span class="pre">{pkg}/data/...</span></code>
+<li><p><strong>package_dir</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>) – the importable package directory, for <code class="docutils literal notranslate"><span class="pre">{pkg}/data/...</span></code>
 (skipped when <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
@@ -673,17 +674,17 @@ renderer does not provide (literal braces must be doubled: <code class="docutils
 <dt class="sig sig-object py" id="epythet.ai_artifacts.enabled_by_environment">
 <span class="sig-prename descclassname"><span class="pre">epythet.ai_artifacts.</span></span><span class="sig-name descname"><span class="pre">enabled_by_environment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/ai_artifacts.html#enabled_by_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.ai_artifacts.enabled_by_environment" title="Link to this definition">¶</a></dt>
 <dd><p>False when <code class="docutils literal notranslate"><span class="pre">EPYTHET_AI_ARTIFACTS</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code>, <code class="docutils literal notranslate"><span class="pre">no</span></code> or <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">DISABLE_ENV</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"0"</span><span class="p">;</span> <span class="n">enabled_by_environment</span><span class="p">()</span>
 <span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">DISABLE_ENV</span><span class="p">];</span> <span class="n">enabled_by_environment</span><span class="p">()</span>
 <span class="go">True</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -695,11 +696,6 @@ unquoted <code class="docutils literal notranslate"><span class="pre">descriptio
 that understands the subset skills and agents use: <code class="docutils literal notranslate"><span class="pre">key:</span> <span class="pre">value</span></code> scalars,
 <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>/<code class="docutils literal notranslate"><span class="pre">|</span></code> block scalars, one level of nested mapping, <code class="docutils literal notranslate"><span class="pre">[a,</span> <span class="pre">b]</span></code> flow
 lists and trailing comments. A malformed frontmatter never raises.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_frontmatter</span><span class="p">(</span><span class="s2">"---</span><span class="se">\n</span><span class="s2">description: Use when a: b</span><span class="se">\n</span><span class="s2">name: x</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">{'description': 'Use when a: b', 'name': 'x'}</span>
 </pre></div>
@@ -710,11 +706,16 @@ lists and trailing comments. A malformed frontmatter never raises.</p>
 <span class="go">{}</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.ai_artifacts.render_ai_artifacts_page">
-<span class="sig-prename descclassname"><span class="pre">epythet.ai_artifacts.</span></span><span class="sig-name descname"><span class="pre">render_ai_artifacts_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{marker}\\n\\n#</span> <span class="pre">For</span> <span class="pre">AI</span> <span class="pre">agents\\n\\n`{name}`</span> <span class="pre">ships</span> <span class="pre">artifacts</span> <span class="pre">for</span> <span class="pre">coding</span> <span class="pre">agents</span> <span class="pre">alongside</span> <span class="pre">its</span> <span class="pre">code.</span> <span class="pre">This</span> <span class="pre">page</span> <span class="pre">lists\\nthem,</span> <span class="pre">says</span> <span class="pre">where</span> <span class="pre">each</span> <span class="pre">lives</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">repository,</span> <span class="pre">and</span> <span class="pre">points</span> <span class="pre">at</span> <span class="pre">the\\nmachine-readable</span> <span class="pre">copies</span> <span class="pre">of</span> <span class="pre">this</span> <span class="pre">documentation.\\n{skills_section}{subagents_section}{instructions_section}{outputs_section}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'claude-code'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/ai_artifacts.html#render_ai_artifacts_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.ai_artifacts.render_ai_artifacts_page" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">epythet.ai_artifacts.</span></span><span class="sig-name descname"><span class="pre">render_ai_artifacts_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{marker}\n\n#</span> <span class="pre">For</span> <span class="pre">AI</span> <span class="pre">agents\n\n`{name}`</span> <span class="pre">ships</span> <span class="pre">artifacts</span> <span class="pre">for</span> <span class="pre">coding</span> <span class="pre">agents</span> <span class="pre">alongside</span> <span class="pre">its</span> <span class="pre">code.</span> <span class="pre">This</span> <span class="pre">page</span> <span class="pre">lists\nthem,</span> <span class="pre">says</span> <span class="pre">where</span> <span class="pre">each</span> <span class="pre">lives</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">repository,</span> <span class="pre">and</span> <span class="pre">points</span> <span class="pre">at</span> <span class="pre">the\nmachine-readable</span> <span class="pre">copies</span> <span class="pre">of</span> <span class="pre">this</span> <span class="pre">documentation.\n{skills_section}{subagents_section}{instructions_section}{outputs_section}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'claude-code'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/ai_artifacts.html#render_ai_artifacts_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.ai_artifacts.render_ai_artifacts_page" title="Link to this definition">¶</a></dt>
 <dd><p>Render the “For AI agents” page for <code class="docutils literal notranslate"><span class="pre">artifacts</span></code> and a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocsConfig</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -737,11 +738,6 @@ lists and trailing comments. A malformed frontmatter never raises.</p>
 <dd><p><code class="docutils literal notranslate"><span class="pre">owner/repo</span></code> from a GitHub URL (’’ when it is not one).</p>
 <p>Deeper paths, fragments and queries are dropped, so an <code class="docutils literal notranslate"><span class="pre">Issues</span></code> URL in
 <code class="docutils literal notranslate"><span class="pre">[project.urls]</span></code> still names the repository.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repo_stub_for</span><span class="p">(</span><span class="s2">"https://github.com/i2mint/epythet.git"</span><span class="p">)</span>
 <span class="go">'i2mint/epythet'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">repo_stub_for</span><span class="p">(</span><span class="s2">"https://github.com/i2mint/epythet/issues#readme"</span><span class="p">)</span>
@@ -752,23 +748,28 @@ lists and trailing comments. A malformed frontmatter never raises.</p>
 <span class="go">''</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.ai_artifacts.site_url_for">
 <span class="sig-prename descclassname"><span class="pre">epythet.ai_artifacts.</span></span><span class="sig-name descname"><span class="pre">site_url_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repo_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/ai_artifacts.html#site_url_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.ai_artifacts.site_url_for" title="Link to this definition">¶</a></dt>
 <dd><p>The GitHub Pages URL a GitHub repository publishes to (’’ when unknown).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">site_url_for</span><span class="p">(</span><span class="s2">"https://github.com/i2mint/epythet"</span><span class="p">)</span>
 <span class="go">'https://i2mint.github.io/epythet/'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">site_url_for</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 <span class="go">''</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -868,7 +869,7 @@ lists and trailing comments. A malformed frontmatter never raises.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e97192f0"></script>
+</div><script src="../_static/documentation_options.js?v=4031e696"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

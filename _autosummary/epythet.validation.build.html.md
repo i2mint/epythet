@@ -54,7 +54,7 @@ What the `backend=` seam requires: a name, versions, and the warning stream.
 implements the same two methods and inherits the whole ledger. Level 2
 additionally needs [`RenderBackend`](#epythet.validation.build.RenderBackend).
 
-### *class* epythet.validation.build.BuildResult(returncode, warnings=<factory>, log='', outdir=None, command=<factory>)
+### *class* epythet.validation.build.BuildResult(returncode, warnings=list(), log='', outdir=None, command=list())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -84,7 +84,7 @@ Bases: [`BuildBackend`](#epythet.validation.build.BuildBackend), [`Protocol`](ht
 
 A backend that can also render several builders into a kept directory (level 2).
 
-### *class* epythet.validation.build.RenderResult(outdirs=<factory>, returncodes=<factory>, warnings=<factory>, log='')
+### *class* epythet.validation.build.RenderResult(outdirs=dict(), returncodes=dict(), warnings=list(), log='')
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -170,9 +170,6 @@ The first build-warning rule that matches, most specific first.
 
 Parse one warning line; `None` when the line is not a warning.
 
-* **Return type:**
-  [`BuildWarning`](#epythet.validation.build.BuildWarning) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> w = parse_warning_line("/p/dol/base.py:docstring of dol.base.Store:7: WARNING: Inline emphasis start-string without end-string. [docutils]")
 >>> (w.file, w.object, w.line, w.type, w.severity)
@@ -180,6 +177,9 @@ Parse one warning line; `None` when the line is not a warning.
 >>> parse_warning_line("reading sources... [ 10%] index") is None
 True
 ```
+
+* **Return type:**
+  [`BuildWarning`](#epythet.validation.build.BuildWarning) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 ### epythet.validation.build.parse_warning_stream(text, , project_dir=None)
 
