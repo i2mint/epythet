@@ -24,6 +24,7 @@ import os
 import shutil
 import subprocess
 import sys
+import warnings
 from pathlib import Path
 
 from epythet.agent_outputs import inject_link_relations_into_site, write_aggregates
@@ -44,12 +45,21 @@ from epythet.templates import INDEX_MARKER
 
 BUILD_DIRNAME = "_build"
 COPY_TARGETS = {"github": "docs", "gitlab": "public"}
+#: Written by Sphinx's HTML builders at a site's root; a hand-written directory never has it.
+#: It is what makes a copy target recognisably an epythet build (``clean`` and ``github``
+#: touch only such a directory, or one that is absent or empty).
+SITE_MARKER = ".buildinfo"
 #: Builders that produce a browsable site and therefore carry provenance.
 HTML_TARGETS = ("html", "dirhtml")
 
 
 class BuildError(RuntimeError):
-    """Sphinx exited with a non-zero status."""
+    """Sphinx exited with a non-zero status, or a copy target holds hand-written files."""
+
+
+def is_built_site(path: Path) -> bool:
+    """Whether ``path`` is safe for epythet to overwrite or delete: absent, empty or a built site."""
+    return not path.exists() or not any(path.iterdir()) or (path / SITE_MARKER).is_file()
 
 
 def make(project_dir, *make_args):
@@ -76,16 +86,29 @@ def build(
     docsrc = config.docsrc_dir
     build_dir = docsrc / BUILD_DIRNAME
     if target == "clean":
-        for path in (
-            build_dir,
-            *(config.project_dir / d for d in COPY_TARGETS.values()),
-        ):
-            if path.is_dir():
+        if build_dir.is_dir():
+            shutil.rmtree(build_dir)
+        for path in (config.project_dir / d for d in COPY_TARGETS.values()):
+            if not path.is_dir():
+                continue
+            if is_built_site(path):
                 shutil.rmtree(path)
+            else:
+                warnings.warn(
+                    f"clean: kept {path}: it has no {SITE_MARKER} (not an epythet build), "
+                    "so it may hold hand-written files. Delete it yourself if it is only output.",
+                    stacklevel=2,
+                )
         return None
     if target in COPY_TARGETS:
-        html_dir = build(config, "html", overrides=overrides)
         destination = config.project_dir / COPY_TARGETS[target]
+        if not is_built_site(destination):
+            raise BuildError(
+                f"refusing to copy the site into {destination}: it holds files but no "
+                f"{SITE_MARKER}, so it is not an epythet build and may be hand-written. "
+                "Move those files elsewhere (or delete the directory) and retry."
+            )
+        html_dir = build(config, "html", overrides=overrides)
         shutil.copytree(html_dir, destination, dirs_exist_ok=True)
         # copytree never deletes: drop provenance files the fresh site no longer has.
         prune_site(
