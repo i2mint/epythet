@@ -77,7 +77,9 @@ def is_built_site(path: Path) -> bool:
 
 def _site_files(root: Path) -> list[str]:
     """Posix paths, relative to ``root``, of every file under it."""
-    return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
+    return sorted(
+        p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()
+    )
 
 
 class _InvalidManifest(ValueError):
@@ -101,7 +103,9 @@ def _read_manifest(destination: Path) -> set[str] | None:
         raise _InvalidManifest(f"{path} does not hold a list of file names")
     for name in files:
         if _inside(destination, name) is None:
-            raise _InvalidManifest(f"{path} lists {name!r}, which is outside {destination}")
+            raise _InvalidManifest(
+                f"{path} lists {name!r}, which is outside {destination}"
+            )
     return set(files)
 
 
@@ -130,9 +134,15 @@ def _remove_listed(destination: Path, files) -> None:
         if target is None:
             continue
         target.unlink(missing_ok=True)
-        parents.update(p for p in target.parents if p != destination and destination in p.parents)
+        parents.update(
+            p for p in target.parents if p != destination and destination in p.parents
+        )
     for directory in sorted(parents, key=lambda p: len(p.parts), reverse=True):
-        if directory.is_dir() and not directory.is_symlink() and not any(directory.iterdir()):
+        if (
+            directory.is_dir()
+            and not directory.is_symlink()
+            and not any(directory.iterdir())
+        ):
             directory.rmdir()
     if destination.is_dir() and not any(destination.iterdir()):
         destination.rmdir()
