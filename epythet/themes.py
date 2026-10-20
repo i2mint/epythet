@@ -96,9 +96,12 @@ def _gamma_byte(c: float) -> int:
 def hex_to_oklch(hex_color: str) -> tuple[float, float, float]:
     """``(L, C, h)`` in OKLCH for an sRGB hex colour.
 
-    >>> L, C, h = hex_to_oklch(oklch_to_hex(0.5, 0.13, 200))
+    Round-trips :func:`oklch_to_hex` for in-gamut colours (out-of-gamut ones are
+    clipped there, so they come back changed).
+
+    >>> L, C, h = hex_to_oklch(oklch_to_hex(0.46, 0.13, 250))
     >>> round(L, 2), round(C, 2), round(h)
-    (0.5, 0.13, 200)
+    (0.46, 0.13, 250)
     """
 
     def linear(v):

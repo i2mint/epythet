@@ -172,16 +172,16 @@ def convert_fields(region: str, *, to: str = "google") -> str | None:
         return None
     style = DocstringStyle.GOOGLE if to == "google" else DocstringStyle.NUMPYDOC
     composed = compose(parsed, style=style, rendering_style=RenderingStyle.CLEAN)
+    # docstring_parser composes an untyped return as ``    : text``; drop the stray
+    # colon *before* the round-trip check (0.18 parses it back into the text).
+    composed = re.sub(r"^(\s+): (?=\S)", r"\1", composed, flags=re.M)
     try:
         back = parse(composed, style=style)
     except Exception:
         return None
     if _facts(back) != _facts(parsed):
         return None
-    body = composed[len("Summary.") :].lstrip("\n")
-    # docstring_parser composes an untyped return as ``    : text``; drop the stray colon.
-    body = re.sub(r"^(\s+): (?=\S)", r"\1", body, flags=re.M)
-    return body.rstrip("\n")
+    return composed[len("Summary.") :].lstrip("\n").rstrip("\n")
 
 
 def field_regions(lines: Sequence[str]) -> list[tuple[int, int]]:
