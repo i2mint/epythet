@@ -8,6 +8,7 @@ normalized doctests, the agent outputs and the aggregate. It runs Sphinx twice
 """
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -851,4 +852,59 @@ def test_clean_leaves_handmade_empty_directories(project):
     (site / "keepme").mkdir()
     build(load_config(project), "clean")
     assert (site / "keepme").is_dir() and not (site / "index.html").exists()
+    shutil.rmtree(site)
+
+
+def _case_insensitive_fs(path: Path) -> bool:
+    probe = path / "CaseProbe"
+    probe.write_text("")
+    try:
+        return (path / "caseprobe").exists()
+    finally:
+        probe.unlink()
+
+
+def test_case_aliases_follow_every_path_component(tmp_path):
+    """#49: a listed name the filesystem resolves to another case is an alias."""
+    from epythet.build import case_aliases
+
+    listing = {
+        str(tmp_path): ["Static", "index.html"],
+        str(tmp_path / "Static"): ["app.css"],
+    }
+    aliases = case_aliases(
+        tmp_path,
+        ["static/app.css", "index.html"],
+        exists=lambda p: True,
+        listdir=lambda d: listing[str(d)],
+    )
+    assert aliases == {"static/app.css": "Static/app.css"}
+    # case-sensitive filesystem: the other case does not exist, so nothing aliases
+    (tmp_path / "Index.html").write_text("mine")
+    if not _case_insensitive_fs(tmp_path):
+        assert case_aliases(tmp_path, ["index.html"]) == {}
+
+
+def test_clean_and_github_spare_a_file_differing_only_by_case(project, monkeypatch):
+    """#49: on a case-insensitive filesystem a hand-written ``Index.html`` *is* the
+    manifest's ``index.html``; clean keeps it and github refuses to overwrite it."""
+    build_module = sys.modules["epythet.build"]  # epythet.build is also the function
+
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "index.html").rename(site / "Index.html")  # stands for a hand-written file
+    (site / "Index.html").write_text("hand-written")
+    real = build_module.case_aliases
+
+    def insensitive(destination, names, **_):
+        return real(destination, names, exists=lambda p: p.parent.is_dir() and any(
+            e.casefold() == p.name.casefold() for e in os.listdir(p.parent)
+        ))
+
+    monkeypatch.setattr(build_module, "case_aliases", insensitive)
+    with pytest.raises(BuildError, match="Index.html"):
+        build(load_config(project), "github")
+    with pytest.warns(UserWarning, match="Index.html"):
+        build(load_config(project), "clean")
+    assert (site / "Index.html").read_text() == "hand-written"
     shutil.rmtree(site)

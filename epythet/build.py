@@ -125,13 +125,64 @@ def _inside(destination: Path, name: str) -> Path | None:
     return target
 
 
+def case_aliases(
+    destination: Path, names, *, exists=Path.exists, listdir=os.listdir
+) -> dict[str, str]:
+    """``{name: on-disk name}`` for the ``names`` the filesystem finds under another case.
+
+    On a case-insensitive filesystem (macOS, Windows) ``destination / "index.html"`` also
+    opens a hand-written ``Index.html``: same file, different name. Such a name must not be
+    treated as the file an earlier copy wrote. On a case-sensitive filesystem nothing is
+    an alias (``exists`` is false for the other case).
+
+    >>> fake = {"site": ["Index.html", "a.css"]}
+    >>> case_aliases(Path("site"), ["index.html", "a.css"],
+    ...              exists=lambda p: True, listdir=lambda d: fake[str(d)])
+    {'index.html': 'Index.html'}
+    """
+    listings: dict[Path, list[str]] = {}
+
+    def entries(directory: Path) -> list[str]:
+        if directory not in listings:
+            try:
+                listings[directory] = list(listdir(directory))
+            except OSError:
+                listings[directory] = []
+        return listings[directory]
+
+    aliases = {}
+    for name in names:
+        if not exists(destination / name):
+            continue
+        current, actual = destination, []
+        for part in Path(name).parts:
+            here = entries(current)
+            if part not in here:
+                part = next((e for e in here if e.casefold() == part.casefold()), part)
+            actual.append(part)
+            current = current / part
+        on_disk = "/".join(actual)
+        if on_disk != Path(name).as_posix():
+            aliases[name] = on_disk
+    return aliases
+
+
 def _remove_listed(destination: Path, files) -> None:
     """Delete ``files`` (and the manifest) from ``destination``, then the directories that
-    deleting emptied; hand-made directories, empty or not, are left alone."""
+    deleting emptied; hand-made directories, empty or not, are left alone, and so is a
+    hand-written file the filesystem finds under a listed name's other case."""
+    aliases = case_aliases(destination, files)
+    if aliases:
+        warnings.warn(
+            f"clean: kept {', '.join(sorted(aliases.values())[:5])} in {destination}: "
+            "the name differs only by case from a file epythet wrote, so on this "
+            "filesystem it is a hand-written file, not that one.",
+            stacklevel=3,
+        )
     parents = set()
     for name in (*files, MANIFEST_FILENAME):
         target = _inside(destination, name)
-        if target is None:
+        if target is None or name in aliases:
             continue
         target.unlink(missing_ok=True)
         parents.update(
@@ -214,6 +265,15 @@ def build(
                 f"refusing to copy the site into {destination}: {e}. Fix or delete the "
                 "manifest (and move any hand-written files out) and retry."
             ) from None
+        if destination.is_dir():
+            aliased = case_aliases(destination, {*files, *(previous or ())})
+            if aliased:
+                raise BuildError(
+                    f"refusing to copy the site into {destination}: on this filesystem "
+                    f"these hand-written files are the same as files of the site (their "
+                    f"names differ only by case) and would be overwritten or deleted: "
+                    f"{', '.join(sorted(aliased.values())[:5])}. Rename or move them and retry."
+                )
         if previous is not None:
             clobbered = [
                 f for f in files if f not in previous and (destination / f).exists()
