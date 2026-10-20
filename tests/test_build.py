@@ -787,3 +787,68 @@ def test_is_built_site_markers_and_odd_targets(tmp_path):
     assert not is_built_site(tmp_path / "file")
     (tmp_path / "link").symlink_to(tmp_path / "a")
     assert not is_built_site(tmp_path / "link")
+
+
+def test_clean_keeps_handwritten_files_beside_a_built_site(project):
+    """#47: a hand-written file inside a built ``docs/`` survives ``clean`` and a rebuild."""
+    quickstart(project)
+    site = build(load_config(project), "github")
+    mine = site / "CNAME"
+    mine.write_text("example.org")
+    (site / "notes").mkdir()
+    (site / "notes" / "todo.md").write_text("mine")
+    build(load_config(project), "github")  # rebuild: nothing of mine is touched
+    assert mine.read_text() == "example.org"
+    build(load_config(project), "clean")
+    assert mine.read_text() == "example.org"
+    assert (site / "notes" / "todo.md").read_text() == "mine"
+    assert not (site / ".buildinfo").exists() and not (site / "index.html").exists()
+    assert not (site / ".epythet-manifest.json").exists()
+    shutil.rmtree(site)  # the project fixture is shared
+
+
+def test_github_refuses_to_overwrite_a_handwritten_file_it_did_not_write(project):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "index.html").unlink()  # now index.html is "not ours" only if recreated by hand
+    manifest = json.loads((site / ".epythet-manifest.json").read_text())
+    manifest["files"].remove("index.html")
+    (site / ".epythet-manifest.json").write_text(json.dumps(manifest))
+    (site / "index.html").write_text("hand-written landing page")
+    with pytest.raises(BuildError, match="index.html"):
+        build(load_config(project), "github")
+    assert (site / "index.html").read_text() == "hand-written landing page"
+    shutil.rmtree(site)
+
+
+def test_clean_without_a_manifest_still_removes_a_legacy_built_site(project):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / ".epythet-manifest.json").unlink()
+    build(load_config(project), "clean")
+    assert not site.exists()
+
+
+@pytest.mark.parametrize(
+    "manifest", ["{not json", '{"files": null}', '{"files": ["../escape.txt"]}', '{"files": "x"}']
+)
+def test_an_unusable_manifest_deletes_and_overwrites_nothing(project, manifest):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "mine.txt").write_text("hand-written")
+    (site / ".epythet-manifest.json").write_text(manifest)
+    with pytest.warns(UserWarning, match="kept"):
+        build(load_config(project), "clean")
+    assert (site / "mine.txt").read_text() == "hand-written"
+    with pytest.raises(BuildError, match="manifest"):
+        build(load_config(project), "github")
+    shutil.rmtree(site)
+
+
+def test_clean_leaves_handmade_empty_directories(project):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "keepme").mkdir()
+    build(load_config(project), "clean")
+    assert (site / "keepme").is_dir() and not (site / "index.html").exists()
+    shutil.rmtree(site)
