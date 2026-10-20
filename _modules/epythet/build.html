@@ -362,7 +362,9 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_site_files</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Posix paths, relative to ``root``, of every file under it."""</span>
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_InvalidManifest</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
@@ -386,7 +388,9 @@
         <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not hold a list of file names"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">_inside</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> lists </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, which is outside </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> lists </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, which is outside </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
     <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
 
 
@@ -406,18 +410,75 @@
     <span class="k">return</span> <span class="n">target</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">case_aliases</span><span class="p">(</span>
+    <span class="n">destination</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span> <span class="n">listdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``{name: on-disk name}`` for the ``names`` the filesystem finds under another case.</span>
+
+<span class="sd">    On a case-insensitive filesystem (macOS, Windows) ``destination / "index.html"`` also</span>
+<span class="sd">    opens a hand-written ``Index.html``: same file, different name. Such a name must not be</span>
+<span class="sd">    treated as the file an earlier copy wrote. On a case-sensitive filesystem nothing is</span>
+<span class="sd">    an alias (``exists`` is false for the other case).</span>
+
+<span class="sd">    &gt;&gt;&gt; fake = {"site": ["Index.html", "a.css"]}</span>
+<span class="sd">    &gt;&gt;&gt; case_aliases(Path("site"), ["index.html", "a.css"],</span>
+<span class="sd">    ...              exists=lambda p: True, listdir=lambda d: fake[str(d)])</span>
+<span class="sd">    {'index.html': 'Index.html'}</span>
+<span class="sd">    """</span>
+    <span class="n">listings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">entries</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">directory</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">listings</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">listings</span><span class="p">[</span><span class="n">directory</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="n">listings</span><span class="p">[</span><span class="n">directory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">listings</span><span class="p">[</span><span class="n">directory</span><span class="p">]</span>
+
+    <span class="n">aliases</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">name</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">current</span><span class="p">,</span> <span class="n">actual</span> <span class="o">=</span> <span class="n">destination</span><span class="p">,</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+            <span class="n">here</span> <span class="o">=</span> <span class="n">entries</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">part</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">here</span><span class="p">:</span>
+                <span class="n">part</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">here</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="o">==</span> <span class="n">part</span><span class="o">.</span><span class="n">casefold</span><span class="p">()),</span> <span class="n">part</span><span class="p">)</span>
+            <span class="n">actual</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span> <span class="o">/</span> <span class="n">part</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="s2">"/"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">on_disk</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">():</span>
+            <span class="n">aliases</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">on_disk</span>
+    <span class="k">return</span> <span class="n">aliases</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_remove_listed</span><span class="p">(</span><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Delete ``files`` (and the manifest) from ``destination``, then the directories that</span>
-<span class="sd">    deleting emptied; hand-made directories, empty or not, are left alone."""</span>
+<span class="sd">    deleting emptied; hand-made directories, empty or not, are left alone, and so is a</span>
+<span class="sd">    hand-written file the filesystem finds under a listed name's other case."""</span>
+    <span class="n">aliases</span> <span class="o">=</span> <span class="n">case_aliases</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">aliases</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"clean: kept </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">aliases</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">: "</span>
+            <span class="s2">"the name differs only by case from a file epythet wrote, so on this "</span>
+            <span class="s2">"filesystem it is a hand-written file, not that one."</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="n">parents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">files</span><span class="p">,</span> <span class="n">MANIFEST_FILENAME</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">_inside</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">target</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">parents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">parents</span> <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">destination</span> <span class="ow">and</span> <span class="n">destination</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span>
+        <span class="n">parents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">parents</span> <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">destination</span> <span class="ow">and</span> <span class="n">destination</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span>
+        <span class="p">)</span>
     <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">directory</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+        <span class="p">):</span>
             <span class="n">directory</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">destination</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">destination</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
         <span class="n">destination</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
@@ -491,6 +552,15 @@
                 <span class="sa">f</span><span class="s2">"refusing to copy the site into </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Fix or delete the "</span>
                 <span class="s2">"manifest (and move any hand-written files out) and retry."</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">destination</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">aliased</span> <span class="o">=</span> <span class="n">case_aliases</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="p">{</span><span class="o">*</span><span class="n">files</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">previous</span> <span class="ow">or</span> <span class="p">())})</span>
+            <span class="k">if</span> <span class="n">aliased</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BuildError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"refusing to copy the site into </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">: on this filesystem "</span>
+                    <span class="sa">f</span><span class="s2">"these hand-written files are the same as files of the site (their "</span>
+                    <span class="sa">f</span><span class="s2">"names differ only by case) and would be overwritten or deleted: "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">aliased</span><span class="o">.</span><span class="n">values</span><span class="p">())[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}</span><span class="s2">. Rename or move them and retry."</span>
+                <span class="p">)</span>
         <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">clobbered</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous</span> <span class="ow">and</span> <span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
@@ -624,7 +694,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=4b0663b7"></script>
+</div><script src="../../_static/documentation_options.js?v=9fea2d4c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
