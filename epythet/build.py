@@ -49,6 +49,9 @@ COPY_TARGETS = {"github": "docs", "gitlab": "public"}
 #: It is what makes a copy target recognisably an epythet build (``clean`` and ``github``
 #: touch only such a directory, or one that is absent or empty).
 SITE_MARKER = ".buildinfo"
+#: Markers that identify an epythet-built site: Sphinx's own, and epythet's provenance record
+#: (survives a gitignore that strips dotfiles).
+SITE_MARKERS = (SITE_MARKER, BUILD_INFO_FILENAME)
 #: Builders that produce a browsable site and therefore carry provenance.
 HTML_TARGETS = ("html", "dirhtml")
 
@@ -59,7 +62,13 @@ class BuildError(RuntimeError):
 
 def is_built_site(path: Path) -> bool:
     """Whether ``path`` is safe for epythet to overwrite or delete: absent, empty or a built site."""
-    return not path.exists() or not any(path.iterdir()) or (path / SITE_MARKER).is_file()
+    if path.is_symlink() or (path.exists() and not path.is_dir()):
+        return False
+    return (
+        not path.exists()
+        or not any(path.iterdir())
+        or any((path / marker).is_file() for marker in SITE_MARKERS)
+    )
 
 
 def make(project_dir, *make_args):
@@ -95,7 +104,7 @@ def build(
                 shutil.rmtree(path)
             else:
                 warnings.warn(
-                    f"clean: kept {path}: it has no {SITE_MARKER} (not an epythet build), "
+                    f"clean: kept {path}: it has no {' or '.join(SITE_MARKERS)} (not an epythet build), "
                     "so it may hold hand-written files. Delete it yourself if it is only output.",
                     stacklevel=2,
                 )
@@ -105,7 +114,7 @@ def build(
         if not is_built_site(destination):
             raise BuildError(
                 f"refusing to copy the site into {destination}: it holds files but no "
-                f"{SITE_MARKER}, so it is not an epythet build and may be hand-written. "
+                f"{' or '.join(SITE_MARKERS)}, so it is not an epythet build and may be hand-written. "
                 "Move those files elsewhere (or delete the directory) and retry."
             )
         html_dir = build(config, "html", overrides=overrides)

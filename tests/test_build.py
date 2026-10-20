@@ -772,3 +772,18 @@ def test_clean_still_removes_a_built_site(project):
     build(load_config(project), "github")  # a built site is overwritten, not refused
     build(load_config(project), "clean")
     assert not site.exists() and not (project / "docsrc" / "_build").exists()
+
+
+def test_is_built_site_markers_and_odd_targets(tmp_path):
+    from epythet.build import is_built_site
+
+    assert is_built_site(tmp_path / "absent")
+    (tmp_path / "empty").mkdir()
+    assert is_built_site(tmp_path / "empty")
+    (tmp_path / "a").mkdir()
+    (tmp_path / "a" / "build_info.json").write_text("{}")
+    assert is_built_site(tmp_path / "a")  # survives a gitignore that strips dotfiles
+    (tmp_path / "file").write_text("x")
+    assert not is_built_site(tmp_path / "file")
+    (tmp_path / "link").symlink_to(tmp_path / "a")
+    assert not is_built_site(tmp_path / "link")
