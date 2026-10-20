@@ -76,7 +76,7 @@ convention = "google"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["tests"]
+testpaths = ["tests", "epythet"]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 
 [tool.epythet]
@@ -122,7 +122,7 @@ pytest_args = ["-v", "--tb=short"]
 coverage_enabled = true
 coverage_threshold = 0
 coverage_report_format = ["term", "xml"]
-exclude_paths = ["examples", "scrap"]
+exclude_paths = ["examples", "scrap", "epythet/ledger/rules"]
 test_on_windows = true
 
 [tool.wads.ci.metrics]
