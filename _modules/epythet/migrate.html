@@ -462,16 +462,16 @@
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">style</span> <span class="o">=</span> <span class="n">DocstringStyle</span><span class="o">.</span><span class="n">GOOGLE</span> <span class="k">if</span> <span class="n">to</span> <span class="o">==</span> <span class="s2">"google"</span> <span class="k">else</span> <span class="n">DocstringStyle</span><span class="o">.</span><span class="n">NUMPYDOC</span>
     <span class="n">composed</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">rendering_style</span><span class="o">=</span><span class="n">RenderingStyle</span><span class="o">.</span><span class="n">CLEAN</span><span class="p">)</span>
+    <span class="c1"># docstring_parser composes an untyped return as ``    : text``; drop the stray</span>
+    <span class="c1"># colon *before* the round-trip check (0.18 parses it back into the text).</span>
+    <span class="n">composed</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(\s+): (?=\S)"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1"</span><span class="p">,</span> <span class="n">composed</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">back</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">composed</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">_facts</span><span class="p">(</span><span class="n">back</span><span class="p">)</span> <span class="o">!=</span> <span class="n">_facts</span><span class="p">(</span><span class="n">parsed</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">composed</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"Summary."</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-    <span class="c1"># docstring_parser composes an untyped return as ``    : text``; drop the stray colon.</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(\s+): (?=\S)"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1"</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">body</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">composed</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"Summary."</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
@@ -682,7 +682,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=9fea2d4c"></script>
+</div><script src="../../_static/documentation_options.js?v=36aa592a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

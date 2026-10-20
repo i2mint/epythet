@@ -392,9 +392,12 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">hex_to_oklch</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""``(L, C, h)`` in OKLCH for an sRGB hex colour.</span>
 
-<span class="sd">    &gt;&gt;&gt; L, C, h = hex_to_oklch(oklch_to_hex(0.5, 0.13, 200))</span>
+<span class="sd">    Round-trips :func:`oklch_to_hex` for in-gamut colours (out-of-gamut ones are</span>
+<span class="sd">    clipped there, so they come back changed).</span>
+
+<span class="sd">    &gt;&gt;&gt; L, C, h = hex_to_oklch(oklch_to_hex(0.46, 0.13, 250))</span>
 <span class="sd">    &gt;&gt;&gt; round(L, 2), round(C, 2), round(h)</span>
-<span class="sd">    (0.5, 0.13, 200)</span>
+<span class="sd">    (0.46, 0.13, 250)</span>
 <span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">linear</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -812,7 +815,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=9fea2d4c"></script>
+</div><script src="../../_static/documentation_options.js?v=36aa592a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

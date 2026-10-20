@@ -168,10 +168,13 @@ True
 
 `(L, C, h)` in OKLCH for an sRGB hex colour.
 
+Round-trips [`oklch_to_hex()`](#epythet.themes.oklch_to_hex) for in-gamut colours (out-of-gamut ones are
+clipped there, so they come back changed).
+
 ```pycon
->>> L, C, h = hex_to_oklch(oklch_to_hex(0.5, 0.13, 200))
+>>> L, C, h = hex_to_oklch(oklch_to_hex(0.46, 0.13, 250))
 >>> round(L, 2), round(C, 2), round(h)
-(0.5, 0.13, 200)
+(0.46, 0.13, 250)
 ```
 
 * **Return type:**

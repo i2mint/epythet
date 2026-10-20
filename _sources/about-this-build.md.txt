@@ -5,19 +5,19 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-10-20 14:08 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/dde55ef4b53c96b61a98981f0c6e06ba2a447f0f"><code>dde55ef</code></a> on branch <code>master</code>, for **epythet 0.2.20** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 16:17 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/f8eb7dd5bfdd12ddbd1da7cc2d790f0e72381d41"><code>f8eb7dd</code></a> on branch <code>master</code>, for **epythet 0.2.21** (from <code>pyproject.toml</code>).
 
 :::{warning}
 The documentation and the package may be misaligned:
 
-- The documented version (0.2.20) is behind the latest release on PyPI (0.2.21): `pip install epythet` gives newer code than these docs describe.
+- The documented version (0.2.21) is behind the latest release on PyPI (0.2.22): `pip install epythet` gives newer code than these docs describe.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/i2mint/epythet/commit/dde55ef4b53c96b61a98981f0c6e06ba2a447f0f"><code>dde55ef4b53c96b61a98981f0c6e06ba2a447f0f</code></a> |
+| Commit | <a href="https://github.com/i2mint/epythet/commit/f8eb7dd5bfdd12ddbd1da7cc2d790f0e72381d41"><code>f8eb7dd5bfdd12ddbd1da7cc2d790f0e72381d41</code></a> |
 | Branch | <code>master</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,15 +28,15 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>i2mint/epythet</code> |
-| Run | <a href="https://github.com/i2mint/epythet/actions/runs/39436014921">39436014921</a> |
+| Run | <a href="https://github.com/i2mint/epythet/actions/runs/39455664537">39455664537</a> |
 | Ref | <code>refs/heads/master</code> |
-| Event commit | <code>dde55ef4b53c96b61a98981f0c6e06ba2a447f0f</code> (in the history of the built commit) |
+| Event commit | <code>f8eb7dd5bfdd12ddbd1da7cc2d790f0e72381d41</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.20 |
+| epythet | 0.2.21 |
 | Sphinx | 9.1.1 |
 | docutils | 0.22.4 |
 | Python | 3.12.15 |
@@ -55,14 +55,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.21/">0.2.21</a>, newer than the documented version (0.2.20).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.22/">0.2.22</a>, newer than the documented version (0.2.21).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout dde55ef4b53c96b61a98981f0c6e06ba2a447f0f
-pip install "epythet==0.2.20"
+git checkout f8eb7dd5bfdd12ddbd1da7cc2d790f0e72381d41
+pip install "epythet==0.2.21"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

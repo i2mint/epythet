@@ -543,9 +543,11 @@ maps the mode to <code class="docutils literal notranslate"><span class="pre">ht
 <dt class="sig sig-object py" id="epythet.themes.hex_to_oklch">
 <span class="sig-prename descclassname"><span class="pre">epythet.themes.</span></span><span class="sig-name descname"><span class="pre">hex_to_oklch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/themes.html#hex_to_oklch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.themes.hex_to_oklch" title="Link to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">(L,</span> <span class="pre">C,</span> <span class="pre">h)</span></code> in OKLCH for an sRGB hex colour.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hex_to_oklch</span><span class="p">(</span><span class="n">oklch_to_hex</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<p>Round-trips <a class="reference internal" href="#epythet.themes.oklch_to_hex" title="epythet.themes.oklch_to_hex"><code class="xref py py-func docutils literal notranslate"><span class="pre">oklch_to_hex()</span></code></a> for in-gamut colours (out-of-gamut ones are
+clipped there, so they come back changed).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hex_to_oklch</span><span class="p">(</span><span class="n">oklch_to_hex</span><span class="p">(</span><span class="mf">0.46</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mi">250</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-<span class="go">(0.5, 0.13, 200)</span>
+<span class="go">(0.46, 0.13, 250)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -739,7 +741,7 @@ rendered as an empty string.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=9fea2d4c"></script>
+</div><script src="../_static/documentation_options.js?v=36aa592a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
