@@ -1,4 +1,4 @@
-> built 2026-10-19 11:21 UTC from 66789f1 (master) · epythet 0.2.17. Details: build_info.json
+> built 2026-10-20 10:35 UTC from 8e8ce47 (master) · epythet 0.2.18. Details: build_info.json
 
 # index.html.md
 
@@ -3195,7 +3195,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.17', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.18', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -6491,18 +6491,16 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-10-19 11:21 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/66789f1a7e1465aced253b7c3537a2fb483e4fc1"><code>66789f1</code></a> on branch <code>master</code>, for **epythet 0.2.17** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-20 10:35 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/8e8ce470b8e0c6e93942a68cc0a875a3efdea982"><code>8e8ce47</code></a> on branch <code>master</code>, for **epythet 0.2.18** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.2.17) is behind the latest release on PyPI (0.2.18): `pip install epythet` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/66789f1a7e1465aced253b7c3537a2fb483e4fc1"><code>66789f1a7e1465aced253b7c3537a2fb483e4fc1</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/8e8ce470b8e0c6e93942a68cc0a875a3efdea982"><code>8e8ce470b8e0c6e93942a68cc0a875a3efdea982</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -6513,16 +6511,16 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/39243843242">39243843242</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/39408701900">39408701900</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>66789f1a7e1465aced253b7c3537a2fb483e4fc1</code> (in the history of the built commit) |
+| Event commit | <code>8e8ce470b8e0c6e93942a68cc0a875a3efdea982</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.17  |
-| Sphinx   | 9.1.0   |
+| epythet  | 0.2.18  |
+| Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.15 |
 
@@ -6540,14 +6538,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.18/">0.2.18</a>, newer than the documented version (0.2.17).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.18/">0.2.18</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 66789f1a7e1465aced253b7c3537a2fb483e4fc1
-pip install "epythet==0.2.17"
+git checkout 8e8ce470b8e0c6e93942a68cc0a875a3efdea982
+pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 
