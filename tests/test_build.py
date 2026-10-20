@@ -748,3 +748,42 @@ def test_write_generated_file_review_cases(tmp_path):
     for bad in ("", (""), ("a", "")):
         with pytest.raises(TypeError):
             write_generated_file(p, C, previous_versions=bad, **kw)
+
+
+def test_clean_and_github_spare_a_handwritten_docs_dir(project):
+    """#45: ``docs/`` without a Sphinx ``.buildinfo`` is hand-written; neither target may touch it."""
+    docs = project / "docs"
+    docs.mkdir()
+    page = docs / "guide.md"
+    page.write_text("hand-written")
+    with pytest.warns(UserWarning, match="kept"):
+        build(load_config(project), "clean")
+    assert page.read_text() == "hand-written"
+    with pytest.raises(BuildError, match="hand-written"):
+        build(load_config(project), "github")
+    assert page.read_text() == "hand-written"
+    shutil.rmtree(docs)  # the project fixture is shared
+
+
+def test_clean_still_removes_a_built_site(project):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    assert (site / ".buildinfo").is_file()
+    build(load_config(project), "github")  # a built site is overwritten, not refused
+    build(load_config(project), "clean")
+    assert not site.exists() and not (project / "docsrc" / "_build").exists()
+
+
+def test_is_built_site_markers_and_odd_targets(tmp_path):
+    from epythet.build import is_built_site
+
+    assert is_built_site(tmp_path / "absent")
+    (tmp_path / "empty").mkdir()
+    assert is_built_site(tmp_path / "empty")
+    (tmp_path / "a").mkdir()
+    (tmp_path / "a" / "build_info.json").write_text("{}")
+    assert is_built_site(tmp_path / "a")  # survives a gitignore that strips dotfiles
+    (tmp_path / "file").write_text("x")
+    assert not is_built_site(tmp_path / "file")
+    (tmp_path / "link").symlink_to(tmp_path / "a")
+    assert not is_built_site(tmp_path / "link")
