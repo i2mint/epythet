@@ -336,7 +336,11 @@
 <span class="n">SITE_MARKER</span> <span class="o">=</span> <span class="s2">".buildinfo"</span>
 <span class="c1">#: Markers that identify an epythet-built site: Sphinx's own, and epythet's provenance record</span>
 <span class="c1">#: (survives a gitignore that strips dotfiles).</span>
-<span class="n">SITE_MARKERS</span> <span class="o">=</span> <span class="p">(</span><span class="n">SITE_MARKER</span><span class="p">,</span> <span class="n">BUILD_INFO_FILENAME</span><span class="p">)</span>
+<span class="n">SITE_MARKERS</span> <span class="o">=</span> <span class="p">(</span><span class="n">SITE_MARKER</span><span class="p">,</span> <span class="n">BUILD_INFO_FILENAME</span><span class="p">,</span> <span class="s2">".epythet-manifest.json"</span><span class="p">)</span>
+<span class="c1">#: Written into a copy target by ``github``/``gitlab``: the files that copy put there. With</span>
+<span class="c1">#: it, ``clean`` removes only those files and ``github`` refuses to overwrite a same-named</span>
+<span class="c1">#: file it did not write, so hand-written files beside a built site survive both (#47).</span>
+<span class="n">MANIFEST_FILENAME</span> <span class="o">=</span> <span class="n">SITE_MARKERS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="c1">#: Builders that produce a browsable site and therefore carry provenance.</span>
 <span class="n">HTML_TARGETS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"html"</span><span class="p">,</span> <span class="s2">"dirhtml"</span><span class="p">)</span>
 
@@ -354,6 +358,69 @@
         <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
         <span class="ow">or</span> <span class="nb">any</span><span class="p">((</span><span class="n">path</span> <span class="o">/</span> <span class="n">marker</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">SITE_MARKERS</span><span class="p">)</span>
     <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_site_files</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Posix paths, relative to ``root``, of every file under it."""</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_InvalidManifest</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The manifest file exists but cannot be trusted as a list of files to delete."""</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_manifest</span><span class="p">(</span><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The files an earlier copy wrote into ``destination``; ``None`` if it left no manifest.</span>
+
+<span class="sd">    A manifest that is there but unusable raises :class:`_InvalidManifest`: it must not read</span>
+<span class="sd">    as "no manifest", which would send ``clean`` down the delete-everything legacy path.</span>
+<span class="sd">    """</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">destination</span> <span class="o">/</span> <span class="n">MANIFEST_FILENAME</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))[</span><span class="s2">"files"</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is unreadable (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not hold a list of file names"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_inside</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">_InvalidManifest</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> lists </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">, which is outside </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_inside</span><span class="p">(</span><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``destination / name`` if it stays inside ``destination`` (no ``..``, no absolute</span>
+<span class="sd">    path, no symlinked directory on the way), else ``None``."""</span>
+    <span class="n">relative</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">relative</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">".."</span> <span class="ow">in</span> <span class="n">relative</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">destination</span> <span class="o">/</span> <span class="n">relative</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parent</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">destination</span><span class="o">.</span><span class="n">resolve</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">target</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_remove_listed</span><span class="p">(</span><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Delete ``files`` (and the manifest) from ``destination``, then the directories that</span>
+<span class="sd">    deleting emptied; hand-made directories, empty or not, are left alone."""</span>
+    <span class="n">parents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">files</span><span class="p">,</span> <span class="n">MANIFEST_FILENAME</span><span class="p">):</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_inside</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">parents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">parents</span> <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">destination</span> <span class="ow">and</span> <span class="n">destination</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">directory</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+            <span class="n">directory</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">destination</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">destination</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
+        <span class="n">destination</span><span class="o">.</span><span class="n">rmdir</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">make</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="o">*</span><span class="n">make_args</span><span class="p">):</span>
@@ -387,7 +454,18 @@
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">COPY_TARGETS</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">is_built_site</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">written</span> <span class="o">=</span> <span class="n">_read_manifest</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">_InvalidManifest</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"clean: kept </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Delete it yourself if it is only output."</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">written</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Only what a copy wrote: hand-written files beside it stay.</span>
+                <span class="n">_remove_listed</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">written</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">is_built_site</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -405,7 +483,39 @@
                 <span class="s2">"Move those files elsewhere (or delete the directory) and retry."</span>
             <span class="p">)</span>
         <span class="n">html_dir</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">overrides</span><span class="o">=</span><span class="n">overrides</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">_site_files</span><span class="p">(</span><span class="n">html_dir</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">previous</span> <span class="o">=</span> <span class="n">_read_manifest</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span> <span class="k">if</span> <span class="n">destination</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">_InvalidManifest</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BuildError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"refusing to copy the site into </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Fix or delete the "</span>
+                <span class="s2">"manifest (and move any hand-written files out) and retry."</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">clobbered</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">previous</span> <span class="ow">and</span> <span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">clobbered</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BuildError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"refusing to copy the site into </span><span class="si">{</span><span class="n">destination</span><span class="si">}</span><span class="s2">: these files are not "</span>
+                    <span class="sa">f</span><span class="s2">"from an earlier epythet copy and would be overwritten: "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">clobbered</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span><span class="si">}{</span><span class="s1">' ...'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">clobbered</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2">. "</span>
+                    <span class="s2">"Move or rename them and retry."</span>
+                <span class="p">)</span>
+            <span class="c1"># Files the earlier copy wrote and this one does not.</span>
+            <span class="k">for</span> <span class="n">stale</span> <span class="ow">in</span> <span class="n">previous</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">stale</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Recorded before the copy, as the union with the earlier record, so a copy that</span>
+        <span class="c1"># dies midway leaves every file it may have written listed (and so cleanable).</span>
+        <span class="n">destination</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">MANIFEST_FILENAME</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">"files"</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">({</span><span class="o">*</span><span class="n">files</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">previous</span> <span class="ow">or</span> <span class="p">())})},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">html_dir</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">dirs_exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">destination</span> <span class="o">/</span> <span class="n">MANIFEST_FILENAME</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">"files"</span><span class="p">:</span> <span class="n">files</span><span class="p">},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span>
+        <span class="p">)</span>
         <span class="c1"># copytree never deletes: drop provenance files the fresh site no longer has.</span>
         <span class="n">prune_site</span><span class="p">(</span>
             <span class="n">destination</span><span class="p">,</span>
@@ -514,7 +624,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=e24617d1"></script>
+</div><script src="../../_static/documentation_options.js?v=4b0663b7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

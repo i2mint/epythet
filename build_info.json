@@ -1,36 +1,36 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-20T10:35:14Z",
+  "built_at": "2026-10-20T12:00:25Z",
   "package": {
     "name": "epythet",
-    "version": "0.2.18",
+    "version": "0.2.19",
     "display_name": "epythet",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "8e8ce470b8e0c6e93942a68cc0a875a3efdea982",
-    "short_commit": "8e8ce47",
+    "commit": "67703235e42bf45148b3a3c1868e1198c1e7f3c6",
+    "short_commit": "6770323",
     "branch": "master",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/i2mint/epythet",
-    "commit_url": "https://github.com/i2mint/epythet/commit/8e8ce470b8e0c6e93942a68cc0a875a3efdea982",
+    "commit_url": "https://github.com/i2mint/epythet/commit/67703235e42bf45148b3a3c1868e1198c1e7f3c6",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "i2mint/epythet",
-    "sha": "8e8ce470b8e0c6e93942a68cc0a875a3efdea982",
+    "sha": "67703235e42bf45148b3a3c1868e1198c1e7f3c6",
     "sha_in_history": true,
     "ref": "refs/heads/master",
     "ref_name": "master",
-    "run_id": "39408701900",
-    "run_url": "https://github.com/i2mint/epythet/actions/runs/39408701900",
+    "run_id": "39418650049",
+    "run_url": "https://github.com/i2mint/epythet/actions/runs/39418650049",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.18",
+    "epythet": "0.2.19",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
     "python": "3.12.15"
@@ -61,14 +61,16 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.2.18",
-    "relation": "same",
+    "latest": "0.2.20",
+    "relation": "behind",
     "error": null
   },
-  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 8e8ce470b8e0c6e93942a68cc0a875a3efdea982\npip install \"epythet==0.2.18\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
+  "reproduce": "git clone https://github.com/i2mint/epythet && cd epythet\ngit checkout 67703235e42bf45148b3a3c1868e1198c1e7f3c6\npip install \"epythet==0.2.19\"\nepythet quickstart . --ignore tests/ scrap/ examples/ ledger/",
   "warnings": [],
   "alignment": {
-    "aligned": true,
-    "notes": []
+    "aligned": false,
+    "notes": [
+      "The documented version (0.2.19) is behind the latest release on PyPI (0.2.20): `pip install epythet` gives newer code than these docs describe."
+    ]
   }
 }

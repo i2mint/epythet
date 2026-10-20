@@ -48,7 +48,7 @@
 - [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the &#42;rendered&#42; output (XML, HTML, text) and report what the build hid.
 - [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review &#42;packet&#42; for an in-session agent, and the ingestion of its reply.
 - [For AI agents](ai-agents.html.md): &#96;epythet&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-20 10:35 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-20 12:00 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
 ## Optional
 
