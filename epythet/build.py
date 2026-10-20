@@ -80,25 +80,61 @@ def _site_files(root: Path) -> list[str]:
     return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
 
 
+class _InvalidManifest(ValueError):
+    """The manifest file exists but cannot be trusted as a list of files to delete."""
+
+
 def _read_manifest(destination: Path) -> set[str] | None:
-    """The files an earlier copy wrote into ``destination``; ``None`` if it left no record."""
-    try:
-        data = json.loads((destination / MANIFEST_FILENAME).read_text(encoding="utf-8"))
-        return {str(f) for f in data["files"]}
-    except (OSError, ValueError, KeyError, TypeError):
+    """The files an earlier copy wrote into ``destination``; ``None`` if it left no manifest.
+
+    A manifest that is there but unusable raises :class:`_InvalidManifest`: it must not read
+    as "no manifest", which would send ``clean`` down the delete-everything legacy path.
+    """
+    path = destination / MANIFEST_FILENAME
+    if not path.is_file():
         return None
+    try:
+        files = json.loads(path.read_text(encoding="utf-8"))["files"]
+    except (OSError, ValueError, KeyError, TypeError) as e:
+        raise _InvalidManifest(f"{path} is unreadable ({e})") from None
+    if not isinstance(files, list) or not all(isinstance(f, str) for f in files):
+        raise _InvalidManifest(f"{path} does not hold a list of file names")
+    for name in files:
+        if _inside(destination, name) is None:
+            raise _InvalidManifest(f"{path} lists {name!r}, which is outside {destination}")
+    return set(files)
+
+
+def _inside(destination: Path, name: str) -> Path | None:
+    """``destination / name`` if it stays inside ``destination`` (no ``..``, no absolute
+    path, no symlinked directory on the way), else ``None``."""
+    relative = Path(name)
+    if not name or relative.is_absolute() or ".." in relative.parts:
+        return None
+    target = destination / relative
+    try:
+        parent = target.parent.resolve()
+        if not parent.is_relative_to(destination.resolve()):
+            return None
+    except OSError:
+        return None
+    return target
 
 
 def _remove_listed(destination: Path, files) -> None:
-    """Delete ``files`` (and the manifest) from ``destination``, then its emptied directories."""
+    """Delete ``files`` (and the manifest) from ``destination``, then the directories that
+    deleting emptied; hand-made directories, empty or not, are left alone."""
+    parents = set()
     for name in (*files, MANIFEST_FILENAME):
-        (destination / name).unlink(missing_ok=True)
-    for directory in sorted(
-        (p for p in destination.rglob("*") if p.is_dir()), reverse=True
-    ):
-        if not any(directory.iterdir()):
+        target = _inside(destination, name)
+        if target is None:
+            continue
+        target.unlink(missing_ok=True)
+        parents.update(p for p in target.parents if p != destination and destination in p.parents)
+    for directory in sorted(parents, key=lambda p: len(p.parts), reverse=True):
+        if directory.is_dir() and not directory.is_symlink() and not any(directory.iterdir()):
             directory.rmdir()
-    if not any(destination.iterdir()):
+    if destination.is_dir() and not any(destination.iterdir()):
         destination.rmdir()
 
 
@@ -131,7 +167,14 @@ def build(
         for path in (config.project_dir / d for d in COPY_TARGETS.values()):
             if not path.is_dir():
                 continue
-            written = _read_manifest(path)
+            try:
+                written = _read_manifest(path)
+            except _InvalidManifest as e:
+                warnings.warn(
+                    f"clean: kept {path}: {e}. Delete it yourself if it is only output.",
+                    stacklevel=2,
+                )
+                continue
             if written is not None:
                 # Only what a copy wrote: hand-written files beside it stay.
                 _remove_listed(path, written)
@@ -154,7 +197,13 @@ def build(
             )
         html_dir = build(config, "html", overrides=overrides)
         files = _site_files(html_dir)
-        previous = _read_manifest(destination) if destination.is_dir() else None
+        try:
+            previous = _read_manifest(destination) if destination.is_dir() else None
+        except _InvalidManifest as e:
+            raise BuildError(
+                f"refusing to copy the site into {destination}: {e}. Fix or delete the "
+                "manifest (and move any hand-written files out) and retry."
+            ) from None
         if previous is not None:
             clobbered = [
                 f for f in files if f not in previous and (destination / f).exists()
@@ -169,6 +218,13 @@ def build(
             # Files the earlier copy wrote and this one does not.
             for stale in previous - set(files):
                 (destination / stale).unlink(missing_ok=True)
+        # Recorded before the copy, as the union with the earlier record, so a copy that
+        # dies midway leaves every file it may have written listed (and so cleanable).
+        destination.mkdir(parents=True, exist_ok=True)
+        (destination / MANIFEST_FILENAME).write_text(
+            json.dumps({"files": sorted({*files, *(previous or ())})}, indent=1),
+            encoding="utf-8",
+        )
         shutil.copytree(html_dir, destination, dirs_exist_ok=True)
         (destination / MANIFEST_FILENAME).write_text(
             json.dumps({"files": files}, indent=1), encoding="utf-8"

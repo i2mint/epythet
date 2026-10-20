@@ -827,3 +827,28 @@ def test_clean_without_a_manifest_still_removes_a_legacy_built_site(project):
     (site / ".epythet-manifest.json").unlink()
     build(load_config(project), "clean")
     assert not site.exists()
+
+
+@pytest.mark.parametrize(
+    "manifest", ["{not json", '{"files": null}', '{"files": ["../escape.txt"]}', '{"files": "x"}']
+)
+def test_an_unusable_manifest_deletes_and_overwrites_nothing(project, manifest):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "mine.txt").write_text("hand-written")
+    (site / ".epythet-manifest.json").write_text(manifest)
+    with pytest.warns(UserWarning, match="kept"):
+        build(load_config(project), "clean")
+    assert (site / "mine.txt").read_text() == "hand-written"
+    with pytest.raises(BuildError, match="manifest"):
+        build(load_config(project), "github")
+    shutil.rmtree(site)
+
+
+def test_clean_leaves_handmade_empty_directories(project):
+    quickstart(project)
+    site = build(load_config(project), "github")
+    (site / "keepme").mkdir()
+    build(load_config(project), "clean")
+    assert (site / "keepme").is_dir() and not (site / "index.html").exists()
+    shutil.rmtree(site)
