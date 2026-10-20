@@ -51,7 +51,11 @@ COPY_TARGETS = {"github": "docs", "gitlab": "public"}
 SITE_MARKER = ".buildinfo"
 #: Markers that identify an epythet-built site: Sphinx's own, and epythet's provenance record
 #: (survives a gitignore that strips dotfiles).
-SITE_MARKERS = (SITE_MARKER, BUILD_INFO_FILENAME)
+SITE_MARKERS = (SITE_MARKER, BUILD_INFO_FILENAME, ".epythet-manifest.json")
+#: Written into a copy target by ``github``/``gitlab``: the files that copy put there. With
+#: it, ``clean`` removes only those files and ``github`` refuses to overwrite a same-named
+#: file it did not write, so hand-written files beside a built site survive both (#47).
+MANIFEST_FILENAME = SITE_MARKERS[-1]
 #: Builders that produce a browsable site and therefore carry provenance.
 HTML_TARGETS = ("html", "dirhtml")
 
@@ -69,6 +73,33 @@ def is_built_site(path: Path) -> bool:
         or not any(path.iterdir())
         or any((path / marker).is_file() for marker in SITE_MARKERS)
     )
+
+
+def _site_files(root: Path) -> list[str]:
+    """Posix paths, relative to ``root``, of every file under it."""
+    return sorted(p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file())
+
+
+def _read_manifest(destination: Path) -> set[str] | None:
+    """The files an earlier copy wrote into ``destination``; ``None`` if it left no record."""
+    try:
+        data = json.loads((destination / MANIFEST_FILENAME).read_text(encoding="utf-8"))
+        return {str(f) for f in data["files"]}
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _remove_listed(destination: Path, files) -> None:
+    """Delete ``files`` (and the manifest) from ``destination``, then its emptied directories."""
+    for name in (*files, MANIFEST_FILENAME):
+        (destination / name).unlink(missing_ok=True)
+    for directory in sorted(
+        (p for p in destination.rglob("*") if p.is_dir()), reverse=True
+    ):
+        if not any(directory.iterdir()):
+            directory.rmdir()
+    if not any(destination.iterdir()):
+        destination.rmdir()
 
 
 def make(project_dir, *make_args):
@@ -100,7 +131,11 @@ def build(
         for path in (config.project_dir / d for d in COPY_TARGETS.values()):
             if not path.is_dir():
                 continue
-            if is_built_site(path):
+            written = _read_manifest(path)
+            if written is not None:
+                # Only what a copy wrote: hand-written files beside it stay.
+                _remove_listed(path, written)
+            elif is_built_site(path):
                 shutil.rmtree(path)
             else:
                 warnings.warn(
@@ -118,7 +153,26 @@ def build(
                 "Move those files elsewhere (or delete the directory) and retry."
             )
         html_dir = build(config, "html", overrides=overrides)
+        files = _site_files(html_dir)
+        previous = _read_manifest(destination) if destination.is_dir() else None
+        if previous is not None:
+            clobbered = [
+                f for f in files if f not in previous and (destination / f).exists()
+            ]
+            if clobbered:
+                raise BuildError(
+                    f"refusing to copy the site into {destination}: these files are not "
+                    f"from an earlier epythet copy and would be overwritten: "
+                    f"{', '.join(clobbered[:5])}{' ...' if len(clobbered) > 5 else ''}. "
+                    "Move or rename them and retry."
+                )
+            # Files the earlier copy wrote and this one does not.
+            for stale in previous - set(files):
+                (destination / stale).unlink(missing_ok=True)
         shutil.copytree(html_dir, destination, dirs_exist_ok=True)
+        (destination / MANIFEST_FILENAME).write_text(
+            json.dumps({"files": files}, indent=1), encoding="utf-8"
+        )
         # copytree never deletes: drop provenance files the fresh site no longer has.
         prune_site(
             destination,
