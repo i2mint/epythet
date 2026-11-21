@@ -267,7 +267,7 @@ def print_diagnosis(src: Source):
         from dol import filt_iter, wrap_kvs, KvReader
         from dol.filesys import FileBytesReader
 
-        @wrap_kvs(obj_of_data=_decode_or_default)
+        @wrap_kvs(value_decoder=_decode_or_default)
         @filt_iter(filt=lambda k: k.endswith(".py") and "__pycache__" not in k)
         class PyFilesReader(FileBytesReader, KvReader): ...
 
