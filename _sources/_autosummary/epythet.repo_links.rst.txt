@@ -1,0 +1,18 @@
+epythet.repo\_links
+===================
+
+.. automodule:: epythet.repo_links
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      DEFAULT_REF
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      resolve_repo_link
+   

@@ -1,4 +1,4 @@
-> built 2026-11-23 06:59 UTC from 0263e9e (master) · epythet 0.2.23. Details: build_info.json
+> built 2026-11-23 07:55 UTC from 94a6b7a (master) · epythet 0.2.24. Details: build_info.json
 
 # index.html.md
 
@@ -1754,6 +1754,7 @@ Scaffold `docsrc` and build the HTML site; returns the output directory.
 | [`normalizer`](_autosummary/epythet.normalizer.html.md#module-epythet.normalizer)                    | Build-time docstring normalizer: fix the markup artifacts people actually write.                                                     |
 | [`provenance`](_autosummary/epythet.provenance.html.md#module-epythet.provenance)                    | Build provenance: which code, which version, which tools produced a site.                                                            |
 | [`repair`](_autosummary/epythet.repair.html.md#module-epythet.repair)                            | `epythet repair`: apply the normalizer's source-safe rewrites to docstrings in place.                                                |
+| [`repo_links`](_autosummary/epythet.repo_links.html.md#module-epythet.repo_links)                    | Point repo-relative README links at the repository, so they work on the site.                                                        |
 | [`scaffold`](_autosummary/epythet.scaffold.html.md#epythet.scaffold)(config, \*[, verbose, pages]) | Write the docsrc files for an already-loaded configuration.                                                                          |
 | [`setup_docsrc`](_autosummary/epythet.setup_docsrc.html.md#module-epythet.setup_docsrc)                | Compatibility module: `make_docsrc` now lives in [`epythet.scaffold`](_autosummary/epythet.scaffold.html.md#epythet.scaffold). |
 | [`sphinx_conf`](_autosummary/epythet.sphinx_conf.html.md#module-epythet.sphinx_conf)                  | The star-import target for a project's `docsrc/conf.py`.                                                                             |
@@ -3138,6 +3139,57 @@ The rule tuple for a fence style (`literal` swaps the fence rule).
   [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)] | [`None`](https://docs.python.org/3/builtins/constants.html#None)
 
 
+# _autosummary/epythet.repo_links.html.md
+
+# epythet.repo_links
+
+Point repo-relative README links at the repository, so they work on the site.
+
+The landing page is the project README included verbatim. A README written for
+GitHub links to repo files that are not site pages (`misc/docs/design.md`,
+`LICENSE`, `examples/`); on the built site such a link is a dead relative
+URL. [`resolve_repo_link()`](_autosummary/epythet.repo_links.html.md#epythet.repo_links.resolve_repo_link) turns one into a `blob`/`tree` URL on the
+project’s repository, and the `doctree-resolved` hook in
+[`epythet.sphinx_ext`](_autosummary/epythet.sphinx_ext.html.md#module-epythet.sphinx_ext) applies it to the landing page.
+
+```pycon
+>>> resolve_repo_link("misc/docs/a.md", ["misc/docs/a.md"], "https://github.com/o/r")
+'https://github.com/o/r/blob/HEAD/misc/docs/a.md'
+>>> resolve_repo_link("https://x.org/a", [], "https://github.com/o/r") is None
+True
+```
+
+### Module Attributes
+
+| [`DEFAULT_REF`](_autosummary/epythet.repo_links.html.md#epythet.repo_links.DEFAULT_REF)   | GitHub resolves `HEAD` to the default branch.   |
+|----------------------------------------------------------------|-------------------------------------------------|
+
+### Functions
+
+| [`resolve_repo_link`](_autosummary/epythet.repo_links.html.md#epythet.repo_links.resolve_repo_link)(refuri, repo_paths, ...[, ref])   | The repository URL for a repo-relative `refuri`, or `None` to leave it alone.   |
+|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+
+### epythet.repo_links.DEFAULT_REF *= 'HEAD'*
+
+GitHub resolves `HEAD` to the default branch.
+
+* **Type:**
+  The ref used in generated URLs
+
+### epythet.repo_links.resolve_repo_link(refuri, repo_paths, repo_url, , ref='HEAD')
+
+The repository URL for a repo-relative `refuri`, or `None` to leave it alone.
+
+* **Parameters:**
+  * **refuri** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – the link target as written in the README
+  * **repo_paths** ([`Container`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Container)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]) – the posix paths (files and directories, relative to the
+    project root) that exist; a link is rewritten only when it names one
+  * **repo_url** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – the repository’s web URL (`https://github.com/owner/repo`)
+  * **ref** ([`str`](https://docs.python.org/3/builtins/stdtypes.html#str)) – the git ref the URL points at
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
+
 # _autosummary/epythet.scaffold.html.md
 
 # epythet.scaffold
@@ -3199,7 +3251,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.23', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.24', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -3221,6 +3273,8 @@ Listed automatically in the generated configuration
   [`epythet.agent_outputs`](_autosummary/epythet.agent_outputs.html.md#module-epythet.agent_outputs);
 - the theme accent stylesheet `_static/epythet.css` when the chosen theme
   takes its colours from CSS variables (`epythet_theme_css`);
+- repo-relative links on the landing page (the README) rewritten to the
+  repository (`epythet_repo_url`), see [`epythet.repo_links`](_autosummary/epythet.repo_links.html.md#module-epythet.repo_links);
 - the build provenance (`epythet_build_info`): the one-line footer appended
   to the landing page, the documented-module counts on the about page, and
   `build_info.json` at the site root, see [`epythet.provenance`](_autosummary/epythet.provenance.html.md#module-epythet.provenance).
@@ -6498,7 +6552,7 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-11-23 06:59 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/0263e9e713c76eb888d3fdbced33a66aa4ab4591"><code>0263e9e</code></a> on branch <code>master</code>, for **epythet 0.2.23** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 07:55 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/94a6b7af1ca76edfe05b48e8c1bb46a8020b3b31"><code>94a6b7a</code></a> on branch <code>master</code>, for **epythet 0.2.24** (from <code>pyproject.toml</code>).
 
 #### NOTE
 Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
@@ -6507,7 +6561,7 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/0263e9e713c76eb888d3fdbced33a66aa4ab4591"><code>0263e9e713c76eb888d3fdbced33a66aa4ab4591</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/94a6b7af1ca76edfe05b48e8c1bb46a8020b3b31"><code>94a6b7af1ca76edfe05b48e8c1bb46a8020b3b31</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -6518,15 +6572,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/45127573550">45127573550</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/45134252181">45134252181</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>0263e9e713c76eb888d3fdbced33a66aa4ab4591</code> (in the history of the built commit) |
+| Event commit | <code>94a6b7af1ca76edfe05b48e8c1bb46a8020b3b31</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.24  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -6545,14 +6599,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.23/">0.2.23</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/epythet/0.2.24/">0.2.24</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout 0263e9e713c76eb888d3fdbced33a66aa4ab4591
-pip install "epythet==0.2.23"
+git checkout 94a6b7af1ca76edfe05b48e8c1bb46a8020b3b31
+pip install "epythet==0.2.24"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

@@ -22,6 +22,7 @@
 - [epythet.normalizer](_autosummary/epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
 - [epythet.provenance](_autosummary/epythet.provenance.html.md): Build provenance: which code, which version, which tools produced a site.
 - [epythet.repair](_autosummary/epythet.repair.html.md): &#96;epythet repair&#96;: apply the normalizer’s source-safe rewrites to docstrings in place.
+- [epythet.repo_links](_autosummary/epythet.repo_links.html.md): Point repo-relative README links at the repository, so they work on the site.
 - [epythet.scaffold](_autosummary/epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
 - [epythet.setup_docsrc](_autosummary/epythet.setup_docsrc.html.md): Compatibility module: &#96;make_docsrc&#96; now lives in &#96;epythet.scaffold&#96;.
 - [epythet.sphinx_conf](_autosummary/epythet.sphinx_conf.html.md): The star-import target for a project’s &#96;docsrc/conf.py&#96;.
@@ -48,7 +49,7 @@
 - [epythet.validation.rendered](_autosummary/epythet.validation.rendered.html.md): Level 2: read the &#42;rendered&#42; output (XML, HTML, text) and report what the build hid.
 - [epythet.validation.review](_autosummary/epythet.validation.review.html.md): Level 3: a review &#42;packet&#42; for an in-session agent, and the ingestion of its reply.
 - [For AI agents](ai-agents.html.md): &#96;epythet&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 06:59 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 07:55 UTC&#42;&#42; from commit &lt;a href="https://github.com/i2m...
 
 ## Optional
 

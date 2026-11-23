@@ -20,6 +20,7 @@
 - [epythet.normalizer](epythet.normalizer.html.md): Build-time docstring normalizer: fix the markup artifacts people actually write.
 - [epythet.provenance](epythet.provenance.html.md): Build provenance: which code, which version, which tools produced a site.
 - [epythet.repair](epythet.repair.html.md): &#96;epythet repair&#96;: apply the normalizer’s source-safe rewrites to docstrings in place.
+- [epythet.repo_links](epythet.repo_links.html.md): Point repo-relative README links at the repository, so they work on the site.
 - [epythet.scaffold](epythet.scaffold.html.md): Write the docsrc files for an already-loaded configuration.
 - [epythet.setup_docsrc](epythet.setup_docsrc.html.md): Compatibility module: &#96;make_docsrc&#96; now lives in &#96;epythet.scaffold&#96;.
 - [epythet.sphinx_conf](epythet.sphinx_conf.html.md): The star-import target for a project’s &#96;docsrc/conf.py&#96;.

@@ -13,6 +13,8 @@ Listed automatically in the generated configuration
   [`epythet.agent_outputs`](epythet.agent_outputs.html.md#module-epythet.agent_outputs);
 - the theme accent stylesheet `_static/epythet.css` when the chosen theme
   takes its colours from CSS variables (`epythet_theme_css`);
+- repo-relative links on the landing page (the README) rewritten to the
+  repository (`epythet_repo_url`), see [`epythet.repo_links`](epythet.repo_links.html.md#module-epythet.repo_links);
 - the build provenance (`epythet_build_info`): the one-line footer appended
   to the landing page, the documented-module counts on the about page, and
   `build_info.json` at the site root, see [`epythet.provenance`](epythet.provenance.html.md#module-epythet.provenance).

@@ -30,6 +30,7 @@
    normalizer
    provenance
    repair
+   repo_links
    scaffold
    setup_docsrc
    sphinx_conf

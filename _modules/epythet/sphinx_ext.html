@@ -216,6 +216,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.normalizer.html">epythet.normalizer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.provenance.html">epythet.provenance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repair.html">epythet.repair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.repo_links.html">epythet.repo_links</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.scaffold.html">epythet.scaffold</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.setup_docsrc.html">epythet.setup_docsrc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../_autosummary/epythet.sphinx_conf.html">epythet.sphinx_conf</a></li>
@@ -296,6 +297,8 @@
 <span class="sd">  :mod:`epythet.agent_outputs`;</span>
 <span class="sd">- the theme accent stylesheet ``_static/epythet.css`` when the chosen theme</span>
 <span class="sd">  takes its colours from CSS variables (``epythet_theme_css``);</span>
+<span class="sd">- repo-relative links on the landing page (the README) rewritten to the</span>
+<span class="sd">  repository (``epythet_repo_url``), see :mod:`epythet.repo_links`;</span>
 <span class="sd">- the build provenance (``epythet_build_info``): the one-line footer appended</span>
 <span class="sd">  to the landing page, the documented-module counts on the about page, and</span>
 <span class="sd">  ``build_info.json`` at the site root, see :mod:`epythet.provenance`.</span>
@@ -308,6 +311,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.agent_outputs</span><span class="w"> </span><span class="kn">import</span> <span class="n">inject_link_relations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.normalizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">sphinx_process_docstring</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">epythet.repo_links</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_repo_link</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">epythet.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ABOUT_PAGE_DOCNAME</span><span class="p">,</span>
     <span class="n">render_footer_line</span><span class="p">,</span>
@@ -341,6 +345,32 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_link_relations_if_enabled</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">pagename</span><span class="p">,</span> <span class="n">templatename</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">doctree</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">"epythet_agent_outputs"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">inject_link_relations</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">pagename</span><span class="p">,</span> <span class="n">templatename</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">doctree</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_rewrite_repo_links</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">doctree</span><span class="p">,</span> <span class="n">docname</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""``doctree-resolved`` hook: landing-page links to repo files go to the repository."""</span>
+    <span class="n">repo_url</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="s2">"epythet_repo_url"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">repo_url</span> <span class="ow">or</span> <span class="n">docname</span> <span class="o">!=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_doc</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_is_html_build</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">docutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodes</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">confdir</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">doctree</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">nodes</span><span class="o">.</span><span class="n">reference</span><span class="p">):</span>
+        <span class="c1"># myst leaves a link it cannot resolve to a site page as ``refid="&lt;path&gt;"``</span>
+        <span class="n">local</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"refuri"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"refid"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">local</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"#"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">"./"</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="s2">"://"</span> <span class="ow">in</span> <span class="n">local</span> <span class="ow">or</span> <span class="n">local</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"#"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">,</span> <span class="s2">"mailto:"</span><span class="p">)):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s2">"refid"</span> <span class="ow">in</span> <span class="n">node</span> <span class="ow">and</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">doctree</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+            <span class="k">continue</span>  <span class="c1"># a real in-page anchor</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/"</span><span class="p">}</span> <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="k">else</span> <span class="p">{</span><span class="n">path</span><span class="p">}</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">resolve_repo_link</span><span class="p">(</span><span class="n">local</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">repo_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"refid"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">node</span><span class="p">[</span><span class="s2">"refuri"</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_html_build</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -430,8 +460,10 @@
     <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_normalizer_rules"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_provenance"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
     <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_build_info"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="nb">dict</span><span class="p">,))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_config_value</span><span class="p">(</span><span class="s2">"epythet_repo_url"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"autodoc-process-docstring"</span><span class="p">,</span> <span class="n">sphinx_process_docstring</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"builder-inited"</span><span class="p">,</span> <span class="n">write_theme_css</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"doctree-resolved"</span><span class="p">,</span> <span class="n">_rewrite_repo_links</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"html-page-context"</span><span class="p">,</span> <span class="n">_link_relations_if_enabled</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"html-page-context"</span><span class="p">,</span> <span class="n">_provenance_page_context</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"build-finished"</span><span class="p">,</span> <span class="n">_write_build_info</span><span class="p">)</span>
@@ -472,7 +504,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=bf5bb7a7"></script>
+</div><script src="../../_static/documentation_options.js?v=5778f617"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
