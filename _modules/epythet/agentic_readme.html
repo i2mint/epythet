@@ -303,14 +303,15 @@
 <span class="sd">depend on who ran the tool). :func:`place_section` puts it between two marker</span>
 <span class="sd">comments so a later run updates it in place: before the first heading after the</span>
 <span class="sd">title when ``agentic_first`` is on, at the end otherwise. The "for humans" line</span>
-<span class="sd">links to the heading that follows the section.</span>
+<span class="sd">names the heading that follows the section, as plain text: PyPI drops heading ids,</span>
+<span class="sd">so an in-page link would be dead there.</span>
 
 <span class="sd">&gt;&gt;&gt; readme = "# pkg\\n\\nTagline.\\n\\n# Install\\n\\npip install pkg\\n"</span>
 <span class="sd">&gt;&gt;&gt; start, end, heading, level = place_section(readme, agentic_first=True)</span>
 <span class="sd">&gt;&gt;&gt; readme[start:end], heading.title, level</span>
 <span class="sd">('', 'Install', 1)</span>
 <span class="sd">&gt;&gt;&gt; humans_link_for(heading)</span>
-<span class="sd">'[Install](#install)'</span>
+<span class="sd">'the *Install* section'</span>
 <span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -836,10 +837,15 @@
 <div class="viewcode-block" id="humans_link_for">
 <a class="viewcode-back" href="../../_autosummary/epythet.agentic_readme.html#epythet.agentic_readme.humans_link_for">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">humans_link_for</span><span class="p">(</span><span class="n">heading</span><span class="p">:</span> <span class="n">Heading</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""``[Title](#anchor)`` for the heading after the section, or a plain fallback."""</span>
+<span class="w">    </span><span class="sd">"""``the *Title* section`` for the heading after the section, or a plain fallback.</span>
+
+<span class="sd">    Deliberately not a ``[Title](#anchor)`` link: PyPI renders READMEs without</span>
+<span class="sd">    heading ids, so such a link is dead on the project page.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">heading</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">"the top of the page"</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">](#</span><span class="si">{</span><span class="n">github_anchor</span><span class="p">(</span><span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span></div>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\[([^\]]*)\]\([^)]*\)"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\1"</span><span class="p">,</span> <span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"*"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"the *</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">* section"</span></div>
 
 
 
@@ -1316,7 +1322,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=161bc3c1"></script>
+</div><script src="../../_static/documentation_options.js?v=bf5bb7a7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

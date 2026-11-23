@@ -1,4 +1,4 @@
-> built 2026-11-21 17:44 UTC from ca135bc (master) · epythet 0.2.22. Details: build_info.json
+> built 2026-11-23 06:59 UTC from 0263e9e (master) · epythet 0.2.23. Details: build_info.json
 
 # index.html.md
 
@@ -451,7 +451,8 @@ project’s `[tool.epythet.readme]` keys on top so a committed README does not
 depend on who ran the tool). [`place_section()`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.place_section) puts it between two marker
 comments so a later run updates it in place: before the first heading after the
 title when `agentic_first` is on, at the end otherwise. The “for humans” line
-links to the heading that follows the section.
+names the heading that follows the section, as plain text: PyPI drops heading ids,
+so an in-page link would be dead there.
 
 ```pycon
 >>> readme = "# pkg\n\nTagline.\n\n# Install\n\npip install pkg\n"
@@ -459,7 +460,7 @@ links to the heading that follows the section.
 >>> readme[start:end], heading.title, level
 ('', 'Install', 1)
 >>> humans_link_for(heading)
-'[Install](#install)'
+'the *Install* section'
 ```
 
 ### Module Attributes
@@ -485,7 +486,7 @@ links to the heading that follows the section.
 | [`github_anchor`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.github_anchor)(title)                               | GitHub's anchor for a heading title.                                                             |
 | [`headings_of`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.headings_of)(text)                                  | Every ATX heading outside fenced code blocks.                                                    |
 | [`headline_skill`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.headline_skill)(skills)                             | The skill named in the install line: a `*-setup`-like one if any, else the first installable.    |
-| [`humans_link_for`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.humans_link_for)(heading)                           | `[Title](#anchor)` for the heading after the section, or a plain fallback.                       |
+| [`humans_link_for`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.humans_link_for)(heading)                           | `the *Title* section` for the heading after the section, or a plain fallback.                    |
 | [`instruction_text`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.instruction_text)(\*[, snippets])                   | The instruction the skill hands an agent when the policy is `add`.                               |
 | [`load`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.load)(project_dir, \*[, config, artifacts, ...])    | Resolve a project once; each argument given is used instead of being loaded.                     |
 | [`load_project`](_autosummary/epythet.agentic_readme.html.md#epythet.agentic_readme.load_project)(project_dir)                          | `(config, artifacts)` for a project; `config` is `None` for a non-Python tree.                   |
@@ -703,7 +704,10 @@ The skill named in the install line: a `*-setup`-like one if any, else the first
 
 ### epythet.agentic_readme.humans_link_for(heading)
 
-`[Title](#anchor)` for the heading after the section, or a plain fallback.
+`the *Title* section` for the heading after the section, or a plain fallback.
+
+Deliberately not a `[Title](#anchor)` link: PyPI renders READMEs without
+heading ids, so such a link is dead on the project page.
 
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
@@ -3195,7 +3199,7 @@ Environment variable carrying JSON config overrides (set by `epythet make`).
 
 Environment variable naming the project root (set by `epythet make`).
 
-### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.22', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
+### epythet.sphinx_conf.epythet_config *= DocsConfig(project_dir=PosixPath('/home/runner/work/epythet/epythet'), name='epythet', version='0.2.23', author='', description='Beautiful, correct documentation from a Python package, with no boilerplate: Sphinx, README landing page, nested API tree, themes, docstring normalizer, agent-facing outputs, GitHub Pages', display_name='epythet', copyright='', repo_url='https://github.com/i2mint/epythet', theme='auto', accent='', mode='auto', theme_options={}, readme={'humor': True, 'agentic_first': True}, ignore=('tests/', 'scrap/', 'examples/', 'ledger/'), ignore_extra=('ledger/',), api_generator='autosummary', agent_outputs=True, aggregates=('md',), ai_artifacts=True, ai_artifacts_template='', provenance=True, provenance_template='', package_dir=PosixPath('/home/runner/work/epythet/epythet/epythet'), docs_dir='docsrc')*
 
 The [`DocsConfig`](_autosummary/epythet.config.html.md#epythet.config.DocsConfig) this configuration was generated from.
 
@@ -6494,18 +6498,16 @@ Write a review packet and return where it is.
 
 # About this build
 
-This documentation was built on **2026-11-21 17:44 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/ca135bc93c81717595ef842d46453cd1b0ca68a7"><code>ca135bc</code></a> on branch <code>master</code>, for **epythet 0.2.22** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 06:59 UTC** from commit <a href="https://github.com/i2mint/epythet/commit/0263e9e713c76eb888d3fdbced33a66aa4ab4591"><code>0263e9e</code></a> on branch <code>master</code>, for **epythet 0.2.23** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.2.22) is behind the latest release on PyPI (0.2.23): `pip install epythet` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                       |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/i2mint/epythet/commit/ca135bc93c81717595ef842d46453cd1b0ca68a7"><code>ca135bc93c81717595ef842d46453cd1b0ca68a7</code></a> |
+| Commit              | <a href="https://github.com/i2mint/epythet/commit/0263e9e713c76eb888d3fdbced33a66aa4ab4591"><code>0263e9e713c76eb888d3fdbced33a66aa4ab4591</code></a> |
 | Branch              | <code>master</code>                                                                                                                                   |
 | Tags at this commit | none                                                                                                                                                  |
 | Working tree        | clean                                                                                                                                                 |
@@ -6516,15 +6518,15 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>i2mint/epythet</code>                                                                |
-| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/44931437504">44931437504</a>       |
+| Run          | <a href="https://github.com/i2mint/epythet/actions/runs/45127573550">45127573550</a>       |
 | Ref          | <code>refs/heads/master</code>                                                             |
-| Event commit | <code>ca135bc93c81717595ef842d46453cd1b0ca68a7</code> (in the history of the built commit) |
+| Event commit | <code>0263e9e713c76eb888d3fdbced33a66aa4ab4591</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.22  |
+| epythet  | 0.2.23  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -6543,14 +6545,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/epythet/0.2.23/">0.2.23</a>, newer than the documented version (0.2.22).
+Latest release: <a href="https://pypi.org/project/epythet/0.2.23/">0.2.23</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/i2mint/epythet && cd epythet
-git checkout ca135bc93c81717595ef842d46453cd1b0ca68a7
-pip install "epythet==0.2.22"
+git checkout 0263e9e713c76eb888d3fdbced33a66aa4ab4591
+pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/ ledger/
 ```
 

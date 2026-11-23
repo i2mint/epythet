@@ -311,13 +311,14 @@ project’s <code class="docutils literal notranslate"><span class="pre">[tool.e
 depend on who ran the tool). <a class="reference internal" href="#epythet.agentic_readme.place_section" title="epythet.agentic_readme.place_section"><code class="xref py py-func docutils literal notranslate"><span class="pre">place_section()</span></code></a> puts it between two marker
 comments so a later run updates it in place: before the first heading after the
 title when <code class="docutils literal notranslate"><span class="pre">agentic_first</span></code> is on, at the end otherwise. The “for humans” line
-links to the heading that follows the section.</p>
+names the heading that follows the section, as plain text: PyPI drops heading ids,
+so an in-page link would be dead there.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">readme</span> <span class="o">=</span> <span class="s2">"# pkg</span><span class="se">\n\n</span><span class="s2">Tagline.</span><span class="se">\n\n</span><span class="s2"># Install</span><span class="se">\n\n</span><span class="s2">pip install pkg</span><span class="se">\n</span><span class="s2">"</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">place_section</span><span class="p">(</span><span class="n">readme</span><span class="p">,</span> <span class="n">agentic_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">readme</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">heading</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">level</span>
 <span class="go">('', 'Install', 1)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">humans_link_for</span><span class="p">(</span><span class="n">heading</span><span class="p">)</span>
-<span class="go">'[Install](#install)'</span>
+<span class="go">'the *Install* section'</span>
 </pre></div>
 </div>
 <p class="rubric">Module Attributes</p>
@@ -380,7 +381,7 @@ links to the heading that follows the section.</p>
 <td><p>The skill named in the install line: a <code class="docutils literal notranslate"><span class="pre">*-setup</span></code>-like one if any, else the first installable.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#epythet.agentic_readme.humans_link_for" title="epythet.agentic_readme.humans_link_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">humans_link_for</span></code></a>(heading)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">[Title](#anchor)</span></code> for the heading after the section, or a plain fallback.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">*Title*</span> <span class="pre">section</span></code> for the heading after the section, or a plain fallback.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#epythet.agentic_readme.instruction_text" title="epythet.agentic_readme.instruction_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">instruction_text</span></code></a>(*[, snippets])</p></td>
 <td><p>The instruction the skill hands an agent when the policy is <code class="docutils literal notranslate"><span class="pre">add</span></code>.</p></td>
@@ -712,7 +713,9 @@ and <code class="docutils literal notranslate"><span class="pre">end</span></cod
 <dl class="py function">
 <dt class="sig sig-object py" id="epythet.agentic_readme.humans_link_for">
 <span class="sig-prename descclassname"><span class="pre">epythet.agentic_readme.</span></span><span class="sig-name descname"><span class="pre">humans_link_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heading</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/epythet/agentic_readme.html#humans_link_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#epythet.agentic_readme.humans_link_for" title="Link to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">[Title](#anchor)</span></code> for the heading after the section, or a plain fallback.</p>
+<dd><p><code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">*Title*</span> <span class="pre">section</span></code> for the heading after the section, or a plain fallback.</p>
+<p>Deliberately not a <code class="docutils literal notranslate"><span class="pre">[Title](#anchor)</span></code> link: PyPI renders READMEs without
+heading ids, so such a link is dead on the project page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
@@ -991,7 +994,7 @@ not Markdown or not UTF-8, it has unpaired markers, or the snippet is broken</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=161bc3c1"></script>
+</div><script src="../_static/documentation_options.js?v=bf5bb7a7"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -20,7 +20,8 @@ project’s `[tool.epythet.readme]` keys on top so a committed README does not
 depend on who ran the tool). [`place_section()`](#epythet.agentic_readme.place_section) puts it between two marker
 comments so a later run updates it in place: before the first heading after the
 title when `agentic_first` is on, at the end otherwise. The “for humans” line
-links to the heading that follows the section.
+names the heading that follows the section, as plain text: PyPI drops heading ids,
+so an in-page link would be dead there.
 
 ```pycon
 >>> readme = "# pkg\n\nTagline.\n\n# Install\n\npip install pkg\n"
@@ -28,7 +29,7 @@ links to the heading that follows the section.
 >>> readme[start:end], heading.title, level
 ('', 'Install', 1)
 >>> humans_link_for(heading)
-'[Install](#install)'
+'the *Install* section'
 ```
 
 ### Module Attributes
@@ -54,7 +55,7 @@ links to the heading that follows the section.
 | [`github_anchor`](#epythet.agentic_readme.github_anchor)(title)                               | GitHub's anchor for a heading title.                                                             |
 | [`headings_of`](#epythet.agentic_readme.headings_of)(text)                                  | Every ATX heading outside fenced code blocks.                                                    |
 | [`headline_skill`](#epythet.agentic_readme.headline_skill)(skills)                             | The skill named in the install line: a `*-setup`-like one if any, else the first installable.    |
-| [`humans_link_for`](#epythet.agentic_readme.humans_link_for)(heading)                           | `[Title](#anchor)` for the heading after the section, or a plain fallback.                       |
+| [`humans_link_for`](#epythet.agentic_readme.humans_link_for)(heading)                           | `the *Title* section` for the heading after the section, or a plain fallback.                    |
 | [`instruction_text`](#epythet.agentic_readme.instruction_text)(\*[, snippets])                   | The instruction the skill hands an agent when the policy is `add`.                               |
 | [`load`](#epythet.agentic_readme.load)(project_dir, \*[, config, artifacts, ...])    | Resolve a project once; each argument given is used instead of being loaded.                     |
 | [`load_project`](#epythet.agentic_readme.load_project)(project_dir)                          | `(config, artifacts)` for a project; `config` is `None` for a non-Python tree.                   |
@@ -272,7 +273,10 @@ The skill named in the install line: a `*-setup`-like one if any, else the first
 
 ### epythet.agentic_readme.humans_link_for(heading)
 
-`[Title](#anchor)` for the heading after the section, or a plain fallback.
+`the *Title* section` for the heading after the section, or a plain fallback.
+
+Deliberately not a `[Title](#anchor)` link: PyPI renders READMEs without
+heading ids, so such a link is dead on the project page.
 
 * **Return type:**
   [`str`](https://docs.python.org/3/builtins/stdtypes.html#str)
