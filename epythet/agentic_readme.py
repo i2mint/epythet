@@ -512,7 +512,9 @@ def humans_link_for(heading: Heading | None) -> str:
     """
     if heading is None:
         return "the top of the page"
-    title = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading.title).replace("*", "").strip()
+    title = (
+        re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading.title).replace("*", "").strip()
+    )
     return f"the *{title}* section"
 
 
