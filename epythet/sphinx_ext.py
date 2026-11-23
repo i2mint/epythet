@@ -11,6 +11,8 @@ Listed automatically in the generated configuration
   :mod:`epythet.agent_outputs`;
 - the theme accent stylesheet ``_static/epythet.css`` when the chosen theme
   takes its colours from CSS variables (``epythet_theme_css``);
+- repo-relative links on the landing page (the README) rewritten to the
+  repository (``epythet_repo_url``), see :mod:`epythet.repo_links`;
 - the build provenance (``epythet_build_info``): the one-line footer appended
   to the landing page, the documented-module counts on the about page, and
   ``build_info.json`` at the site root, see :mod:`epythet.provenance`.
@@ -23,6 +25,7 @@ from pathlib import Path
 
 from epythet.agent_outputs import inject_link_relations
 from epythet.normalizer import sphinx_process_docstring
+from epythet.repo_links import resolve_repo_link
 from epythet.provenance import (
     ABOUT_PAGE_DOCNAME,
     render_footer_line,
@@ -53,6 +56,32 @@ def write_theme_css(app) -> None:
 def _link_relations_if_enabled(app, pagename, templatename, context, doctree):
     if getattr(app.config, "epythet_agent_outputs", False):
         inject_link_relations(app, pagename, templatename, context, doctree)
+
+
+def _rewrite_repo_links(app, doctree, docname) -> None:
+    """``doctree-resolved`` hook: landing-page links to repo files go to the repository."""
+    repo_url = getattr(app.config, "epythet_repo_url", "")
+    if not repo_url or docname != app.config.root_doc or not _is_html_build(app):
+        return
+    from docutils import nodes
+
+    root = Path(app.confdir).parent
+    for node in doctree.findall(nodes.reference):
+        # myst leaves a link it cannot resolve to a site page as ``refid="<path>"``
+        local = node.get("refuri") or node.get("refid") or ""
+        path = local.split("#", 1)[0].removeprefix("./").rstrip("/")
+        if not path or "://" in local or local.startswith(("#", "/", "mailto:")):
+            continue
+        if "refid" in node and path in doctree.ids:
+            continue  # a real in-page anchor
+        target = root / path
+        if not target.exists():
+            continue
+        paths = {path, f"{path}/"} if target.is_dir() else {path}
+        new = resolve_repo_link(local, paths, repo_url)
+        if new:
+            node.attributes.pop("refid", None)
+            node["refuri"] = new
 
 
 def _is_html_build(app) -> bool:
@@ -140,8 +169,10 @@ def setup(app):
     app.add_config_value("epythet_normalizer_rules", None, "")
     app.add_config_value("epythet_provenance", True, "html", types=(bool, str))
     app.add_config_value("epythet_build_info", None, "html", types=(dict,))
+    app.add_config_value("epythet_repo_url", "", "html")
     app.connect("autodoc-process-docstring", sphinx_process_docstring, priority=400)
     app.connect("builder-inited", write_theme_css)
+    app.connect("doctree-resolved", _rewrite_repo_links)
     app.connect("html-page-context", _link_relations_if_enabled)
     app.connect("html-page-context", _provenance_page_context)
     app.connect("build-finished", _write_build_info)
