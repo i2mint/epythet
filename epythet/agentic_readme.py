@@ -18,14 +18,15 @@ project's ``[tool.epythet.readme]`` keys on top so a committed README does not
 depend on who ran the tool). :func:`place_section` puts it between two marker
 comments so a later run updates it in place: before the first heading after the
 title when ``agentic_first`` is on, at the end otherwise. The "for humans" line
-links to the heading that follows the section.
+names the heading that follows the section, as plain text: PyPI drops heading ids,
+so an in-page link would be dead there.
 
 >>> readme = "# pkg\\n\\nTagline.\\n\\n# Install\\n\\npip install pkg\\n"
 >>> start, end, heading, level = place_section(readme, agentic_first=True)
 >>> readme[start:end], heading.title, level
 ('', 'Install', 1)
 >>> humans_link_for(heading)
-'[Install](#install)'
+'the *Install* section'
 """
 
 from __future__ import annotations
@@ -504,10 +505,15 @@ def github_anchor(title: str) -> str:
 
 
 def humans_link_for(heading: Heading | None) -> str:
-    """``[Title](#anchor)`` for the heading after the section, or a plain fallback."""
+    """``the *Title* section`` for the heading after the section, or a plain fallback.
+
+    Deliberately not a ``[Title](#anchor)`` link: PyPI renders READMEs without
+    heading ids, so such a link is dead on the project page.
+    """
     if heading is None:
         return "the top of the page"
-    return f"[{heading.title}](#{github_anchor(heading.title)})"
+    title = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading.title).replace("*", "").strip()
+    return f"the *{title}* section"
 
 
 def place_section(
