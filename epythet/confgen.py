@@ -121,6 +121,7 @@ def sphinx_settings(
         "epythet_theme_css": theme.css,
         "epythet_agent_outputs": config.agent_outputs,
         "epythet_normalizer_rules": None,
+        "epythet_repo_url": config.repo_url,
         "epythet_provenance": config.provenance,
         "epythet_build_info": build_info if config.provenance else None,
     }

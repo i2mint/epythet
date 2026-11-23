@@ -41,6 +41,8 @@ graph LR; a --> b
 ```bash
 pip install demo
 ```
+
+See [the design notes](misc/design.md), [the examples](examples/) and [a gone file](nope.md).
 """
 
 PYPROJECT = """\
@@ -119,6 +121,9 @@ def project(tmp_path_factory) -> Path:
         b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15\xc4\x89"
         b"\x00\x00\x00\rIDATx\x9cc\xf8\x0f\x00\x01\x01\x01\x00\x18\xdd\x8d\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
     )
+    (root / "misc" / "design.md").write_text("# Design\n")
+    (root / "examples").mkdir()
+    (root / "examples" / "a.py").write_text("x = 1\n")
     pkg = root / "demo"
     pkg.mkdir()
     (pkg / "__init__.py").write_text(INIT)
@@ -167,6 +172,14 @@ def test_docsrc_is_a_thin_shim(project, site):
     index = (project / "docsrc" / "index.md").read_text()
     assert "{include} ../README.md" in index
     assert "demo.md" in index
+
+
+def test_repo_relative_readme_links_point_at_the_repository(site):
+    """A README link to a repo file is dead on the site unless it goes to the repo."""
+    index = (site / "index.html").read_text()
+    assert 'href="https://github.com/org/demo/blob/HEAD/misc/design.md"' in index
+    assert 'href="https://github.com/org/demo/tree/HEAD/examples"' in index
+    assert 'href="#nope.md"' in index  # a path that does not exist is left alone
 
 
 def test_landing_page_is_the_readme(site):
