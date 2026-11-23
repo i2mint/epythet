@@ -303,7 +303,8 @@ def test_write_adds_first_then_updates_in_place_and_is_idempotent(project, confi
     assert (path, outcome) == (readme, "added")
     text = readme.read_text()
     assert text.index(MARKER_START) < text.index("## Install")
-    assert "starting at [Install](#install)" in text
+    assert "starting at the *Install* section" in text
+    assert "](#" not in text.split("starting at", 1)[1].split("\n", 1)[0]  # PyPI-safe: no anchor link
     assert "## For AI agents" in text
     assert _statuses(check_readme(project))["section"] == "ok"
 
